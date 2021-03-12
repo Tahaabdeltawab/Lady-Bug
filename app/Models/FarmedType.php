@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Models;
+
+use Eloquent as Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+// use Overtrue\LaravelFavorite\Traits\Favoriteable;
+
+/**
+ * @SWG\Definition(
+ *      definition="FarmedType",
+ *      required={"name", "farm_activity_type_id"},
+ *      @SWG\Property(
+ *          property="id",
+ *          description="id",
+ *          type="integer",
+ *          format="int32"
+ *      ),
+ *      @SWG\Property(
+ *          property="created_at",
+ *          description="created_at",
+ *          type="string",
+ *          format="date-time"
+ *      ),
+ *      @SWG\Property(
+ *          property="updated_at",
+ *          description="updated_at",
+ *          type="string",
+ *          format="date-time"
+ *      ),
+ *      @SWG\Property(
+ *          property="name",
+ *          description="name",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="farm_activity_type_id",
+ *          description="farm_activity_type_id",
+ *          type="integer",
+ *          format="int32"
+ *      )
+ * )
+ */
+use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
+use Astrotomic\Translatable\Translatable;
+
+class FarmedType extends Model implements TranslatableContract
+{
+    use SoftDeletes, Translatable/* , Favoriteable */;
+    
+    public $translatedAttributes = ['name'];
+
+    public $table = 'farmed_types';
+    
+
+    protected $dates = ['deleted_at'];
+
+
+
+    public $fillable = [
+        // 'name',
+        'farm_activity_type_id'
+    ];
+
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id' => 'integer',
+        // 'name' => 'string',
+        'farm_activity_type_id' => 'integer'
+    ];
+
+    /**
+     * Validation rules
+     *
+     * @var array
+     */
+    public static $rules = [
+        'name_ar_localized' => 'required|max:200',
+        'name_en_localized' => 'required|max:200',
+        'farm_activity_type_id' => 'required'
+    ];
+
+    public function farm_activity_type(){
+        return $this->belongsTo(FarmActivityType::class);
+    }
+    
+    public function favoriters()
+    {
+        return $this->morphToMany(User::class, 'favoriteable', 'favorites', 'favoriteable_id', 'user_id');
+    }
+    
+}
