@@ -212,7 +212,7 @@ class ServiceTaskAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateServiceTaskAPIRequest $request)
+    public function update($id, CreateServiceTaskAPIRequest $request)
     {
         $input = $request->validated();
 

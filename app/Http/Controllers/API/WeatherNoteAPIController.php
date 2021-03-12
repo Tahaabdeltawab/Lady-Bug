@@ -212,7 +212,7 @@ class WeatherNoteAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateWeatherNoteAPIRequest $request)
+    public function update($id, CreateWeatherNoteAPIRequest $request)
     {
         $input = $request->validated();
 

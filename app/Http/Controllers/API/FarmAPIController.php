@@ -96,7 +96,7 @@ class FarmAPIController extends AppBaseController
     }
 
 
-    public function update($id, UpdateFarmAPIRequest $request)
+    public function update($id, CreateFarmAPIRequest $request)
     {
         try{
             //update the farm

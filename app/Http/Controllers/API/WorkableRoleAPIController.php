@@ -252,7 +252,7 @@ class WorkableRoleAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateWorkableRoleAPIRequest $request)
+    public function update($id, CreateWorkableRoleAPIRequest $request)
     {
         try{
             $input = $request->validated();

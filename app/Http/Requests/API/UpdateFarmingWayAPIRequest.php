@@ -28,7 +28,7 @@ class UpdateFarmingWayAPIRequest extends APIRequest
     {
         // $id = last($request->segments()); //primitive way to get the url parameters
         // print(json_encode($this->route())); //from this, you can know the parameter name {farming_way}
-        $id = $this->farming_way;
+        $id = $this->farming_way ?? null;
         return[
             'name_ar_localized' => ['required','max:200', new UniqueTranslationRule($request->all(), 'farming_ways', 'type', $id)],
             'name_en_localized' => ['required','max:200', new UniqueTranslationRule($request->all(), 'farming_ways', 'type', $id)],

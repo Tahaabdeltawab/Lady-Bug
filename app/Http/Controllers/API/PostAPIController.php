@@ -212,7 +212,7 @@ class PostAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdatePostAPIRequest $request)
+    public function update($id, CreatePostAPIRequest $request)
     {
         $input = $request->validated();
 

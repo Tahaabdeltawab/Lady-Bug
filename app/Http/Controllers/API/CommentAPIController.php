@@ -212,7 +212,7 @@ class CommentAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateCommentAPIRequest $request)
+    public function update($id, CreateCommentAPIRequest $request)
     {
         $input = $request->validated();
 

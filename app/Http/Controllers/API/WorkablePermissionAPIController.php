@@ -228,7 +228,7 @@ class WorkablePermissionAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateWorkablePermissionAPIRequest $request)
+    public function update($id, CreateWorkablePermissionAPIRequest $request)
     {
         try{
             $input = $request->validated();

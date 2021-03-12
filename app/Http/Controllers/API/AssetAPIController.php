@@ -246,7 +246,7 @@ class AssetAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateAssetAPIRequest $request)
+    public function update($id, CreateAssetAPIRequest $request)
     {
         try{
             $input = $request->validated();

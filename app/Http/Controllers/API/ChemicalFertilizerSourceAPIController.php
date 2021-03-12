@@ -212,7 +212,7 @@ class ChemicalFertilizerSourceAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateChemicalFertilizerSourceAPIRequest $request)
+    public function update($id, CreateChemicalFertilizerSourceAPIRequest $request)
     {
         $input = $request->validated();
 

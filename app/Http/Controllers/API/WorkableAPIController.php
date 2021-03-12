@@ -212,7 +212,7 @@ class WorkableAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateWorkableAPIRequest $request)
+    public function update($id, CreateWorkableAPIRequest $request)
     {
         $input = $request->validated();
 

@@ -212,7 +212,7 @@ class MeasuringUnitAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateMeasuringUnitAPIRequest $request)
+    public function update($id, CreateMeasuringUnitAPIRequest $request)
     {
         $input = $request->validated();
 

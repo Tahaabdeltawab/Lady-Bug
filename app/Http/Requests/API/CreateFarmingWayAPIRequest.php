@@ -26,11 +26,11 @@ class CreateFarmingWayAPIRequest extends APIRequest
      */
     public function rules(Request $request)
     {
+        $id = $this->farming_way ?? null;
         return[
-            'name_ar_localized' => ['required','max:200', new UniqueTranslationRule($request->all(), 'farming_ways', 'type')],
-            'name_en_localized' => ['required','max:200', new UniqueTranslationRule($request->all(), 'farming_ways', 'type')],
+            'name_ar_localized' => ['required','max:200', new UniqueTranslationRule($request->all(), 'farming_ways', 'type', $id)],
+            'name_en_localized' => ['required','max:200', new UniqueTranslationRule($request->all(), 'farming_ways', 'type', $id)],
             'type' => ['required']
-        ];
-        // return FarmingWay::$rules;
+        ];       
     }
 }

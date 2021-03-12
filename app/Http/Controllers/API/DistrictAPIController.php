@@ -212,7 +212,7 @@ class DistrictAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateDistrictAPIRequest $request)
+    public function update($id, CreateDistrictAPIRequest $request)
     {
         $input = $request->validated();
 

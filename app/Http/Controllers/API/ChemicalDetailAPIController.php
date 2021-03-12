@@ -212,7 +212,7 @@ class ChemicalDetailAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateChemicalDetailAPIRequest $request)
+    public function update($id, CreateChemicalDetailAPIRequest $request)
     {
         $input = $request->validated();
 

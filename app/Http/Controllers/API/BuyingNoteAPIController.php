@@ -212,7 +212,7 @@ class BuyingNoteAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateBuyingNoteAPIRequest $request)
+    public function update($id, CreateBuyingNoteAPIRequest $request)
     {
         $input = $request->validated();
 

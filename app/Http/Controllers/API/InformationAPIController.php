@@ -212,7 +212,7 @@ class InformationAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateInformationAPIRequest $request)
+    public function update($id, CreateInformationAPIRequest $request)
     {
         $input = $request->validated();
 

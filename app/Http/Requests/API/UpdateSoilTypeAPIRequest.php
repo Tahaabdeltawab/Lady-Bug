@@ -24,8 +24,10 @@ class UpdateSoilTypeAPIRequest extends APIRequest
      */
     public function rules()
     {
-        $rules = SoilType::$rules;
-        
-        return $rules;
+        $id = $this->soil_type ?? null;
+        return [
+            'name_ar_localized' => 'required|max:200|unique:soil_type_translations,name,'.$id.',soil_type_id,locale,ar',
+            'name_en_localized' => 'required|max:200|unique:soil_type_translations,name,'.$id.',soil_type_id,locale,en',
+        ];
     }
 }

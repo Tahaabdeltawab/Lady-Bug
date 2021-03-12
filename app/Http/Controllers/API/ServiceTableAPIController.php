@@ -212,7 +212,7 @@ class ServiceTableAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateServiceTableAPIRequest $request)
+    public function update($id, CreateServiceTableAPIRequest $request)
     {
         $input = $request->validated();
 

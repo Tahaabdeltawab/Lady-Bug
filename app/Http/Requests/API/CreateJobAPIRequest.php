@@ -24,6 +24,10 @@ class CreateJobAPIRequest extends APIRequest
      */
     public function rules()
     {
-        return Job::$rules;
+        $id = $this->job ?? null;
+        return [
+            'name_ar_localized' => 'required|max:200|unique:job_translations,name,'.$id.',job_id,locale,ar',
+            'name_en_localized' => 'required|max:200|unique:job_translations,name,'.$id.',job_id,locale,en',
+        ];
     }
 }

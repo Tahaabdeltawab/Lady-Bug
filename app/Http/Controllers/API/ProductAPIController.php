@@ -212,7 +212,7 @@ class ProductAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateProductAPIRequest $request)
+    public function update($id, CreateProductAPIRequest $request)
     {
         $input = $request->validated();
 

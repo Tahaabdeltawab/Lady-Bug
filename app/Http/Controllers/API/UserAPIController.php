@@ -212,7 +212,7 @@ class UserAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateUserAPIRequest $request)
+    public function update($id, CreateUserAPIRequest $request)
     {
         $input = $request->validated();
 

@@ -212,7 +212,7 @@ class FarmedTypeGinfoAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateFarmedTypeGinfoAPIRequest $request)
+    public function update($id, CreateFarmedTypeGinfoAPIRequest $request)
     {
         $input = $request->validated();
 

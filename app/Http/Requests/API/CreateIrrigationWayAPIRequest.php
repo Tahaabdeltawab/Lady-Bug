@@ -24,6 +24,10 @@ class CreateIrrigationWayAPIRequest extends APIRequest
      */
     public function rules()
     {
-        return IrrigationWay::$rules;
+        $id = $this->irrigation_way ?? null;
+        return [
+            'name_ar_localized' => 'required|max:200|unique:irrigation_way_translations,name,'.$id.',irrigation_way_id,locale,ar',
+            'name_en_localized' => 'required|max:200|unique:irrigation_way_translations,name,'.$id.',irrigation_way_id,locale,en',
+        ];
     }
 }

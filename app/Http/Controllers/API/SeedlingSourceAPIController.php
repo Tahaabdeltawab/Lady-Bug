@@ -212,7 +212,7 @@ class SeedlingSourceAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateSeedlingSourceAPIRequest $request)
+    public function update($id, CreateSeedlingSourceAPIRequest $request)
     {
         $input = $request->validated();
 

@@ -212,7 +212,7 @@ class AnimalFodderTypeAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateAnimalFodderTypeAPIRequest $request)
+    public function update($id, CreateAnimalFodderTypeAPIRequest $request)
     {
         $input = $request->validated();
 

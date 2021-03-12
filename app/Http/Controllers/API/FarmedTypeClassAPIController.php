@@ -212,7 +212,7 @@ class FarmedTypeClassAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateFarmedTypeClassAPIRequest $request)
+    public function update($id, CreateFarmedTypeClassAPIRequest $request)
     {
         $input = $request->validated();
 

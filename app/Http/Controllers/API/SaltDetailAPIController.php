@@ -212,7 +212,7 @@ class SaltDetailAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateSaltDetailAPIRequest $request)
+    public function update($id, CreateSaltDetailAPIRequest $request)
     {
         $input = $request->validated();
 

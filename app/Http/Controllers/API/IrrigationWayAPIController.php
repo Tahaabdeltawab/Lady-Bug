@@ -212,7 +212,7 @@ class IrrigationWayAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateIrrigationWayAPIRequest $request)
+    public function update($id, CreateIrrigationWayAPIRequest $request)
     {
         $input = $request->validated();
 

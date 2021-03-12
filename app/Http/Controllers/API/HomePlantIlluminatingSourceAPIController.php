@@ -212,7 +212,7 @@ class HomePlantIlluminatingSourceAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateHomePlantIlluminatingSourceAPIRequest $request)
+    public function update($id, CreateHomePlantIlluminatingSourceAPIRequest $request)
     {
         $input = $request->validated();
 

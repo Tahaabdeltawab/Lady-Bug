@@ -212,7 +212,7 @@ class SoilTypeAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateSoilTypeAPIRequest $request)
+    public function update($id, CreateSoilTypeAPIRequest $request)
     {
         $input = $request->validated();
 

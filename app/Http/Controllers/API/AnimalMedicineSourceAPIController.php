@@ -212,7 +212,7 @@ class AnimalMedicineSourceAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateAnimalMedicineSourceAPIRequest $request)
+    public function update($id, CreateAnimalMedicineSourceAPIRequest $request)
     {
         $input = $request->validated();
 

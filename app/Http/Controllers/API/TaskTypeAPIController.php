@@ -212,7 +212,7 @@ class TaskTypeAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateTaskTypeAPIRequest $request)
+    public function update($id, CreateTaskTypeAPIRequest $request)
     {
         $input = $request->validated();
 

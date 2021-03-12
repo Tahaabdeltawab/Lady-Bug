@@ -213,7 +213,7 @@ class FarmActivityTypeAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateFarmActivityTypeAPIRequest $request)
+    public function update($id, CreateFarmActivityTypeAPIRequest $request)
     {
         $input = $request->validated();
 

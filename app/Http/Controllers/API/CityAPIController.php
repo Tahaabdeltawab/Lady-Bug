@@ -212,7 +212,7 @@ class CityAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateCityAPIRequest $request)
+    public function update($id, CreateCityAPIRequest $request)
     {
         $input = $request->validated();
 

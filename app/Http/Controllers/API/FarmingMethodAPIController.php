@@ -212,7 +212,7 @@ class FarmingMethodAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateFarmingMethodAPIRequest $request)
+    public function update($id, CreateFarmingMethodAPIRequest $request)
     {
         $input = $request->validated();
 

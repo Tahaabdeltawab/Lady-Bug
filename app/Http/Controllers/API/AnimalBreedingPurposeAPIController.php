@@ -212,7 +212,7 @@ class AnimalBreedingPurposeAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateAnimalBreedingPurposeAPIRequest $request)
+    public function update($id, CreateAnimalBreedingPurposeAPIRequest $request)
     {
         $input = $request->validated();
 

@@ -212,7 +212,7 @@ class JobAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateJobAPIRequest $request)
+    public function update($id, CreateJobAPIRequest $request)
     {
         $input = $request->validated();
 
