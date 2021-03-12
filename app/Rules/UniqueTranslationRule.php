@@ -21,7 +21,7 @@ class UniqueTranslationRule implements Rule
     protected $field;
     protected $locale;
 
-    public function __construct($request, $table, $field, $id='')
+    public function __construct($request, $table, $field, $id = null)
     {
         $this->id = $id;
         $this->request = $request;
@@ -45,10 +45,11 @@ class UniqueTranslationRule implements Rule
         $locale = explode('_', $attribute)[1];
         $query = DB::table($this->table)->join($this->trans_table,"$this->table.id","=","$this->trans_table.$this->foreign")
                  ->where("$this->table.$this->field", $this->request[$this->field])
+                 ->where("$this->table.deleted_at", null)
                  ->where("$this->trans_table.$transfield",$value)
                  ->where("$this->trans_table.locale",$locale);
 
-        if(!empty($this->id)){
+        if($this->id){
             $count = $query->where("$this->table.id" , "!=" , $this->id)->count();
         }else{
             $count = $query->count();
