@@ -49,10 +49,6 @@ class FarmAPIController extends AppBaseController
 
             return response()->json($input);
 
-            //
-
-
-
             $farm = $this->farmRepository->save_localized($input);
     
             //set the farm workers adding the creator to them

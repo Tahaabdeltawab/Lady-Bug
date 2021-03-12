@@ -19,8 +19,8 @@ class FarmedTypeClassResource extends JsonResource
             'name' => $this->name,
             'farmed_type_id' => $this->farmed_type_id,
             'farmed_type_name' => $this->farmed_type->name,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
         ];
     }
 }

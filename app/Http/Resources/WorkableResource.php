@@ -16,8 +16,8 @@ class WorkableResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
             'worker_id' => $this->worker_id,
             'workable_id' => $this->workable_id,
             'workable_type' => $this->workable_type,

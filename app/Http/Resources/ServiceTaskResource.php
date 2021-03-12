@@ -26,8 +26,8 @@ class ServiceTaskResource extends JsonResource
             'quantity_unit_id' => $this->quantity_unit_id,
             'due_at' => $this->due_at,
             'done' => $this->done
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
         ];
     }
 }

@@ -16,8 +16,8 @@ class SaltDetailResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,at,
             'saltable_type' => $this->saltable_type,
             'PH' => $this->PH,
             'CO3' => $this->CO3,

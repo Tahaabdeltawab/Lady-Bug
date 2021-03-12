@@ -16,8 +16,8 @@ class DistrictResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
             'city_id' => $this->city_id,
             'name' => $this->name
         ];

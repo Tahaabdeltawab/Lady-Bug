@@ -16,8 +16,8 @@ class ChemicalDetailResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
             'type' => $this->type,
             'acidity' => $this->acidity,
             'acidity_value' => $this->acidity_value,

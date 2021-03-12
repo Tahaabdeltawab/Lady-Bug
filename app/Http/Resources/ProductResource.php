@@ -25,8 +25,8 @@ class ProductResource extends JsonResource
             'seller_mobile' => $this->seller_mobile,
             'sold' => $this->sold,
             'other_links' => $this->other_links
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at,
         ];
     }
 }
