@@ -43,11 +43,15 @@
                 <td class="td text-sm leading-5 text-gray-900">
                   {{$user->roles_count}}
                 </td>
+                
                 @if(config('laratrust.panel.assign_permissions_to_user'))
                 <td class="td text-sm leading-5 text-gray-900">
                   {{$user->permissions_count}}
                 </td>
                 @endif
+                <td class="td text-sm leading-5 text-gray-900">
+                  {{$user->allTeams()->count()}}
+                </td>
                 <td class="flex justify-end px-6 py-4 whitespace-no-wrap text-right border-b border-gray-200 text-sm leading-5 font-medium">
                   <a
                     href="{{route('laratrust.roles-assignment.edit', ['roles_assignment' => $user->id, 'model' => $modelKey])}}"

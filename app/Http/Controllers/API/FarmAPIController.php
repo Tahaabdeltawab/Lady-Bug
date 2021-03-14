@@ -2,11 +2,54 @@
 
 namespace App\Http\Controllers\API;
 
+
+use App\Models\Role;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\API\CreateFarmAPIRequest;
 use App\Http\Requests\API\UpdateFarmAPIRequest;
 use App\Repositories\FarmRepository;
 use App\Repositories\UserRepository;
+use App\Repositories\SaltDetailRepository;
+use App\Repositories\ChemicalDetailRepository;
 use App\Repositories\WorkableRepository;
+use App\Repositories\LocationRepository;
+
+use App\Repositories\SaltTypeRepository;
+use App\Repositories\FarmActivityTypeRepository;
+use App\Repositories\FarmedTypeClassRepository;
+use App\Repositories\FarmedTypeRepository;
+use App\Repositories\MeasuringUnitRepository;
+use App\Repositories\IrrigationWayRepository;
+use App\Repositories\HomePlantIlluminatingSourceRepository;
+use App\Repositories\FarmingWayRepository;
+use App\Repositories\AnimalBreedingPurposeRepository;
+use App\Repositories\FarmingMethodRepository;
+use App\Repositories\SeedlingSourceRepository;
+use App\Repositories\ChemicalFertilizerSourceRepository;
+use App\Repositories\AnimalFodderTypeRepository;
+use App\Repositories\AnimalFodderSourceRepository;
+use App\Repositories\AnimalMedicineSourceRepository;
+use App\Repositories\SoilTypeRepository;
+
+use App\Http\Resources\SaltTypeResource;
+use App\Http\Resources\FarmActivityTypeResource;
+use App\Http\Resources\FarmedTypeClassResource;
+use App\Http\Resources\FarmedTypeResource;
+use App\Http\Resources\MeasuringUnitResource;
+use App\Http\Resources\IrrigationWayResource;
+use App\Http\Resources\HomePlantIlluminatingSourceResource;
+use App\Http\Resources\FarmingWayResource;
+use App\Http\Resources\AnimalBreedingPurposeResource;
+use App\Http\Resources\FarmingMethodResource;
+use App\Http\Resources\SeedlingSourceResource;
+use App\Http\Resources\ChemicalFertilizerSourceResource;
+use App\Http\Resources\AnimalFodderTypeResource;
+use App\Http\Resources\AnimalFodderSourceResource;
+use App\Http\Resources\AnimalMedicineSourceResource;
+use App\Http\Resources\SoilTypeResource;
+
+use App\Http\Resources\RoleResource;
+
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmResource;
 use Illuminate\Http\Request;
@@ -20,12 +63,77 @@ class FarmAPIController extends AppBaseController
     private $farmRepository;
     private $userRepository;
     private $workableRepository;
+    private $saltDetailRepository;
+    private $chemicalDetailRepository;
 
-    public function __construct(FarmRepository $farmRepo, UserRepository $userRepo, WorkableRepository $workableRepo)
+    private $saltTypeRepository;
+    private $farmActivityTypeRepository;
+    private $farmedTypeClassRepository;
+    private $farmedTypeRepository;
+    private $measuringUnitRepository;
+    private $irrigationWayRepository;
+    private $homePlantIlluminatingSourceRepository;
+    private $farmingWayRepository;
+    private $animalBreedingPurposeRepository;
+    private $farmingMethodRepository;
+    private $seedlingSourceRepository;
+    private $chemicalFertilizerSourceRepository;
+    private $animalFodderTypeRepository;
+    private $animalFodderSourceRepository;
+    private $animalMedicineSourceRepository;
+    private $soilTypeRepository;
+
+    private $locationRepository;
+
+    public function __construct(
+        FarmRepository $farmRepo,
+        UserRepository $userRepo, 
+        WorkableRepository $workableRepo,
+        SaltDetailRepository $saltDetailRepo, 
+        ChemicalDetailRepository $chemicalDetailRepo,
+        SaltTypeRepository $saltTypeRepo,
+        FarmActivityTypeRepository $farmActivityTypeRepo,
+        FarmedTypeClassRepository $farmedTypeClassRepo,
+        FarmedTypeRepository $farmedTypeRepo,
+        MeasuringUnitRepository $measuringUnitRepo,
+        IrrigationWayRepository $irrigationWayRepo,
+        HomePlantIlluminatingSourceRepository $homePlantIlluminatingSourceRepo,
+        FarmingWayRepository $farmingWayRepo,
+        AnimalBreedingPurposeRepository $animalBreedingPurposeRepo,
+        FarmingMethodRepository $farmingMethodRepo,
+        SeedlingSourceRepository $seedlingSourceRepo,
+        ChemicalFertilizerSourceRepository $chemicalFertilizerSourceRepo,
+        AnimalFodderTypeRepository $animalFodderTypeRepo,
+        AnimalFodderSourceRepository $animalFodderSourceRepo,
+        AnimalMedicineSourceRepository $animalMedicineSourceRepo,
+        SoilTypeRepository $soilTypeRepo,
+        LocationRepository $locationRepo
+    )
     {
         $this->farmRepository = $farmRepo;
         $this->userRepository = $userRepo;
         $this->workableRepository = $workableRepo;
+        $this->saltDetailRepository = $saltDetailRepo;
+        $this->chemicalDetailRepository = $chemicalDetailRepo;
+        
+        $this->saltTypeRepository = $saltTypeRepo;
+        $this->farmActivityTypeRepository = $farmActivityTypeRepo;
+        $this->farmedTypeClassRepository = $farmedTypeClassRepo;
+        $this->farmedTypeRepository = $farmedTypeRepo;
+        $this->measuringUnitRepository = $measuringUnitRepo;
+        $this->irrigationWayRepository = $irrigationWayRepo;
+        $this->homePlantIlluminatingSourceRepository = $homePlantIlluminatingSourceRepo;
+        $this->farmingWayRepository = $farmingWayRepo;
+        $this->animalBreedingPurposeRepository = $animalBreedingPurposeRepo;
+        $this->farmingMethodRepository = $farmingMethodRepo;
+        $this->seedlingSourceRepository = $seedlingSourceRepo;
+        $this->chemicalFertilizerSourceRepository = $chemicalFertilizerSourceRepo;
+        $this->animalFodderTypeRepository = $animalFodderTypeRepo;
+        $this->animalFodderSourceRepository = $animalFodderSourceRepo;
+        $this->animalMedicineSourceRepository = $animalMedicineSourceRepo;
+        $this->soilTypeRepository = $soilTypeRepo;
+        
+        $this->locationRepository = $locationRepo;
     }
 
 
@@ -39,20 +147,189 @@ class FarmAPIController extends AppBaseController
         }
     }
 
+    
+    public function relations_index()
+    {
+        try{
+            $data['salt_types'] = SaltTypeResource::collection($this->saltTypeRepository->all());
+            $data['farm_activity_types'] = FarmActivityTypeResource::collection($this->farmActivityTypeRepository->all());
+            $data['farmed_type_classes'] = FarmedTypeClassResource::collection($this->farmedTypeClassRepository->all());
+            $data['farmed_types'] = FarmedTypeResource::collection($this->farmedTypeRepository->all());
+            $data['area_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'area'])->all());
+            $data['acidity_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'acidity'])->all());
+            $data['salt_concentration_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'salt_concentration'])->all());
+            $data['irrigation_ways'] = IrrigationWayResource::collection($this->irrigationWayRepository->all());
+            $data['home_plant_illuminating_sources'] = HomePlantIlluminatingSourceResource::collection($this->homePlantIlluminatingSourceRepository->all());
+            $data['farming_ways'] = FarmingWayResource::collection($this->farmingWayRepository->all());
+            $data['animal_breeding_purposes'] = AnimalBreedingPurposeResource::collection($this->animalBreedingPurposeRepository->all());
+            $data['farming_methods'] = FarmingMethodResource::collection($this->farmingMethodRepository->all());
+            $data['seedling_sources'] = SeedlingSourceResource::collection($this->seedlingSourceRepository->all());
+            $data['chemical_fertilizer_sources'] = ChemicalFertilizerSourceResource::collection($this->chemicalFertilizerSourceRepository->all());
+            $data['animal_fodder_types'] = AnimalFodderTypeResource::collection($this->animalFodderTypeRepository->all());
+            $data['animal_fodder_sources'] = AnimalFodderSourceResource::collection($this->animalFodderSourceRepository->all());
+            $data['animal_medicine_sources'] = AnimalMedicineSourceResource::collection($this->animalMedicineSourceRepository->all());
+            $data['soil_types'] = SoilTypeResource::collection($this->soilTypeRepository->all());
+
+            return $this->sendResponse(['all' => $data], 'Farms relations retrieved successfully');
+
+        }catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+
 
     public function store(CreateFarmAPIRequest $request)
     {
         try{
 
-            //create the farm
             $input = $request->validated();
+            
+            $fat_id = $input["farm_activity_type_id"];
+            
+            //all 1,2,3,4
+            $farm_detail['real'] = $input["real"];
+            $farm_detail['archived'] = $input["archived"];
+            $farm_detail['farm_activity_type_id'] = $input["farm_activity_type_id"];
+            $farm_detail['farmed_type_id'] = $input["farmed_type_id"];
+            $farm_detail['farmed_type_class_id'] = $input["farmed_type_class_id"];
+            $farm_detail['farming_date'] = $input["farming_date"];
+            $farm_detail['farming_compatibility'] = $input["farming_compatibility"];
 
-            return response()->json($input);
+            $location['latitude'] = $input["location"]["latitude"];
+            $location['longitude'] = $input["location"]["longitude"];
+            $location['country'] = $input["location"]["country"];
+            $location['city'] = $input["location"]["city"];
+            $location['district'] = $input["location"]["district"];
+            $location['details'] = $input["location"]["details"];
+            $saved_location = $this->locationRepository->save_localized($location);
+            $farm_detail['location_id'] = $saved_location->id;
 
-            $farm = $this->farmRepository->save_localized($input);
-    
+            //crops 1
+            if($fat_id == 1)
+            {
+                $farm_detail['farming_method_id'] = $input["farming_method_id"];
+            }
+
+            //crops, animals 1,4
+            if($fat_id == 1 || $fat_id == 4)
+            {
+                $farm_detail['farming_way_id'] = $input["farming_way_id"];
+            }
+            
+            //crops, trees, animals 1,2,4
+            if($fat_id == 1 || $fat_id == 2 || $fat_id == 4)
+            {
+                $farm_detail['area'] = $input["area"];
+                $farm_detail['area_unit_id'] = $input["area_unit_id"];
+            }
+
+            //crops, trees 1,2
+            if($fat_id == 1 || $fat_id == 2)
+            {
+                $farm_detail['irrigation_way_id'] = $input["irrigation_way_id"];
+                $farm_detail['soil_type_id'] = $input["soil_type_id"];
+                //soil.salt
+                $soil_salt_detail["saltable_type"] = "soil";
+                $soil_salt_detail["PH"] = $input["soil"]["salt"]["PH"];
+                $soil_salt_detail["CO3"] = $input["soil"]["salt"]["CO3"];
+                $soil_salt_detail["HCO3"] = $input["soil"]["salt"]["HCO3"];
+                $soil_salt_detail["Cl"] = $input["soil"]["salt"]["Cl"];
+                $soil_salt_detail["SO4"] = $input["soil"]["salt"]["SO4"];
+                $soil_salt_detail["Ca"] = $input["soil"]["salt"]["Ca"];
+                $soil_salt_detail["Mg"] = $input["soil"]["salt"]["Mg"];
+                $soil_salt_detail["K"] = $input["soil"]["salt"]["K"];
+                $soil_salt_detail["Na"] = $input["soil"]["salt"]["Na"];
+                $soil_salt_detail["Na2CO3"] = $input["soil"]["salt"]["Na2CO3"];
+                $saved_soil_salt_detail = $this->saltDetailRepository->save_localized($soil_salt_detail);
+                //soil
+                $soil_detail['salt_detail_id'] = $saved_soil_salt_detail->id;
+                $soil_detail['type'] = "soil";
+                $soil_detail['acidity_type_id'] = $input["soil"]["acidity_type_id"];
+                $soil_detail['acidity_value'] = $input["soil"]["acidity_value"];
+                $soil_detail['acidity_unit_id'] = $input["soil"]["acidity_unit_id"];
+                $soil_detail['salt_type_id'] = $input["soil"]["salt_type_id"];
+                $soil_detail['salt_concentration_value'] = $input["soil"]["salt_concentration_value"];
+                $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"];
+                $saved_soil_detail = $this->chemicalDetailRepository->save_localized($soil_detail);
+                $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
+                
+                //irrigation.salt
+                $irrigation_salt_detail["saltable_type"] = "irrigation";
+                $irrigation_salt_detail["PH"] = $input["irrigation"]["salt"]["PH"];
+                $irrigation_salt_detail["CO3"] = $input["irrigation"]["salt"]["CO3"];
+                $irrigation_salt_detail["HCO3"] = $input["irrigation"]["salt"]["HCO3"];
+                $irrigation_salt_detail["Cl"] = $input["irrigation"]["salt"]["Cl"];
+                $irrigation_salt_detail["SO4"] = $input["irrigation"]["salt"]["SO4"];
+                $irrigation_salt_detail["Ca"] = $input["irrigation"]["salt"]["Ca"];
+                $irrigation_salt_detail["Mg"] = $input["irrigation"]["salt"]["Mg"];
+                $irrigation_salt_detail["K"] = $input["irrigation"]["salt"]["K"];
+                $irrigation_salt_detail["Na"] = $input["irrigation"]["salt"]["Na"];
+                $irrigation_salt_detail["Na2CO3"] = $input["irrigation"]["salt"]["Na2CO3"];
+                $saved_irrigation_salt_detail = $this->saltDetailRepository->save_localized($irrigation_salt_detail);
+                //irrigation
+                $irrigation_detail['salt_detail_id'] = $saved_irrigation_salt_detail->id;
+                $irrigation_detail['type'] = "irrigation";
+                $irrigation_detail['acidity_type_id'] = $input["irrigation"]["acidity_type_id"];
+                $irrigation_detail['acidity_value'] = $input["irrigation"]["acidity_value"];
+                $irrigation_detail['acidity_unit_id'] = $input["irrigation"]["acidity_unit_id"];
+                $irrigation_detail['salt_type_id'] = $input["irrigation"]["salt_type_id"];
+                $irrigation_detail['salt_concentration_value'] = $input["irrigation"]["salt_concentration_value"];
+                $irrigation_detail['salt_concentration_unit_id'] = $input["irrigation"]["salt_concentration_unit_id"];
+                $saved_irrigation_detail = $this->chemicalDetailRepository->save_localized($irrigation_detail);
+                $farm_detail['irrigation_water_detail_id'] = $saved_irrigation_detail->id;
+            }
+
+            //homeplant, trees, animals 2,3,4
+            if($fat_id == 2 || $fat_id == 3 || $fat_id == 4)
+            {
+                $farm_detail['farmed_number'] = $input["farmed_number"];
+            }
+
+            //homeplants 3
+            if($fat_id == 3)
+            {
+                $farm_detail['home_plant_pot_size'] = $input["home_plant_pot_size"];
+                $farm_detail['home_plant_illuminating_source_id'] = $input["home_plant_illuminating_source_id"];
+            }
+
+            // animal 4
+            if($fat_id == 4)
+            {
+                $farm_detail['animal_breeding_purpose_id'] = $input["animal_breeding_purpose_id"];
+                //drink.salt
+                $drink_salt_detail["saltable_type"] = "drink";
+                $drink_salt_detail["PH"] = $input["drink"]["salt"]["PH"];
+                $drink_salt_detail["CO3"] = $input["drink"]["salt"]["CO3"];
+                $drink_salt_detail["HCO3"] = $input["drink"]["salt"]["HCO3"];
+                $drink_salt_detail["Cl"] = $input["drink"]["salt"]["Cl"];
+                $drink_salt_detail["SO4"] = $input["drink"]["salt"]["SO4"];
+                $drink_salt_detail["Ca"] = $input["drink"]["salt"]["Ca"];
+                $drink_salt_detail["Mg"] = $input["drink"]["salt"]["Mg"];
+                $drink_salt_detail["K"] = $input["drink"]["salt"]["K"];
+                $drink_salt_detail["Na"] = $input["drink"]["salt"]["Na"];
+                $drink_salt_detail["Na2CO3"] = $input["drink"]["salt"]["Na2CO3"];
+                $saved_drink_salt_detail = $this->saltDetailRepository->save_localized($drink_salt_detail);
+                $farm_detail['animal_drink_water_salt_detail_id'] = $saved_drink_salt_detail->id;
+            }
+
+            $farm = $this->farmRepository->save_localized($farm_detail);
+
+            //crops, trees, homeplants 1,2,3
+            if($fat_id == 1 || $fat_id == 2 || $fat_id == 3)
+            {
+                $farm->chemical_fertilizer_sources()->sync($input["chemical_fertilizer_sources"]);
+                $farm->seedling_sources()->sync($input["seedling_sources"]);
+            }
+            // animal 4
+            if($fat_id == 4)
+            {
+                $farm->animal_medicine_sources()->sync($input["animal_medicine_sources"]);
+                $farm->animal_fodder_sources()->sync($input["animal_fodder_sources"]);
+                $farm->animal_fodder_types()->sync($input["animal_fodder_types"]);
+            }
+
             //set the farm workers adding the creator to them
-            $workers = $request->workers ?? [];
+           /*  $workers = $request->workers ?? [];
             $workers[] = auth()->id();
             $farm->workers()->sync($workers);
     
@@ -63,19 +340,62 @@ class FarmAPIController extends AppBaseController
     
             foreach($farm->workers as $farm_worker){
                 $workable_roles[$farm_worker->id] = $request->{"workable_roles_".$farm_worker->id} ?? [];
-                // if($farm_worker->id == auth()->id()){
-                //     $workable_roles[$farm_worker->id] = [$admin_role_id];
-                // }
+                if($farm_worker->id == auth()->id()){
+                    $workable_roles[$farm_worker->id] = [$admin_role_id];
+                }
                 $workables[$farm_worker->id] = \App\Models\Workable::where([['worker_id',$farm_worker->id], ['workable_id',$farm->id], ['workable_type','App\Models\Farm']])
                                              ->first()->workable_roles()->sync($workable_roles[$farm_worker->id]);
-            }
-    
+            } */
+          
+            // $admin = Role::where('name','admin')->first();
+            auth()->user()->attachRole('admin', $farm);
+
             return $this->sendResponse(new FarmResource($farm), 'Farm saved successfully');
 
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500); 
         }
+    }
 
+
+    public function roles_index()
+    {
+        $roles = Role::where('name','!=', 'admin')->get();
+        return $this->sendResponse(RoleResource::collection($roles), 'Roles retrieved successfully');
+    }
+
+
+    public function update_farm_role(Request $request)//attach, edit or delete farm roles
+    {//give him available roles
+        $validator = Validator::make($request->all(), [
+            'farm_id' => 'integer|required|exists:farms,id',
+            'user_id' => 'integer|required|exists:users,id',
+            'role_id' => 'nullable|integer|exists:roles,id',
+        ]);
+
+        if ($validator->fails()) {
+            return $this->sendError(json_encode($validator->errors()));
+        }
+
+        $user = $this->userRepository->find($request->user_id);
+        
+        if($request->role_id)   //attach or edit roles
+        {
+            //send invitation to assignee user
+            $role = Role::find($request->role_id);
+            $user->notify(new \App\Notifications\FarmInvitation(auth()->user(), $role, url('/')));
+            $user->syncRoles([$request->role_id], $request->farm_id);
+        }
+        else                    //delete roles
+        {
+            if($user->getRoles($request->farm_id)){
+                $user->detachRoles([], $request->farm_id);
+            }else{
+                return $this->sendError(__('This user is not a member in this farm'), 7000); 
+            }            
+        }
+        
+        return $this->sendSuccess(__('Farm roles saved successfully'));
     }
 
 

@@ -261,3 +261,21 @@
         <span>Task Types</span>
     </a>
 </li>
+<li class="nav-item {{ Request::is('saltTypes*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('saltTypes.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>Salt Types</span>
+    </a>
+</li>
+<li class="nav-item {{ Request::is('locations*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('locations.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>Locations</span>
+    </a>
+</li>
+<li class="nav-item {{ Request::is('acidityTypes*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('acidityTypes.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>Acidity Types</span>
+    </a>
+</li>

@@ -86,8 +86,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="breeding_purpose_id",
- *          description="breeding_purpose_id",
+ *          property="animal_breeding_purpose_id",
+ *          description="animal_breeding_purpose_id",
  *          type="integer",
  *          format="int32"
  *      ),
@@ -156,7 +156,7 @@ class Farm extends Team
     public $fillable = [
         'real',
         'archived',
-        'location',
+        'location_id',
         'farming_date',
         'farming_compatibility',
         'home_plant_pot_size',
@@ -166,7 +166,7 @@ class Farm extends Team
         'farmed_type_id',
         'farmed_type_class_id',
         'farmed_number',
-        'breeding_purpose_id',
+        'animal_breeding_purpose_id',
         'home_plant_illuminating_source_id',
         'farming_method_id',
         'farming_way_id',
@@ -186,7 +186,7 @@ class Farm extends Team
         'id' => 'integer',
         'real' => 'boolean',
         'archived' => 'boolean',
-        'location' => 'string',
+        'location_id' => 'integer',
         'farming_compatibility' => 'double',
         'home_plant_pot_size' => 'double',
         'area' => 'double',
@@ -194,7 +194,7 @@ class Farm extends Team
         'farm_activity_type_id' => 'integer',
         'farmed_type_id' => 'integer',
         'farmed_type_class_id' => 'integer',
-        'breeding_purpose_id' => 'integer',
+        'animal_breeding_purpose_id' => 'integer',
         'home_plant_illuminating_source_id' => 'integer',
         'farming_method_id' => 'integer',
         'farming_way_id' => 'integer',
@@ -232,9 +232,9 @@ class Farm extends Team
         return $this->belongsTo(FarmedTypeClass::class);
     }
 
-    public function breeding_purpose()
+    public function animal_breeding_purpose()
     {
-        return $this->belongsTo(AnimalBreedingPurpose::class, 'breeding_purpose_id');
+        return $this->belongsTo(AnimalBreedingPurpose::class, 'animal_breeding_purpose_id');
     }
 
     public function home_plant_illuminating_source()
@@ -262,6 +262,11 @@ class Farm extends Team
         return $this->belongsTo(SoilType::class);
     }
 
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+
     public function soil_detail()
     {
         return $this->belongsTo(ChemicalDetail::class);
@@ -275,6 +280,11 @@ class Farm extends Team
     public function animal_drink_water_salt_detail()
     {
         return $this->belongsTo(SaltDetail::class);
+    }
+
+    public function area_unit()
+    {
+        return $this->belongsTo(MeasuringUnit::class, 'area_unit_id');
     }
 
 
@@ -294,19 +304,19 @@ class Farm extends Team
         return $this->hasMany(ServiceTask::class);
     }
 
-    public function fodder_types()
+    public function animal_fodder_types()
     {
-        return $this->belongsToMany(FodderType::class);
+        return $this->belongsToMany(AnimalFodderType::class);
     }
 
-    public function fodder_sources()
+    public function animal_fodder_sources()
     {
-        return $this->belongsToMany(FodderSource::class);
+        return $this->belongsToMany(AnimalFodderSource::class);
     }
 
-    public function medicine_sources()
+    public function animal_medicine_sources()
     {
-        return $this->belongsToMany(MedicineSource::class);
+        return $this->belongsToMany(AnimalMedicineSource::class);
     }
 
     public function seedling_sources()

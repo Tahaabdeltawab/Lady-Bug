@@ -90,10 +90,10 @@ class ChemicalDetail extends Model
 
     public $fillable = [
         'type',
-        'acidity',
+        'acidity_type_id',
         'acidity_value',
         'acidity_unit_id',
-        'salt_type',
+        'salt_type_id',
         'salt_concentration_value',
         'salt_concentration_unit_id',
         'salt_detail_id'
@@ -107,10 +107,10 @@ class ChemicalDetail extends Model
     protected $casts = [
         'id' => 'integer',
         'type' => 'string',
-        'acidity' => 'double',
+        'acidity_type_id' => 'integer',
         'acidity_value' => 'double',
         'acidity_unit_id' => 'integer',
-        'salt_type' => 'string',
+        'salt_type_id' => 'integer',
         'salt_concentration_value' => 'double',
         'salt_concentration_unit_id' => 'integer',
         'salt_detail_id' => 'integer'
@@ -123,14 +123,38 @@ class ChemicalDetail extends Model
      */
     public static $rules = [
         'type' => 'required',
-        'acidity' => 'required',
+        'acidity_type_id' => 'required',
         'acidity_value' => 'required',
         'acidity_unit_id' => 'required',
-        'salt_type' => 'required',
+        'salt_type_id' => 'required',
         'salt_concentration_value' => 'required',
         'salt_concentration_unit_id' => 'required',
         'salt_detail_id' => 'required'
     ];
 
+    public function salt_type()
+    {
+        return $this->belongsTo(SaltType::class);
+    }
+    
+    public function salt_detail()
+    {
+        return $this->belongsTo(SaltDetail::class);
+    }
+
+    public function acidity_type()
+    {
+        return $this->belongsTo(AcidityType::class);
+    }
+
+    public function acidity_unit()
+    {
+        return $this->belongsTo(MeasuringUnit::class, 'acidity_unit_id');
+    }
+    
+    public function salt_concentration_unit()
+    {
+        return $this->belongsTo(MeasuringUnit::class, 'salt_concentration_unit_id');
+    }
     
 }

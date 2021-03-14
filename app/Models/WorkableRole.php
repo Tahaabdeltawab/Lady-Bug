@@ -74,7 +74,8 @@ class WorkableRole extends Model
      * @var array
      */
     public static $rules = [
-
+        'name' => 'required|max:200',
+        'workable_type_id' => 'required|exists:workable_types,id'
     ];
 
     public function workable_permissions(){

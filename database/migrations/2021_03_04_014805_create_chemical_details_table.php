@@ -17,10 +17,10 @@ class CreateChemicalDetailsTable extends Migration
         Schema::create('chemical_details', function (Blueprint $table) {
             $table->id();
             $table->string('type');
-            $table->enum('acidity', ['acidic', 'basic', 'neutral']);
             $table->double('acidity_value');
             $table->foreignId('acidity_unit_id')->constrained('measuring_units');
-            $table->string('salt_type');
+            $table->foreignId('acidity_type_id')->constrained();
+            $table->foreignId('salt_type_id')->constrained('salt_types');
             $table->double('salt_concentration_value');
             $table->foreignId('salt_concentration_unit_id')->constrained('measuring_units');
             $table->foreignId('salt_detail_id')->constrained();

@@ -37,7 +37,7 @@ class RolesAssignmentController
             'models' => $modelsKeys,
             'modelKey' => $modelKey,
             'users' => $userModel::query()
-                ->withCount(['roles', 'permissions'])
+                ->withCount(['roles', 'permissions', 'rolesTeams'])
                 ->simplePaginate(10),
         ]);
     }

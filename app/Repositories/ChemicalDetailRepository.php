@@ -21,7 +21,7 @@ class ChemicalDetailRepository extends BaseRepository
         'acidity',
         'acidity_value',
         'acidity_unit_id',
-        'salt_type',
+        'salt_type_id',
         'salt_concentration_value',
         'salt_concentration_unit_id',
         'salt_detail_id'

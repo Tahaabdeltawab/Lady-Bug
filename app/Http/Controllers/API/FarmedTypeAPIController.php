@@ -6,10 +6,14 @@ use App\Http\Requests\API\CreateFarmedTypeAPIRequest;
 use App\Http\Requests\API\UpdateFarmedTypeAPIRequest;
 use App\Models\FarmedType;
 use App\Repositories\FarmedTypeRepository;
+use App\Repositories\AssetRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmedTypeResource;
 use Response;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 /**
  * Class FarmedTypeController
@@ -20,10 +24,12 @@ class FarmedTypeAPIController extends AppBaseController
 {
     /** @var  FarmedTypeRepository */
     private $farmedTypeRepository;
+    private $assetRepository;
 
-    public function __construct(FarmedTypeRepository $farmedTypeRepo)
+    public function __construct(FarmedTypeRepository $farmedTypeRepo, AssetRepository $assetRepo)
     {
         $this->farmedTypeRepository = $farmedTypeRepo;
+        $this->assetRepository = $assetRepo;
     }
 
     /**
@@ -107,11 +113,47 @@ class FarmedTypeAPIController extends AppBaseController
      *      )
      * )
      */
-    public function store(CreateFarmedTypeAPIRequest $request)
+    public function store(/* CreateFarmedTypeAPI */Request $request)
     {
-        $input = $request->validated();
+        $validator = Validator::make($request->all(), [
+            'name_ar_localized' => 'required|max:200',
+            'name_en_localized' => 'required|max:200',
+            'farm_activity_type_id' => 'required',
+            'photo' => 'required|max:2000|mimes:jpeg,jpg,png',
+        ]);
+
+        if($validator->fails())
+        {
+            return $this->sendError(json_encode($validator->errors()), 5050);
+        }
         
-        $farmedType = $this->farmedTypeRepository->save_localized($input);
+        if($photo = $request->file('photo'))
+        {
+            $currentDate = Carbon::now()->toDateString();
+            $photoname = 'farmedType-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
+            $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
+            $photomime = $photo->getClientMimeType();
+                    
+            $path = $photo->storeAs('assets/images/farmedTypes', $photoname, 's3');
+            // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
+            
+            $url  = Storage::disk('s3')->url($path);
+            
+            $saved_photo = $this->assetRepository->create([
+                'asset_name'        => $photoname,
+                'asset_url'         => $url,
+                'asset_size'        => $photosize,
+                'asset_mime'        => $photomime,
+                'assetable_type'    => 'farmedType'
+            ]);
+
+            $to_save['photo_id'] = $saved_photo->id;
+        }
+        $to_save['name_ar_localized'] = $request->name_ar_localized;
+        $to_save['name_en_localized'] = $request->name_en_localized;
+        $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
+
+        $farmedType = $this->farmedTypeRepository->save_localized($to_save);
 
         return $this->sendResponse(new FarmedTypeResource($farmedType), 'Farmed Type saved successfully');
     }
@@ -212,9 +254,8 @@ class FarmedTypeAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, CreateFarmedTypeAPIRequest $request)
+    public function update($id, /* CreateFarmedTypeAPI */Request $request)
     {
-        $input = $request->validated();
 
         /** @var FarmedType $farmedType */
         $farmedType = $this->farmedTypeRepository->find($id);
@@ -223,9 +264,49 @@ class FarmedTypeAPIController extends AppBaseController
             return $this->sendError('Farmed Type not found');
         }
 
-        $farmedType = $this->farmedTypeRepository->save_localized($input, $id);
+        $validator = Validator::make($request->all(), [
+            'name_ar_localized' => 'required|max:200',
+            'name_en_localized' => 'required|max:200',
+            'farm_activity_type_id' => 'required',
+            'photo' => 'nullable|max:2000|mimes:jpeg,jpg,png',
+        ]);
 
-        return $this->sendResponse(new FarmedTypeResource($farmedType), 'FarmedType updated successfully');
+        if($validator->fails())
+        {
+            return $this->sendError(json_encode($validator->errors()), 5050);
+        }
+        
+        if($photo = $request->file('photo'))
+        {
+            $currentDate = Carbon::now()->toDateString();
+            $photoname = 'farmedType-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
+            $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
+            $photomime = $photo->getClientMimeType();
+                    
+            $path = $photo->storeAs('assets/images/farmedTypes', $photoname, 's3');
+            // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
+            
+            $url  = Storage::disk('s3')->url($path);
+            
+            $saved_photo = $this->assetRepository->create([
+                'asset_name'        => $photoname,
+                'asset_url'         => $url,
+                'asset_size'        => $photosize,
+                'asset_mime'        => $photomime,
+                'assetable_type'    => 'farmedType'
+            ]);
+
+            $to_save['photo_id'] = $saved_photo->id;
+        }
+        $to_save['name_ar_localized'] = $request->name_ar_localized;
+        $to_save['name_en_localized'] = $request->name_en_localized;
+        $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
+
+        $farmedType = $this->farmedTypeRepository->save_localized($to_save, $id);
+
+        return $this->sendResponse(new FarmedTypeResource($farmedType), 'Farmed Type updated successfully');
+
+        $farmedType = $this->farmedTypeRepository->save_localized($input, $id);
     }
 
     /**

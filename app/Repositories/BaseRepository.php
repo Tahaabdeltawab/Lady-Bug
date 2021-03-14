@@ -269,6 +269,17 @@ abstract class BaseRepository
         return empty($columns) ? $query->{$method}() : $query->{$method}($columns);
     }
 
+    public function where(array $criteria)
+    {
+        $query = $this->model::query();
+
+        foreach ($criteria as $key => $item) 
+        {
+            $query->where($key, $item);
+        }
+        return $query->get();
+    }
+
     public function updateBy(array $criteria, array $data)
     {
         $query = $this->model::query();
@@ -306,7 +317,7 @@ abstract class BaseRepository
             ->paginate();
     }
 
-    public function restoreUser(int $ID)
+    public function restore(int $ID)
     {
         $query = $this->model::query();
         

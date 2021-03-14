@@ -1,7 +1,7 @@
 <?php return array (
   'app' => 
   array (
-    'name' => 'Laravel',
+    'name' => 'Lady Bug',
     'env' => 'local',
     'debug' => true,
     'url' => 'http://3.141.204.5/coreui/public',
@@ -231,7 +231,7 @@
         'endpoint' => NULL,
       ),
     ),
-    'prefix' => 'laravel_cache',
+    'prefix' => 'lady_bug_cache',
   ),
   'cors' => 
   array (
@@ -330,7 +330,7 @@
       'options' => 
       array (
         'cluster' => 'redis',
-        'prefix' => 'laravel_database_',
+        'prefix' => 'lady_bug_database_',
       ),
       'default' => 
       array (
@@ -936,9 +936,9 @@
         'transport' => 'smtp',
         'host' => 'smtp.mailtrap.io',
         'port' => '2525',
-        'encryption' => NULL,
-        'username' => 'dc7a180d95968c',
-        'password' => '901ab2d96c402d',
+        'encryption' => 'tls',
+        'username' => 'b040bc8205740f',
+        'password' => 'ab1c81545f8779',
         'timeout' => NULL,
         'auth_mode' => NULL,
       ),
@@ -971,8 +971,8 @@
     ),
     'from' => 
     array (
-      'address' => 'tahaabdoelkholy@gmail.com',
-      'name' => 'Laravel',
+      'address' => 'info@ladybug.com',
+      'name' => 'Lady Bug',
     ),
     'markdown' => 
     array (
@@ -1115,7 +1115,7 @@
       0 => 2,
       1 => 100,
     ),
-    'cookie' => 'laravel_session',
+    'cookie' => 'lady_bug_session',
     'path' => '/',
     'domain' => NULL,
     'secure' => NULL,
@@ -1207,7 +1207,7 @@
       0 => 
       array (
         'id' => 'local',
-        'name' => 'Laravel',
+        'name' => 'Lady Bug',
         'key' => 'local',
         'secret' => 'local',
         'path' => NULL,

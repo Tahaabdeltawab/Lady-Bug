@@ -12,11 +12,11 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Repositories\JobRepository;
 use App\Repositories\AssetRepository;
 use App\Repositories\UserRepository;
-use App\Http\Resources\AssetResource;
 use App\Http\Resources\UserResource;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Http\Resources\AssetResource;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use JWTAuth;
@@ -69,7 +69,12 @@ class AuthController extends AppBaseController
                 {
                      return $this->sendError(__('trans.your_account_is_not_accepted'), 5010);
                 }
-                return $this->sendError(__('invalid credentials'), 5020);
+
+                if($user) //wrong password
+                $code = 5021;
+                else    //wrong username
+                $code = 5020;
+                return $this->sendError(__('invalid credentials'), $code);
             }
         } catch (\Throwable $th) {
             // return response()->json(['error' => 'could_not_create_token'], 500);
@@ -92,8 +97,8 @@ class AuthController extends AppBaseController
         {
             $validator = Validator::make($request->all(), [
                 'name' => ['required', 'string', 'max:255'],
-                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-                'mobile' => ['required', 'string', 'max:255', 'unique:users'],
+                "email" => ["required", "string", "email", "max:255", "unique:users,email,".null.",id"],
+                "mobile" => ["required", "string", "max:255", "unique:users,mobile,".null.",id"],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
                 'job_id' => ['required', 'exists:jobs,id'],
                 'photo' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png'],
@@ -123,9 +128,8 @@ class AuthController extends AppBaseController
                 //     return response()->json(['error' => trans('trans.default_role_does_not_exist')],404);
                 // }
 
-                $photo = $request->file('photo');
-
-                if(isset($photo)){
+                if($photo = $request->file('photo'))
+                {
                     $currentDate = Carbon::now()->toDateString();
                     $photoname = 'profile-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
                     $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes

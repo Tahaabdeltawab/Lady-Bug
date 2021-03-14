@@ -187,6 +187,7 @@ Route::group(['middleware'=>['auth:api']], function()
         // also I tried to apply the middleware on the controller itself but the same problem occurred.
         // the coming 3 permissions are not affected by the wauth middlewares as the existance ot id parameter is mandatory for the middleware to be applied (see the middlewares classes)
         Route::get('/', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('index');
+        Route::get('/relations', [App\Http\Controllers\API\FarmAPIController::class, 'relations_index'])->name('relations.index');
         Route::get('create', [App\Http\Controllers\API\FarmAPIController::class, 'create'])->name('create');
         Route::post('/', [App\Http\Controllers\API\FarmAPIController::class, 'store'])->name('store');
 
@@ -201,10 +202,15 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::post('update-roles/{id}', [App\Http\Controllers\API\FarmAPIController::class, 'update_roles'])->name('roles.update');
 
         Route::post('permByWtype/', [App\Http\Controllers\API\WorkableRoleAPIController::class, 'permissions_by_workable_type'])->name('permByWtype');
+        
+        Route::post('roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('roles.store');
+        Route::get('roles/index', [App\Http\Controllers\API\FarmAPIController::class, 'roles_index'])->name('roles.index');
+        
     });
     
     Route::post('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'store_favorites'])->name('users.favorites.store');
     Route::get('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'my_favorites'])->name('users.favorites.index');
+    Route::post('users/weather', [App\Http\Controllers\API\UserAPIController::class, 'get_weather'])->name('users.weather.index');
     Route::resource('users', App\Http\Controllers\API\UserAPIController::class)->except(['store', 'destroy']);
     //with put and patch, laravel cannot read the request 
     Route::match(['put', 'patch','post'], 'users/{id}', [App\Http\Controllers\API\UserAPIController::class, 'update'])->name('users.update');
@@ -258,6 +264,7 @@ Route::group(['middleware'=>['auth:api']], function()
     Route::resource('farming_ways', App\Http\Controllers\API\FarmingWayAPIController::class);
 
     Route::resource('farmed_types', App\Http\Controllers\API\FarmedTypeAPIController::class);
+    Route::match(['put', 'patch','post'], 'farmed_types/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'update'])->name('farmed_types.update');
 
     Route::resource('products', App\Http\Controllers\API\ProductAPIController::class);
 
@@ -280,7 +287,17 @@ Route::group(['middleware'=>['auth:api']], function()
     Route::resource('districts', App\Http\Controllers\API\DistrictAPIController::class);
 
     Route::resource('task_types', App\Http\Controllers\API\TaskTypeAPIController::class);
+
+    Route::resource('salt_types', App\Http\Controllers\API\SaltTypeAPIController::class);
+
+    Route::resource('locations', App\Http\Controllers\API\LocationAPIController::class);
+
+    Route::resource('acidity_types', App\Http\Controllers\API\AcidityTypeAPIController::class);
 });
 
 // ROUTES DON'T NEED LOGIN
 Route::get('jobs', [App\Http\Controllers\API\JobAPIController::class, 'index'])->name('jobs.index');
+
+
+
+

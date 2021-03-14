@@ -26,8 +26,8 @@ class CreateAnimalBreedingPurposeAPIRequest extends APIRequest
     {
         $id = $this->animal_breeding_purpose ?? null;
         return [
-            'name_ar_localized' => 'required|max:200|unique:animal_breeding_purpose_translations,name,'.$id.',animal_breeding_purpose_id,locale,ar',
-            'name_en_localized' => 'required|max:200|unique:animal_breeding_purpose_translations,name,'.$id.',animal_breeding_purpose_id,locale,en',
+            'name_ar_localized' => 'required|max:200|unique:animal_breeding_purpose_translations,name,'.$id.',animal_breeding_purpose_id,locale,ar,deleted_at,'.null,
+            'name_en_localized' => 'required|max:200|unique:animal_breeding_purpose_translations,name,'.$id.',animal_breeding_purpose_id,locale,en,deleted_at,'.null,
         ];
     }
 }

@@ -19,6 +19,7 @@ class FarmedTypeResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'farm_activity_type_name' => $this->farm_activity_type->name,
+            'photo_url' => $this->photo->asset_url,
             'selected' => $selected
             // 'created_at' => $this->created_at,
             // 'updated_at' => $this->updated_at,

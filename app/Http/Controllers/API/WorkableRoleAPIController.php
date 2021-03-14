@@ -8,6 +8,7 @@ use App\Repositories\WorkableRoleRepository;
 use App\Repositories\WorkablePermissionRepository;
 use App\Repositories\WorkableTypeRepository;
 use App\Http\Controllers\AppBaseController;
+use App\Http\Resources\WorkableRoleResource;
 use Illuminate\Http\Request;
 use Flash;
 use Response;

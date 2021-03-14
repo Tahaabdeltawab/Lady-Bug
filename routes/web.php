@@ -345,3 +345,9 @@ Route::resource('cities', App\Http\Controllers\CityController::class);
 Route::resource('districts', App\Http\Controllers\DistrictController::class);
 
 Route::resource('taskTypes', App\Http\Controllers\TaskTypeController::class);
+
+Route::resource('saltTypes', App\Http\Controllers\SaltTypeController::class);
+
+Route::resource('locations', App\Http\Controllers\LocationController::class);
+
+Route::resource('acidityTypes', App\Http\Controllers\AcidityTypeController::class);

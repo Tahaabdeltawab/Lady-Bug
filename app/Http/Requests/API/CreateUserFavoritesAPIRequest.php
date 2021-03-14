@@ -25,7 +25,8 @@ class CreateUserFavoritesAPIRequest extends APIRequest
     public function rules()
     {
         return [
-            'favorites' => ['required','array'],
+            'favorites' => ['array'],
+            'favorites.*' => ['exists:farmed_types,id'],
         ];
     }
 }

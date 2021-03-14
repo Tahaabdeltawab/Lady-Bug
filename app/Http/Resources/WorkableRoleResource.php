@@ -19,7 +19,7 @@ class WorkableRoleResource extends JsonResource
             // 'created_at' => $this->created_at,
             // 'updated_at' => $this->updated_at,
             'name' => $this->name,
-            'workable_type' => $this->workable_type
+            'workable_type_name' => $this->workable_type->name
         ];
     }
 }

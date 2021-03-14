@@ -67,7 +67,7 @@ class WorkableType extends Model
      * @var array
      */
     public static $rules = [
-        
+        'name' => 'required|max:200',
     ];
 
     

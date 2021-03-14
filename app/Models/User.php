@@ -18,8 +18,7 @@ use Laratrust\Traits\LaratrustUserTrait;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use LaratrustUserTrait;
-    use /* HasRoles, Favoriter,*/HasFactory, Notifiable, Followable, Liker, Subscriber, SoftDeletes;
+    use /* HasRoles, Favoriter,*/LaratrustUserTrait, HasFactory, Notifiable, Followable, Liker, Subscriber, SoftDeletes;
 
     
     protected $dates = ['deleted_at'];
@@ -67,7 +66,7 @@ class User extends Authenticatable implements JWTSubject
     
     public function favorites()
     {
-        return $this->morphedByMany(FarmedType::class, 'favoriteable', 'favorites', 'user_id', 'favoriteable_id');
+        return $this->morphedByMany(FarmedType::class, 'favoriteable', 'favorites', 'user_id', 'favoriteable_id')->withTimestamps();
     }
 
     public function photo()
