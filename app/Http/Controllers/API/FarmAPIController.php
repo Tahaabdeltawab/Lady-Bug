@@ -14,6 +14,7 @@ use App\Repositories\SaltDetailRepository;
 use App\Repositories\ChemicalDetailRepository;
 use App\Repositories\WorkableRepository;
 use App\Repositories\LocationRepository;
+use App\Repositories\PostRepository;
 
 use App\Repositories\SaltTypeRepository;
 use App\Repositories\FarmActivityTypeRepository;
@@ -68,6 +69,7 @@ class FarmAPIController extends AppBaseController
     private $workableRepository;
     private $saltDetailRepository;
     private $chemicalDetailRepository;
+    private $postRepository;
 
     private $saltTypeRepository;
     private $farmActivityTypeRepository;
@@ -94,6 +96,8 @@ class FarmAPIController extends AppBaseController
         WorkableRepository $workableRepo,
         SaltDetailRepository $saltDetailRepo, 
         ChemicalDetailRepository $chemicalDetailRepo,
+        PostRepository $postRepo,
+
         SaltTypeRepository $saltTypeRepo,
         FarmActivityTypeRepository $farmActivityTypeRepo,
         FarmedTypeClassRepository $farmedTypeClassRepo,
@@ -118,6 +122,7 @@ class FarmAPIController extends AppBaseController
         $this->workableRepository = $workableRepo;
         $this->saltDetailRepository = $saltDetailRepo;
         $this->chemicalDetailRepository = $chemicalDetailRepo;
+        $this->postRepository = $postRepo;
         
         $this->saltTypeRepository = $saltTypeRepo;
         $this->farmActivityTypeRepository = $farmActivityTypeRepo;
@@ -454,6 +459,7 @@ class FarmAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500); 
         }
     }
+
 
     public function get_farm_users($id)
     {        

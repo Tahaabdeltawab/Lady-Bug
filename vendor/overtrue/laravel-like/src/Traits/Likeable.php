@@ -24,6 +24,19 @@ trait Likeable
         return false;
     }
 
+    public function isDislikedBy(Model $user): bool
+    {
+        if (\is_a($user, config('auth.providers.users.model'))) {
+            if ($this->relationLoaded('dislikers')) {
+                return $this->dislikers->contains($user);
+            }
+
+            return $this->dislikers()->where(\config('like.user_foreign_key'), $user->getKey())->exists();
+        }
+
+        return false;
+    }
+
     /**
      * Return followers.
      *
@@ -37,6 +50,19 @@ trait Likeable
             'likeable_id',
             config('like.user_foreign_key')
         )
-            ->where('likeable_type', $this->getMorphClass());
+            ->where('likeable_type', $this->getMorphClass())
+            ->where('is_like', 1);
+    }
+
+    public function dislikers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            config('auth.providers.users.model'),
+            config('like.likes_table'),
+            'likeable_id',
+            config('like.user_foreign_key')
+        )
+            ->where('likeable_type', $this->getMorphClass())
+            ->where('is_like', 0);
     }
 }

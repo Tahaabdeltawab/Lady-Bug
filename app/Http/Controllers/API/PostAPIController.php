@@ -206,6 +206,90 @@ class PostAPIController extends AppBaseController
         }
     }
 
+
+
+    //  //  //  //  //  L I K E S  &&  D I S L I K E S  //  //  //  //  //
+
+    public function toggle_like($id)
+    {        
+        try
+        {
+            $post = $this->postRepository->find($id);
+
+            if (empty($post))
+            {
+                return $this->sendError('post not found');
+            }
+
+            $msg = auth()->user()->toggleLike($post);
+            return $this->sendSuccess('Post '.$msg);
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+
+ 
+
+    public function toggle_dislike($id)
+    {        
+        try
+        {
+            $post = $this->postRepository->find($id);
+
+            if (empty($post))
+            {
+                return $this->sendError('post not found');
+            }
+
+            $msg = auth()->user()->toggleDislike($post);
+            return $this->sendSuccess('Post '.$msg);
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+
+    public function likes()
+    {        
+        try
+        {
+            $likeables = [];
+            if($likes = auth()->user()->likes()->withType(Post::class)->with('likeable')->get())
+            {
+                foreach ($likes as $like)
+                {
+                    $likeables[] = $like->likeable;
+                }
+            }
+            return $this->sendResponse(['all' => PostResource::collection($likeables)], 'User liked posts retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+    public function dislikes()
+    {        
+        try
+        {
+            $dislikeables = [];
+            if($dislikes = auth()->user()->dislikes()->withType(Post::class)->with('likeable')->get())
+            {
+                foreach ($dislikes as $dislike){
+                    $dislikeables[] = $dislike->likeable;
+                }
+            }
+            return $this->sendResponse(['all' => PostResource::collection($dislikeables)], 'User disliked posts retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+
     /**
      * @param int $id
      * @return Response

@@ -273,6 +273,11 @@ Route::group(['middleware'=>['auth:api']], function()
     
     Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
     Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
+    
+    Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
+    Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
+    Route::get('posts/likes/index', [App\Http\Controllers\API\PostAPIController::class, 'likes']);
+    Route::get('posts/dislikes/index', [App\Http\Controllers\API\PostAPIController::class, 'dislikes']);
 
     Route::resource('comments', App\Http\Controllers\API\CommentAPIController::class);
 
