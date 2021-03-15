@@ -4,20 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateJobRequest;
 use App\Http\Requests\UpdateJobRequest;
-use App\Repositories\JobRepository;
+use App\Repositories\HumanJobRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
 
-class JobController extends AppBaseController
+class HumanJobController extends AppBaseController
 {
-    /** @var  JobRepository */
-    private $jobRepository;
+    /** @var  HumanJobRepository */
+    private $humanJobRepository;
 
-    public function __construct(JobRepository $jobRepo)
+    public function __construct(HumanJobRepository $humanJobRepo)
     {
-        $this->jobRepository = $jobRepo;
+        $this->humanJobRepository = $humanJobRepo;
     }
 
     /**
@@ -29,7 +29,7 @@ class JobController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $jobs = $this->jobRepository->all();
+        $jobs = $this->humanJobRepository->all();
 
         return view('jobs.index')
             ->with('jobs', $jobs);
@@ -56,7 +56,7 @@ class JobController extends AppBaseController
     {
         $input = $request->all();
 
-        $job = $this->jobRepository->create($input);
+        $job = $this->humanJobRepository->create($input);
 
         Flash::success('Job saved successfully.');
 
@@ -72,7 +72,7 @@ class JobController extends AppBaseController
      */
     public function show($id)
     {
-        $job = $this->jobRepository->find($id);
+        $job = $this->humanJobRepository->find($id);
 
         if (empty($job)) {
             Flash::error('Job not found');
@@ -92,7 +92,7 @@ class JobController extends AppBaseController
      */
     public function edit($id)
     {
-        $job = $this->jobRepository->find($id);
+        $job = $this->humanJobRepository->find($id);
 
         if (empty($job)) {
             Flash::error('Job not found');
@@ -113,7 +113,7 @@ class JobController extends AppBaseController
      */
     public function update($id, UpdateJobRequest $request)
     {
-        $job = $this->jobRepository->find($id);
+        $job = $this->humanJobRepository->find($id);
 
         if (empty($job)) {
             Flash::error('Job not found');
@@ -121,7 +121,7 @@ class JobController extends AppBaseController
             return redirect(route('jobs.index'));
         }
 
-        $job = $this->jobRepository->update($request->all(), $id);
+        $job = $this->humanJobRepository->update($request->all(), $id);
 
         Flash::success('Job updated successfully.');
 
@@ -139,7 +139,7 @@ class JobController extends AppBaseController
      */
     public function destroy($id)
     {
-        $job = $this->jobRepository->find($id);
+        $job = $this->humanJobRepository->find($id);
 
         if (empty($job)) {
             Flash::error('Job not found');
@@ -147,7 +147,7 @@ class JobController extends AppBaseController
             return redirect(route('jobs.index'));
         }
 
-        $this->jobRepository->delete($id);
+        $this->humanJobRepository->delete($id);
 
         Flash::success('Job deleted successfully.');
 

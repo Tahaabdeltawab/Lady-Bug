@@ -205,6 +205,9 @@ Route::group(['middleware'=>['auth:api']], function()
         
         Route::post('roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('roles.store');
         Route::get('roles/index', [App\Http\Controllers\API\FarmAPIController::class, 'roles_index'])->name('roles.index');
+        Route::get('roles/store/{user_id}/{role_id}/{farm_id}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('roles.first_attach');
+        Route::get('users/index/{farm_id}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_users'])->name('users.index');
+        Route::get('posts/index/{farm_id}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_posts'])->name('posts.index');
         
     });
     
@@ -243,7 +246,7 @@ Route::group(['middleware'=>['auth:api']], function()
 
     Route::resource('animal_medicine_sources', App\Http\Controllers\API\AnimalMedicineSourceAPIController::class);
 
-    Route::resource('jobs', App\Http\Controllers\API\JobAPIController::class)->except(['index']);
+    Route::resource('human_jobs', App\Http\Controllers\API\HumanJobAPIController::class)->except(['index']);
 
     Route::resource('post_types', App\Http\Controllers\API\PostTypeAPIController::class);
 
@@ -265,10 +268,11 @@ Route::group(['middleware'=>['auth:api']], function()
 
     Route::resource('farmed_types', App\Http\Controllers\API\FarmedTypeAPIController::class);
     Route::match(['put', 'patch','post'], 'farmed_types/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'update'])->name('farmed_types.update');
-
+    
     Route::resource('products', App\Http\Controllers\API\ProductAPIController::class);
-
-    Route::resource('posts', App\Http\Controllers\API\PostAPIController::class);
+    
+    Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
+    Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
 
     Route::resource('comments', App\Http\Controllers\API\CommentAPIController::class);
 
@@ -296,8 +300,4 @@ Route::group(['middleware'=>['auth:api']], function()
 });
 
 // ROUTES DON'T NEED LOGIN
-Route::get('jobs', [App\Http\Controllers\API\JobAPIController::class, 'index'])->name('jobs.index');
-
-
-
-
+Route::get('human_jobs', [App\Http\Controllers\API\HumanJobAPIController::class, 'index'])->name('human_jobs.index');

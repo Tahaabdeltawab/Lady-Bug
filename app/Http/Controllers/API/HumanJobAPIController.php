@@ -4,11 +4,11 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\API\CreateJobAPIRequest;
 use App\Http\Requests\API\UpdateJobAPIRequest;
-use App\Models\Job;
-use App\Repositories\JobRepository;
+use App\Models\HumanJob;
+use App\Repositories\HumanJobRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
-use App\Http\Resources\JobResource;
+use App\Http\Resources\HumanJobResource;
 use Response;
 
 /**
@@ -16,14 +16,14 @@ use Response;
  * @package App\Http\Controllers\API
  */
 
-class JobAPIController extends AppBaseController
+class HumanJobAPIController extends AppBaseController
 {
-    /** @var  JobRepository */
-    private $jobRepository;
+    /** @var  HumanJobRepository */
+    private $humanJobRepository;
 
-    public function __construct(JobRepository $jobRepo)
+    public function __construct(HumanJobRepository $humanJobRepo)
     {
-        $this->jobRepository = $jobRepo;
+        $this->humanJobRepository = $humanJobRepo;
     }
 
     /**
@@ -60,13 +60,13 @@ class JobAPIController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $jobs = $this->jobRepository->all(
+        $jobs = $this->humanJobRepository->all(
             $request->except(['skip', 'limit']),
             $request->get('skip'),
             $request->get('limit')
         );
 
-        return $this->sendResponse(['all' => JobResource::collection($jobs)], 'Jobs retrieved successfully');
+        return $this->sendResponse(['all' =>HumanJobResource::collection($jobs)], 'Jobs retrieved successfully');
     }
 
     /**
@@ -111,9 +111,9 @@ class JobAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $job = $this->jobRepository->save_localized($input);
+        $job = $this->humanJobRepository->save_localized($input);
 
-        return $this->sendResponse(new JobResource($job), 'Job saved successfully');
+        return $this->sendResponse(new HumanJobResource($job), 'Job saved successfully');
     }
 
     /**
@@ -157,13 +157,13 @@ class JobAPIController extends AppBaseController
     public function show($id)
     {
         /** @var Job $job */
-        $job = $this->jobRepository->find($id);
+        $job = $this->humanJobRepository->find($id);
 
         if (empty($job)) {
             return $this->sendError('Job not found');
         }
 
-        return $this->sendResponse(new JobResource($job), 'Job retrieved successfully');
+        return $this->sendResponse(new HumanJobResource($job), 'Job retrieved successfully');
     }
 
     /**
@@ -217,15 +217,15 @@ class JobAPIController extends AppBaseController
         $input = $request->validated();
 
         /** @var Job $job */
-        $job = $this->jobRepository->find($id);
+        $job = $this->humanJobRepository->find($id);
 
         if (empty($job)) {
             return $this->sendError('Job not found');
         }
 
-        $job = $this->jobRepository->save_localized($input, $id);
+        $job = $this->humanJobRepository->save_localized($input, $id);
 
-        return $this->sendResponse(new JobResource($job), 'Job updated successfully');
+        return $this->sendResponse(new HumanJobResource($job), 'Job updated successfully');
     }
 
     /**
@@ -269,7 +269,7 @@ class JobAPIController extends AppBaseController
     public function destroy($id)
     {
         /** @var Job $job */
-        $job = $this->jobRepository->find($id);
+        $job = $this->humanJobRepository->find($id);
 
         if (empty($job)) {
             return $this->sendError('Job not found');

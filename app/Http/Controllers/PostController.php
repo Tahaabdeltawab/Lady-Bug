@@ -9,15 +9,22 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
+use App\Repositories\AssetRepository;
+use App\Http\Resources\AssetResource;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class PostController extends AppBaseController
 {
     /** @var  PostRepository */
     private $postRepository;
+    private $assetRepository;
 
-    public function __construct(PostRepository $postRepo)
+    public function __construct(PostRepository $postRepo, AssetRepository $assetRepo)
     {
         $this->postRepository = $postRepo;
+        $this->assetRepository = $assetRepo;
     }
 
     /**
@@ -52,15 +59,65 @@ class PostController extends AppBaseController
      *
      * @return Response
      */
-    public function store(CreatePostRequest $request)
+    public function store(/* CreatePostAPI */Request $request)
     {
-        $input = $request->all();
+        try
+        {
+            $validator = Validator::make($request->all(), [
+                'title' => ['nullable', 'max:200'],
+                'content' => ['required'],
+                'author_id' => ['nullable'],
+                'farm_id' => ['nullable', 'exists:farms,id'],
+                'farmed_type_id' => ['nullable'],
+                'post_type_id' => ['required', 'exists:post_types,id'],
+                'solved' => ['nullable'],
+                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,mp4,mov,ogg,qt']
+            ]);
 
-        $post = $this->postRepository->create($input);
+            if($validator->fails()){
+                $errors = $validator->errors();
+                
+                return $this->sendError(json_encode($errors), 777);
+            }
 
-        Flash::success('Post saved successfully.');
+            $post = $this->postRepository->save_localized($request->all());
+            
+            if($assets = $request->file('assets'))
+            {
+                foreach($assets as $asset)
+                {
+                    //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
+                    // dispatch(new \App\Jobs\Upload($asset, $post));
+                    $currentDate = Carbon::now()->toDateString();
+                    $assetname = 'post-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
+                    $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
+                    $assetmime = $asset->getClientMimeType();
+                            
+                    $path = $asset->storeAs('assets/posts', $assetname, 's3');
+                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+                    
+                    $url  = Storage::disk('s3')->url($path);
+                    
+                    $saved_asset = $this->assetRepository->create([
+                        'asset_name'        => $assetname,
+                        'asset_url'         => $url,
+                        'asset_size'        => $assetsize,
+                        'asset_mime'        => $assetmime,
+                        'assetable_type'    => 'post'
+                    ]);
 
-        return redirect(route('posts.index'));
+                    $post->assets()->attach($saved_asset->id);
+                }
+            }
+
+            Flash::success('Post saved successfully.');
+
+            return redirect(route('posts.index'));
+        }
+        catch(\Throwable $th)
+        {
+            Flash::error($th->getMessage());
+        }
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Models\Job;
+use App\Models\HumanJob;
 use App\Repositories\BaseRepository;
 
 /**
@@ -11,7 +11,7 @@ use App\Repositories\BaseRepository;
  * @version March 3, 2021, 11:49 pm EET
 */
 
-class JobRepository extends BaseRepository
+class HumanJobRepository extends BaseRepository
 {
     /**
      * @var array
@@ -35,6 +35,6 @@ class JobRepository extends BaseRepository
      **/
     public function model()
     {
-        return Job::class;
+        return HumanJob::class;
     }
 }

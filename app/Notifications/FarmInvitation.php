@@ -16,10 +16,11 @@ class FarmInvitation extends Notification
      *
      * @return void
      */
-    public function __construct($inviter, $role, $url)
+    public function __construct($inviter, $role, $farm, $url)
     {
         $this->inviter  = $inviter;
         $this->role     = $role;
+        $this->farm     = $farm;
         $this->url      = $url;
     }
 
@@ -43,13 +44,14 @@ class FarmInvitation extends Notification
     public function toMail($notifiable)
     {
         $url = $this->url;
-        $inviter = $this->user->name;
+        $inviter = $this->inviter->name;
         $role = $this->role->name;
+        $farm = $this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
     
         return (new MailMessage)
                     ->greeting('Hello!')
                     ->subject('Farm Invitation')
-                    ->line("$inviter has invited you to join his farm as a/an $role")
+                    ->line("$inviter has invited you to join his $farm farm as a/an $role")
                     ->action('Join Farm', $url);
                     // ->line('Thanks!');
     }
@@ -57,13 +59,15 @@ class FarmInvitation extends Notification
 
     public function toDatabase($notifiable)
     {
-        $url = $this->url;
-        $inviter = $this->user->name;
-        $role = $this->role->name;
+        $url        = $this->url;
+        $inviter    = $this->inviter->id;
+        $role       = $this->role->id;
+        $farm       = $this->farm->id;
 
         return [
             'inviter'   => $inviter,
             'role'      => $role,
+            'farm'      => $farm,
             'url'       => $url,
         ];
     }

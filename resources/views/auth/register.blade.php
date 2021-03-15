@@ -73,15 +73,15 @@
                                 <i class="icon-phone"></i>
                                 </span>
                             </div>
-                            <select name="job_id" id="jobs" class="form-control {{ $errors->has('job_id')?'is-invalid':'' }}">
+                            <select name="human_job_id" id="jobs" class="form-control {{ $errors->has('human_job_id')?'is-invalid':'' }}">
                                     <option value="">{{__('Your Job')}}</option>
                                 @foreach($jobs as $job)
                                     <option value="{{$job->id}}">{{$job->name}}</option>
                                 @endforeach
                             </select>
-                            @if ($errors->has('job_id'))
+                            @if ($errors->has('human_job_id'))
                                 <span class="invalid-feedback">
-                                    <strong>{{ $errors->first('job_id') }}</strong>
+                                    <strong>{{ $errors->first('human_job_id') }}</strong>
                                 </span>
                             @endif
                         </div>

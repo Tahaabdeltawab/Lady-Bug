@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\API;
 
-use App\Models\Job;
+use App\Models\HumanJob;
 use InfyOm\Generator\Request\APIRequest;
 
 class UpdateJobAPIRequest extends APIRequest
@@ -24,7 +24,7 @@ class UpdateJobAPIRequest extends APIRequest
      */
     public function rules()
     {
-        $rules = Job::$rules;
+        $rules = HumanJob::$rules;
         
         return $rules;
     }

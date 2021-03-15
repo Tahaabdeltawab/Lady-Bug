@@ -31,7 +31,7 @@ class User extends Authenticatable implements JWTSubject
         'activity_points',
         'email_verified',
         'mobile_verified',
-        'job_id',
+        'human_job_id',
         'photo_id',
         'password',
     ];
@@ -76,7 +76,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function job()
     {
-        return $this->belongsTo(Job::class);
+        return $this->belongsTo(HumanJob::class, 'human_job_id');
     }
 
 

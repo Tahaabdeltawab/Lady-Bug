@@ -18,7 +18,7 @@
                                 <strong>Create Post</strong>
                             </div>
                             <div class="card-body">
-                                {!! Form::open(['route' => 'posts.store']) !!}
+                                {!! Form::open(['route' => 'posts.store', 'files' => true]) !!}
 
                                    @include('posts.fields')
 

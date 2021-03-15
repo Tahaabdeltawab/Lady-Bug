@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 
 use App\Models\Role;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\API\CreateFarmAPIRequest;
 use App\Http\Requests\API\UpdateFarmAPIRequest;
@@ -49,6 +50,8 @@ use App\Http\Resources\AnimalMedicineSourceResource;
 use App\Http\Resources\SoilTypeResource;
 
 use App\Http\Resources\RoleResource;
+use App\Http\Resources\UserResource;
+use App\Http\Resources\PostResource;
 
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmResource;
@@ -347,8 +350,7 @@ class FarmAPIController extends AppBaseController
                                              ->first()->workable_roles()->sync($workable_roles[$farm_worker->id]);
             } */
           
-            // $admin = Role::where('name','admin')->first();
-            auth()->user()->attachRole('admin', $farm);
+            auth()->user()->attachRole('farm-admin', $farm);
 
             return $this->sendResponse(new FarmResource($farm), 'Farm saved successfully');
 
@@ -360,42 +362,144 @@ class FarmAPIController extends AppBaseController
 
     public function roles_index()
     {
-        $roles = Role::where('name','!=', 'admin')->get();
-        return $this->sendResponse(RoleResource::collection($roles), 'Roles retrieved successfully');
+        try
+        {
+            $roles = Role::whereNotIn('name', ['app-user','app-admin'])->get();
+            return $this->sendResponse(['all' => RoleResource::collection($roles)], 'Roles retrieved successfully');
+        }catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500); 
+        }
     }
 
 
-    public function update_farm_role(Request $request)//attach, edit or delete farm roles
-    {//give him available roles
-        $validator = Validator::make($request->all(), [
-            'farm_id' => 'integer|required|exists:farms,id',
-            'user_id' => 'integer|required|exists:users,id',
-            'role_id' => 'nullable|integer|exists:roles,id',
-        ]);
-
-        if ($validator->fails()) {
-            return $this->sendError(json_encode($validator->errors()));
-        }
-
-        $user = $this->userRepository->find($request->user_id);
-        
-        if($request->role_id)   //attach or edit roles
+    // attach a farm role to a user who has an invitation link
+    public function first_attach_farm_role(Request $request)
+    {
+        try
         {
-            //send invitation to assignee user
-            $role = Role::find($request->role_id);
-            $user->notify(new \App\Notifications\FarmInvitation(auth()->user(), $role, url('/')));
-            $user->syncRoles([$request->role_id], $request->farm_id);
+            if (! $request->hasValidSignature() || !$request->user_id || !$request->role_id || !$request->farm_id) {
+                return $this->sendError('Wrong url', 401);
+            }
+
+            $user = $this->userRepository->find($request->user_id);
+            $farm = $this->farmRepository->find($request->farm_id);
+            
+            $user->attachRole($request->role_id, $farm);
+
+            return $this->sendSuccess(__('Member added to farm successfully'));
         }
-        else                    //delete roles
+        catch(\Throwable $th)
         {
-            if($user->getRoles($request->farm_id)){
-                $user->detachRoles([], $request->farm_id);
-            }else{
-                return $this->sendError(__('This user is not a member in this farm'), 7000); 
-            }            
+            return $this->sendError($th->getMessage(), 500); 
         }
-        
-        return $this->sendSuccess(__('Farm roles saved successfully'));
+    }
+
+    
+    //attach, edit or delete farm roles (send empty or no role_id when deleting a role)
+    public function update_farm_role(Request $request)
+    {
+        try
+        {
+            $validator = Validator::make($request->all(), [
+                'farm_id' => 'integer|required|exists:farms,id',
+                'user_id' => 'integer|required|exists:users,id',
+                'role_id' => 'nullable|integer|exists:roles,id',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->sendError(json_encode($validator->errors()));
+            }
+
+            $user = $this->userRepository->find($request->user_id);
+            $farm = $this->farmRepository->find($request->farm_id);
+            
+            if($request->role_id)   //first attach or edit roles
+            {
+                if($user->getRoles($farm)) //edit roles
+                {
+                    $user->syncRoles([$request->role_id], $farm);
+                }
+                else            // first attach role
+                {
+                    //send invitation to assignee user
+                    $role = Role::find($request->role_id);
+                    $user->notify(new \App\Notifications\FarmInvitation(
+                        auth()->user(),
+                        $role,
+                        $farm,
+                        URL::temporarySignedRoute('api.farms.roles.first_attach', now()->addDays(10), 
+                            [
+                                'user_id' => $request->user_id,
+                                'farm_id' => $request->farm_id,
+                                'role_id' => $request->role_id,
+                            ])
+                        )); 
+                    return $this->sendSuccess(__('Invitation sent successfully'));
+                }
+                
+            }
+            else                    //delete roles
+            {
+                if($user->getRoles($farm)){
+                    $user->detachRoles([], $farm);
+                }else{
+                    return $this->sendError(__('This user is not a member in this farm'), 7000); 
+                }            
+            }
+            
+            return $this->sendSuccess(__('Farm roles saved successfully'));
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+
+    public function get_farm_users($id)
+    {        
+        try
+        {
+            /** @var Farm $farm */
+            $farm = $this->farmRepository->find($id);
+
+            if (empty($farm))
+            {
+                return $this->sendError('Farm not found');
+            }
+
+            $users = $farm->users;
+            $userResource = new UserResource($users);
+            // $user_farm_role = $user->getRoles($farm);
+            // return $this->sendResponse($users, 'Farm users retrieved successfully');
+            return $this->sendResponse(['all' => $userResource->collection($users)], 'Farm users retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+
+
+    public function get_farm_posts($id)
+    {        
+        try
+        {
+            /** @var Farm $farm */
+            $farm = $this->farmRepository->find($id);
+
+            if (empty($farm))
+            {
+                return $this->sendError('Farm not found');
+            }
+
+            $posts = $farm->posts;
+            $postResource = new PostResource($posts);
+            return $this->sendResponse(['all' => $postResource->collection($posts)], 'Farm posts retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
     }
 
 

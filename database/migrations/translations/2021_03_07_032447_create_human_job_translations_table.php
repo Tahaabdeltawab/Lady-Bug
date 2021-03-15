@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJobTranslationsTable extends Migration
+class CreateHumanJobTranslationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateJobTranslationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('job_translations', function (Blueprint $table) {
+        Schema::create('human_job_translations', function (Blueprint $table) {
             $table->id();
             $table->string('locale')->index();
-            $table->unsignedBigInteger('job_id');
-            $table->unique(['job_id', 'locale'],'jobtrans_jobid_unique');
+            $table->unsignedBigInteger('human_job_id');
+            $table->unique(['human_job_id', 'locale'],'jobtrans_jobid_unique');
             $table->string('name');
-            $table->foreign('job_id', 'jobtrans_jobid_foreign')->references('id')->on('jobs')->onDelete('CASCADE');
+            $table->foreign('human_job_id', 'jobtrans_jobid_foreign')->references('id')->on('human_jobs')->onDelete('CASCADE');
         });
 
     }
@@ -31,6 +31,6 @@ class CreateJobTranslationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('job_translations');
+        Schema::dropIfExists('human_job_translations');
     }
 }

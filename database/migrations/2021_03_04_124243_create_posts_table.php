@@ -16,19 +16,15 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->text('content');
             $table->foreignId('author_id')->constrained('users');
-            $table->foreignId('farm_id')->constrained();
-            $table->foreignId('farmed_type_id')->constrained();
+            $table->foreignId('farm_id')->nullable()->constrained();
+            $table->foreignId('farmed_type_id')->nullable()->constrained();
             $table->foreignId('post_type_id')->constrained();
-            $table->boolean('solved');
+            $table->boolean('solved')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            // $table->foreign('author_id')->references('id')->on('users')->onDelete('CASCADE');
-            // $table->foreign('farm_id')->references('id')->on('farms')->onDelete('CASCADE');
-            // $table->foreign('farmed_type_id')->references('id')->on('farmed_types')->onDelete('CASCADE');
-            // $table->foreign('post_type_id')->references('id')->on('post_types')->onDelete('CASCADE');
         });
     }
 

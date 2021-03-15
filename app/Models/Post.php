@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Overtrue\LaravelLike\Traits\Likeable;
 
 /**
  * @SWG\Definition(
@@ -71,7 +71,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Post extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Likeable;
 
 
     public $table = 'posts';
@@ -113,14 +113,46 @@ class Post extends Model
      * @var array
      */
     public static $rules = [
-        'title' => 'required|max:200',
+        'title' => 'nullable|max:200',
         'content' => 'required',
-        'author_id' => 'required',
-        'farm_id' => 'required',
-        'farmed_type_id' => 'required',
+        'author_id' => 'nullable',
+        'farm_id' => 'nullable',
+        'farmed_type_id' => 'nullable',
         'post_type_id' => 'required',
-        'solved' => 'required'
+        'solved' => 'nullable',
+        'asset' => 'nullable'
     ];
+
+
+    public function author()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function farm()
+    {
+        return $this->belongsTo(Farm::class);
+    }
+
+    public function farmed_type()
+    {
+        return $this->belongsTo(FarmedType::class);
+    }
+
+    public function post_type()
+    {
+        return $this->belongsTo(PostType::class);
+    }
+
+    public function assets()
+    {
+        return $this->belongsToMany(Asset::class, 'asset_post');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 
     
 }

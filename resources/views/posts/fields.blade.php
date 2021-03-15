@@ -40,6 +40,12 @@
     {!! Form::text('solved', null, ['class' => 'form-control']) !!}
 </div>
 
+<!-- Assets  -->
+<div class="form-group col-sm-6">
+    {!! Form::label('asset', 'Asset Url:') !!}
+    <input type="file" name="assets[]" multiple>
+</div>
+
 <!-- Submit Field -->
 <div class="form-group col-sm-12">
     {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}

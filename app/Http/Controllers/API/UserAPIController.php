@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\FarmedTypeRepository;
-use App\Repositories\JobRepository;
+use App\Repositories\HumanJobRepository;
 use App\Repositories\AssetRepository;
 
 /**
@@ -30,14 +30,14 @@ class UserAPIController extends AppBaseController
 {
     /** @var  UserRepository */
     private $userRepository;
-    private $jobRepository;
+    private $humanJobRepository;
     private $assetRepository;
     private $farmedTypeRepository;
 
-    public function __construct(JobRepository $jobRepo, AssetRepository $assetRepo, UserRepository $userRepo, FarmedTypeRepository $farmedTypeRepo)
+    public function __construct(HumanJobRepository $humanJobRepo, AssetRepository $assetRepo, UserRepository $userRepo, FarmedTypeRepository $farmedTypeRepo)
     {
         $this->userRepository = $userRepo;
-        $this->jobRepository = $jobRepo;
+        $this->humanJobRepository = $humanJobRepo;
         $this->assetRepository = $assetRepo;
         $this->farmedTypeRepository = $farmedTypeRepo;
     }
@@ -308,7 +308,7 @@ class UserAPIController extends AppBaseController
                 "email" => ["required", "string", "email", "max:255", "unique:users,email,$id,id"],
                 "mobile" => ["required", "string", "max:255", "unique:users,mobile,$id,id"],
                 "password" => ["nullable", "string", "min:8", "confirmed"],
-                "job_id" => ["required", "exists:jobs,id"],
+                "human_job_id" => ["required", "exists:human_jobs,id"],
                 "photo" => ["nullable", "max:2000", "mimes:jpeg,jpg,png"],
             ]);
 
@@ -331,7 +331,7 @@ class UserAPIController extends AppBaseController
                 'name' => $request->get('name'),
                 'email' => $request->get('email'),
                 'mobile' => $request->get('mobile'),
-                'job_id' => $request->get('job_id'),
+                'human_job_id' => $request->get('human_job_id'),
             ];
             
             if($request->password)

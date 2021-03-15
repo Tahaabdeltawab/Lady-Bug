@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 // use Mekaeil\LaravelUserManagement\Repository\Eloquents\RoleRepository;
 // use Mekaeil\LaravelUserManagement\Repository\Eloquents\UserRepository;
-use App\Repositories\JobRepository;
+use App\Repositories\HumanJobRepository;
 
 class RegisterController extends Controller
 {
@@ -41,7 +41,7 @@ class RegisterController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    private $jobRepository;
+    private $humanJobRepository;
     private $assetRepository;
     // private $roleRepository;
     // private $userRepository;
@@ -50,9 +50,9 @@ class RegisterController extends Controller
      *
      * @return void
      */
-    public function __construct(JobRepository $jobRepo, AssetRepository $assetRepo/* ,UserRepository $userRepo,RoleRepository $roleRepo */)
+    public function __construct(HumanJobRepository $humanJobRepo, AssetRepository $assetRepo/* ,UserRepository $userRepo,RoleRepository $roleRepo */)
     {
-        $this->jobRepository = $jobRepo;
+        $this->humanJobRepository = $humanJobRepo;
         $this->assetRepository = $assetRepo;
         // $this->roleRepository = $roleRepo;
         // $this->userRepository = $userRepo;
@@ -63,7 +63,7 @@ class RegisterController extends Controller
 
     public function showRegistrationForm()
     {
-        $jobs = $this->jobRepository->all();
+        $jobs = $this->humanJobRepository->all();
         return view('auth.register', compact('jobs'));
     }
 
@@ -82,7 +82,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'mobile' => ['required', 'string', 'max:255', 'unique:users'],
-            'job_id' => ['required'],
+            'human_job_id' => ['required'],
             'photo' => ['required', 'max:2000', 'mimes:jpeg,jpg,png'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
@@ -118,7 +118,7 @@ class RegisterController extends Controller
             'name' => $data->name,
             'email' => $data->email,
             'mobile' => $data->mobile,
-            'job_id' => $data->job_id,
+            'human_job_id' => $data->human_job_id,
             'photo_id' => $saved_photo->id,
             'password' => Hash::make($data->password),
         ]);

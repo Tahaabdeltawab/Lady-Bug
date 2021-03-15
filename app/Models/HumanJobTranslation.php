@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class JobTranslation extends Model
+class HumanJobTranslation extends Model
 {
     protected $fillable = ['name'];
     public $timestamps = false;

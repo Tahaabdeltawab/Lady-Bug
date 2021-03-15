@@ -9,12 +9,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use Tymon\JWTAuth\Exceptions\JWTException;
-use App\Repositories\JobRepository;
+use App\Repositories\HumanJobRepository;
 use App\Repositories\AssetRepository;
 use App\Repositories\UserRepository;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Role;
 use App\Http\Resources\AssetResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -26,7 +27,7 @@ use JWTAuth;
 class AuthController extends AppBaseController
 {
     private $userRepository;
-    private $jobRepository;
+    private $humanJobRepository;
     private $assetRepository;
     // private $roleRepository;
     // private $userRepository;
@@ -35,10 +36,10 @@ class AuthController extends AppBaseController
      *
      * @return void
      */
-    public function __construct(JobRepository $jobRepo, AssetRepository $assetRepo, UserRepository $userRepo/* ,UserRepository $userRepo,RoleRepository $roleRepo */)
+    public function __construct(HumanJobRepository $humanJobRepo, AssetRepository $assetRepo, UserRepository $userRepo/* ,UserRepository $userRepo,RoleRepository $roleRepo */)
     {
         $this->userRepository = $userRepo;
-        $this->jobRepository = $jobRepo;
+        $this->humanJobRepository = $humanJobRepo;
         $this->assetRepository = $assetRepo;
         // $this->roleRepository = $roleRepo;
         // $this->userRepository = $userRepo;
@@ -100,8 +101,8 @@ class AuthController extends AppBaseController
                 "email" => ["required", "string", "email", "max:255", "unique:users,email,".null.",id"],
                 "mobile" => ["required", "string", "max:255", "unique:users,mobile,".null.",id"],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
-                'job_id' => ['required', 'exists:jobs,id'],
-                'photo' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png'],
+                'human_job_id' => ['required', 'exists:human_jobs,id'],
+                'photo' => ['nullable', 'max:2000', 'image', 'mimes:jpeg,jpg,png'],
             ]);
 
             if($validator->fails()){
@@ -119,35 +120,31 @@ class AuthController extends AppBaseController
                 return $this->sendError(json_encode($validator->errors()), $code);
             }
 
-                // $userDefaultRole = $this->roleRepository->findBy([
-                //     'name'  => config('laravel_user_management.auth.user_default_role')
-                // ]);
+            if(!($user_role = Role::where('name', 'app-user')))
+            {
+                return $this->sendError(__('Role app-user not found'), 4044);
+            }
 
-                // if (!$userDefaultRole) 
-                // {
-                //     return response()->json(['error' => trans('trans.default_role_does_not_exist')],404);
-                // }
-
-                if($photo = $request->file('photo'))
-                {
-                    $currentDate = Carbon::now()->toDateString();
-                    $photoname = 'profile-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
-                    $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
-                    $photomime = $photo->getClientMimeType();
-                            
-                    $path = $photo->storeAs('assets/images/profiles', $photoname, 's3');
-                    // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
-                    
-                    $url  = Storage::disk('s3')->url($path);
-                    
-                    $saved_photo = $this->assetRepository->create([
-                        'asset_name'        => $photoname,
-                        'asset_url'         => $url,
-                        'asset_size'        => $photosize,
-                        'asset_mime'        => $photomime,
-                        'assetable_type'    => 'profile'
-                    ]);
-                }
+            if($photo = $request->file('photo'))
+            {
+                $currentDate = Carbon::now()->toDateString();
+                $photoname = 'profile-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
+                $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
+                $photomime = $photo->getClientMimeType();
+                        
+                $path = $photo->storeAs('assets/images/profiles', $photoname, 's3');
+                // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
+                
+                $url  = Storage::disk('s3')->url($path);
+                
+                $saved_photo = $this->assetRepository->create([
+                    'asset_name'        => $photoname,
+                    'asset_url'         => $url,
+                    'asset_size'        => $photosize,
+                    'asset_mime'        => $photomime,
+                    'assetable_type'    => 'profile'
+                ]);
+            }
 
 
             // $user = User::create([
@@ -155,12 +152,15 @@ class AuthController extends AppBaseController
                 'name' => $request->get('name'),
                 'email' => $request->get('email'),
                 'mobile' => $request->get('mobile'),
-                'job_id' => $request->get('job_id'),
+                'human_job_id' => $request->get('human_job_id'),
                 'photo_id' => $saved_photo->id ?? null,
                 'password' => Hash::make($request->get('password')),
             ]);
 
-            // $this->roleRepository->setRoleToMember($user, $userDefaultRole);
+            if($user_role)
+            {
+                $user->attachRole('app-user');
+            }
 
             $credentials = $request->only('email', 'password');
 

@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\Job;
+use App\Models\HumanJob;
 
 class UpdateJobRequest extends FormRequest
 {
@@ -25,7 +25,7 @@ class UpdateJobRequest extends FormRequest
      */
     public function rules()
     {
-        $rules = Job::$rules;
+        $rules = HumanJob::$rules;
         
         return $rules;
     }

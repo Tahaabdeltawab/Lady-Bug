@@ -39,14 +39,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 
-class Job extends Model implements TranslatableContract
+class HumanJob extends Model implements TranslatableContract
 {
     use SoftDeletes, Translatable, HasFactory;
 
     public $translatedAttributes = ['name'];
 
 
-    public $table = 'jobs';
+    public $table = 'human_jobs';
     
 
     protected $dates = ['deleted_at'];
