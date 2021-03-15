@@ -210,7 +210,9 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::get('posts/index/{farm_id}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_posts'])->name('posts.index');
         
     });
-    
+
+    Route::get('users/liked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_liked_posts']);
+    Route::get('users/disliked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_disliked_posts']);
     Route::post('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'store_favorites'])->name('users.favorites.store');
     Route::get('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'my_favorites'])->name('users.favorites.index');
     Route::post('users/weather', [App\Http\Controllers\API\UserAPIController::class, 'get_weather'])->name('users.weather.index');
@@ -276,8 +278,8 @@ Route::group(['middleware'=>['auth:api']], function()
     
     Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
     Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
-    Route::get('posts/likes/index', [App\Http\Controllers\API\PostAPIController::class, 'likes']);
-    Route::get('posts/dislikes/index', [App\Http\Controllers\API\PostAPIController::class, 'dislikes']);
+    Route::get('posts/likers/index/{post}', [App\Http\Controllers\API\PostAPIController::class, 'post_likers']);
+    Route::get('posts/dislikers/index/{post}', [App\Http\Controllers\API\PostAPIController::class, 'post_dislikers']);
 
     Route::resource('comments', App\Http\Controllers\API\CommentAPIController::class);
 

@@ -6,10 +6,12 @@ use App\Http\Requests\API\CreateUserAPIRequest;
 use App\Http\Requests\API\UpdateUserAPIRequest;
 use App\Http\Requests\API\CreateUserFavoritesAPIRequest;
 use App\Models\User;
+use App\Models\Post;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\FarmedTypeResource;
 use Response;
 use Illuminate\Support\Facades\Validator;
@@ -85,6 +87,9 @@ class UserAPIController extends AppBaseController
         return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
     }
 
+
+    // // // // WEATHER // // // //
+
     public function get_weather(Request $request)
     {
         
@@ -127,6 +132,49 @@ class UserAPIController extends AppBaseController
         else
         {
             return $this->sendError('Error fetching the weather data', $response->status(), $response->json());
+        }
+    }
+
+
+    // // // // // // LIKED && DISLIKED POSTS // // // // // //  
+
+    public function user_liked_posts()
+    {        
+        try
+        {
+            $likeables = [];
+            if($likes = auth()->user()->likes()->withType(Post::class)->with('likeable')->get())
+            {
+                foreach ($likes as $like)
+                {
+                    $likeables[] = $like->likeable;
+                }
+            }
+            return $this->sendResponse(['all' => PostResource::collection($likeables)], 'User liked posts retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+
+
+    public function user_disliked_posts()
+    {        
+        try
+        {
+            $dislikeables = [];
+            if($dislikes = auth()->user()->dislikes()->withType(Post::class)->with('likeable')->get())
+            {
+                foreach ($dislikes as $dislike){
+                    $dislikeables[] = $dislike->likeable;
+                }
+            }
+            return $this->sendResponse(['all' => PostResource::collection($dislikeables)], 'User disliked posts retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
         }
     }
 

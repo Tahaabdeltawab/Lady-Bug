@@ -10,6 +10,7 @@ use App\Repositories\AssetRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\UserResource;
 use Response;
 use App\Http\Resources\AssetResource;
 use Illuminate\Support\Facades\Validator;
@@ -252,37 +253,41 @@ class PostAPIController extends AppBaseController
         }
     }
 
-    public function likes()
-    {        
+    public function post_likers($id)
+    {
         try
         {
-            $likeables = [];
-            if($likes = auth()->user()->likes()->withType(Post::class)->with('likeable')->get())
+            $post = $this->postRepository->find($id);
+
+            if (empty($post))
             {
-                foreach ($likes as $like)
-                {
-                    $likeables[] = $like->likeable;
-                }
+                return $this->sendError('post not found');
             }
-            return $this->sendResponse(['all' => PostResource::collection($likeables)], 'User liked posts retrieved successfully');
+
+            $likers = $post->likers;
+            $likers_count = $likers->count();
+            return $this->sendResponse(['count' => $likers_count,'all' => UserResource::collection($likers)], 'Post likers retrieved successfully');
         }
         catch(\Throwable $th)
         {
             return $this->sendError($th->getMessage(), 500); 
         }
     }
-    public function dislikes()
-    {        
+
+    public function post_dislikers($id)
+    {
         try
         {
-            $dislikeables = [];
-            if($dislikes = auth()->user()->dislikes()->withType(Post::class)->with('likeable')->get())
+            $post = $this->postRepository->find($id);
+
+            if (empty($post))
             {
-                foreach ($dislikes as $dislike){
-                    $dislikeables[] = $dislike->likeable;
-                }
+                return $this->sendError('post not found');
             }
-            return $this->sendResponse(['all' => PostResource::collection($dislikeables)], 'User disliked posts retrieved successfully');
+
+            $dislikers = $post->dislikers;
+            $dislikers_count = $dislikers->count();
+            return $this->sendResponse(['count' => $dislikers_count, 'all' => UserResource::collection($dislikers)], 'Post likers retrieved successfully');
         }
         catch(\Throwable $th)
         {
