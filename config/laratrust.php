@@ -1,6 +1,20 @@
 <?php
 
 return [
+
+
+    // ADDED BY TAHA
+    'taha'=>[
+        'user_default_role' => 'app-user',
+        
+        'admin_role' => 'app-admin',
+    
+        'farm_allowed_roles' => [
+            // 'farm-admin', // this role is only for the farm creator
+            'farm-editor',
+            'farm-supervisor'
+        ],
+    ],
     /*
     |--------------------------------------------------------------------------
     | Use MorphMap in relationships between models

@@ -24,8 +24,8 @@ class UpdateCommentAPIRequest extends APIRequest
      */
     public function rules()
     {
-        $rules = Comment::$rules;
-        
-        return $rules;
+        return [
+            'content' => 'required'
+        ];
     }
 }

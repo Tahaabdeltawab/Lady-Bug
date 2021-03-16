@@ -19,7 +19,9 @@ class ServiceTableResource extends JsonResource
             // 'created_at' => $this->created_at,
             // 'updated_at' => $this->updated_at,
             'name' => $this->name,
-            'farm_id' => $this->farm_id
+            'farm_id' => $this->farm_id,
+            'tasks_count' => $this->tasks->count(),
+            'tasks' => ServiceTaskResource::collection($this->tasks),
         ];
     }
 }

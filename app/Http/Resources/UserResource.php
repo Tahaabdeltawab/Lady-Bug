@@ -13,6 +13,15 @@ class UserResource extends JsonResource
     //     parent::__construct(\App\Models\User::class);
     //     $this->farm = $farm;
     // }
+
+    protected $farm;
+
+    public function farm($farm){
+        $this->farm = $farm;
+        return $this;
+    }
+
+
     /**
      * Transform the resource into an array.
      *
@@ -21,7 +30,7 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        $farm = (new FarmRepository(app()))->find($request->farm_id);
+        // $farm = (new FarmRepository(app()))->find($request->farm);
         $return = [
             'id'                => $this->id,
             'name'              => $this->name,
@@ -33,7 +42,7 @@ class UserResource extends JsonResource
             'status'            => $this->status,
             'mobile_verified'   => $this->mobile_verified,
             'email_verified'    => $this->email_verified,
-            'farm_roles'        => $this->when($farm, $this->getRoles($farm)),
+            'farm_roles'        => $this->when($this->farm, $this->getRoles($this->farm)),
             'roles'             => $this->getRoles(),
             // 'roles'             => RoleResource::collection($this->roles),
             // 'created_at'        => $this->created_at,
@@ -42,5 +51,10 @@ class UserResource extends JsonResource
         ];
 
         return $return;
+    }
+
+
+    public static function collection($resource){
+        return new UserCollection($resource);
     }
 }

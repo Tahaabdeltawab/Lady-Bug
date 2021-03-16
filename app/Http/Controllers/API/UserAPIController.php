@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\FarmResource;
 use App\Http\Resources\FarmedTypeResource;
 use Response;
 use Illuminate\Support\Facades\Validator;
@@ -88,52 +89,25 @@ class UserAPIController extends AppBaseController
     }
 
 
-    // // // // WEATHER // // // //
 
-    public function get_weather(Request $request)
+
+
+    public function user_farms(Request $request)
     {
-        
-        $response = Http::get('api.openweathermap.org/data/2.5/weather',
-            [
-                'appid' => 'cd06a1348bed1b281e3e139a96ee5324',
-                'lat' => $request->lat,
-                'lon' => $request->lon,
-                'lang' => $request->lang,
-                'units' =>'metric'//'standard''imperial'
-            ]
-        );
+        try{
+            // $farms = $this->farmRepository->where(['admin_id' => auth()->id()])->all();
+            $farms = auth()->user()->allTeams();
 
-        if($response->ok())
-        {
-            $data = $response->json();
-            $weather_icon = $data['weather'][0]['icon'];
-
-            $carbon = new \Carbon\Carbon('+02:00');
-
-            $date = $carbon->parse(date("Y-m-d"))->locale($request->lang);
-            $date_new = $date->isoFormat('dddd D MMMM');
-
-            // $sunset = $carbon->parse($data['sys']['sunset'])->locale($request->lang);
-            // $sunset_new = $sunset->isoFormat('hh:mm a');
-
-            // $sunrise = $carbon->parse($data['sys']['sunrise'])->locale($request->lang);
-            // $sunrise_new = $sunset->isoFormat('hh:mm a');
-
-            $resp['weather_description']    = $data['weather'][0]['description'];
-            $resp['weather_icon_url']       = "https://openweathermap.org/img/w/$weather_icon.png";
-            $resp['temp']                   = $data['main']['temp']." C";
-            $resp['date']                   = $date_new;
-            $resp['sunrise']                = date("h:i a", $data['sys']['sunrise']);
-            $resp['sunset']                 = date("h:i a", $data['sys']['sunset']);
-            $resp['location']               = $data['name'];
-
-            return $this->sendResponse($resp , 'Weather data retrieved successfully');
-        }
-        else
-        {
-            return $this->sendError('Error fetching the weather data', $response->status(), $response->json());
+            return $this->sendResponse(['all' => FarmResource::collection($farms)], 'Farms retrieved successfully');
+        }catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500); 
         }
     }
+
+
+
+
+
 
 
     // // // // // // LIKED && DISLIKED POSTS // // // // // //  

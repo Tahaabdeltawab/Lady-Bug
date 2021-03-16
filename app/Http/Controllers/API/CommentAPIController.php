@@ -110,10 +110,57 @@ class CommentAPIController extends AppBaseController
     public function store(CreateCommentAPIRequest $request)
     {
         $input = $request->validated();
+        $input['commenter_id'] = auth()->id();
 
         $comment = $this->commentRepository->save_localized($input);
 
         return $this->sendResponse(new CommentResource($comment), 'Comment saved successfully');
+    }
+
+    
+
+    //  //  //  //  //  L I K E S  &&  D I S L I K E S  //  //  //  //  //
+
+    public function toggle_like($id)
+    {        
+        try
+        {
+            $comment = $this->commentRepository->find($id);
+
+            if (empty($comment))
+            {
+                return $this->sendError('Comment not found');
+            }
+
+            $msg = auth()->user()->toggleLike($comment);
+            return $this->sendSuccess('Comment '.$msg);
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+
+ 
+
+    public function toggle_dislike($id)
+    {        
+        try
+        {
+            $comment = $this->commentRepository->find($id);
+
+            if (empty($comment))
+            {
+                return $this->sendError('Comment not found');
+            }
+
+            $msg = auth()->user()->toggleDislike($comment);
+            return $this->sendSuccess('Comment '.$msg);
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
     }
 
     /**
@@ -212,7 +259,7 @@ class CommentAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, CreateCommentAPIRequest $request)
+    public function update($id, UpdateCommentAPIRequest $request) //don't change it to create request please as it differs in validation
     {
         $input = $request->validated();
 

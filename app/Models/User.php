@@ -59,10 +59,10 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function farms()
+   /*  public function farms()
     {
         return $this->morphedByMany(Farm::class, 'workable', 'workables', 'worker_id', 'workable_id')->using(Workable::class)->withPivot('id', 'status')->withTimestamps();
-    }
+    } */
     
     public function favorites()
     {

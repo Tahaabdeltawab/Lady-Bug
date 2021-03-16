@@ -784,6 +784,16 @@
         ),
       ),
     ),
+    'taha' => 
+    array (
+      'user_default_role' => 'app-user',
+      'admin_role' => 'app-admin',
+      'farm_allowed_roles' => 
+      array (
+        0 => 'farm-editor',
+        1 => 'farm-supervisor',
+      ),
+    ),
   ),
   'laratrust_seeder' => 
   array (

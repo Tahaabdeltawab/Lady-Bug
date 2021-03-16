@@ -181,130 +181,135 @@ function () {
 
 Route::group(['middleware'=>['auth:api']], function()
 {
-    Route::group(['as'=>'farms.', 'prefix'=>'farms', 'middleware'=>[/*'wauth.role:admin|editor' */]], function()
+
+    
+    // // // // //  USER AREA  // // // // //
+    
+    Route::group(['middleware'=>['role:app-user']], function()
     {
-        // the above resource routes but separated because when using the middleware on the resource I cannot catch the request->id in the middleware wauth. but in this way I can do.
-        // also I tried to apply the middleware on the controller itself but the same problem occurred.
-        // the coming 3 permissions are not affected by the wauth middlewares as the existance ot id parameter is mandatory for the middleware to be applied (see the middlewares classes)
-        Route::get('/', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('index');
-        Route::get('/relations', [App\Http\Controllers\API\FarmAPIController::class, 'relations_index'])->name('relations.index');
-        Route::get('create', [App\Http\Controllers\API\FarmAPIController::class, 'create'])->name('create');
-        Route::post('/', [App\Http\Controllers\API\FarmAPIController::class, 'store'])->name('store');
 
-        // the coming 4 permissions are affected by the wauth middlewares as they have id parameter.
-        Route::get('{id}/edit', [App\Http\Controllers\API\FarmAPIController::class, 'edit'])->name('edit')->middleware('wauth.permission:edit');
-        Route::match(['put', 'patch'], '{id}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('update')->middleware('wauth.permission:update');
-        Route::get('{id}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('show')->middleware('wauth.permission:show');
-        Route::delete('{id}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy')->middleware('wauth.permission:delete');
+        Route::group(['as'=>'farms.', 'prefix'=>'farms', 'middleware'=>[]], function()
+        {
+            // the above resource routes but separated because when using the middleware on the resource I cannot catch the request->id in the middleware wauth. but in this way I can do.
+            // also I tried to apply the middleware on the controller itself but the same problem occurred.
+            Route::get('/relations', [App\Http\Controllers\API\FarmAPIController::class, 'relations_index'])->name('relations.index');
+            Route::post('/', [App\Http\Controllers\API\FarmAPIController::class, 'store'])->name('store');
 
-        // additionla routes but commented as they were included the above edit and update routes
-        Route::get('edit-roles/{id}', [App\Http\Controllers\API\FarmAPIController::class, 'edit_roles'])->name('roles.edit');
-        Route::post('update-roles/{id}', [App\Http\Controllers\API\FarmAPIController::class, 'update_roles'])->name('roles.update');
+            Route::match(['put', 'patch', 'post'], '{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('update');
+            Route::get('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('show');
+            Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy');
+            
+            Route::post('roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('roles.store');
+            Route::get('app_users/app_roles', [App\Http\Controllers\API\FarmAPIController::class, 'app_users_and_roles']);
+            Route::get('roles/store/{user_id}/{role_id}/{farm_id}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('roles.first_attach');
+            Route::get('users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_users'])->name('users.index');
+            Route::get('posts/index/{farm_id}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_posts'])->name('posts.index');
+            Route::post('user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('users.weather.index');
+            
+        });
 
-        Route::post('permByWtype/', [App\Http\Controllers\API\WorkableRoleAPIController::class, 'permissions_by_workable_type'])->name('permByWtype');
+        //get auth farms
+        Route::get('users/farms/index', [App\Http\Controllers\API\UserAPIController::class, 'user_farms']);
+        Route::get('users/liked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_liked_posts']);
+        Route::get('users/disliked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_disliked_posts']);
+        Route::post('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'store_favorites'])->name('users.favorites.store');
+        Route::get('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'my_favorites'])->name('users.favorites.index');
+        Route::resource('users', App\Http\Controllers\API\UserAPIController::class)->except(['store', 'destroy']);
+        //with put and patch, laravel cannot read the request 
+        Route::match(['put', 'patch','post'], 'users/{id}', [App\Http\Controllers\API\UserAPIController::class, 'update'])->name('users.update');
+
+        Route::resource('products', App\Http\Controllers\API\ProductAPIController::class);
         
-        Route::post('roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('roles.store');
-        Route::get('roles/index', [App\Http\Controllers\API\FarmAPIController::class, 'roles_index'])->name('roles.index');
-        Route::get('roles/store/{user_id}/{role_id}/{farm_id}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('roles.first_attach');
-        Route::get('users/index/{farm_id}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_users'])->name('users.index');
-        Route::get('posts/index/{farm_id}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_posts'])->name('posts.index');
+        Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
+        Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
+        // // // LIKES // // //
+        Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
+        Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
         
+        Route::resource('comments', App\Http\Controllers\API\CommentAPIController::class);
+        Route::match(['put', 'patch','post'], 'comments/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'update'])->name('comments.update');
+        // // // LIKES // // //
+        Route::get('comments/toggle_like/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_like']);
+        Route::get('comments/toggle_dislike/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_dislike']);
+
+        Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
+
+        Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
+
+        // Route::resource('chemical_details', App\Http\Controllers\API\ChemicalDetailAPIController::class);
+        // Route::resource('salt_details', App\Http\Controllers\API\SaltDetailAPIController::class);
+    });
+    
+
+
+    // // // // // //  ADMIN AREA  // // // // // //
+    
+    Route::group(['middleware'=>['role:app-admin']], function()
+    {
+
+        Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
+
+        Route::resource('animal_fodder_sources', App\Http\Controllers\API\AnimalFodderSourceAPIController::class);
+
+        Route::resource('farmed_type_stages', App\Http\Controllers\API\FarmedTypeStageAPIController::class);
+
+        Route::resource('farm_activity_types', App\Http\Controllers\API\FarmActivityTypeAPIController::class);
+
+        Route::resource('chemical_fertilizer_sources', App\Http\Controllers\API\ChemicalFertilizerSourceAPIController::class);
+
+        Route::resource('animal_breeding_purposes', App\Http\Controllers\API\AnimalBreedingPurposeAPIController::class);
+
+        Route::resource('home_plant_illuminating_sources', App\Http\Controllers\API\HomePlantIlluminatingSourceAPIController::class);
+
+        Route::resource('farming_methods', App\Http\Controllers\API\FarmingMethodAPIController::class);
+
+        Route::resource('animal_fodder_types', App\Http\Controllers\API\AnimalFodderTypeAPIController::class);
+
+        Route::resource('animal_medicine_sources', App\Http\Controllers\API\AnimalMedicineSourceAPIController::class);
+
+        Route::resource('human_jobs', App\Http\Controllers\API\HumanJobAPIController::class)->except(['index']);
+
+        Route::resource('post_types', App\Http\Controllers\API\PostTypeAPIController::class);
+
+        Route::resource('seedling_sources', App\Http\Controllers\API\SeedlingSourceAPIController::class);
+
+        Route::resource('measuring_units', App\Http\Controllers\API\MeasuringUnitAPIController::class);
+
+        Route::resource('buying_notes', App\Http\Controllers\API\BuyingNoteAPIController::class);
+
+        Route::resource('information', App\Http\Controllers\API\InformationAPIController::class);
+
+        Route::resource('weather_notes', App\Http\Controllers\API\WeatherNoteAPIController::class);
+
+        Route::resource('soil_types', App\Http\Controllers\API\SoilTypeAPIController::class);
+
+        Route::resource('irrigation_ways', App\Http\Controllers\API\IrrigationWayAPIController::class);
+
+        Route::resource('farming_ways', App\Http\Controllers\API\FarmingWayAPIController::class);
+
+        Route::resource('farmed_types', App\Http\Controllers\API\FarmedTypeAPIController::class);
+        Route::match(['put', 'patch','post'], 'farmed_types/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'update'])->name('farmed_types.update');
+        
+        Route::resource('farmed_type_classes', App\Http\Controllers\API\FarmedTypeClassAPIController::class);
+        
+        Route::resource('farmed_type_ginfos', App\Http\Controllers\API\FarmedTypeGinfoAPIController::class);
+
+        Route::resource('cities', App\Http\Controllers\API\CityAPIController::class);
+
+        Route::resource('districts', App\Http\Controllers\API\DistrictAPIController::class);
+
+        Route::resource('task_types', App\Http\Controllers\API\TaskTypeAPIController::class);
+
+        Route::resource('salt_types', App\Http\Controllers\API\SaltTypeAPIController::class);
+
+        Route::resource('locations', App\Http\Controllers\API\LocationAPIController::class);
+
+        Route::resource('acidity_types', App\Http\Controllers\API\AcidityTypeAPIController::class);
+
     });
 
-    Route::get('users/liked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_liked_posts']);
-    Route::get('users/disliked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_disliked_posts']);
-    Route::post('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'store_favorites'])->name('users.favorites.store');
-    Route::get('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'my_favorites'])->name('users.favorites.index');
-    Route::post('users/weather', [App\Http\Controllers\API\UserAPIController::class, 'get_weather'])->name('users.weather.index');
-    Route::resource('users', App\Http\Controllers\API\UserAPIController::class)->except(['store', 'destroy']);
-    //with put and patch, laravel cannot read the request 
-    Route::match(['put', 'patch','post'], 'users/{id}', [App\Http\Controllers\API\UserAPIController::class, 'update'])->name('users.update');
 
-    Route::resource('workable_roles', App\Http\Controllers\API\WorkableRoleAPIController::class);
-
-    Route::resource('workable_permissions', App\Http\Controllers\API\WorkablePermissionAPIController::class);
-
-    Route::resource('workable_types', App\Http\Controllers\API\WorkableTypeAPIController::class);
-
-    Route::resource('workables', App\Http\Controllers\API\WorkableAPIController::class);
-
-    Route::resource('animal_fodder_sources', App\Http\Controllers\API\AnimalFodderSourceAPIController::class);
-
-    Route::resource('farmed_type_stages', App\Http\Controllers\API\FarmedTypeStageAPIController::class);
-
-    Route::resource('farm_activity_types', App\Http\Controllers\API\FarmActivityTypeAPIController::class);
-
-    Route::resource('chemical_fertilizer_sources', App\Http\Controllers\API\ChemicalFertilizerSourceAPIController::class);
-
-    Route::resource('animal_breeding_purposes', App\Http\Controllers\API\AnimalBreedingPurposeAPIController::class);
-
-    Route::resource('home_plant_illuminating_sources', App\Http\Controllers\API\HomePlantIlluminatingSourceAPIController::class);
-
-    Route::resource('farming_methods', App\Http\Controllers\API\FarmingMethodAPIController::class);
-
-    Route::resource('salt_details', App\Http\Controllers\API\SaltDetailAPIController::class);
-
-    Route::resource('animal_fodder_types', App\Http\Controllers\API\AnimalFodderTypeAPIController::class);
-
-    Route::resource('animal_medicine_sources', App\Http\Controllers\API\AnimalMedicineSourceAPIController::class);
-
-    Route::resource('human_jobs', App\Http\Controllers\API\HumanJobAPIController::class)->except(['index']);
-
-    Route::resource('post_types', App\Http\Controllers\API\PostTypeAPIController::class);
-
-    Route::resource('seedling_sources', App\Http\Controllers\API\SeedlingSourceAPIController::class);
-
-    Route::resource('measuring_units', App\Http\Controllers\API\MeasuringUnitAPIController::class);
-
-    Route::resource('buying_notes', App\Http\Controllers\API\BuyingNoteAPIController::class);
-
-    Route::resource('information', App\Http\Controllers\API\InformationAPIController::class);
-
-    Route::resource('weather_notes', App\Http\Controllers\API\WeatherNoteAPIController::class);
-
-    Route::resource('soil_types', App\Http\Controllers\API\SoilTypeAPIController::class);
-
-    Route::resource('irrigation_ways', App\Http\Controllers\API\IrrigationWayAPIController::class);
-
-    Route::resource('farming_ways', App\Http\Controllers\API\FarmingWayAPIController::class);
-
-    Route::resource('farmed_types', App\Http\Controllers\API\FarmedTypeAPIController::class);
-    Route::match(['put', 'patch','post'], 'farmed_types/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'update'])->name('farmed_types.update');
-    
-    Route::resource('products', App\Http\Controllers\API\ProductAPIController::class);
-    
-    Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
-    Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
-    
-    Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
-    Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
-    Route::get('posts/likers/index/{post}', [App\Http\Controllers\API\PostAPIController::class, 'post_likers']);
-    Route::get('posts/dislikers/index/{post}', [App\Http\Controllers\API\PostAPIController::class, 'post_dislikers']);
-
-    Route::resource('comments', App\Http\Controllers\API\CommentAPIController::class);
-
-    Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
-
-    Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
-
-    Route::resource('farmed_type_classes', App\Http\Controllers\API\FarmedTypeClassAPIController::class);
-
-    Route::resource('farmed_type_ginfos', App\Http\Controllers\API\FarmedTypeGinfoAPIController::class);
-
-    Route::resource('chemical_details', App\Http\Controllers\API\ChemicalDetailAPIController::class);
-
-    Route::resource('cities', App\Http\Controllers\API\CityAPIController::class);
-
-    Route::resource('districts', App\Http\Controllers\API\DistrictAPIController::class);
-
-    Route::resource('task_types', App\Http\Controllers\API\TaskTypeAPIController::class);
-
-    Route::resource('salt_types', App\Http\Controllers\API\SaltTypeAPIController::class);
-
-    Route::resource('locations', App\Http\Controllers\API\LocationAPIController::class);
-
-    Route::resource('acidity_types', App\Http\Controllers\API\AcidityTypeAPIController::class);
 });
 
-// ROUTES DON'T NEED LOGIN
+// ROUTES DON'T NEED LOGIN AS THEY ARE USED IN REGISTRATION
 Route::get('human_jobs', [App\Http\Controllers\API\HumanJobAPIController::class, 'index'])->name('human_jobs.index');

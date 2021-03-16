@@ -86,14 +86,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *      )
  * )
  */
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class ServiceTask extends Model implements TranslatableContract
+class ServiceTask extends Model
 {
-    use SoftDeletes, Translatable;
+    use SoftDeletes;
 
-    public $translatedAttributes = ['name'];
     
     public $table = 'service_tasks';
     
@@ -103,7 +100,7 @@ class ServiceTask extends Model implements TranslatableContract
 
 
     public $fillable = [
-        // 'name',
+        'name',
         'start_at',
         'notify_at',
         'farm_id',
@@ -122,12 +119,12 @@ class ServiceTask extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'name' => 'string',
+        'name' => 'string',
         'farm_id' => 'integer',
         'service_table_id' => 'integer',
         'task_type_id' => 'integer',
         'quantity' => 'integer',
-        'quantity_unit_id' => 'string',
+        'quantity_unit_id' => 'integer',
         'done' => 'boolean'
     ];
 
@@ -136,19 +133,7 @@ class ServiceTask extends Model implements TranslatableContract
      *
      * @var array
      */
-    public static $rules = [
-        'name_ar_localized' => 'required|max:200',
-        'name_en_localized' => 'required|max:200',
-        'start_at' => 'required',
-        'notify_at' => 'required',
-        'farm_id' => 'required',
-        'service_table_id' => 'required',
-        'task_type_id' => 'required',
-        'quantity' => 'required',
-        'quantity_unit_id' => 'required',
-        'due_at' => 'required',
-        'done' => 'required'
-    ];
+    public static $rules = [];
 
     
 }

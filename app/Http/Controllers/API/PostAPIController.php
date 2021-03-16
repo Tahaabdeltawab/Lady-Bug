@@ -253,48 +253,6 @@ class PostAPIController extends AppBaseController
         }
     }
 
-    public function post_likers($id)
-    {
-        try
-        {
-            $post = $this->postRepository->find($id);
-
-            if (empty($post))
-            {
-                return $this->sendError('post not found');
-            }
-
-            $likers = $post->likers;
-            $likers_count = $likers->count();
-            return $this->sendResponse(['count' => $likers_count,'all' => UserResource::collection($likers)], 'Post likers retrieved successfully');
-        }
-        catch(\Throwable $th)
-        {
-            return $this->sendError($th->getMessage(), 500); 
-        }
-    }
-
-    public function post_dislikers($id)
-    {
-        try
-        {
-            $post = $this->postRepository->find($id);
-
-            if (empty($post))
-            {
-                return $this->sendError('post not found');
-            }
-
-            $dislikers = $post->dislikers;
-            $dislikers_count = $dislikers->count();
-            return $this->sendResponse(['count' => $dislikers_count, 'all' => UserResource::collection($dislikers)], 'Post likers retrieved successfully');
-        }
-        catch(\Throwable $th)
-        {
-            return $this->sendError($th->getMessage(), 500); 
-        }
-    }
-
     /**
      * @param int $id
      * @return Response
@@ -405,8 +363,6 @@ class PostAPIController extends AppBaseController
             $validator = Validator::make($request->all(), [
                 'title' => ['nullable', 'max:200'],
                 'content' => ['required'],
-                // 'author_id' => ['nullable'],
-                'farm_id' => ['nullable', 'exists:farms,id'],
                 'farmed_type_id' => ['nullable'],
                 'post_type_id' => ['required', 'exists:post_types,id'],
                 'solved' => ['nullable'],
@@ -423,11 +379,9 @@ class PostAPIController extends AppBaseController
 
             $data['title'] = $request->title; 
             $data['content'] = $request->content; 
-            $data['farm_id'] = $request->farm_id; 
             $data['farmed_type_id'] = $request->farmed_type_id; 
             $data['post_type_id'] = $request->post_type_id; 
             $data['solved'] = $request->solved; 
-            $data['author_id'] = auth()->id();
             
             $post = $this->postRepository->save_localized($data, $id);
             

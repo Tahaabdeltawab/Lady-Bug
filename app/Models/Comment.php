@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Overtrue\LaravelLike\Traits\Likeable;
 
 
 /**
@@ -55,7 +56,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Comment extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Likeable;
 
 
     public $table = 'comments';
@@ -92,9 +93,20 @@ class Comment extends Model
      */
     public static $rules = [
         'content' => 'required',
-        'commenter_id' => 'required',
-        'post_id' => 'required'
+        // 'commenter_id' => 'required|integer|exists:users,id',
+        'post_id' => 'required|integer|exists:posts,id',
+        'parent_id' => 'nullable|integer|exists:comments,id'
     ];
+
+    public function parent()
+    {
+        return $this->belongsTo(Comment::class, 'parent_id');
+    }
+
+    public function replies()
+    {
+        return $this->hasMany(Comment::class, 'parent_id');
+    }
 
     
 }

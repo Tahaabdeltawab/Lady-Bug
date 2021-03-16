@@ -24,6 +24,16 @@ class CreateServiceTaskAPIRequest extends APIRequest
      */
     public function rules()
     {
-        return ServiceTask::$rules;
+        return  [
+            'name' => 'required|max:200',
+            'start_at' => 'required|date_format:Y-m-d|after_or_equal:' . date('Y-m-d'),
+            'notify_at' => 'required|date_format:Y-m-d|after:start_at',
+            'due_at' => 'required|date_format:Y-m-d|after:start_at',
+            'task_type_id' => 'required|exists:task_types,id',
+            'quantity' => 'required',
+            'quantity_unit_id' => 'required|exists:measuring_units,id',
+            'farm_id' => 'required|exists:farms,id',
+            'service_table_id' => 'required|exists:service_tables,id',
+        ];
     }
 }

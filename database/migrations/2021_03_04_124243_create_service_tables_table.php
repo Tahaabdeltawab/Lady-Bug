@@ -16,7 +16,7 @@ class CreateServiceTablesTable extends Migration
     {
         Schema::create('service_tables', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
+            $table->string('name');
             $table->foreignId('farm_id')->constrained();
             $table->timestamps();
             $table->softDeletes();

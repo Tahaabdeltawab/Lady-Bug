@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 
 use App\Models\Role;
+use App\Models\User;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\API\CreateFarmAPIRequest;
@@ -12,7 +14,6 @@ use App\Repositories\FarmRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\SaltDetailRepository;
 use App\Repositories\ChemicalDetailRepository;
-use App\Repositories\WorkableRepository;
 use App\Repositories\LocationRepository;
 use App\Repositories\PostRepository;
 
@@ -66,7 +67,6 @@ class FarmAPIController extends AppBaseController
     
     private $farmRepository;
     private $userRepository;
-    private $workableRepository;
     private $saltDetailRepository;
     private $chemicalDetailRepository;
     private $postRepository;
@@ -93,7 +93,6 @@ class FarmAPIController extends AppBaseController
     public function __construct(
         FarmRepository $farmRepo,
         UserRepository $userRepo, 
-        WorkableRepository $workableRepo,
         SaltDetailRepository $saltDetailRepo, 
         ChemicalDetailRepository $chemicalDetailRepo,
         PostRepository $postRepo,
@@ -119,7 +118,6 @@ class FarmAPIController extends AppBaseController
     {
         $this->farmRepository = $farmRepo;
         $this->userRepository = $userRepo;
-        $this->workableRepository = $workableRepo;
         $this->saltDetailRepository = $saltDetailRepo;
         $this->chemicalDetailRepository = $chemicalDetailRepo;
         $this->postRepository = $postRepo;
@@ -145,17 +143,103 @@ class FarmAPIController extends AppBaseController
     }
 
 
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // // // // WEATHER // // // //
+
+    public function get_weather(Request $request)
+    {
+        
+        $response = Http::get('api.openweathermap.org/data/2.5/weather',
+            [
+                'appid' => 'cd06a1348bed1b281e3e139a96ee5324',
+                'lat' => $request->lat,
+                'lon' => $request->lon,
+                'lang' => $request->lang,
+                'units' =>'metric'//'standard''imperial'
+            ]
+        );
+
+        if($response->ok())
+        {
+            $data = $response->json();
+            $weather_icon = $data['weather'][0]['icon'];
+
+            $carbon = new \Carbon\Carbon('+02:00');
+
+            $date = $carbon->parse(date("Y-m-d"))->locale($request->lang);
+            $date_new = $date->isoFormat('dddd D MMMM');
+
+            // $sunset = $carbon->parse($data['sys']['sunset'])->locale($request->lang);
+            // $sunset_new = $sunset->isoFormat('hh:mm a');
+
+            // $sunrise = $carbon->parse($data['sys']['sunrise'])->locale($request->lang);
+            // $sunrise_new = $sunset->isoFormat('hh:mm a');
+
+            $resp['weather_description']    = $data['weather'][0]['description'];
+            $resp['weather_icon_url']       = "https://openweathermap.org/img/w/$weather_icon.png";
+            $resp['temp']                   = $data['main']['temp']." C";
+            $resp['date']                   = $date_new;
+            $resp['sunrise']                = date("h:i a", $data['sys']['sunrise']);
+            $resp['sunset']                 = date("h:i a", $data['sys']['sunset']);
+            $resp['location']               = $data['name'];
+
+            return $this->sendResponse($resp , 'Weather data retrieved successfully');
+        }
+        else
+        {
+            return $this->sendError('Error fetching the weather data', $response->status(), $response->json());
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     public function index(Request $request)
     {
         try{
             $farms = $this->farmRepository->all();
+
             return $this->sendResponse(['all' => FarmResource::collection($farms)], 'Farms retrieved successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500); 
         }
     }
 
+   
     
+
+
+
+
+
+
+
+
+
+
+
+
     public function relations_index()
     {
         try{
@@ -186,6 +270,17 @@ class FarmAPIController extends AppBaseController
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
     public function store(CreateFarmAPIRequest $request)
     {
         try{
@@ -195,6 +290,7 @@ class FarmAPIController extends AppBaseController
             $fat_id = $input["farm_activity_type_id"];
             
             //all 1,2,3,4
+            $farm_detail['admin_id'] = auth()->id();
             $farm_detail['real'] = $input["real"];
             $farm_detail['archived'] = $input["archived"];
             $farm_detail['farm_activity_type_id'] = $input["farm_activity_type_id"];
@@ -335,25 +431,6 @@ class FarmAPIController extends AppBaseController
                 $farm->animal_fodder_sources()->sync($input["animal_fodder_sources"]);
                 $farm->animal_fodder_types()->sync($input["animal_fodder_types"]);
             }
-
-            //set the farm workers adding the creator to them
-           /*  $workers = $request->workers ?? [];
-            $workers[] = auth()->id();
-            $farm->workers()->sync($workers);
-    
-            //set the farm workers roles being the creator the admin
-            $admin_role_id = \App\Models\WorkableRole::select('id')->where('name','admin')->whereHas('workable_type', function($q){
-                $q->where('name', 'App\Models\Farm');
-            })->first()->id;
-    
-            foreach($farm->workers as $farm_worker){
-                $workable_roles[$farm_worker->id] = $request->{"workable_roles_".$farm_worker->id} ?? [];
-                if($farm_worker->id == auth()->id()){
-                    $workable_roles[$farm_worker->id] = [$admin_role_id];
-                }
-                $workables[$farm_worker->id] = \App\Models\Workable::where([['worker_id',$farm_worker->id], ['workable_id',$farm->id], ['workable_type','App\Models\Farm']])
-                                             ->first()->workable_roles()->sync($workable_roles[$farm_worker->id]);
-            } */
           
             auth()->user()->attachRole('farm-admin', $farm);
 
@@ -365,16 +442,43 @@ class FarmAPIController extends AppBaseController
     }
 
 
-    public function roles_index()
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function app_users_and_roles(Request $request)
     {
-        try
-        {
-            $roles = Role::whereNotIn('name', ['app-user','app-admin'])->get();
-            return $this->sendResponse(['all' => RoleResource::collection($roles)], 'Roles retrieved successfully');
-        }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
-        }
+        $roles = Role::whereIn('name', config('laratrust.taha.farm_allowed_roles'))->get();
+        $users = User::where('id', '!=', auth()->id())->whereHas('roles', function($q){
+            $q->where('name', config('laratrust.taha.user_default_role'));
+        })->get();
+
+        return $this->sendResponse(['users' => UserResource::collection($users), 'roles' =>  RoleResource::collection($roles)], 'Users retrieved successfully');
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     // attach a farm role to a user who has an invitation link
@@ -400,6 +504,19 @@ class FarmAPIController extends AppBaseController
     }
 
     
+
+
+
+
+
+
+
+
+
+
+
+
+
     //attach, edit or delete farm roles (send empty or no role_id when deleting a role)
     public function update_farm_role(Request $request)
     {
@@ -417,6 +534,11 @@ class FarmAPIController extends AppBaseController
 
             $user = $this->userRepository->find($request->user_id);
             $farm = $this->farmRepository->find($request->farm_id);
+            $role = Role::find($request->role_id);
+            if(!in_array($role->name, config('laratrust.taha.farm_allowed_roles')))
+            {
+                return $this->sendError('Invalid Role');
+            }
             
             if($request->role_id)   //first attach or edit roles
             {
@@ -427,7 +549,7 @@ class FarmAPIController extends AppBaseController
                 else            // first attach role
                 {
                     //send invitation to assignee user
-                    $role = Role::find($request->role_id);
+                   
                     $user->notify(new \App\Notifications\FarmInvitation(
                         auth()->user(),
                         $role,
@@ -461,6 +583,19 @@ class FarmAPIController extends AppBaseController
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function get_farm_users($id)
     {        
         try
@@ -474,16 +609,26 @@ class FarmAPIController extends AppBaseController
             }
 
             $users = $farm->users;
-            $userResource = new UserResource($users);
-            // $user_farm_role = $user->getRoles($farm);
-            // return $this->sendResponse($users, 'Farm users retrieved successfully');
-            return $this->sendResponse(['all' => $userResource->collection($users)], 'Farm users retrieved successfully');
+            return $this->sendResponse(['all' => UserResource::collection($users)], 'Farm users retrieved successfully');
         }
         catch(\Throwable $th)
         {
             return $this->sendError($th->getMessage(), 500); 
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     public function get_farm_posts($id)
@@ -509,6 +654,17 @@ class FarmAPIController extends AppBaseController
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
     public function show($id)
     {
         try{
@@ -526,6 +682,19 @@ class FarmAPIController extends AppBaseController
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
     public function update($id, CreateFarmAPIRequest $request)
     {
         try{
@@ -537,35 +706,166 @@ class FarmAPIController extends AppBaseController
             if (empty($farm)) {
                 return $this->sendError('Farm not found');
             }
+                
+            $fat_id = $input["farm_activity_type_id"];
+            
+            //all 1,2,3,4
+            $farm_detail['real'] = $input["real"];
+            $farm_detail['archived'] = $input["archived"];
+            $farm_detail['farm_activity_type_id'] = $input["farm_activity_type_id"];
+            $farm_detail['farmed_type_id'] = $input["farmed_type_id"];
+            $farm_detail['farmed_type_class_id'] = $input["farmed_type_class_id"];
+            $farm_detail['farming_date'] = $input["farming_date"];
+            $farm_detail['farming_compatibility'] = $input["farming_compatibility"];
 
-            $farm = $this->farmRepository->save_localized($input, $id);
+            $location['latitude'] = $input["location"]["latitude"];
+            $location['longitude'] = $input["location"]["longitude"];
+            $location['country'] = $input["location"]["country"];
+            $location['city'] = $input["location"]["city"];
+            $location['district'] = $input["location"]["district"];
+            $location['details'] = $input["location"]["details"];
+            $saved_location = $this->locationRepository->save_localized($location, $farm->location_id);
+            $farm_detail['location_id'] = $saved_location->id;
 
-            //set the farm workers adding the creator to them
-            $workers = $request->workers ?? [];
-            $workers[] = auth()->id();
-            $farm->workers()->sync($workers);
-
-
-            //set the farm workers roles being the creator the admin
-            $admin_role_id = \App\Models\WorkableRole::select('id')->where('name','admin')->whereHas('workable_type', function($q){
-                $q->where('name', 'App\Models\Farm');
-            })->first()->id;
-
-            foreach($farm->workers as $farm_worker){
-                $workable_roles[$farm_worker->id] = $request->{"workable_roles_".$farm_worker->id} ?? [];
-                // if($farm_worker->id == auth()->id()){
-                //     $workable_roles[$farm_worker->id] = [$admin_role_id];
-                // }
-                $workables[$farm_worker->id] = \App\Models\Workable::where([['worker_id',$farm_worker->id], ['workable_id',$farm->id], ['workable_type','App\Models\Farm']])
-                                            ->first()->workable_roles()->sync($workable_roles[$farm_worker->id]);
+            //crops 1
+            if($fat_id == 1)
+            {
+                $farm_detail['farming_method_id'] = $input["farming_method_id"];
             }
 
+            //crops, animals 1,4
+            if($fat_id == 1 || $fat_id == 4)
+            {
+                $farm_detail['farming_way_id'] = $input["farming_way_id"];
+            }
+            
+            //crops, trees, animals 1,2,4
+            if($fat_id == 1 || $fat_id == 2 || $fat_id == 4)
+            {
+                $farm_detail['area'] = $input["area"];
+                $farm_detail['area_unit_id'] = $input["area_unit_id"];
+            }
+
+            //crops, trees 1,2
+            if($fat_id == 1 || $fat_id == 2)
+            {
+                $farm_detail['irrigation_way_id'] = $input["irrigation_way_id"];
+                $farm_detail['soil_type_id'] = $input["soil_type_id"];
+                //soil.salt
+                $soil_salt_detail["saltable_type"] = "soil";
+                $soil_salt_detail["PH"] = $input["soil"]["salt"]["PH"];
+                $soil_salt_detail["CO3"] = $input["soil"]["salt"]["CO3"];
+                $soil_salt_detail["HCO3"] = $input["soil"]["salt"]["HCO3"];
+                $soil_salt_detail["Cl"] = $input["soil"]["salt"]["Cl"];
+                $soil_salt_detail["SO4"] = $input["soil"]["salt"]["SO4"];
+                $soil_salt_detail["Ca"] = $input["soil"]["salt"]["Ca"];
+                $soil_salt_detail["Mg"] = $input["soil"]["salt"]["Mg"];
+                $soil_salt_detail["K"] = $input["soil"]["salt"]["K"];
+                $soil_salt_detail["Na"] = $input["soil"]["salt"]["Na"];
+                $soil_salt_detail["Na2CO3"] = $input["soil"]["salt"]["Na2CO3"];
+                $saved_soil_salt_detail = $this->saltDetailRepository->save_localized($soil_salt_detail, $farm->soil_detail->salt_detail_id);
+                //soil
+                $soil_detail['salt_detail_id'] = $saved_soil_salt_detail->id;
+                $soil_detail['type'] = "soil";
+                $soil_detail['acidity_type_id'] = $input["soil"]["acidity_type_id"];
+                $soil_detail['acidity_value'] = $input["soil"]["acidity_value"];
+                $soil_detail['acidity_unit_id'] = $input["soil"]["acidity_unit_id"];
+                $soil_detail['salt_type_id'] = $input["soil"]["salt_type_id"];
+                $soil_detail['salt_concentration_value'] = $input["soil"]["salt_concentration_value"];
+                $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"];
+                $saved_soil_detail = $this->chemicalDetailRepository->save_localized($soil_detail, $farm->soil_detail_id);
+                $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
+                
+                //irrigation.salt 
+                $irrigation_salt_detail["saltable_type"] = "irrigation";
+                $irrigation_salt_detail["PH"] = $input["irrigation"]["salt"]["PH"];
+                $irrigation_salt_detail["CO3"] = $input["irrigation"]["salt"]["CO3"];
+                $irrigation_salt_detail["HCO3"] = $input["irrigation"]["salt"]["HCO3"];
+                $irrigation_salt_detail["Cl"] = $input["irrigation"]["salt"]["Cl"];
+                $irrigation_salt_detail["SO4"] = $input["irrigation"]["salt"]["SO4"];
+                $irrigation_salt_detail["Ca"] = $input["irrigation"]["salt"]["Ca"];
+                $irrigation_salt_detail["Mg"] = $input["irrigation"]["salt"]["Mg"];
+                $irrigation_salt_detail["K"] = $input["irrigation"]["salt"]["K"];
+                $irrigation_salt_detail["Na"] = $input["irrigation"]["salt"]["Na"];
+                $irrigation_salt_detail["Na2CO3"] = $input["irrigation"]["salt"]["Na2CO3"];
+                $saved_irrigation_salt_detail = $this->saltDetailRepository->save_localized($irrigation_salt_detail, $farm->irrigation_water_detail->salt_detail_id);
+                //irrigation
+                $irrigation_detail['salt_detail_id'] = $saved_irrigation_salt_detail->id;
+                $irrigation_detail['type'] = "irrigation";
+                $irrigation_detail['acidity_type_id'] = $input["irrigation"]["acidity_type_id"];
+                $irrigation_detail['acidity_value'] = $input["irrigation"]["acidity_value"];
+                $irrigation_detail['acidity_unit_id'] = $input["irrigation"]["acidity_unit_id"];
+                $irrigation_detail['salt_type_id'] = $input["irrigation"]["salt_type_id"];
+                $irrigation_detail['salt_concentration_value'] = $input["irrigation"]["salt_concentration_value"];
+                $irrigation_detail['salt_concentration_unit_id'] = $input["irrigation"]["salt_concentration_unit_id"];
+                $saved_irrigation_detail = $this->chemicalDetailRepository->save_localized($irrigation_detail, $farm->irrigation_water_detail_id);
+                $farm_detail['irrigation_water_detail_id'] = $saved_irrigation_detail->id;
+            }
+
+            //homeplant, trees, animals 2,3,4
+            if($fat_id == 2 || $fat_id == 3 || $fat_id == 4)
+            {
+                $farm_detail['farmed_number'] = $input["farmed_number"];
+            }
+
+            //homeplants 3
+            if($fat_id == 3)
+            {
+                $farm_detail['home_plant_pot_size'] = $input["home_plant_pot_size"];
+                $farm_detail['home_plant_illuminating_source_id'] = $input["home_plant_illuminating_source_id"];
+            }
+
+            // animal 4
+            if($fat_id == 4)
+            {
+                $farm_detail['animal_breeding_purpose_id'] = $input["animal_breeding_purpose_id"];
+                //drink.salt
+                $drink_salt_detail["saltable_type"] = "drink";
+                $drink_salt_detail["PH"] = $input["drink"]["salt"]["PH"];
+                $drink_salt_detail["CO3"] = $input["drink"]["salt"]["CO3"];
+                $drink_salt_detail["HCO3"] = $input["drink"]["salt"]["HCO3"];
+                $drink_salt_detail["Cl"] = $input["drink"]["salt"]["Cl"];
+                $drink_salt_detail["SO4"] = $input["drink"]["salt"]["SO4"];
+                $drink_salt_detail["Ca"] = $input["drink"]["salt"]["Ca"];
+                $drink_salt_detail["Mg"] = $input["drink"]["salt"]["Mg"];
+                $drink_salt_detail["K"] = $input["drink"]["salt"]["K"];
+                $drink_salt_detail["Na"] = $input["drink"]["salt"]["Na"];
+                $drink_salt_detail["Na2CO3"] = $input["drink"]["salt"]["Na2CO3"];
+                $saved_drink_salt_detail = $this->saltDetailRepository->save_localized($drink_salt_detail, $farm->animal_drink_water_salt_detail_id);
+                $farm_detail['animal_drink_water_salt_detail_id'] = $saved_drink_salt_detail->id;
+            }
+
+            $farm = $this->farmRepository->save_localized($farm_detail, $id);
+
+            //crops, trees, homeplants 1,2,3
+            if($fat_id == 1 || $fat_id == 2 || $fat_id == 3)
+            {
+                $farm->chemical_fertilizer_sources()->sync($input["chemical_fertilizer_sources"]);
+                $farm->seedling_sources()->sync($input["seedling_sources"]);
+            }
+            // animal 4
+            if($fat_id == 4)
+            {
+                $farm->animal_medicine_sources()->sync($input["animal_medicine_sources"]);
+                $farm->animal_fodder_sources()->sync($input["animal_fodder_sources"]);
+                $farm->animal_fodder_types()->sync($input["animal_fodder_types"]);
+            }
+            
             return $this->sendResponse(new FarmResource($farm), 'Farm updated successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500); 
         }
 
     }
+
+
+
+
+
+
+
+
+
 
     public function destroy($id)
     {
@@ -584,79 +884,5 @@ class FarmAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500); 
         }
     }
-
-
-
-
-    public function create()
-    {
-        // $workers = resolve($this->userRepository->model())->where('id','!=',auth()->id())->get();
-        $workers = $this->userRepository->all();
-        $workable_roles = \App\Models\WorkableRole::whereHas('workable_type', function($q){// the same collect($worker->farms->find($farm->id)->pivot->workable_roles)->whereHas...
-            $q->where('name', 'App\Models\Farm');
-        })->get();
-        return view('farms.create', compact('workers', 'workable_roles'));
-    }
-
-
-    public function edit($id)
-    {
-        $farm = $this->farmRepository->find($id);
-
-        if (empty($farm)) {
-            Flash::error('Farm not found');
-
-            return redirect(route('farms.index'));
-        }
-
-        // $workers = resolve($this->userRepository->model())->where('id','!=',auth()->id())->get();
-        $workers = $this->userRepository->all();
-        $workableHasWorkers = $farm->workers->pluck('id')->all();
-        $workable_roles = \App\Models\WorkableRole::whereHas('workable_type', function($q){// the same collect($worker->farms->find($farm->id)->pivot->workable_roles)->whereHas...
-            $q->where('name', 'App\Models\Farm');
-        })->get();
-
-        return view('farms.edit', compact('farm', 'workers', 'workableHasWorkers', 'workable_roles'));
-    }
-
-
-
-   /*  public function edit_roles($id)
-    {
-        $farm = $this->farmRepository->find($id);
-
-        if (empty($farm)) {
-
-            Flash::error('Farm with this worker not found');
-
-            return redirect(route('farms.index'));
-        }
-
-        $workers = $farm->workers;
-
-        return view('farms.roles.edit', compact('farm', 'workers'));
-    }
-
-
-    public function update_roles($id, Request $request)
-    {
-        $workable = $this->workableRepository->find($id);
-
-        if (empty($workable)) {
-
-            Flash::error('Farm with this worker not found');
-
-            return redirect(route('farms.index'));
-        }
-
-        $workable_roles = $request->workable_roles ?? [];
-
-        $workable->workable_roles()->sync($workable_roles);
-
-        Flash::success('Farm roles updated successfully.');
-
-        return redirect(route('farms.index'));
-    }
- */
 
 }

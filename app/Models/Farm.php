@@ -154,6 +154,7 @@ class Farm extends Team
 
 
     public $fillable = [
+        'admin_id',
         'real',
         'archived',
         'location_id',
@@ -184,6 +185,7 @@ class Farm extends Team
      */
     protected $casts = [
         'id' => 'integer',
+        'admin_id' => 'integer',
         'real' => 'boolean',
         'archived' => 'boolean',
         'location_id' => 'integer',
@@ -217,6 +219,11 @@ class Farm extends Team
         return $this->morphToMany(User::class, 'workable', 'workables', 'workable_id', 'worker_id')->using(Workable::class)->withPivot('id', 'status')->withTimestamps();
     }
     
+    public function admin()
+    {
+        return $this->belongsTo(User::class, 'admin_id');
+    }
+
     public function farm_activity_type()
     {
         return $this->belongsTo(FarmActivityType::class);

@@ -23,6 +23,7 @@ class CreateFarmsTable extends Migration
             $table->double('home_plant_pot_size')->nullable();
             $table->double('area')->nullable();
             $table->bigInteger('farmed_number')->nullable();
+            $table->foreignId('admin_id')->constrained('users');
             $table->foreignId('area_unit_id')->nullable()->constrained('measuring_units');
             $table->foreignId('location_id')->constrained();
             $table->foreignId('farm_activity_type_id')->constrained();

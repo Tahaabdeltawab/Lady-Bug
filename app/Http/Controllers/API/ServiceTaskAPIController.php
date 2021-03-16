@@ -110,6 +110,7 @@ class ServiceTaskAPIController extends AppBaseController
     public function store(CreateServiceTaskAPIRequest $request)
     {
         $input = $request->validated();
+        $input['done'] = 0;
 
         $serviceTask = $this->serviceTaskRepository->save_localized($input);
 

@@ -123,12 +123,12 @@ class ChemicalDetail extends Model
      */
     public static $rules = [
         'type' => 'required',
-        'acidity_type_id' => 'required',
+        'acidity_type_id' => 'required|integer',
         'acidity_value' => 'required',
-        'acidity_unit_id' => 'required',
-        'salt_type_id' => 'required',
+        'acidity_unit_id' => 'required|integer',
+        'salt_type_id' => 'required|integer',
         'salt_concentration_value' => 'required',
-        'salt_concentration_unit_id' => 'required',
+        'salt_concentration_unit_id' => 'required|integer',
         'salt_detail_id' => 'required'
     ];
 

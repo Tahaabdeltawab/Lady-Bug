@@ -20,8 +20,14 @@ class CommentResource extends JsonResource
             // 'updated_at' => $this->updated_at,
             'content' => $this->content,
             'commenter_id' => $this->commenter_id,
-            'parent_id' => $this->parent_id,
-            'post_id' => $this->post_id
+            'parent_id' => $this->when($this->parent_id, $this->parent_id),
+            'post_id' => $this->post_id,
+            'replies_count' => $this->when(!$this->parent_id, $this->replies->count()),
+            'likers_count' => $this->likers->count(),
+            'dislikers_count' => $this->dislikers->count(),
+            'likers' => $this->when( auth()->id() == $this->commenter_id ,UserResource::collection($this->likers)),
+            'dislikers' => $this->when( auth()->id() == $this->commenter_id ,UserResource::collection($this->dislikers)),
+            'replies' => $this->when(!$this->parent_id, CommentResource::collection($this->replies)),
         ];
     }
 }

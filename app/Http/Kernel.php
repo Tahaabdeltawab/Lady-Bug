@@ -65,10 +65,10 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'jwt.verify' => \App\Http\Middleware\JWTMiddleware::class,
         'jwt.guest' => \App\Http\Middleware\JWTGuestMiddleware::class,
-        'role' => \App\Http\Middleware\Spatie\RoleMiddleware::class,
-        'permission' => \App\Http\Middleware\Spatie\PermissionMiddleware::class,
-        'role_or_permission' => \App\Http\Middleware\Spatie\RoleOrPermissionMiddleware::class,
-        'wauth.role' => \App\Http\Middleware\WorkableAuthRole::class,
-        'wauth.permission' => \App\Http\Middleware\WorkableAuthPermission::class,
+        // 'role' => \App\Http\Middleware\Spatie\RoleMiddleware::class,
+        // 'permission' => \App\Http\Middleware\Spatie\PermissionMiddleware::class,
+        // 'role_or_permission' => \App\Http\Middleware\Spatie\RoleOrPermissionMiddleware::class,
+        // 'wauth.role' => \App\Http\Middleware\WorkableAuthRole::class,
+        // 'wauth.permission' => \App\Http\Middleware\WorkableAuthPermission::class,
     ];
 }

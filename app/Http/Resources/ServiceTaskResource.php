@@ -17,14 +17,14 @@ class ServiceTaskResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'start_at' => $this->start_at,
-            'notify_at' => $this->notify_at,
             'farm_id' => $this->farm_id,
             'service_table_id' => $this->service_table_id,
             'task_type_id' => $this->task_type_id,
             'quantity' => $this->quantity,
             'quantity_unit_id' => $this->quantity_unit_id,
-            'due_at' => $this->due_at,
+            'start_at' => date('Y-m-d', strtotime($this->start_at)),
+            'notify_at' => date('Y-m-d', strtotime($this->notify_at)),
+            'due_at' => date('Y-m-d', strtotime($this->due_at)),
             'done' => $this->done
             // 'created_at' => $this->created_at,
             // 'updated_at' => $this->updated_at,

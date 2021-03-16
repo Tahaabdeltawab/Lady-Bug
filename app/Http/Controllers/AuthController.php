@@ -120,7 +120,7 @@ class AuthController extends AppBaseController
                 return $this->sendError(json_encode($validator->errors()), $code);
             }
 
-            if(!($user_role = Role::where('name', 'app-user')))
+            if(!($user_role = Role::where('name', config('laratrust.taha.user_default_role'))))
             {
                 return $this->sendError(__('Role app-user not found'), 4044);
             }

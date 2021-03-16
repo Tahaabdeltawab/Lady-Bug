@@ -117,9 +117,14 @@ abstract class BaseRepository
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function all($search = [], $skip = null, $limit = null, $columns = ['*'])
+    public function all($search = [], $skip = null, $limit = null, $relations = [], $columns = ['*'])
     {
         $query = $this->allQuery($search, $skip, $limit);
+        
+        if (count($relations)) 
+        {
+            $query->with($relations);
+        }
 
         return $query->get($columns);
     }

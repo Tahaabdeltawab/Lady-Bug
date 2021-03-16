@@ -16,7 +16,7 @@ class CreateServiceTasksTable extends Migration
     {
         Schema::create('service_tasks', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
+            $table->string('name');
             $table->timestamp('start_at')->nullable();
             $table->timestamp('notify_at')->nullable();
             $table->foreignId('farm_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
@@ -25,7 +25,7 @@ class CreateServiceTasksTable extends Migration
             $table->double('quantity');
             $table->foreignId('quantity_unit_id')->constrained('measuring_units');
             $table->timestamp('due_at')->nullable();
-            $table->boolean('done');
+            $table->boolean('done')->default(0);
             $table->timestamps();
             $table->softDeletes();
             // $table->foreign('farm_id')->references('id')->on('farms')->onDelete('CASCADE');

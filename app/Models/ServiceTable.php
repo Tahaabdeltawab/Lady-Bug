@@ -41,24 +41,27 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *      )
  * )
  */
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class ServiceTable extends Model implements TranslatableContract
+class ServiceTable extends Model
 {
-    use SoftDeletes, Translatable;
+    use SoftDeletes;
 
     public $translatedAttributes = ['name'];
     
     public $table = 'service_tables';
     
 
-    protected $dates = ['deleted_at'];
+    protected $dates = [
+        'deleted_at',
+        'start_at',
+        'notify_at',
+        'due_at',
+    ];
 
 
 
     public $fillable = [
-        // 'name',
+        'name',
         'farm_id'
     ];
 
@@ -69,7 +72,7 @@ class ServiceTable extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'name' => 'string',
+        'name' => 'string',
         'farm_id' => 'integer'
     ];
 
@@ -79,10 +82,13 @@ class ServiceTable extends Model implements TranslatableContract
      * @var array
      */
     public static $rules = [
-        'name_ar_localized' => 'required|max:200',
-        'name_en_localized' => 'required|max:200',
+        'name' => 'required|max:200',
         'farm_id' => 'required'
     ];
+
+    public function tasks(){
+        return $this->hasMany(ServiceTask::class);
+    }
 
     
 }

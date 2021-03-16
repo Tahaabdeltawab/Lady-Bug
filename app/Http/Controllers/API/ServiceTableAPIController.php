@@ -63,7 +63,8 @@ class ServiceTableAPIController extends AppBaseController
         $serviceTables = $this->serviceTableRepository->all(
             $request->except(['skip', 'limit']),
             $request->get('skip'),
-            $request->get('limit')
+            $request->get('limit'),
+            ['tasks']
         );
 
         return $this->sendResponse(['all' => ServiceTableResource::collection($serviceTables)], 'Service Tables retrieved successfully');
@@ -212,7 +213,7 @@ class ServiceTableAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, CreateServiceTableAPIRequest $request)
+    public function update($id, UpdateServiceTableAPIRequest $request)
     {
         $input = $request->validated();
 

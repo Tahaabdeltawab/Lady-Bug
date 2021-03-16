@@ -18,13 +18,14 @@ class FarmResource extends JsonResource
 
          //all 1,2,3,4
          $farm_detail['id'] = $this->id;
+         $farm_detail['admin_id'] = $this->admin_id;
          $farm_detail['real'] = $this->real;
          $farm_detail['archived'] = $this->archived;
          $farm_detail['farm_activity_type'] = new FarmActivityTypeResource($this->farm_activity_type);
          $farm_detail['farmed_type'] = new FarmedTypeResource($this->farmed_type);
          $farm_detail['farmed_type_class'] = new FarmedTypeClassResource($this->farmed_type_class);
          $farm_detail['location'] = new LocationResource($this->location);
-         $farm_detail['farming_date'] = $this->farming_date;
+         $farm_detail['farming_date'] = date('Y-m-d', strtotime($this->farming_date));
          $farm_detail['farming_compatibility'] = $this->farming_compatibility;
 
          //crops 1
@@ -84,6 +85,14 @@ class FarmResource extends JsonResource
             $farm_detail['chemical_fertilizer_sources'] = ChemicalFertilizerSourceResource::collection($this->chemical_fertilizer_sources);
             $farm_detail['seedling_sources'] =  SeedlingSourceResource::collection($this->seedling_sources);
          }
+
+         // pass the farm to the usercollection to add the farm_roles to the collection
+         // if you pass a farm in the collection() you will get farm_roles property in the users collection and vice versa
+         $farm_detail['users'] = (new UserResource($this->users))->collection($this->users)->farm($this);
+        //  $farm_detail['users'] = UserResource::collection($this->users);
+         $farm_detail['posts'] = PostResource::collection($this->posts);
+         $farm_detail['service_tables'] = ServiceTableResource::collection($this->service_tables);
+         $farm_detail['coming_task'] = $this->service_tasks()->orderBy('start_at', 'asc')->first() ?? (object) [] ;
        
          return $farm_detail;
 
