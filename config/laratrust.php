@@ -185,15 +185,22 @@ return [
 
         /**
          * Method to be called in the middleware return case.
-         * Available: abort|redirect
+         * Available: abort|redirect|json
          */
-        'handling' => 'abort',
+        // 'handling' => 'abort',
+        'handling' => 'json',
 
         /**
          * Handlers for the unauthorized method in the middlewares.
          * The name of the handler must be the same as the handling.
          */
         'handlers' => [
+
+            'json' => [
+                'code' => 499,
+                'message' => 'User does not have any of the necessary access rights.'
+            ],
+
             /**
              * Aborts the execution with a 403 code and allows you to provide the response text
              */

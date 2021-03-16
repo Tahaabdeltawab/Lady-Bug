@@ -735,9 +735,14 @@
     'middleware' => 
     array (
       'register' => true,
-      'handling' => 'abort',
+      'handling' => 'json',
       'handlers' => 
       array (
+        'json' => 
+        array (
+          'code' => 499,
+          'message' => 'User does not have any of the necessary access rights.',
+        ),
         'abort' => 
         array (
           'code' => 403,

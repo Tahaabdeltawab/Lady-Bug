@@ -45,17 +45,29 @@ class LaratrustMiddleware
         $handling = Config::get('laratrust.middleware.handling');
         $handler = Config::get("laratrust.middleware.handlers.{$handling}");
 
-        if ($handling == 'abort') {
-            $defaultMessage = 'User does not have any of the necessary access rights.';
+        $defaultMessage = 'User does not have any of the necessary access rights.';
+        
+        if ($handling == 'abort') 
+        {
             return App::abort($handler['code'], $handler['message'] ?? $defaultMessage);
         }
-
-        $redirect = Redirect::to($handler['url']);
-        if (!empty($handler['message']['content'])) {
-            $redirect->with($handler['message']['key'], $handler['message']['content']);
+        elseif ($handling == 'redirect')
+        {
+            $redirect = Redirect::to($handler['url']);
+            if (!empty($handler['message']['content'])) {
+                $redirect->with($handler['message']['key'], $handler['message']['content']);
+            }
+    
+            return $redirect;
         }
 
-        return $redirect;
+        return response()->json([
+            'success' => false,
+            'code' => $handler['code'],
+            'message' => $handler['message'] ?? $defaultMessage,
+            'data' => (object) []
+        ]);
+
     }
 
     /**
