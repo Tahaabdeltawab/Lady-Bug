@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 
 use App\Models\Role;
 use App\Models\User;
+use App\Models\FarmedType;
+use App\Models\FarmedTypeClass;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
@@ -18,6 +20,8 @@ use App\Repositories\LocationRepository;
 use App\Repositories\PostRepository;
 
 use App\Repositories\SaltTypeRepository;
+use App\Repositories\HomePlantPotSizeRepository;
+use App\Repositories\AcidityTypeRepository;
 use App\Repositories\FarmActivityTypeRepository;
 use App\Repositories\FarmedTypeClassRepository;
 use App\Repositories\FarmedTypeRepository;
@@ -34,7 +38,9 @@ use App\Repositories\AnimalFodderSourceRepository;
 use App\Repositories\AnimalMedicineSourceRepository;
 use App\Repositories\SoilTypeRepository;
 
+use App\Http\Resources\AcidityTypeResource;
 use App\Http\Resources\SaltTypeResource;
+use App\Http\Resources\HomePlantPotSizeResource;
 use App\Http\Resources\FarmActivityTypeResource;
 use App\Http\Resources\FarmedTypeClassResource;
 use App\Http\Resources\FarmedTypeResource;
@@ -71,7 +77,9 @@ class FarmAPIController extends AppBaseController
     private $chemicalDetailRepository;
     private $postRepository;
 
+    private $acidityTypeRepository;
     private $saltTypeRepository;
+    private $homePlantPotSizeRepository;
     private $farmActivityTypeRepository;
     private $farmedTypeClassRepository;
     private $farmedTypeRepository;
@@ -97,7 +105,9 @@ class FarmAPIController extends AppBaseController
         ChemicalDetailRepository $chemicalDetailRepo,
         PostRepository $postRepo,
 
+        AcidityTypeRepository $acidityTypeRepo,
         SaltTypeRepository $saltTypeRepo,
+        HomePlantPotSizeRepository $homePlantPotSizeRepo,
         FarmActivityTypeRepository $farmActivityTypeRepo,
         FarmedTypeClassRepository $farmedTypeClassRepo,
         FarmedTypeRepository $farmedTypeRepo,
@@ -122,7 +132,9 @@ class FarmAPIController extends AppBaseController
         $this->chemicalDetailRepository = $chemicalDetailRepo;
         $this->postRepository = $postRepo;
         
+        $this->acidityTypeRepository = $acidityTypeRepo;
         $this->saltTypeRepository = $saltTypeRepo;
+        $this->homePlantPotSizeRepository = $homePlantPotSizeRepo;
         $this->farmActivityTypeRepository = $farmActivityTypeRepo;
         $this->farmedTypeClassRepository = $farmedTypeClassRepo;
         $this->farmedTypeRepository = $farmedTypeRepo;
@@ -243,16 +255,32 @@ class FarmAPIController extends AppBaseController
     public function relations_index()
     {
         try{
+            $data['acidity_types'] = AcidityTypeResource::collection($this->acidityTypeRepository->all());
             $data['salt_types'] = SaltTypeResource::collection($this->saltTypeRepository->all());
             $data['farm_activity_types'] = FarmActivityTypeResource::collection($this->farmActivityTypeRepository->all());
-            $data['farmed_type_classes'] = FarmedTypeClassResource::collection($this->farmedTypeClassRepository->all());
-            $data['farmed_types'] = FarmedTypeResource::collection($this->farmedTypeRepository->all());
+            $data['home_plant_pot_sizes'] = HomePlantPotSizeResource::collection($this->homePlantPotSizeRepository->all());
+         
+
+            $data['crops_types'] = FarmedTypeResource::collection($this->farmedTypeRepository
+            ->where(['farm_activity_type_id' => 1])->all());
+
+            $data['trees_types'] = FarmedTypeResource::collection($this->farmedTypeRepository
+            ->where(['farm_activity_type_id' => 2])->all());
+
+            $data['homeplants_types'] = FarmedTypeResource::collection($this->farmedTypeRepository
+            ->where(['farm_activity_type_id' => 3])->all());
+
+            $data['animals_types'] = FarmedTypeResource::collection($this->farmedTypeRepository
+            ->where(['farm_activity_type_id' => 4])->all());
+
+
             $data['area_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'area'])->all());
             $data['acidity_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'acidity'])->all());
             $data['salt_concentration_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'salt_concentration'])->all());
             $data['irrigation_ways'] = IrrigationWayResource::collection($this->irrigationWayRepository->all());
             $data['home_plant_illuminating_sources'] = HomePlantIlluminatingSourceResource::collection($this->homePlantIlluminatingSourceRepository->all());
-            $data['farming_ways'] = FarmingWayResource::collection($this->farmingWayRepository->all());
+            $data['farming_ways'] = FarmingWayResource::collection($this->farmingWayRepository->where(['type' => 'farming'])->all());
+            $data['breeding_ways'] = FarmingWayResource::collection($this->farmingWayRepository->where(['type' => 'breeding'])->all());
             $data['animal_breeding_purposes'] = AnimalBreedingPurposeResource::collection($this->animalBreedingPurposeRepository->all());
             $data['farming_methods'] = FarmingMethodResource::collection($this->farmingMethodRepository->all());
             $data['seedling_sources'] = SeedlingSourceResource::collection($this->seedlingSourceRepository->all());
@@ -392,7 +420,7 @@ class FarmAPIController extends AppBaseController
             //homeplants 3
             if($fat_id == 3)
             {
-                $farm_detail['home_plant_pot_size'] = $input["home_plant_pot_size"];
+                $farm_detail['home_plant_pot_size_id'] = $input["home_plant_pot_size_id"];
                 $farm_detail['home_plant_illuminating_source_id'] = $input["home_plant_illuminating_source_id"];
             }
 
@@ -811,7 +839,7 @@ class FarmAPIController extends AppBaseController
             //homeplants 3
             if($fat_id == 3)
             {
-                $farm_detail['home_plant_pot_size'] = $input["home_plant_pot_size"];
+                $farm_detail['home_plant_pot_size_id'] = $input["home_plant_pot_size_id"];
                 $farm_detail['home_plant_illuminating_source_id'] = $input["home_plant_illuminating_source_id"];
             }
 

@@ -20,7 +20,7 @@ class CreateFarmsTable extends Migration
             $table->boolean('archived');
             $table->timestamp('farming_date');
             $table->double('farming_compatibility');
-            $table->double('home_plant_pot_size')->nullable();
+            $table->foreignId('home_plant_pot_size_id')->nullable()->constrained();
             $table->double('area')->nullable();
             $table->bigInteger('farmed_number')->nullable();
             $table->foreignId('admin_id')->constrained('users');
@@ -28,7 +28,7 @@ class CreateFarmsTable extends Migration
             $table->foreignId('location_id')->constrained();
             $table->foreignId('farm_activity_type_id')->constrained();
             $table->foreignId('farmed_type_id')->constrained();
-            $table->foreignId('farmed_type_class_id')->constrained();
+            $table->foreignId('farmed_type_class_id')->nullable()->constrained();
             $table->foreignId('animal_breeding_purpose_id')->nullable()->constrained();
             $table->foreignId('home_plant_illuminating_source_id')->nullable()->constrained();
             $table->foreignId('farming_method_id')->nullable()->constrained();

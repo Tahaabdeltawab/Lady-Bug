@@ -279,3 +279,9 @@
         <span>Acidity Types</span>
     </a>
 </li>
+<li class="nav-item {{ Request::is('homePlantPotSizes*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('homePlantPotSizes.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>Home Plant Pot Sizes</span>
+    </a>
+</li>

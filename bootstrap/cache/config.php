@@ -137,16 +137,21 @@
       'pusher' => 
       array (
         'driver' => 'pusher',
-        'key' => 'local',
-        'secret' => 'local',
-        'app_id' => 'local',
+        'key' => '12345',
+        'secret' => '1234567',
+        'app_id' => '123',
         'options' => 
         array (
           'cluster' => 'mt1',
-          'encrypted' => true,
-          'host' => '18.188.197.86',
+          'encrypted' => false,
+          'host' => '3.141.204.5',
           'port' => 6002,
           'scheme' => 'http',
+          'enabledTransports' => 
+          array (
+            0 => 'ws',
+            1 => 'wss',
+          ),
         ),
       ),
       'ably' => 
@@ -798,6 +803,17 @@
         0 => 'farm-editor',
         1 => 'farm-supervisor',
       ),
+      'edit_farm_allowed_roles' => 
+      array (
+        0 => 'farm-admin',
+        1 => 'farm-editor',
+      ),
+      'show_farm_allowed_roles' => 
+      array (
+        0 => 'farm-admin',
+        1 => 'farm-editor',
+        2 => 'farm-supervisor',
+      ),
     ),
   ),
   'laratrust_seeder' => 
@@ -1215,16 +1231,16 @@
   array (
     'dashboard' => 
     array (
-      'port' => NULL,
+      'port' => '6003',
     ),
     'apps' => 
     array (
       0 => 
       array (
-        'id' => 'local',
+        'id' => '123',
         'name' => 'Lady Bug',
-        'key' => 'local',
-        'secret' => 'local',
+        'key' => '12345',
+        'secret' => '1234567',
         'path' => NULL,
         'capacity' => NULL,
         'enable_client_messages' => false,

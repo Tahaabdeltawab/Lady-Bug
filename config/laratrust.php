@@ -9,8 +9,19 @@ return [
         
         'admin_role' => 'app-admin',
     
-        'farm_allowed_roles' => [
+        'farm_allowed_roles' => [ // used in sending the app roles and users api for the farm owner to edit the roles
             // 'farm-admin', // this role is only for the farm creator
+            'farm-editor',
+            'farm-supervisor'
+        ],
+
+        'edit_farm_allowed_roles' => [
+            'farm-admin',
+            'farm-editor',
+        ],
+
+        'show_farm_allowed_roles' => [
+            'farm-admin',
             'farm-editor',
             'farm-supervisor'
         ],

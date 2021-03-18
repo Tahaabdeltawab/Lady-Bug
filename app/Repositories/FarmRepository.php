@@ -23,7 +23,7 @@ class FarmRepository extends BaseRepository
         'location',
         'farming_date',
         'farming_compatibility',
-        'home_plant_pot_size',
+        'home_plant_pot_size_id',
         'area',
         'area_unit_id',
         'farm_activity_type_id',

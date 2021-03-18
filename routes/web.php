@@ -351,3 +351,5 @@ Route::resource('saltTypes', App\Http\Controllers\SaltTypeController::class);
 Route::resource('locations', App\Http\Controllers\LocationController::class);
 
 Route::resource('acidityTypes', App\Http\Controllers\AcidityTypeController::class);
+
+Route::resource('homePlantPotSizes', App\Http\Controllers\HomePlantPotSizeController::class);

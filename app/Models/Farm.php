@@ -160,7 +160,7 @@ class Farm extends Team
         'location_id',
         'farming_date',
         'farming_compatibility',
-        'home_plant_pot_size',
+        'home_plant_pot_size_id',
         'area',
         'area_unit_id',
         'farm_activity_type_id',
@@ -190,7 +190,7 @@ class Farm extends Team
         'archived' => 'boolean',
         'location_id' => 'integer',
         'farming_compatibility' => 'double',
-        'home_plant_pot_size' => 'double',
+        'home_plant_pot_size_id' => 'integer',
         'area' => 'double',
         'area_unit_id' => 'integer',
         'farm_activity_type_id' => 'integer',
@@ -247,6 +247,11 @@ class Farm extends Team
     public function home_plant_illuminating_source()
     {
         return $this->belongsTo(HomePlantIlluminatingSource::class);
+    }
+
+    public function home_plant_pot_size()
+    {
+        return $this->belongsTo(HomePlantPotSize::class);
     }
 
     public function farming_method()

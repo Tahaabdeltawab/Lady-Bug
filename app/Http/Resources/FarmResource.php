@@ -65,7 +65,7 @@ class FarmResource extends JsonResource
          //homeplants 3
          if($fat_id == 3)
          {
-             $farm_detail['home_plant_pot_size'] = $this->home_plant_pot_size;
+             $farm_detail['home_plant_pot_size'] = new HomePlantPotSizeResource($this->home_plant_pot_size);
              $farm_detail['home_plant_illuminating_source'] = new HomePlantIlluminatingSourceResource($this->home_plant_illuminating_source);
          }
 
@@ -105,7 +105,7 @@ class FarmResource extends JsonResource
             'location' => $this->location,
             'farming_date' => $this->farming_date,
             'farming_compatibility' => $this->farming_compatibility,
-            'home_plant_pot_size' => $this->home_plant_pot_size,
+            'home_plant_pot_size_id' => $this->home_plant_pot_size,
             'area' => $this->area,
             'area_unit_id' => $this->area_unit_id,
             'farm_activity_type' => $this->farm_activity_type,

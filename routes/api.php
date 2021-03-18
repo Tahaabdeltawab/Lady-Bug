@@ -182,7 +182,9 @@ function () {
 Route::group(['middleware'=>['auth:api']], function()
 {
 
-    
+
+    Route::get('farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('farms.show');
+
     // // // // //  USER AREA  // // // // //
     
     Route::group(['middleware'=>['role:app-user']], function()
@@ -192,11 +194,10 @@ Route::group(['middleware'=>['auth:api']], function()
         {
             // the above resource routes but separated because when using the middleware on the resource I cannot catch the request->id in the middleware wauth. but in this way I can do.
             // also I tried to apply the middleware on the controller itself but the same problem occurred.
-            Route::get('/relations', [App\Http\Controllers\API\FarmAPIController::class, 'relations_index'])->name('relations.index');
+            Route::get('/relations/index', [App\Http\Controllers\API\FarmAPIController::class, 'relations_index'])->name('relations.index');
             Route::post('/', [App\Http\Controllers\API\FarmAPIController::class, 'store'])->name('store');
 
             Route::match(['put', 'patch', 'post'], '{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('update');
-            Route::get('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('show');
             Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy');
             
             Route::post('roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('roles.store');
@@ -253,7 +254,9 @@ Route::group(['middleware'=>['auth:api']], function()
 
         Route::resource('farmed_type_stages', App\Http\Controllers\API\FarmedTypeStageAPIController::class);
 
-        Route::resource('farm_activity_types', App\Http\Controllers\API\FarmActivityTypeAPIController::class);
+        // SHOULD BE ID 1 FOR CROPS, 2 FOR TREES, 3 FOR HOMEPLANTS, 4 FOR ANIMALS
+        // BECAUSE THERE IS CHECK ON THESE IDs ON FARM_RELATIONS METHOD IN FARMAPICONTROLLER
+        // Route::resource('farm_activity_types', App\Http\Controllers\API\FarmActivityTypeAPIController::class);
 
         Route::resource('chemical_fertilizer_sources', App\Http\Controllers\API\ChemicalFertilizerSourceAPIController::class);
 
@@ -305,6 +308,8 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::resource('locations', App\Http\Controllers\API\LocationAPIController::class);
 
         Route::resource('acidity_types', App\Http\Controllers\API\AcidityTypeAPIController::class);
+
+        Route::resource('home_plant_pot_sizes', App\Http\Controllers\API\HomePlantPotSizeAPIController::class);        
 
     });
 

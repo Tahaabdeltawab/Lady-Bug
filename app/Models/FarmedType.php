@@ -99,5 +99,10 @@ class FarmedType extends Model implements TranslatableContract
     {
         return $this->belongsTo(Asset::class, 'photo_id');
     }
+
+    public function farmed_type_classes()
+    {
+        return $this->hasMany(FarmedTypeClass::class);
+    }
     
 }

@@ -14,5 +14,9 @@
     Echo.channel('new_comment_channel').listen('NewCommentEvent', function(data){
         console.log(data.comment);
     })
+
+    Echo.channel('new_comment_channel2').listen('NewCommentEvent2', function(data){
+        console.log(data.comment);
+    })
 </script>
 @endsection
