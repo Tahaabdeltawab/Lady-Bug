@@ -83,7 +83,7 @@ class ServiceTable extends Model
      */
     public static $rules = [
         'name' => 'required|max:200',
-        'farm_id' => 'required'
+        'farm_id' => 'required|exists:farms,id'
     ];
 
     public function tasks(){

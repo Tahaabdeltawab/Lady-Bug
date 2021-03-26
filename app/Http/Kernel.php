@@ -43,6 +43,7 @@ class Kernel extends HttpKernel
             'throttle:api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\ApiGeneralAuth::class,
+            \App\Http\Middleware\Lang::class,
         ],
     ];
 
@@ -70,5 +71,6 @@ class Kernel extends HttpKernel
         // 'role_or_permission' => \App\Http\Middleware\Spatie\RoleOrPermissionMiddleware::class,
         // 'wauth.role' => \App\Http\Middleware\WorkableAuthRole::class,
         // 'wauth.permission' => \App\Http\Middleware\WorkableAuthPermission::class,
+        'check_farm_role' => \App\Http\Middleware\FarmRole::class,
     ];
 }

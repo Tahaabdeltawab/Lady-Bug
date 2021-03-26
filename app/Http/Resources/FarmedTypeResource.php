@@ -19,11 +19,16 @@ class FarmedTypeResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'farm_activity_type_name' => $this->farm_activity_type->name,
-            'photo_url' => $this->photo->asset_url,
+            'photo_url' => $this->asset->asset_url,
             'selected' => $selected,
             'farmed_type_classes' => FarmedTypeClassResource::collection($this->farmed_type_classes),
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
+            
+            'farming_temperature' => $this->when($this->farming_temperature, $this->farming_temperature),
+            'flowering_temperature' =>  $this->when($this->flowering_temperature, $this->flowering_temperature),
+            'maturity_temperature' =>  $this->when($this->maturity_temperature, $this->maturity_temperature),
+            'humidity' =>  $this->when($this->humidity, $this->humidity),
+            'flowering_time' =>  $this->when($this->flowering_time, $this->flowering_time),
+            'maturity_time' =>  $this->when($this->maturity_time, $this->maturity_time),
         ];
     }
 }

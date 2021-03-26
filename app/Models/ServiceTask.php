@@ -135,5 +135,8 @@ class ServiceTask extends Model
      */
     public static $rules = [];
 
-    
+    public function task_type()
+    {
+        return $this->belongsTo(TaskType::class);
+    }
 }

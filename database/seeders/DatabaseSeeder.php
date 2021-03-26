@@ -13,8 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(LaratrustSeeder::class);
-        \App\Models\Job::factory()->count(10)->create(); 
+        $this->call(RoleSeeder::class);
+        \App\Models\HumanJob::factory()->count(10)->create(); 
 
   }
 }

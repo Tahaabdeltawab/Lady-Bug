@@ -18,6 +18,12 @@ class FarmedTypeRepository extends BaseRepository
      */
     protected $fieldSearchable = [
         'name',
+        'farming_temperature',
+        'flowering_temperature',
+        'maturity_temperature',
+        'humidity',
+        'flowering_time',
+        'maturity_time',
         'farm_activity_type_id'
     ];
 

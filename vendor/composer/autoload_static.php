@@ -112,6 +112,10 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
     );
 
     public static $prefixLengthsPsr4 = array (
+        'w' => 
+        array (
+            'willvincent\\Rateable\\' => 21,
+        ),
         'v' => 
         array (
             'voku\\' => 5,
@@ -310,6 +314,10 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
     );
 
     public static $prefixDirsPsr4 = array (
+        'willvincent\\Rateable\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/willvincent/laravel-rateable/src',
+        ),
         'voku\\' => 
         array (
             0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
@@ -869,6 +877,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Entities\\Role' => __DIR__ . '/../..' . '/app/Entities/Role.php',
         'App\\Entities\\User' => __DIR__ . '/../..' . '/app/Entities/User.php',
         'App\\Events\\NewCommentEvent' => __DIR__ . '/../..' . '/app/Events/NewCommentEvent.php',
+        'App\\Events\\NewCommentEvent2' => __DIR__ . '/../..' . '/app/Events/NewCommentEvent2.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Http\\Controllers\\API\\AcidityTypeAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/AcidityTypeAPIController.php',
         'App\\Http\\Controllers\\API\\AnimalBreedingPurposeAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/AnimalBreedingPurposeAPIController.php',
@@ -979,6 +988,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Http\\Middleware\\ApiGeneralAuth' => __DIR__ . '/../..' . '/app/Http/Middleware/ApiGeneralAuth.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
+        'App\\Http\\Middleware\\FarmRole' => __DIR__ . '/../..' . '/app/Http/Middleware/FarmRole.php',
         'App\\Http\\Middleware\\JWTGuestMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/JWTGuestMiddleware.php',
         'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => __DIR__ . '/../..' . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
@@ -1190,6 +1200,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Http\\Resources\\IrrigationWayResource' => __DIR__ . '/../..' . '/app/Http/Resources/IrrigationWayResource.php',
         'App\\Http\\Resources\\LocationResource' => __DIR__ . '/../..' . '/app/Http/Resources/LocationResource.php',
         'App\\Http\\Resources\\MeasuringUnitResource' => __DIR__ . '/../..' . '/app/Http/Resources/MeasuringUnitResource.php',
+        'App\\Http\\Resources\\NotificationResource' => __DIR__ . '/../..' . '/app/Http/Resources/NotificationResource.php',
         'App\\Http\\Resources\\PermissionResource' => __DIR__ . '/../..' . '/app/Http/Resources/PermissionResource.php',
         'App\\Http\\Resources\\PostResource' => __DIR__ . '/../..' . '/app/Http/Resources/PostResource.php',
         'App\\Http\\Resources\\PostTypeResource' => __DIR__ . '/../..' . '/app/Http/Resources/PostTypeResource.php',
@@ -2276,9 +2287,10 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'Cron\\HoursField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/HoursField.php',
         'Cron\\MinutesField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MinutesField.php',
         'Cron\\MonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MonthField.php',
-        'Database\\Factories\\JobFactory' => __DIR__ . '/../..' . '/database/factories/JobFactory.php',
+        'Database\\Factories\\HumanJobFactory' => __DIR__ . '/../..' . '/database/factories/HumanJobFactory.php',
         'Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/DatabaseSeeder.php',
         'Database\\Seeders\\LaratrustSeeder' => __DIR__ . '/../..' . '/database/seeders/LaratrustSeeder.php',
+        'Database\\Seeders\\RoleSeeder' => __DIR__ . '/../..' . '/database/seeders/RoleSeeder.php',
         'DeepCopy\\DeepCopy' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/DeepCopy.php',
         'DeepCopy\\Exception\\CloneException' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/Exception/CloneException.php',
         'DeepCopy\\Exception\\PropertyException' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/Exception/PropertyException.php',
@@ -8278,6 +8290,9 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'phpDocumentor\\Reflection\\Types\\Void_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Void_.php',
         'phpDocumentor\\Reflection\\Utils' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/Utils.php',
         'voku\\helper\\ASCII' => __DIR__ . '/..' . '/voku/portable-ascii/src/voku/helper/ASCII.php',
+        'willvincent\\Rateable\\Rateable' => __DIR__ . '/..' . '/willvincent/laravel-rateable/src/Rateable.php',
+        'willvincent\\Rateable\\RateableServiceProvider' => __DIR__ . '/..' . '/willvincent/laravel-rateable/src/RateableServiceProvider.php',
+        'willvincent\\Rateable\\Rating' => __DIR__ . '/..' . '/willvincent/laravel-rateable/src/Rating.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

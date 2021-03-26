@@ -119,6 +119,12 @@ class FarmedTypeAPIController extends AppBaseController
             'name_ar_localized' => 'required|max:200',
             'name_en_localized' => 'required|max:200',
             'farm_activity_type_id' => 'required',
+            'farming_temperature' => 'nullable|numeric',
+            'flowering_temperature' => 'nullable|numeric',
+            'maturity_temperature' => 'nullable|numeric',
+            'humidity' => 'nullable|numeric',
+            'flowering_time' => 'nullable|integer',
+            'maturity_time' => 'nullable|integer',
             'photo' => 'required|max:2000|mimes:jpeg,jpg,png',
         ]);
 
@@ -127,6 +133,12 @@ class FarmedTypeAPIController extends AppBaseController
             return $this->sendError(json_encode($validator->errors()), 5050);
         }
         
+        $to_save['name_ar_localized'] = $request->name_ar_localized;
+        $to_save['name_en_localized'] = $request->name_en_localized;
+        $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
+
+        $farmedType = $this->farmedTypeRepository->save_localized($to_save);
+
         if($photo = $request->file('photo'))
         {
             $currentDate = Carbon::now()->toDateString();
@@ -139,21 +151,15 @@ class FarmedTypeAPIController extends AppBaseController
             
             $url  = Storage::disk('s3')->url($path);
             
-            $saved_photo = $this->assetRepository->create([
+            $saved_photo = $farmedType->asset()->create([
                 'asset_name'        => $photoname,
                 'asset_url'         => $url,
                 'asset_size'        => $photosize,
                 'asset_mime'        => $photomime,
-                'assetable_type'    => 'farmedType'
             ]);
 
-            $to_save['photo_id'] = $saved_photo->id;
         }
-        $to_save['name_ar_localized'] = $request->name_ar_localized;
-        $to_save['name_en_localized'] = $request->name_en_localized;
-        $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
-
-        $farmedType = $this->farmedTypeRepository->save_localized($to_save);
+       
 
         return $this->sendResponse(new FarmedTypeResource($farmedType), 'Farmed Type saved successfully');
     }
@@ -268,6 +274,12 @@ class FarmedTypeAPIController extends AppBaseController
             'name_ar_localized' => 'required|max:200',
             'name_en_localized' => 'required|max:200',
             'farm_activity_type_id' => 'required',
+            'farming_temperature' => 'nullable|numeric',
+            'flowering_temperature' => 'nullable|numeric',
+            'maturity_temperature' => 'nullable|numeric',
+            'humidity' => 'nullable|numeric',
+            'flowering_time' => 'nullable|integer',
+            'maturity_time' => 'nullable|integer',
             'photo' => 'nullable|max:2000|mimes:jpeg,jpg,png',
         ]);
 
@@ -276,6 +288,12 @@ class FarmedTypeAPIController extends AppBaseController
             return $this->sendError(json_encode($validator->errors()), 5050);
         }
         
+        $to_save['name_ar_localized'] = $request->name_ar_localized;
+        $to_save['name_en_localized'] = $request->name_en_localized;
+        $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
+
+        $farmedType = $this->farmedTypeRepository->save_localized($to_save, $id);
+
         if($photo = $request->file('photo'))
         {
             $currentDate = Carbon::now()->toDateString();
@@ -288,21 +306,15 @@ class FarmedTypeAPIController extends AppBaseController
             
             $url  = Storage::disk('s3')->url($path);
             
-            $saved_photo = $this->assetRepository->create([
+            $farmedType->asset()->delete();
+            $saved_photo = $farmedType->asset()->create([
                 'asset_name'        => $photoname,
                 'asset_url'         => $url,
                 'asset_size'        => $photosize,
                 'asset_mime'        => $photomime,
-                'assetable_type'    => 'farmedType'
             ]);
 
-            $to_save['photo_id'] = $saved_photo->id;
         }
-        $to_save['name_ar_localized'] = $request->name_ar_localized;
-        $to_save['name_en_localized'] = $request->name_en_localized;
-        $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
-
-        $farmedType = $this->farmedTypeRepository->save_localized($to_save, $id);
 
         return $this->sendResponse(new FarmedTypeResource($farmedType), 'Farmed Type updated successfully');
 

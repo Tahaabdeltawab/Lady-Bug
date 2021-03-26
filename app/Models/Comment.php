@@ -93,7 +93,6 @@ class Comment extends Model
      */
     public static $rules = [
         'content' => 'required',
-        // 'commenter_id' => 'required|integer|exists:users,id',
         'post_id' => 'required|integer|exists:posts,id',
         'parent_id' => 'nullable|integer|exists:comments,id'
     ];
@@ -106,6 +105,21 @@ class Comment extends Model
     public function replies()
     {
         return $this->hasMany(Comment::class, 'parent_id');
+    }
+
+    // public function assets()
+    // {
+    //     return $this->belongsToMany(Asset::class, 'asset_post');
+    // }
+
+    public function assets()
+    {
+        return $this->morphMany(Asset::class, 'assetable');
+    }
+
+    public function commenter()
+    {
+        return $this->belongsTo(User::class);
     }
 
     

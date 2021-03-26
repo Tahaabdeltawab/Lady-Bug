@@ -57,10 +57,11 @@ class AuthController extends AppBaseController
 
         $credentials = array_merge($request->only($field, 'password'), ['status'=>'accepted']); //['email_or_phone'=>$email_or_phone, 'password'=>$password, 'status'=>'accepted']
     
+        // return response()->json($credentials);
         try {
             $user = User::where("$field", request()->{$field})->first();
             // $ttl = $request->get('remember_me') ? null : 60;
-            $ttl = 1440;
+            $ttl = 1440000; // 1000 days
             // if (! $token = auth('api')->attempt($credentials)) {             // use the default ttl (time period in which the token expires) set in config('jwt.ttl')
             
             if (! $token = auth('api')->setTTL($ttl)->attempt($credentials)) {  // if setTTL(null) not expiring token //used for mobile application as the token should not expire except with logout
@@ -120,10 +121,26 @@ class AuthController extends AppBaseController
                 return $this->sendError(json_encode($validator->errors()), $code);
             }
 
-            if(!($user_role = Role::where('name', config('laratrust.taha.user_default_role'))))
+            $user_role = Role::where('name', config('laratrust.taha.user_default_role'))->first();
+            if(!$user_role)
             {
                 return $this->sendError(__('Role app-user not found'), 4044);
             }
+
+
+            $user = $this->userRepository->create([
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'mobile' => $request->get('mobile'),
+                'human_job_id' => $request->get('human_job_id'),
+                'password' => Hash::make($request->get('password')),
+            ]);
+
+            if($user_role)
+            {
+                $user->attachRole(config('laratrust.taha.user_default_role'));
+            }
+
 
             if($photo = $request->file('photo'))
             {
@@ -137,30 +154,14 @@ class AuthController extends AppBaseController
                 
                 $url  = Storage::disk('s3')->url($path);
                 
-                $saved_photo = $this->assetRepository->create([
+                $asset = $user->asset()->create([
                     'asset_name'        => $photoname,
                     'asset_url'         => $url,
                     'asset_size'        => $photosize,
                     'asset_mime'        => $photomime,
-                    'assetable_type'    => 'profile'
                 ]);
             }
 
-
-            // $user = User::create([
-            $user = $this->userRepository->create([
-                'name' => $request->get('name'),
-                'email' => $request->get('email'),
-                'mobile' => $request->get('mobile'),
-                'human_job_id' => $request->get('human_job_id'),
-                'photo_id' => $saved_photo->id ?? null,
-                'password' => Hash::make($request->get('password')),
-            ]);
-
-            if($user_role)
-            {
-                $user->attachRole('app-user');
-            }
 
             $credentials = $request->only('email', 'password');
 
@@ -177,6 +178,7 @@ class AuthController extends AppBaseController
         }
         catch(\Throwable $th)
         {
+            throw $th;
             return $this->sendError($th->getMessage(), 500); 
         }    
     }

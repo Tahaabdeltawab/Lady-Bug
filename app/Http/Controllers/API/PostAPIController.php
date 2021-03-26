@@ -7,10 +7,14 @@ use App\Http\Requests\API\UpdatePostAPIRequest;
 use App\Models\Post;
 use App\Repositories\PostRepository;
 use App\Repositories\AssetRepository;
+use App\Repositories\PostTypeRepository;
+use App\Repositories\FarmedTypeRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\PostTypeResource;
+use App\Http\Resources\FarmedTypeResource;
 use Response;
 use App\Http\Resources\AssetResource;
 use Illuminate\Support\Facades\Validator;
@@ -27,11 +31,15 @@ class PostAPIController extends AppBaseController
     /** @var  PostRepository */
     private $postRepository;
     private $assetRepository;
+    private $farmedTypeRepository;
+    private $postTypeRepository;
 
-    public function __construct(PostRepository $postRepo, AssetRepository $assetRepo)
+    public function __construct(PostRepository $postRepo, AssetRepository $assetRepo, PostTypeRepository $postTypeRepo, FarmedTypeRepository $farmedTypeRepo)
     {
         $this->postRepository = $postRepo;
         $this->assetRepository = $assetRepo;
+        $this->farmedTypeRepository = $farmedTypeRepo;
+        $this->postTypeRepository = $postTypeRepo;
     }
 
     /**
@@ -75,6 +83,18 @@ class PostAPIController extends AppBaseController
         );
 
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
+    }
+
+    public function posts_relations()
+    {
+        $posts_types = $this->postTypeRepository->all();
+        $farmed_types = $this->farmedTypeRepository->all();
+
+        return $this->sendResponse(
+            [
+                'posts_types' => PostTypeResource::collection($posts_types),
+                'farmed_types' => FarmedTypeResource::collection($farmed_types)
+            ], 'Posts retrieved successfully');
     }
 
     /**
@@ -122,12 +142,12 @@ class PostAPIController extends AppBaseController
             $validator = Validator::make($request->all(), [
                 'title' => ['nullable', 'max:200'],
                 'content' => ['required'],
-                // 'author_id' => ['nullable'],
                 'farm_id' => ['nullable', 'exists:farms,id'],
                 'farmed_type_id' => ['nullable'],
                 'post_type_id' => ['required', 'exists:post_types,id'],
                 'solved' => ['nullable'],
-                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,mp4,mov,ogg,qt']
+                'assets' => ['nullable','array'],
+                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv']
             ]);
 
             if($validator->fails()){
@@ -135,6 +155,7 @@ class PostAPIController extends AppBaseController
                 
                 return $this->sendError(json_encode($errors), 777);
             }
+            return 'success';
 
             $data['title'] = $request->title; 
             $data['content'] = $request->content; 
@@ -148,8 +169,10 @@ class PostAPIController extends AppBaseController
             
             if($assets = $request->file('assets'))
             {
-                if(!is_array($assets))
+                /* if(!is_array($assets))
                 {
+                    //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
+                    // dispatch(new \App\Jobs\Upload($request, $post));
                     $currentDate = Carbon::now()->toDateString();
                     $assetsname = 'post-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
                     $assetssize = $assets->getSize(); //size in bytes 1k = 1000bytes
@@ -159,19 +182,16 @@ class PostAPIController extends AppBaseController
                     // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
                     
                     $url  = Storage::disk('s3')->url($path);
-                    
-                    $saved_asset = $this->assetRepository->create([
+
+                    $asset = $post->assets()->create([
                         'asset_name'        => $assetsname,
                         'asset_url'         => $url,
                         'asset_size'        => $assetssize,
                         'asset_mime'        => $assetsmime,
-                        'assetable_type'    => 'post'
                     ]);
-
-                    $post->assets()->attach($saved_asset->id);
                 }
                 else
-                {
+                { */
                     foreach($assets as $asset)
                     {
                         //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
@@ -185,18 +205,15 @@ class PostAPIController extends AppBaseController
                         // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
                         
                         $url  = Storage::disk('s3')->url($path);
-                        
-                        $saved_asset = $this->assetRepository->create([
-                            'asset_name'        => $assetname,
+
+                        $asset = $post->assets()->create([
+                            'asset_name'        => $assetsname,
                             'asset_url'         => $url,
-                            'asset_size'        => $assetsize,
-                            'asset_mime'        => $assetmime,
-                            'assetable_type'    => 'post'
+                            'asset_size'        => $assetssize,
+                            'asset_mime'        => $assetsmime,
                         ]);
-    
-                        $post->assets()->attach($saved_asset->id);
-                }
-                }
+                    }
+                // }
             }
 
             return $this->sendResponse(new PostResource($post), __('Post saved successfully'));
@@ -366,7 +383,8 @@ class PostAPIController extends AppBaseController
                 'farmed_type_id' => ['nullable'],
                 'post_type_id' => ['required', 'exists:post_types,id'],
                 'solved' => ['nullable'],
-                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,mp4,mov,ogg,qt']
+                'assets' => ['nullable','array'],
+                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv']
             ]);
 
             if($validator->fails()){
@@ -387,7 +405,7 @@ class PostAPIController extends AppBaseController
             
             if($assets = $request->file('assets'))
             {
-                if(!is_array($assets))
+              /*   if(!is_array($assets))
                 {
                     $currentDate = Carbon::now()->toDateString();
                     $assetsname = 'post-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
@@ -404,13 +422,18 @@ class PostAPIController extends AppBaseController
                         'asset_url'         => $url,
                         'asset_size'        => $assetssize,
                         'asset_mime'        => $assetsmime,
-                        'assetable_type'    => 'post'
                     ]);
 
-                    $post->assets()->sync([$saved_asset->id]);
+                    $post->assets()->delete();
+                    $asset = $post->assets()->create([
+                        'asset_name'        => $assetsname,
+                        'asset_url'         => $url,
+                        'asset_size'        => $assetssize,
+                        'asset_mime'        => $assetsmime,
+                    ]);
                 }
                 else
-                {
+                { */
                     foreach($assets as $asset)
                     {
                         //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
@@ -424,23 +447,20 @@ class PostAPIController extends AppBaseController
                         // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
                         
                         $url  = Storage::disk('s3')->url($path);
-                        
-                        $saved_assets[] = $this->assetRepository->create([
-                            'asset_name'        => $assetname,
+
+                        $post->assets()->delete();
+                        $assets[] = $post->assets()->create([
+                            'asset_name'        => $assetsname,
                             'asset_url'         => $url,
-                            'asset_size'        => $assetsize,
-                            'asset_mime'        => $assetmime,
-                            'assetable_type'    => 'post'
-                        ]);
-    
+                            'asset_size'        => $assetssize,
+                            'asset_mime'        => $assetsmime,
+                        ]);    
                     }
-                    $saved_assets_ids = collect($saved_assets)->pluck('id')->all();
-                    $post->assets()->sync($saved_assets_ids);
-                }
+                // }
             }
             else
             {
-                $post->assets()->sync([]);
+                // $post->assets()->delete();
             }
 
             return $this->sendResponse(new PostResource($post), __('Post saved successfully'));
@@ -449,12 +469,6 @@ class PostAPIController extends AppBaseController
         {
             return $this->sendError($th->getMessage(), 500); 
         }
-
-       
-
-        $post = $this->postRepository->save_localized($input, $id);
-
-        return $this->sendResponse(new PostResource($post), 'Post updated successfully');
     }
 
     /**

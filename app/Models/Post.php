@@ -144,9 +144,14 @@ class Post extends Model
         return $this->belongsTo(PostType::class);
     }
 
+    // public function assets()
+    // {
+    //     return $this->belongsToMany(Asset::class, 'asset_post');
+    // }
+
     public function assets()
     {
-        return $this->belongsToMany(Asset::class, 'asset_post');
+        return $this->morphMany(Asset::class, 'assetable');
     }
 
     public function comments()

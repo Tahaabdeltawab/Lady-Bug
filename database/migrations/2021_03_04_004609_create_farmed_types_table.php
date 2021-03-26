@@ -16,12 +16,15 @@ class CreateFarmedTypesTable extends Migration
     {
         Schema::create('farmed_types', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
             $table->foreignId('farm_activity_type_id')->constrained();
-            $table->foreignId('photo_id')->constrained('assets');
+            $table->double('farming_temperature')->nullable();
+            $table->double('flowering_temperature')->nullable();
+            $table->double('maturity_temperature')->nullable();
+            $table->double('humidity')->nullable();
+            $table->integer('flowering_time')->nullable();
+            $table->integer('maturity_time')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            // $table->foreign('farm_activity_type_id')->references('id')->on('farm_activity_types')->onDelete('CASCADE');
         });
     }
 

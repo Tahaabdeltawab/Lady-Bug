@@ -222,6 +222,13 @@
       0 => 'Tymon\\JWTAuth\\Providers\\LaravelServiceProvider',
     ),
   ),
+  'willvincent/laravel-rateable' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'willvincent\\Rateable\\RateableServiceProvider',
+    ),
+  ),
   'yajra/laravel-datatables-buttons' => 
   array (
     'providers' => 

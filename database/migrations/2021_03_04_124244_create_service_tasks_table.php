@@ -23,7 +23,7 @@ class CreateServiceTasksTable extends Migration
             $table->foreignId('service_table_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreignId('task_type_id')->constrained();
             $table->double('quantity');
-            $table->foreignId('quantity_unit_id')->constrained('measuring_units');
+            $table->foreignId('quantity_unit_id')->nullable()->constrained('measuring_units');
             $table->timestamp('due_at')->nullable();
             $table->boolean('done')->default(0);
             $table->timestamps();

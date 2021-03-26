@@ -103,5 +103,9 @@ class FarmedTypeGinfo extends Model implements TranslatableContract
         'farmed_type_stage_id' => 'required'
     ];
 
+    public function assets()
+    {
+        return $this->morphMany(Asset::class, 'assetable');
+    }
     
 }

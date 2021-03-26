@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Job;
+use App\Models\HumanJob;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class JobFactory extends Factory
+class HumanJobFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Job::class;
+    protected $model = HumanJob::class;
 
     /**
      * Define the model's default state.

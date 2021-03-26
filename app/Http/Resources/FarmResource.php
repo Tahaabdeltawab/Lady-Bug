@@ -14,7 +14,7 @@ class FarmResource extends JsonResource
      */
     public function toArray($request)
     {
-        $fat_id = $this->farm_activity_type_id;
+        // $fat_id = $this->farm_activity_type_id;
 
          //all 1,2,3,4
          $farm_detail['id'] = $this->id;
@@ -29,62 +29,57 @@ class FarmResource extends JsonResource
          $farm_detail['farming_compatibility'] = $this->farming_compatibility;
 
          //crops 1
-         if($fat_id == 1)
-         {
+        //  if($fat_id == 1)
+        //  {
              $farm_detail['farming_method'] = new FarmingMethodResource($this->farming_method);
-         }
+        //  }
 
          //crops, animals 1,4
-         if($fat_id == 1 || $fat_id == 4)
-         {
+        //  if($fat_id == 1 || $fat_id == 4)
+        //  {
              $farm_detail['farming_way'] = new FarmingWayResource($this->farming_way);
-         }
-         
-         //crops, trees, animals 1,2,4
-         if($fat_id == 1 || $fat_id == 2 || $fat_id == 4)
-         {
-             $farm_detail['area'] = $this->area;
-             $farm_detail['area_unit'] = new MeasuringUnitResource($this->area_unit);
-         }
+        //  }
 
          //crops, trees 1,2
-         if($fat_id == 1 || $fat_id == 2)
-         {
+        //  if($fat_id == 1 || $fat_id == 2)
+        //  {
              $farm_detail['irrigation_way'] = new IrrigationWayResource($this->irrigation_way);
              $farm_detail['soil_type'] = new SoilTypeResource($this->soil_type);
              $farm_detail['soil_detail'] = new ChemicalDetailResource($this->soil_detail);
              $farm_detail['irrigation_water_detail'] = new ChemicalDetailResource($this->irrigation_water_detail);
-         }
+             $farm_detail['area'] = $this->area;
+             $farm_detail['area_unit'] = new MeasuringUnitResource($this->area_unit);
+        //  }
 
          //homeplant, trees, animals 2,3,4
-         if($fat_id == 2 || $fat_id == 3 || $fat_id == 4)
-         {
+        //  if($fat_id == 2 || $fat_id == 3 || $fat_id == 4)
+        //  {
              $farm_detail['farmed_number'] = $this->farmed_number;
-         }
+        //  }
 
          //homeplants 3
-         if($fat_id == 3)
-         {
+        //  if($fat_id == 3)
+        //  {
              $farm_detail['home_plant_pot_size'] = new HomePlantPotSizeResource($this->home_plant_pot_size);
              $farm_detail['home_plant_illuminating_source'] = new HomePlantIlluminatingSourceResource($this->home_plant_illuminating_source);
-         }
+        //  }
 
          // animal 4
-         if($fat_id == 4)
-         {
+        //  if($fat_id == 4)
+        //  {
              $farm_detail['animal_breeding_purpose'] = new AnimalBreedingPurposeResource($this->animal_breeding_purpose);
              $farm_detail['animal_drink_water_salt_detail'] = new SaltDetailResource($this->animal_drink_water_salt_detail);
              $farm_detail['animal_medicine_sources'] =  AnimalMedicineSourceResource::collection($this->animal_medicine_sources);
              $farm_detail['animal_fodder_sources'] =  AnimalFodderSourceResource::collection($this->animal_fodder_sources);
              $farm_detail['animal_fodder_types'] =  AnimalFodderTypeResource::collection($this->animal_fodder_types);
-         }           
+        //  }           
 
          //crops, trees, homeplants 1,2,3
-         if($fat_id == 1 || $fat_id == 2 || $fat_id == 3)
-         {
+        //  if($fat_id == 1 || $fat_id == 2 || $fat_id == 3)
+        //  {
             $farm_detail['chemical_fertilizer_sources'] = ChemicalFertilizerSourceResource::collection($this->chemical_fertilizer_sources);
             $farm_detail['seedling_sources'] =  SeedlingSourceResource::collection($this->seedling_sources);
-         }
+        //  }
 
          // pass the farm to the usercollection to add the farm_roles to the collection
          // if you pass a farm in the collection() you will get farm_roles property in the users collection and vice versa

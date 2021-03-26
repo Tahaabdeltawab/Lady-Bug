@@ -33,6 +33,7 @@
         "overtrue/laravel-subscribe": "^2.0",
         "santigarcor/laratrust": "^6.3",
         "tymon/jwt-auth": "^1.0",
+        "willvincent/laravel-rateable": "^2.3",
         "yajra/laravel-datatables": "1.5"
     },
     "require-dev": {

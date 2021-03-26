@@ -7,13 +7,17 @@ use App\Http\Requests\API\UpdateUserAPIRequest;
 use App\Http\Requests\API\CreateUserFavoritesAPIRequest;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\ServiceTask;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\FarmResource;
+use App\Http\Resources\FarmWithServiceTasksReource;
+use App\Http\Resources\NotificationResource;
 use App\Http\Resources\FarmedTypeResource;
+use App\Http\Resources\ServiceTaskResource;
 use Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
@@ -23,6 +27,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Repositories\FarmedTypeRepository;
 use App\Repositories\HumanJobRepository;
 use App\Repositories\AssetRepository;
+use App\Repositories\ServiceTaskRepository;
 
 /**
  * Class UserController
@@ -36,13 +41,20 @@ class UserAPIController extends AppBaseController
     private $humanJobRepository;
     private $assetRepository;
     private $farmedTypeRepository;
+    private $serviceTaskRepository;
 
-    public function __construct(HumanJobRepository $humanJobRepo, AssetRepository $assetRepo, UserRepository $userRepo, FarmedTypeRepository $farmedTypeRepo)
+    public function __construct(
+        HumanJobRepository $humanJobRepo,
+        AssetRepository $assetRepo,
+        UserRepository $userRepo,
+        FarmedTypeRepository $farmedTypeRepo,
+        ServiceTaskRepository $serviceTaskRepo)
     {
         $this->userRepository = $userRepo;
         $this->humanJobRepository = $humanJobRepo;
         $this->assetRepository = $assetRepo;
         $this->farmedTypeRepository = $farmedTypeRepo;
+        $this->serviceTaskRepository = $serviceTaskRepo;
     }
 
     /**
@@ -104,9 +116,72 @@ class UserAPIController extends AppBaseController
         }
     }
 
+    public function user_today_tasks()
+    {
+        try{
+           /*  $user_farms = auth()->user()->rolesTeams()->whereHas('service_tasks', function($q){
+                $q->where('start_at', date('Y-m-d'));
+            })->get();
+            $today_tasks =  ServiceTask::whereIn('farm_id', $user_farms)->where('start_at', date('Y-m-d'))->get(); */
+
+            $farms = auth()->user()->rolesTeams()->with('service_tasks', function($query){
+                $query->where('start_at', date('Y-m-d'));
+            })->whereHas('service_tasks', function($q){
+                $q->where('start_at', date('Y-m-d'));
+            })->get();
+
+            return $this->sendResponse(['all' => FarmWithServiceTasksReource::collection($farms)], 'Today\'s tasks retrieved successfully');
+        }catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
 
 
+// // // // // // NOTIFICATIONS // // // // // //  
 
+    public function get_notifications()
+    {
+        try{
+            $notifications = auth()->user()->unreadNotifications ;
+
+            return $this->sendResponse(['count' => $notifications->count(),'all' => NotificationResource::collection($notifications)], 'Notifications retrieved successfully');
+        }catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+
+    public function read_notification($id)
+    {
+        try{
+            $notification = auth()->user()->unreadNotifications->where('id', $id)->first();
+            if(!$notification)
+            {
+                return $this->sendError('Notification not found');
+            }
+            $notification->markAsRead();
+
+            return $this->sendSuccess('Notifications read successfully');
+        }catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+    public function unread_notification($id)
+    {
+        try{
+            $notification = auth()->user()->readNotifications->where('id', $id)->first();
+            if(!$notification)
+            {
+                return $this->sendError('Notification not found');
+            }
+            $notification->markAsUnread();
+
+            return $this->sendSuccess('Notifications unread successfully');
+        }catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+
+    
 
 
 
@@ -217,6 +292,84 @@ class UserAPIController extends AppBaseController
     }
 
 
+
+
+    // // // // FOLLOW // // // //
+    
+    public function toggleFollow($id)
+    {
+        try
+        {
+            $user = $this->userRepository->find($id);
+
+            if (empty($user))
+            {
+                return $this->sendError('User not found');
+            }
+
+            if(auth()->user()->isFollowing($user))
+            {
+                auth()->user()->unfollow($user);
+                return $this->sendSuccess("You have unfollowed $user->name successfully");
+            }
+            else
+            {
+                auth()->user()->follow($user);
+                return $this->sendSuccess("You have followed $user->name successfully");
+            }
+        }
+        catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+
+    public function my_followers()
+    {
+        $my_followers = auth()->user()->followers;
+     
+        return $this->sendResponse(['count' => $my_followers->count(), 'all' => UserResource::collection($my_followers)], 'User followers retrieved successfully');
+    }
+    public function my_followings()
+    {
+        $my_followings = auth()->user()->followings;
+     
+        return $this->sendResponse(['count' => $my_followings->count(), 'all' => UserResource::collection($my_followings)], 'User followings retrieved successfully');
+    }
+    
+
+
+
+    // // // // // RATE // // // //
+
+    public function rate(Request $request)
+    {
+        try
+        {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'rating' => ['required', 'numeric', 'max:5', 'min:1'],
+                    'user' => ['required', 'integer', 'exists:users,id']
+                ]
+            );
+
+            if($validator->fails()){
+                return $this->sendError(json_encode($validator->errors()), 422);
+            }
+        
+            $user = $this->userRepository->find($request->user);
+
+            if (empty($user))
+            {
+                return $this->sendError('User not found');
+            }
+                $user->rateOnce($request->rating);
+                return $this->sendSuccess("You have rated $user->name with $request->rating stars successfully");
+        }
+        catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
 
     /**
      * @param int $id
@@ -361,6 +514,8 @@ class UserAPIController extends AppBaseController
                 $to_save['password'] = Hash::make($request->password);
             }
 
+            $user = $this->userRepository->save_localized($to_save, $id);
+
             if($photo = $request->file('photo'))
             {
                 $currentDate = Carbon::now()->toDateString();
@@ -373,18 +528,16 @@ class UserAPIController extends AppBaseController
                 
                 $url  = Storage::disk('s3')->url($path);
                 
-                $saved_photo = $this->assetRepository->create([
+                $user->asset()->delete();
+                $asset = $user->asset()->create([
                     'asset_name'        => $photoname,
                     'asset_url'         => $url,
                     'asset_size'        => $photosize,
                     'asset_mime'        => $photomime,
-                    'assetable_type'    => 'profile'
                 ]);
-
-                $to_save['photo_id'] = $saved_photo->id;
             }
 
-            $user = $this->userRepository->save_localized($to_save, $id);
+           
 
             // $this->roleRepository->setRoleToMember($user, $userDefaultRole);
             return $this->sendResponse(new UserResource($user), __('Success'));

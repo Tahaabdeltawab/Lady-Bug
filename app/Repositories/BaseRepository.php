@@ -285,6 +285,17 @@ abstract class BaseRepository
         return $query->get();
     }
 
+    public function whereIn(array $criteria)
+    {
+        $query = $this->model::query();
+
+        foreach ($criteria as $key => $item) 
+        {
+            $query->whereIn($key, $item);
+        }
+        return $query->get();
+    }
+
     public function updateBy(array $criteria, array $data)
     {
         $query = $this->model::query();

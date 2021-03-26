@@ -12,6 +12,8 @@ use Mekaeil\LaravelUserManagement\Http\Requests\Admin\UpdateUser;
 use App\Http\Controllers\AppBaseController;
 use App\Entities\User;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UserCollection;
+use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 
 class UsersController extends AppBaseController
@@ -22,7 +24,8 @@ class UsersController extends AppBaseController
     protected $departmentRepository;
 
     public function __construct(
-        UserRepositoryInterface $user,
+        // UserRepositoryInterface $user,
+        UserRepository $user,
         PermissionRepositoryInterface $permission,
         RoleRepositoryInterface $role,
         DepartmentRepository $department)

@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Permission\Traits\HasRoles;
 use Overtrue\LaravelFollow\Followable;
-// use Overtrue\LaravelFavorite\Traits\Favoriter;
+use willvincent\Rateable\Rateable;
 use Overtrue\LaravelLike\Traits\Liker;
 use Overtrue\LaravelSubscribe\Traits\Subscriber;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -18,7 +18,7 @@ use Laratrust\Traits\LaratrustUserTrait;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use /* HasRoles, Favoriter,*/LaratrustUserTrait, HasFactory, Notifiable, Followable, Liker, Subscriber, SoftDeletes;
+    use LaratrustUserTrait, HasFactory, Notifiable, Followable, Rateable, Liker, Subscriber, SoftDeletes;
 
     
     protected $dates = ['deleted_at'];
@@ -32,7 +32,7 @@ class User extends Authenticatable implements JWTSubject
         'email_verified',
         'mobile_verified',
         'human_job_id',
-        'photo_id',
+        // 'photo_id',
         'password',
     ];
 
@@ -69,9 +69,14 @@ class User extends Authenticatable implements JWTSubject
         return $this->morphedByMany(FarmedType::class, 'favoriteable', 'favorites', 'user_id', 'favoriteable_id')->withTimestamps();
     }
 
-    public function photo()
+    // public function photo()
+    // {
+    //     return $this->belongsTo(Asset::class, 'photo_id');
+    // }
+
+    public function asset()
     {
-        return $this->belongsTo(Asset::class, 'photo_id');
+        return $this->morphOne(Asset::class, 'assetable');
     }
 
     public function job()

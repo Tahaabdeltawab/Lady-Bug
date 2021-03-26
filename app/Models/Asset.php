@@ -57,7 +57,8 @@ class Asset extends Model
         'asset_url',
         'asset_size',
         'asset_mime',
-        'assetable_type'
+        'assetable_type',
+        'assetable_id'
     ];
 
     /**
@@ -71,7 +72,8 @@ class Asset extends Model
         'asset_url'  => 'string',
         'asset_size' => 'string',
         'asset_mime' => 'string',
-        'assetable_type' => 'string'
+        'assetable_type' => 'string',
+        'assetable_id' => 'integer'
     ];
 
     /**
@@ -82,10 +84,17 @@ class Asset extends Model
     public static $rules = [
         'asset_name' => 'required|max:200',
         'asset_url' => 'required|max:200',
-        'asset_size' => 'required|max:200',
+        'asset_size' => 'required',
         'asset_mime' => 'required|max:200',
-        'assetable_type' => 'required|max:200'
+        'assetable_type' => 'required|max:200',
+        'assetable_id' => 'required',
     ];
+
+
+    public function assetable()
+    {
+        return $this->morphTo();
+    }
 
     
 }

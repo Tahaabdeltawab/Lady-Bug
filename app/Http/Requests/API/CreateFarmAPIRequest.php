@@ -34,7 +34,7 @@ class CreateFarmAPIRequest extends APIRequest
             'location.city'                         => 'nullable',
             'location.district'                     => 'nullable',
             'location.details'                      => 'nullable',
-            'farming_date'                          => 'required|date_format:Y-m-d|after_or_equal:' . date('Y-m-d'),
+            'farming_date'                          => 'required|date_format:Y-m-d',//|after_or_equal:' . date('Y-m-d'),
             'farming_compatibility'                 => 'required',
             'farm_activity_type_id'                 => 'required|exists:farm_activity_types,id', 
             // 1-crops, 2-trees, 3-homeplants, 4-animals
@@ -43,6 +43,8 @@ class CreateFarmAPIRequest extends APIRequest
             //crops, trees 1,2
             'soil_type_id'                          => 'requiredIf:farm_activity_type_id,1,2|exists:soil_types,id',
             'irrigation_way_id'                     => 'requiredIf:farm_activity_type_id,1,2|exists:irrigation_ways,id',
+            'area'                                  => 'requiredIf:farm_activity_type_id,1,2',
+            'area_unit_id'                          => 'requiredIf:farm_activity_type_id,1,2',
             
             'soil'                                  => 'array|requiredIf:farm_activity_type_id,1,2',
             'soil.salt'                             => 'array|requiredIf:farm_activity_type_id,1,2',
@@ -107,9 +109,7 @@ class CreateFarmAPIRequest extends APIRequest
                 'drink.salt.K'                       => 'requiredIf:farm_activity_type_id,4',
                 'drink.salt.Na'                      => 'requiredIf:farm_activity_type_id,4',
                 'drink.salt.Na2CO3'                  => 'requiredIf:farm_activity_type_id,4',
-            //crops, trees, animals 1,2,4
-            'area'                                  => 'requiredIf:farm_activity_type_id,1,2,4',
-            'area_unit_id'                          => 'requiredIf:farm_activity_type_id,1,2,4',
+           
             //crops, trees, homeplants 1,2,3
             "chemical_fertilizer_sources"           => "array|requiredIf:farm_activity_type_id,1,2,3",
             "chemical_fertilizer_sources.*"         => "requiredIf:farm_activity_type_id,1,2,3|exists:chemical_fertilizer_sources,id",

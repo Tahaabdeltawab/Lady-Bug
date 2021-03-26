@@ -54,7 +54,7 @@ Route::group([
     'namespace'     => 'App\Http\Controllers\API\UserManagement',
     'prefix'        => 'admin/user-management',
     'as'            => 'admin.user_management.',
-    'middleware'    => ['api', 'jwt.verify', 'role:Admin']
+    'middleware'    => ['api', 'jwt.verify', /* 'role:Admin' */]
 ], 
 function () {
 
@@ -187,8 +187,8 @@ Route::group(['middleware'=>['auth:api']], function()
 
     // // // // //  USER AREA  // // // // //
     
-    Route::group(['middleware'=>['role:app-user']], function()
-    {
+    // Route::group(['middleware'=>['role:app-user']], function()
+    // {
 
         Route::group(['as'=>'farms.', 'prefix'=>'farms', 'middleware'=>[]], function()
         {
@@ -197,20 +197,37 @@ Route::group(['middleware'=>['auth:api']], function()
             Route::get('/relations/index', [App\Http\Controllers\API\FarmAPIController::class, 'relations_index'])->name('relations.index');
             Route::post('/', [App\Http\Controllers\API\FarmAPIController::class, 'store'])->name('store');
 
-            Route::match(['put', 'patch', 'post'], '{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('update');
-            Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy');
-            
+            // Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy')->middleware('check_farm_role');
+            Route::group(['middleware'=>['check_farm_role']], function()
+            {
+                Route::match(['put', 'patch', 'post'], '{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('update');
+                Route::get('roles/store/{user}/{role}/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('roles.first_attach');
+                Route::get('users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_users'])->name('users.index');
+                Route::get('app_users/app_roles/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'app_users_and_roles']);;
+                Route::get('posts/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_posts'])->name('posts.index');
+                Route::get('toggle_archive/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'toggleArchive'])->name('toggle_archive');
+
+            });
             Route::post('roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('roles.store');
-            Route::get('app_users/app_roles', [App\Http\Controllers\API\FarmAPIController::class, 'app_users_and_roles']);
-            Route::get('roles/store/{user_id}/{role_id}/{farm_id}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('roles.first_attach');
-            Route::get('users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_users'])->name('users.index');
-            Route::get('posts/index/{farm_id}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_posts'])->name('posts.index');
             Route::post('user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('users.weather.index');
+            Route::get('archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('get_archived');
             
         });
 
         //get auth farms
         Route::get('users/farms/index', [App\Http\Controllers\API\UserAPIController::class, 'user_farms']);
+        Route::get('users/today_tasks/index', [App\Http\Controllers\API\UserAPIController::class, 'user_today_tasks']);
+        // // // NOTIFICATIONS
+        Route::get('users/notifications/index', [App\Http\Controllers\API\UserAPIController::class, 'get_notifications']);
+        Route::get('users/notifications/read/{notification}', [App\Http\Controllers\API\UserAPIController::class, 'read_notification']);
+        Route::get('users/notifications/unread/{notification}', [App\Http\Controllers\API\UserAPIController::class, 'unread_notification']);
+        // // // FOLLOW
+        Route::get('users/followers/index', [App\Http\Controllers\API\UserAPIController::class, 'my_followers']);
+        Route::get('users/followings/index', [App\Http\Controllers\API\UserAPIController::class, 'my_followings']);
+        Route::get('users/toggle_follow/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggleFollow']);
+        // // // RATE
+        Route::post('users/rate', [App\Http\Controllers\API\UserAPIController::class, 'rate']);
+
         Route::get('users/liked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_liked_posts']);
         Route::get('users/disliked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_disliked_posts']);
         Route::post('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'store_favorites'])->name('users.favorites.store');
@@ -220,12 +237,19 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::match(['put', 'patch','post'], 'users/{id}', [App\Http\Controllers\API\UserAPIController::class, 'update'])->name('users.update');
 
         Route::resource('products', App\Http\Controllers\API\ProductAPIController::class);
-        
-        Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
-        Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
+
+        Route::group(['middleware'=>['check_farm_role']], function()
+        {
+            Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
+            Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
+            
+            Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
+            Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
+        });
         // // // LIKES // // //
         Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
         Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
+        Route::get('posts/relations/index', [App\Http\Controllers\API\PostAPIController::class, 'posts_relations']);
         
         Route::resource('comments', App\Http\Controllers\API\CommentAPIController::class);
         Route::match(['put', 'patch','post'], 'comments/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'update'])->name('comments.update');
@@ -233,22 +257,13 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::get('comments/toggle_like/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_like']);
         Route::get('comments/toggle_dislike/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_dislike']);
 
-        Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
-
-        Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
+       
 
         // Route::resource('chemical_details', App\Http\Controllers\API\ChemicalDetailAPIController::class);
         // Route::resource('salt_details', App\Http\Controllers\API\SaltDetailAPIController::class);
-    });
-    
 
+        
 
-    // // // // // //  ADMIN AREA  // // // // // //
-    
-    Route::group(['middleware'=>['role:app-admin']], function()
-    {
-
-        Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
 
         Route::resource('animal_fodder_sources', App\Http\Controllers\API\AnimalFodderSourceAPIController::class);
 
@@ -309,7 +324,17 @@ Route::group(['middleware'=>['auth:api']], function()
 
         Route::resource('acidity_types', App\Http\Controllers\API\AcidityTypeAPIController::class);
 
-        Route::resource('home_plant_pot_sizes', App\Http\Controllers\API\HomePlantPotSizeAPIController::class);        
+        Route::resource('home_plant_pot_sizes', App\Http\Controllers\API\HomePlantPotSizeAPIController::class);
+    // });
+    
+
+
+    // // // // // //  ADMIN AREA  // // // // // //
+    
+    Route::group(['middleware'=>['role:app-admin']], function()
+    {
+
+        Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');        
 
     });
 

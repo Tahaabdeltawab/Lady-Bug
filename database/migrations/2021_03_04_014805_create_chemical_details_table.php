@@ -22,7 +22,7 @@ class CreateChemicalDetailsTable extends Migration
             $table->foreignId('acidity_type_id')->constrained();
             $table->foreignId('salt_type_id')->constrained('salt_types');
             $table->double('salt_concentration_value');
-            $table->foreignId('salt_concentration_unit_id')->constrained('measuring_units');
+            $table->foreignId('salt_concentration_unit_id')->nullable()->constrained('measuring_units');
             $table->foreignId('salt_detail_id')->constrained();
             $table->timestamps();
             $table->softDeletes();

@@ -10,6 +10,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\CommentResource;
 use Response;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+use App\Repositories\AssetRepository;
+
 
 /**
  * Class CommentController
@@ -20,10 +25,12 @@ class CommentAPIController extends AppBaseController
 {
     /** @var  CommentRepository */
     private $commentRepository;
+    private $assetRepository;
 
-    public function __construct(CommentRepository $commentRepo)
+    public function __construct(CommentRepository $commentRepo, AssetRepository $assetRepo)
     {
         $this->commentRepository = $commentRepo;
+        $this->assetRepository = $assetRepo;
     }
 
     /**
@@ -107,14 +114,86 @@ class CommentAPIController extends AppBaseController
      *      )
      * )
      */
-    public function store(CreateCommentAPIRequest $request)
+    public function store(/* CreateCommentAPI */Request $request)
     {
-        $input = $request->validated();
-        $input['commenter_id'] = auth()->id();
+        try
+        {            
 
-        $comment = $this->commentRepository->save_localized($input);
+            $validator = Validator::make($request->all(), [
+                'content' => 'required',
+                'post_id' => 'required|integer|exists:posts,id',
+                'parent_id' => 'nullable|integer|exists:comments,id',
+                'assets' => ['nullable','array'],
+                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg']
+            ]);
 
-        return $this->sendResponse(new CommentResource($comment), 'Comment saved successfully');
+            if($validator->fails()){
+                $errors = $validator->errors();
+                
+                return $this->sendError(json_encode($errors), 777);
+            }
+
+            $data['commenter_id'] = auth()->id();
+            $data['content'] = $request->content; 
+            $data['post_id'] = $request->post_id; 
+            $data['parent_id'] = $request->parent_id; 
+            
+            $comment = $this->commentRepository->save_localized($data);
+            
+            if($assets = $request->file('assets'))
+            {
+               /*  if(!is_array($assets))
+                {
+                    $currentDate = Carbon::now()->toDateString();
+                    $assetsname = 'comment-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
+                    $assetssize = $assets->getSize(); //size in bytes 1k = 1000bytes
+                    $assetsmime = $assets->getClientMimeType();
+                            
+                    $path = $assets->storeAs('assets/comments', $assetsname, 's3');
+                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+                    
+                    $url  = Storage::disk('s3')->url($path);
+                    
+                    $saved_asset = $comment->assets()->create([
+                        'asset_name'        => $assetsname,
+                        'asset_url'         => $url,
+                        'asset_size'        => $assetssize,
+                        'asset_mime'        => $assetsmime,
+                    ]);
+                }
+                else
+                { */
+                    foreach($assets as $asset)
+                    {
+                        //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
+                        // dispatch(new \App\Jobs\Upload($asset, $comment));
+                        $currentDate = Carbon::now()->toDateString();
+                        $assetname = 'comment-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
+                        $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
+                        $assetmime = $asset->getClientMimeType();
+                                
+                        $path = $asset->storeAs('assets/comments', $assetname, 's3');
+                        // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+                        
+                        $url  = Storage::disk('s3')->url($path);
+                        
+                        $saved_asset[] = $comment->assets()->create([
+                            'asset_name'        => $assetsname,
+                            'asset_url'         => $url,
+                            'asset_size'        => $assetssize,
+                            'asset_mime'        => $assetsmime,
+                        ]);
+                    }
+                // }
+            }
+
+            return $this->sendResponse(new CommentResource($comment), __('Comment saved successfully'));
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
+           
     }
 
     
@@ -259,20 +338,91 @@ class CommentAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, UpdateCommentAPIRequest $request) //don't change it to create request please as it differs in validation
+    public function update($id, /* UpdateCommentAPI */Request $request) //don't change it to create request please as it differs in validation
     {
-        $input = $request->validated();
+        try
+        {
+            $comment = $this->commentRepository->find($id);
 
-        /** @var Comment $comment */
-        $comment = $this->commentRepository->find($id);
+            if (empty($comment)) {
+                return $this->sendError('comment not found');
+            }
+            
+            $validator = Validator::make($request->all(), [
+                'content' => 'required',
+                'assets' => ['nullable','array'],
+                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg']
+            ]);
 
-        if (empty($comment)) {
-            return $this->sendError('Comment not found');
+            if($validator->fails()){
+                $errors = $validator->errors();
+                
+                return $this->sendError(json_encode($errors), 777);
+            }
+
+            $data['content'] = $request->content; 
+            
+            $comment = $this->commentRepository->save_localized($data, $id);
+            
+            if($assets = $request->file('assets'))
+            {
+               /*  if(!is_array($assets))
+                {
+                    $currentDate = Carbon::now()->toDateString();
+                    $assetsname = 'comment-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
+                    $assetssize = $assets->getSize(); //size in bytes 1k = 1000bytes
+                    $assetsmime = $assets->getClientMimeType();
+                            
+                    $path = $assets->storeAs('assets/comments', $assetsname, 's3');
+                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+                    
+                    $url  = Storage::disk('s3')->url($path);
+                    
+                    $comment->assets()->delete();
+                    $saved_asset = $comment->assets()->create([
+                        'asset_name'        => $assetsname,
+                        'asset_url'         => $url,
+                        'asset_size'        => $assetssize,
+                        'asset_mime'        => $assetsmime,
+                    ]);
+                }
+                else
+                { */
+                    foreach($assets as $asset)
+                    {
+                        //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
+                        // dispatch(new \App\Jobs\Upload($asset, $comment));
+                        $currentDate = Carbon::now()->toDateString();
+                        $assetname = 'comment-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
+                        $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
+                        $assetmime = $asset->getClientMimeType();
+                                
+                        $path = $asset->storeAs('assets/comments', $assetname, 's3');
+                        // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+                        
+                        $url  = Storage::disk('s3')->url($path);
+
+                        $comment->assets()->delete();
+                        $saved_asset[] = $comment->assets()->create([
+                            'asset_name'        => $assetsname,
+                            'asset_url'         => $url,
+                            'asset_size'        => $assetssize,
+                            'asset_mime'        => $assetsmime,
+                        ]);
+                    }
+                // }
+            }
+            else
+            {
+                // $comment->assets()->sync([]);
+            }
+
+            return $this->sendResponse(new CommentResource($comment), __('Comment saved successfully'));
         }
-
-        $comment = $this->commentRepository->save_localized($input, $id);
-
-        return $this->sendResponse(new CommentResource($comment), 'Comment updated successfully');
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
     }
 
     /**

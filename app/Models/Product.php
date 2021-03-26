@@ -141,5 +141,8 @@ class Product extends Model implements TranslatableContract
         'sold' => 'required'
     ];
 
-    
+    public function assets()
+    {
+        return $this->morphMany(Asset::class, 'assetable');
+    }
 }

@@ -60,7 +60,7 @@ class FarmedType extends Model implements TranslatableContract
     public $fillable = [
         // 'name',
         'farm_activity_type_id',
-        'photo_id'
+        // 'photo_id'
     ];
 
     /**
@@ -83,6 +83,12 @@ class FarmedType extends Model implements TranslatableContract
         'name_ar_localized' => 'required|max:200',
         'name_en_localized' => 'required|max:200',
         'farm_activity_type_id' => 'required',
+        'farming_temperature' => 'nullable|numeric',
+        'flowering_temperature' => 'nullable|numeric',
+        'maturity_temperature' => 'nullable|numeric',
+        'humidity' => 'nullable|numeric',
+        'flowering_time' => 'nullable|integer',
+        'maturity_time' => 'nullable|integer',
         'photo' => 'nullable|max:2000|mimes:jpeg,jpg,png',
     ];
 
@@ -95,9 +101,14 @@ class FarmedType extends Model implements TranslatableContract
         return $this->morphToMany(User::class, 'favoriteable', 'favorites', 'favoriteable_id', 'user_id');
     }
 
-    public function photo()
+    // public function photo()
+    // {
+    //     return $this->belongsTo(Asset::class, 'photo_id');
+    // }
+
+    public function asset()
     {
-        return $this->belongsTo(Asset::class, 'photo_id');
+        return $this->morphOne(Asset::class, 'assetable');
     }
 
     public function farmed_type_classes()

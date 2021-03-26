@@ -300,12 +300,50 @@ class FarmAPIController extends AppBaseController
 
 
 
+            
+         
 
 
+    public function toggleArchive($id)
+    {
+        try
+        {
+            $farm = $this->farmRepository->find($id);
+
+            if (empty($farm))
+            {
+                return $this->sendError('Farm not found');
+            }
+
+            if($farm->archived)
+            {
+                $this->farmRepository->save_localized(['archived' => false], $id);
+                return $this->sendSuccess('Farm unarchived successfully');
+            }
+            else
+            {
+                $this->farmRepository->save_localized(['archived' => true], $id);
+                return $this->sendSuccess('Farm archived successfully');
+            }
+        }
+        catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
 
 
-
-
+    public function getArchived()
+    {
+        try
+        {
+            $archived_farms = auth()->user()->allTeams()->where('archived', true);           
+            return $this->sendResponse(['all' => FarmResource::collection($archived_farms)], 'Archived farms retrieved successfully');
+        }
+        catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
+   
 
 
 
@@ -323,7 +361,7 @@ class FarmAPIController extends AppBaseController
             $farm_detail['archived'] = $input["archived"];
             $farm_detail['farm_activity_type_id'] = $input["farm_activity_type_id"];
             $farm_detail['farmed_type_id'] = $input["farmed_type_id"];
-            $farm_detail['farmed_type_class_id'] = $input["farmed_type_class_id"];
+            $farm_detail['farmed_type_class_id'] = $input["farmed_type_class_id"] ?? null;
             $farm_detail['farming_date'] = $input["farming_date"];
             $farm_detail['farming_compatibility'] = $input["farming_compatibility"];
 
@@ -348,16 +386,13 @@ class FarmAPIController extends AppBaseController
                 $farm_detail['farming_way_id'] = $input["farming_way_id"];
             }
             
-            //crops, trees, animals 1,2,4
-            if($fat_id == 1 || $fat_id == 2 || $fat_id == 4)
-            {
-                $farm_detail['area'] = $input["area"];
-                $farm_detail['area_unit_id'] = $input["area_unit_id"];
-            }
 
             //crops, trees 1,2
             if($fat_id == 1 || $fat_id == 2)
             {
+                $farm_detail['area'] = $input["area"];
+                $farm_detail['area_unit_id'] = $input["area_unit_id"];
+                
                 $farm_detail['irrigation_way_id'] = $input["irrigation_way_id"];
                 $farm_detail['soil_type_id'] = $input["soil_type_id"];
                 //soil.salt
@@ -381,7 +416,7 @@ class FarmAPIController extends AppBaseController
                 $soil_detail['acidity_unit_id'] = $input["soil"]["acidity_unit_id"];
                 $soil_detail['salt_type_id'] = $input["soil"]["salt_type_id"];
                 $soil_detail['salt_concentration_value'] = $input["soil"]["salt_concentration_value"];
-                $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"];
+                $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"] ?? null;
                 $saved_soil_detail = $this->chemicalDetailRepository->save_localized($soil_detail);
                 $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
                 
@@ -406,7 +441,7 @@ class FarmAPIController extends AppBaseController
                 $irrigation_detail['acidity_unit_id'] = $input["irrigation"]["acidity_unit_id"];
                 $irrigation_detail['salt_type_id'] = $input["irrigation"]["salt_type_id"];
                 $irrigation_detail['salt_concentration_value'] = $input["irrigation"]["salt_concentration_value"];
-                $irrigation_detail['salt_concentration_unit_id'] = $input["irrigation"]["salt_concentration_unit_id"];
+                $irrigation_detail['salt_concentration_unit_id'] = $input["irrigation"]["salt_concentration_unit_id"] ?? null;
                 $saved_irrigation_detail = $this->chemicalDetailRepository->save_localized($irrigation_detail);
                 $farm_detail['irrigation_water_detail_id'] = $saved_irrigation_detail->id;
             }
@@ -485,8 +520,17 @@ class FarmAPIController extends AppBaseController
 
     public function app_users_and_roles(Request $request)
     {
+        $farm = $this->farmRepository->find($request->farm);
+        if (empty($farm))
+        {
+            return $this->sendError('Farm not found');
+        }
+
+        $farm_users = $farm->users->pluck('id');
+        $farm_users[] = auth()->id();
         $roles = Role::whereIn('name', config('laratrust.taha.farm_allowed_roles'))->get();
-        $users = User::where('id', '!=', auth()->id())->whereHas('roles', function($q){
+        // $users = User::where('id', '!=', auth()->id())->whereHas('roles', function($q){
+        $users = User::whereNotIn('id', $farm_users)->whereHas('roles', function($q){
             $q->where('name', config('laratrust.taha.user_default_role'));
         })->get();
 
@@ -514,14 +558,14 @@ class FarmAPIController extends AppBaseController
     {
         try
         {
-            if (! $request->hasValidSignature() || !$request->user_id || !$request->role_id || !$request->farm_id) {
+            if (! $request->hasValidSignature() || !$request->user || !$request->role || !$request->farm) {
                 return $this->sendError('Wrong url', 401);
             }
 
-            $user = $this->userRepository->find($request->user_id);
-            $farm = $this->farmRepository->find($request->farm_id);
+            $user = $this->userRepository->find($request->user);
+            $farm = $this->farmRepository->find($request->farm);
             
-            $user->attachRole($request->role_id, $farm);
+            $user->attachRole($request->role, $farm);
 
             return $this->sendSuccess(__('Member added to farm successfully'));
         }
@@ -551,28 +595,28 @@ class FarmAPIController extends AppBaseController
         try
         {
             $validator = Validator::make($request->all(), [
-                'farm_id' => 'integer|required|exists:farms,id',
-                'user_id' => 'integer|required|exists:users,id',
-                'role_id' => 'nullable|integer|exists:roles,id',
+                'farm' => 'integer|required|exists:farms,id',
+                'user' => 'integer|required|exists:users,id',
+                'role' => 'nullable|integer|exists:roles,id',
             ]);
 
             if ($validator->fails()) {
                 return $this->sendError(json_encode($validator->errors()));
             }
 
-            $user = $this->userRepository->find($request->user_id);
-            $farm = $this->farmRepository->find($request->farm_id);
-            $role = Role::find($request->role_id);
+            $user = $this->userRepository->find($request->user);
+            $farm = $this->farmRepository->find($request->farm);
+            $role = Role::find($request->role);
             if(!in_array($role->name, config('laratrust.taha.farm_allowed_roles')))
             {
                 return $this->sendError('Invalid Role');
             }
             
-            if($request->role_id)   //first attach or edit roles
+            if($request->role)   //first attach or edit roles
             {
                 if($user->getRoles($farm)) //edit roles
                 {
-                    $user->syncRoles([$request->role_id], $farm);
+                    $user->syncRoles([$request->role], $farm);
                 }
                 else            // first attach role
                 {
@@ -584,9 +628,9 @@ class FarmAPIController extends AppBaseController
                         $farm,
                         URL::temporarySignedRoute('api.farms.roles.first_attach', now()->addDays(10), 
                             [
-                                'user_id' => $request->user_id,
-                                'farm_id' => $request->farm_id,
-                                'role_id' => $request->role_id,
+                                'user' => $request->user,
+                                'farm' => $request->farm,
+                                'role' => $request->role,
                             ])
                         )); 
                     return $this->sendSuccess(__('Invitation sent successfully'));
@@ -742,7 +786,7 @@ class FarmAPIController extends AppBaseController
             $farm_detail['archived'] = $input["archived"];
             $farm_detail['farm_activity_type_id'] = $input["farm_activity_type_id"];
             $farm_detail['farmed_type_id'] = $input["farmed_type_id"];
-            $farm_detail['farmed_type_class_id'] = $input["farmed_type_class_id"];
+            $farm_detail['farmed_type_class_id'] = $input["farmed_type_class_id"] ?? null;
             $farm_detail['farming_date'] = $input["farming_date"];
             $farm_detail['farming_compatibility'] = $input["farming_compatibility"];
 
@@ -767,16 +811,13 @@ class FarmAPIController extends AppBaseController
                 $farm_detail['farming_way_id'] = $input["farming_way_id"];
             }
             
-            //crops, trees, animals 1,2,4
-            if($fat_id == 1 || $fat_id == 2 || $fat_id == 4)
-            {
-                $farm_detail['area'] = $input["area"];
-                $farm_detail['area_unit_id'] = $input["area_unit_id"];
-            }
 
             //crops, trees 1,2
             if($fat_id == 1 || $fat_id == 2)
             {
+                $farm_detail['area'] = $input["area"];
+                $farm_detail['area_unit_id'] = $input["area_unit_id"];
+
                 $farm_detail['irrigation_way_id'] = $input["irrigation_way_id"];
                 $farm_detail['soil_type_id'] = $input["soil_type_id"];
                 //soil.salt
@@ -800,7 +841,7 @@ class FarmAPIController extends AppBaseController
                 $soil_detail['acidity_unit_id'] = $input["soil"]["acidity_unit_id"];
                 $soil_detail['salt_type_id'] = $input["soil"]["salt_type_id"];
                 $soil_detail['salt_concentration_value'] = $input["soil"]["salt_concentration_value"];
-                $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"];
+                $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"] ?? null;
                 $saved_soil_detail = $this->chemicalDetailRepository->save_localized($soil_detail, $farm->soil_detail_id);
                 $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
                 
@@ -825,7 +866,7 @@ class FarmAPIController extends AppBaseController
                 $irrigation_detail['acidity_unit_id'] = $input["irrigation"]["acidity_unit_id"];
                 $irrigation_detail['salt_type_id'] = $input["irrigation"]["salt_type_id"];
                 $irrigation_detail['salt_concentration_value'] = $input["irrigation"]["salt_concentration_value"];
-                $irrigation_detail['salt_concentration_unit_id'] = $input["irrigation"]["salt_concentration_unit_id"];
+                $irrigation_detail['salt_concentration_unit_id'] = $input["irrigation"]["salt_concentration_unit_id"] ?? null;
                 $saved_irrigation_detail = $this->chemicalDetailRepository->save_localized($irrigation_detail, $farm->irrigation_water_detail_id);
                 $farm_detail['irrigation_water_detail_id'] = $saved_irrigation_detail->id;
             }

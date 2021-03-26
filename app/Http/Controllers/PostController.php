@@ -71,7 +71,7 @@ class PostController extends AppBaseController
                 'farmed_type_id' => ['nullable'],
                 'post_type_id' => ['required', 'exists:post_types,id'],
                 'solved' => ['nullable'],
-                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,mp4,mov,ogg,qt']
+                'assets.*' => ['nullable', 'max:50000', 'mimes:jpeg,jpg,png,mp4,mov,ogg,qt']
             ]);
 
             if($validator->fails()){
@@ -86,8 +86,8 @@ class PostController extends AppBaseController
             {
                 foreach($assets as $asset)
                 {
-                    //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
-                    // dispatch(new \App\Jobs\Upload($asset, $post));
+                    // ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
+                    // dispatch(new \App\Jobs\Upload($request->all(), $post));
                     $currentDate = Carbon::now()->toDateString();
                     $assetname = 'post-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
                     $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
