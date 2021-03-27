@@ -75,5 +75,14 @@ class PostType extends Model implements TranslatableContract
         'name_en_localized' => 'required|max:200',
     ];
 
+
+    // don't return the 'farm' post_type because it is not an actual post type, it just indicates the post in farmy
+    protected static function booted()
+    {
+        static::addGlobalScope('all_except_farm', function ($builder) {
+            $builder->where('id','!=' , 4);
+        });
+    }
+
     
 }

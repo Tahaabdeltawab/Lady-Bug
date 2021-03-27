@@ -27,7 +27,7 @@ class PostResource extends JsonResource
             'farmed_type_photo' => $this->when($farm, @$farm->farmed_type->asset->asset_url),
             'solved' => $this->when($this->solved, $this->solved),
             'assets' => collect($this->assets)->pluck('asset_url')->all(),
-            'post_type' => $post_type->name,
+            'post_type' => @$post_type->name, // @ because the 'farm' post type does not return by the global scope in the PostType model 
             'likers_count' => $this->likers->count(),
             'dislikers_count' => $this->dislikers->count(),
             'comments_count' => $this->comments->count(),

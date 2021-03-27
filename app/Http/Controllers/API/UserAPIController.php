@@ -142,8 +142,10 @@ class UserAPIController extends AppBaseController
     public function get_notifications()
     {
         try{
-            $notifications = auth()->user()->unreadNotifications ;
+            // $notifications = auth()->user()->unreadNotifications ;
+            $notifications = auth()->user()->notifications ;
 
+            auth()->user()->unreadNotifications->markAsRead();
             return $this->sendResponse(['count' => $notifications->count(),'all' => NotificationResource::collection($notifications)], 'Notifications retrieved successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500); 

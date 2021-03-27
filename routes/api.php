@@ -203,7 +203,8 @@ Route::group(['middleware'=>['auth:api']], function()
                 Route::match(['put', 'patch', 'post'], '{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('update');
                 Route::get('roles/store/{user}/{role}/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('roles.first_attach');
                 Route::get('users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_users'])->name('users.index');
-                Route::get('app_users/app_roles/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'app_users_and_roles']);;
+                Route::get('app_users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'app_users']);;
+                Route::get('app_roles/index', [App\Http\Controllers\API\FarmAPIController::class, 'app_roles']);;
                 Route::get('posts/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_posts'])->name('posts.index');
                 Route::get('toggle_archive/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'toggleArchive'])->name('toggle_archive');
 

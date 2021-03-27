@@ -83,8 +83,8 @@ class FarmResource extends JsonResource
 
          // pass the farm to the usercollection to add the farm_roles to the collection
          // if you pass a farm in the collection() you will get farm_roles property in the users collection and vice versa
+         //  $farm_detail['users'] = UserResource::collection($this->users);
          $farm_detail['users'] = (new UserResource($this->users))->collection($this->users)->farm($this);
-        //  $farm_detail['users'] = UserResource::collection($this->users);
          $farm_detail['posts'] = PostResource::collection($this->posts);
          $farm_detail['service_tables'] = ServiceTableResource::collection($this->service_tables);
          $farm_detail['coming_task'] = $this->service_tasks()->orderBy('start_at', 'asc')->first() ?? (object) [] ;

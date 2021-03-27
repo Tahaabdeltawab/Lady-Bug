@@ -518,7 +518,12 @@ class FarmAPIController extends AppBaseController
 
 
 
-    public function app_users_and_roles(Request $request)
+    public function app_roles(Request $request)
+    {
+        $roles = Role::whereIn('name', config('laratrust.taha.farm_allowed_roles'))->get();
+        return $this->sendResponse(['all' =>  RoleResource::collection($roles)], 'Roles retrieved successfully');
+    }
+    public function app_users(Request $request)
     {
         $farm = $this->farmRepository->find($request->farm);
         if (empty($farm))
@@ -528,13 +533,11 @@ class FarmAPIController extends AppBaseController
 
         $farm_users = $farm->users->pluck('id');
         $farm_users[] = auth()->id();
-        $roles = Role::whereIn('name', config('laratrust.taha.farm_allowed_roles'))->get();
-        // $users = User::where('id', '!=', auth()->id())->whereHas('roles', function($q){
         $users = User::whereNotIn('id', $farm_users)->whereHas('roles', function($q){
             $q->where('name', config('laratrust.taha.user_default_role'));
         })->get();
 
-        return $this->sendResponse(['users' => UserResource::collection($users), 'roles' =>  RoleResource::collection($roles)], 'Users retrieved successfully');
+        return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
     }
 
 
@@ -567,7 +570,7 @@ class FarmAPIController extends AppBaseController
             
             $user->attachRole($request->role, $farm);
 
-            return $this->sendSuccess(__('Member added to farm successfully'));
+            return $this->sendResponse(new UserResource($user), __('Member added to farm successfully'));
         }
         catch(\Throwable $th)
         {
@@ -576,6 +579,7 @@ class FarmAPIController extends AppBaseController
     }
 
     
+
 
 
 
@@ -606,14 +610,16 @@ class FarmAPIController extends AppBaseController
 
             $user = $this->userRepository->find($request->user);
             $farm = $this->farmRepository->find($request->farm);
-            $role = Role::find($request->role);
-            if(!in_array($role->name, config('laratrust.taha.farm_allowed_roles')))
-            {
-                return $this->sendError('Invalid Role');
-            }
+           
             
             if($request->role)   //first attach or edit roles
             {
+                $role = Role::find($request->role);
+                if(!in_array($role->name, config('laratrust.taha.farm_allowed_roles')))
+                {
+                    return $this->sendError('Invalid Role');
+                }
+                
                 if($user->getRoles($farm)) //edit roles
                 {
                     $user->syncRoles([$request->role], $farm);
@@ -646,10 +652,10 @@ class FarmAPIController extends AppBaseController
                 }            
             }
             
-            return $this->sendSuccess(__('Farm roles saved successfully'));
+            return $this->sendResponse(new UserResource($user), __('Farm roles saved successfully'));
         }
         catch(\Throwable $th)
-        {
+        {throw $th;
             return $this->sendError($th->getMessage(), 500); 
         }
     }

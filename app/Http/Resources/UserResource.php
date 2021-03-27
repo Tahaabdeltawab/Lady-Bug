@@ -30,7 +30,7 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
-        // $farm = (new FarmRepository(app()))->find($request->farm);
+        $farm = (new FarmRepository(app()))->find($request->farm ?? $request->farm_id);
         $return = [
             'id'                => $this->id,
             'name'              => $this->name,
@@ -42,9 +42,10 @@ class UserResource extends JsonResource
             'status'            => $this->status,
             'mobile_verified'   => $this->mobile_verified,
             'email_verified'    => $this->email_verified,
-            'farm_roles'        => $this->when($this->farm, $this->getRoles($this->farm)),
             'roles'             => $this->getRoles(),
-            'rating'             => $this->averageRating,
+            'rating'            => $this->averageRating,
+            // 'farm_roles'        => $this->when($this->farm, $this->getRoles($this->farm)),
+            'farm_roles'        => $this->when($farm, $this->getRoles($farm)),
             // 'roles'             => RoleResource::collection($this->roles),
             // 'created_at'        => $this->created_at,
             // 'updated_at'        => $this->updated_at,

@@ -46,7 +46,8 @@ class FarmInvitation extends Notification
         $url = $this->url;
         $inviter = $this->inviter->name;
         $role = $this->role->name;
-        $farm = $this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
+        // the @ sign here because not all farms have farmedtypeclass
+        $farm = @$this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
     
         return (new MailMessage)
                     ->greeting('Hello!')
@@ -60,12 +61,16 @@ class FarmInvitation extends Notification
     public function toDatabase($notifiable)
     {
         $url        = $this->url;
+        parse_str(parse_url($url, PHP_URL_QUERY), $query);
+        $expires = $query['expires']; 
+        $signature = $query['signature']; 
         $inviter    = $this->inviter->id;
         $inviter_name    = $this->inviter->name;
         $role       = $this->role->id;
         $role_name       = $this->role->name;
         $farm       = $this->farm->id;
-        $farm_name = $this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
+        // the @ sign here because not all farms have farmedtypeclass
+        $farm_name = @$this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
 
         return [
             'inviter'   => $inviter,
@@ -74,6 +79,8 @@ class FarmInvitation extends Notification
             'title'      => 'Farm Invitation',
             'body'      => "$inviter_name has invited you to join his $farm_name farm as a/an $role_name",
             'url'       => $url,
+            'expires'   => $expires,
+            'signature' => $signature,
         ];
     }
 
