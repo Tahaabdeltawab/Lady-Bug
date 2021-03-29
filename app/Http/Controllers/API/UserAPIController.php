@@ -187,7 +187,20 @@ class UserAPIController extends AppBaseController
 
 
 
-    // // // // // // LIKED && DISLIKED POSTS // // // // // //  
+    // // // // // //  POSTS  // // // // // //  
+
+    public function user_posts()
+    {        
+        try
+        {
+            $posts = auth()->user()->posts;
+            return $this->sendResponse(['all' => PostResource::collection($posts)], 'User posts retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
+    }
 
     public function user_liked_posts()
     {        

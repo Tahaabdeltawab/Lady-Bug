@@ -229,6 +229,7 @@ Route::group(['middleware'=>['auth:api']], function()
         // // // RATE
         Route::post('users/rate', [App\Http\Controllers\API\UserAPIController::class, 'rate']);
 
+        Route::get('users/posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_posts']);
         Route::get('users/liked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_liked_posts']);
         Route::get('users/disliked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_disliked_posts']);
         Route::post('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'store_favorites'])->name('users.favorites.store');
@@ -242,6 +243,7 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::group(['middleware'=>['check_farm_role']], function()
         {
             Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
+            Route::get('posts/timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'timeline']);
             Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
             
             Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);

@@ -26,11 +26,11 @@ class UpdateServiceTaskAPIRequest extends APIRequest
     {
         return  [
             'name' => 'required|max:200',
-            'start_at' => 'required|date_format:Y-m-d|after_or_equal:' . date('Y-m-d'),
+            'start_at' => 'required|date_format:Y-m-d',
             'notify_at' => 'required|date_format:Y-m-d|after:start_at',
-            'due_at' => 'required|date_format:Y-m-d|after:start_at',
+            'due_at' => 'nullable|date_format:Y-m-d|after:start_at',
             'task_type_id' => 'required|exists:task_types,id',
-            'quantity' => 'required',
+            'quantity' => 'nullable',
             'quantity_unit_id' => 'required|exists:measuring_units,id',
         ];
     }

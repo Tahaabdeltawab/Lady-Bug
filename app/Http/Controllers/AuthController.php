@@ -178,7 +178,6 @@ class AuthController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            throw $th;
             return $this->sendError($th->getMessage(), 500); 
         }    
     }

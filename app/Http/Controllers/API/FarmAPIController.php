@@ -655,7 +655,7 @@ class FarmAPIController extends AppBaseController
             return $this->sendResponse(new UserResource($user), __('Farm roles saved successfully'));
         }
         catch(\Throwable $th)
-        {throw $th;
+        {
             return $this->sendError($th->getMessage(), 500); 
         }
     }

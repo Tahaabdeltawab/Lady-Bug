@@ -23,11 +23,16 @@ class PostResource extends JsonResource
             'title' => $this->when($this->title, $this->title),
             'content' => $this->content,
             'author' => new UserResource($this->author),
-            'farm' => $this->when($farm, @$farm->farmed_type->name),
-            'farmed_type_photo' => $this->when($farm, @$farm->farmed_type->asset->asset_url),
-            'solved' => $this->when($this->solved, $this->solved),
+            
+            // 'farm' => $this->when($farm, @$farm->farmed_type->name),
+            // 'farmed_type_photo' => $this->when($farm, @$farm->farmed_type->asset->asset_url),
+            // 'solved' => $this->when($this->solved, $this->solved),
+            'farm' => @$farm->farmed_type->name, //will show null if no farmed_type
+            'farmed_type_photo' => @$farm->farmed_type->asset->asset_url,
+            'solved' => $this->solved,
+
             'assets' => collect($this->assets)->pluck('asset_url')->all(),
-            'post_type' => @$post_type->name, // @ because the 'farm' post type does not return by the global scope in the PostType model 
+            'post_type' => @$post_type->name, // @ because the 'farm' post type does not return by the global scope in the PostType model, so this will be null if the post type is 4 (farm) 
             'likers_count' => $this->likers->count(),
             'dislikers_count' => $this->dislikers->count(),
             'comments_count' => $this->comments->count(),
@@ -35,7 +40,7 @@ class PostResource extends JsonResource
             'dislikers' => $this->when( auth()->id() == $this->author_id ,UserResource::collection($this->dislikers)),
             'comments' => CommentResource::collection($this->comments->whereNull('parent_id')),
             // 'farmed_type_id' => $this->farmed_type_id,
-            // 'created_at' => $this->created_at,
+            'created_at' => $this->created_at->diffForHumans(),
             // 'updated_at' => $this->updated_at,
         ];
     }

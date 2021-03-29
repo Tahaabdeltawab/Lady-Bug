@@ -74,6 +74,7 @@ class PostAPIController extends AppBaseController
      *      )
      * )
      */
+
     public function index(Request $request)
     {
         $posts = $this->postRepository->all(
@@ -82,6 +83,15 @@ class PostAPIController extends AppBaseController
             $request->get('limit')
         );
 
+        return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
+    }
+
+    // timeline
+    public function timeline()
+    {
+        $posts = $this->index(request());
+
+        return response()->json($posts);
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
 

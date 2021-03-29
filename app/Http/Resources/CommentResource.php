@@ -16,8 +16,6 @@ class CommentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
             'content' => $this->content,
             'commenter_id' => $this->commenter_id,
             'parent_id' => $this->when($this->parent_id, $this->parent_id),
@@ -29,6 +27,8 @@ class CommentResource extends JsonResource
             'likers' => $this->when( auth()->id() == $this->commenter_id ,UserResource::collection($this->likers)),
             'dislikers' => $this->when( auth()->id() == $this->commenter_id ,UserResource::collection($this->dislikers)),
             'replies' => $this->when(!$this->parent_id, CommentResource::collection($this->replies)),
+            'created_at' => $this->created_at->diffForHumans(),
+            // 'updated_at' => $this->updated_at,
         ];
     }
 }
