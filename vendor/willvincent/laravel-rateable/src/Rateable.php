@@ -65,6 +65,11 @@ trait Rateable
         return $this->ratings()->groupBy('user_id')->pluck('user_id')->count();
     }
 
+    public function isRatedBy($id)
+    {
+        return $this->ratings()->groupBy('user_id')->pluck('user_id')->contains($id);
+    }
+
     public function userAverageRating()
     {
         return $this->ratings()->where('user_id', Auth::id())->avg('rating');
