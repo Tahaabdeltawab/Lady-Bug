@@ -243,7 +243,7 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::group(['middleware'=>['check_farm_role']], function()
         {
             Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
-            Route::get('posts/timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'timeline']);
+            Route::get('posts/timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'timeline'])->name('timeline'); // the name must remain timeline because it's checked in UserResource
             Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
             
             Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);

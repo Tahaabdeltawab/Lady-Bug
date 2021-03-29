@@ -87,11 +87,10 @@ class PostAPIController extends AppBaseController
     }
 
     // timeline
-    public function timeline()
+    public function timeline(Request $request)
     {
-        $posts = $this->index(request());
+        $posts = $this->postRepository->all();
 
-        return response()->json($posts);
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
 

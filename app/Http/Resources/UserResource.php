@@ -30,6 +30,7 @@ class UserResource extends JsonResource
      */
     public function toArray($request)
     {
+        $is_this_timeline = $request->route()->action['as'] == 'api.timeline';
         $farm = (new FarmRepository(app()))->find($request->farm ?? $request->farm_id);
         $return = [
             'id'                => $this->id,
@@ -44,6 +45,10 @@ class UserResource extends JsonResource
             'email_verified'    => $this->email_verified,
             'roles'             => $this->getRoles(),
             'rating'            => $this->averageRating,
+            // if timeline
+            'is_following'      => $this->when($is_this_timeline, $this->isFollowedBy(auth()->user())), // Am I following him?
+            'is_rated'          => $this->when($is_this_timeline, 'timeline'), // Did I rate him?
+            
             // 'farm_roles'        => $this->when($this->farm, $this->getRoles($this->farm)),
             'farm_roles'        => $this->when($farm, $this->getRoles($farm)),
             // 'roles'             => RoleResource::collection($this->roles),
