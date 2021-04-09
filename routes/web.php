@@ -296,7 +296,7 @@ Route::resource('animalFodderTypes', App\Http\Controllers\AnimalFodderTypeContro
 
 Route::resource('animalMedicineSources', App\Http\Controllers\AnimalMedicineSourceController::class);
 
-Route::resource('jobs', App\Http\Controllers\JobController::class);
+Route::resource('jobs', App\Http\Controllers\HumanJobController::class);
 
 Route::resource('postTypes', App\Http\Controllers\PostTypeController::class);
 

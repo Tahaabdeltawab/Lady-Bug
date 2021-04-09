@@ -11,10 +11,6 @@ use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\HumanJobResource;
 use Response;
 
-/**
- * Class JobController
- * @package App\Http\Controllers\API
- */
 
 class HumanJobAPIController extends AppBaseController
 {

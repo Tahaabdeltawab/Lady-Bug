@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Console\\Commands\\UploadCommand' => $baseDir . '/app/Console/Commands/UploadCommand.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Entities\\Department' => $baseDir . '/app/Entities/Department.php',
     'App\\Entities\\Permission' => $baseDir . '/app/Entities/Permission.php',
@@ -125,6 +126,7 @@ return array(
     'App\\Http\\Middleware\\EncryptCookies' => $baseDir . '/app/Http/Middleware/EncryptCookies.php',
     'App\\Http\\Middleware\\FarmRole' => $baseDir . '/app/Http/Middleware/FarmRole.php',
     'App\\Http\\Middleware\\JWTGuestMiddleware' => $baseDir . '/app/Http/Middleware/JWTGuestMiddleware.php',
+    'App\\Http\\Middleware\\Lang' => $baseDir . '/app/Http/Middleware/Lang.php',
     'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => $baseDir . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
     'App\\Http\\Middleware\\RedirectIfAuthenticated' => $baseDir . '/app/Http/Middleware/RedirectIfAuthenticated.php',
     'App\\Http\\Middleware\\Spatie\\PermissionMiddleware' => $baseDir . '/app/Http/Middleware/Spatie/PermissionMiddleware.php',
@@ -322,6 +324,7 @@ return array(
     'App\\Http\\Resources\\DistrictResource' => $baseDir . '/app/Http/Resources/DistrictResource.php',
     'App\\Http\\Resources\\FarmActivityTypeResource' => $baseDir . '/app/Http/Resources/FarmActivityTypeResource.php',
     'App\\Http\\Resources\\FarmResource' => $baseDir . '/app/Http/Resources/FarmResource.php',
+    'App\\Http\\Resources\\FarmWithServiceTasksReource' => $baseDir . '/app/Http/Resources/FarmWithServiceTasksReource.php',
     'App\\Http\\Resources\\FarmedTypeClassResource' => $baseDir . '/app/Http/Resources/FarmedTypeClassResource.php',
     'App\\Http\\Resources\\FarmedTypeGinfoResource' => $baseDir . '/app/Http/Resources/FarmedTypeGinfoResource.php',
     'App\\Http\\Resources\\FarmedTypeResource' => $baseDir . '/app/Http/Resources/FarmedTypeResource.php',

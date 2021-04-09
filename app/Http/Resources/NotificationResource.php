@@ -14,14 +14,24 @@ class NotificationResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $is_read = $this->read_at ? true : false;
+        $return = [
             'id' => $this->id,
-            // 'created_at' => $this->created_at,
             // 'updated_at' => $this->updated_at,
             'notifiable_id' => $this->notifiable_id,
             'type' => $this->type,
             'read_at' => $this->read_at,
-            'data' => $this->data
+            'is_read' => $is_read,
+            'created_at' => $this->created_at->diffForHumans(),
+            'title' => $this->data['title'],
+            'body' => $this->data['body'],
         ];
+        
+        $data = $this->data;
+        unset($data['title']);
+        unset($data['body']);
+        $return['data'] = $data;
+        
+        return $return;
     }
 }

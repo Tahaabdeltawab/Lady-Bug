@@ -91,7 +91,67 @@ class PostAPIController extends AppBaseController
     {
         $posts = $this->postRepository->all();
 
-        return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
+        return $this->sendResponse(
+            [
+                'posts' => PostResource::collection($posts),
+                'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
+                'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),
+            ], 
+            'Timeline retrieved successfully');
+    }
+
+    // video_timeline
+    public function video_timeline(Request $request)
+    {
+        $posts = Post::whereHas('assets', function ($q)
+        {
+            $q->whereIn('asset_mime', config('laratrust.taha.video_mimes'));
+        })->get();
+
+        return $this->sendResponse(
+            [
+                'posts' => PostResource::collection($posts),
+                'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
+                // 'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),
+            ], 
+            'Timeline retrieved successfully');
+    }
+
+    //  solve post
+    public function toggle_solve_post($id)
+    {
+        try
+        {
+            $post = $this->postRepository->find($id);
+
+            if (empty($post)) {
+                return $this->sendError('Post not found');
+            }
+
+            if($post->author_id != auth()->id())
+            {
+                return $this->sendError(__('Sorry, You are not the post author'));
+            }
+
+            if($post->solved)
+            {
+                $do = false;
+                $msg = 'Post unsolved successfully';
+            }
+            else
+            {
+                $do = true;
+                $msg = 'Post solved successfully';
+            }
+
+            $this->postRepository->update(['solved' => $do], $id);
+
+            return $this->sendSuccess($msg);
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500); 
+        }
     }
 
     public function posts_relations()
@@ -156,15 +216,15 @@ class PostAPIController extends AppBaseController
                 'post_type_id' => ['required', 'exists:post_types,id'],
                 'solved' => ['nullable'],
                 'assets' => ['nullable','array'],
-                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv']
+                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv,qt,asf'] //qt for mov , asf for wmv
             ]);
 
+            // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);
             if($validator->fails()){
                 $errors = $validator->errors();
                 
                 return $this->sendError(json_encode($errors), 777);
             }
-            return 'success';
 
             $data['title'] = $request->title; 
             $data['content'] = $request->content; 
@@ -216,10 +276,10 @@ class PostAPIController extends AppBaseController
                         $url  = Storage::disk('s3')->url($path);
 
                         $asset = $post->assets()->create([
-                            'asset_name'        => $assetsname,
+                            'asset_name'        => $assetname,
                             'asset_url'         => $url,
-                            'asset_size'        => $assetssize,
-                            'asset_mime'        => $assetsmime,
+                            'asset_size'        => $assetsize,
+                            'asset_mime'        => $assetmime,
                         ]);
                     }
                 // }
@@ -393,7 +453,7 @@ class PostAPIController extends AppBaseController
                 'post_type_id' => ['required', 'exists:post_types,id'],
                 'solved' => ['nullable'],
                 'assets' => ['nullable','array'],
-                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv']
+                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv,qt,asf'] //qt for mov , asf for wmv
             ]);
 
             if($validator->fails()){
@@ -459,10 +519,10 @@ class PostAPIController extends AppBaseController
 
                         $post->assets()->delete();
                         $assets[] = $post->assets()->create([
-                            'asset_name'        => $assetsname,
+                            'asset_name'        => $assetname,
                             'asset_url'         => $url,
-                            'asset_size'        => $assetssize,
-                            'asset_mime'        => $assetsmime,
+                            'asset_size'        => $assetsize,
+                            'asset_mime'        => $assetmime,
                         ]);    
                     }
                 // }

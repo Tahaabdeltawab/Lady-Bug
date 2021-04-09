@@ -871,6 +871,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
     );
 
     public static $classMap = array (
+        'App\\Console\\Commands\\UploadCommand' => __DIR__ . '/../..' . '/app/Console/Commands/UploadCommand.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Entities\\Department' => __DIR__ . '/../..' . '/app/Entities/Department.php',
         'App\\Entities\\Permission' => __DIR__ . '/../..' . '/app/Entities/Permission.php',
@@ -990,6 +991,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\FarmRole' => __DIR__ . '/../..' . '/app/Http/Middleware/FarmRole.php',
         'App\\Http\\Middleware\\JWTGuestMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/JWTGuestMiddleware.php',
+        'App\\Http\\Middleware\\Lang' => __DIR__ . '/../..' . '/app/Http/Middleware/Lang.php',
         'App\\Http\\Middleware\\PreventRequestsDuringMaintenance' => __DIR__ . '/../..' . '/app/Http/Middleware/PreventRequestsDuringMaintenance.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
         'App\\Http\\Middleware\\Spatie\\PermissionMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/Spatie/PermissionMiddleware.php',
@@ -1187,6 +1189,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Http\\Resources\\DistrictResource' => __DIR__ . '/../..' . '/app/Http/Resources/DistrictResource.php',
         'App\\Http\\Resources\\FarmActivityTypeResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmActivityTypeResource.php',
         'App\\Http\\Resources\\FarmResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmResource.php',
+        'App\\Http\\Resources\\FarmWithServiceTasksReource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmWithServiceTasksReource.php',
         'App\\Http\\Resources\\FarmedTypeClassResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmedTypeClassResource.php',
         'App\\Http\\Resources\\FarmedTypeGinfoResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmedTypeGinfoResource.php',
         'App\\Http\\Resources\\FarmedTypeResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmedTypeResource.php',

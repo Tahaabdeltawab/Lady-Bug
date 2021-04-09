@@ -201,7 +201,6 @@ Route::group(['middleware'=>['auth:api']], function()
             Route::group(['middleware'=>['check_farm_role']], function()
             {
                 Route::match(['put', 'patch', 'post'], '{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('update');
-                Route::get('roles/store/{user}/{role}/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('roles.first_attach');
                 Route::get('users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_users'])->name('users.index');
                 Route::get('app_users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'app_users']);;
                 Route::get('app_roles/index', [App\Http\Controllers\API\FarmAPIController::class, 'app_roles']);;
@@ -210,6 +209,7 @@ Route::group(['middleware'=>['auth:api']], function()
 
             });
             Route::post('roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('roles.store');
+            Route::get('roles/store/{user}/{role}/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('roles.first_attach');
             Route::post('user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('users.weather.index');
             Route::get('archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('get_archived');
             
@@ -244,11 +244,13 @@ Route::group(['middleware'=>['auth:api']], function()
         {
             Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
             Route::get('posts/timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'timeline'])->name('timeline'); // the name must remain timeline because it's checked in UserResource
+            Route::get('posts/video_timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'video_timeline'])->name('video_timeline'); // the name must remain timeline because it's checked in UserResource
             Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
-            
             Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
             Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
         });
+
+        Route::get('posts/toggle_solve/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_solve_post']);
         // // // LIKES // // //
         Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
         Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);

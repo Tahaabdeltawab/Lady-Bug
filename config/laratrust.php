@@ -25,6 +25,20 @@ return [
             'farm-editor',
             'farm-supervisor'
         ],
+
+
+        'video_mimes' => [
+            'video/mp4',
+            'video/x-ms-wmv',
+            'video/x-ms-asf', // for wmv
+            'video/quicktime',
+        ],
+
+        'image_mimes' => [
+            'image/png',
+            'image/jpeg',
+            'image/svg+xml',
+        ],
     ],
     /*
     |--------------------------------------------------------------------------

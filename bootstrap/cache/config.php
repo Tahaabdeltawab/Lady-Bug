@@ -814,6 +814,19 @@
         1 => 'farm-editor',
         2 => 'farm-supervisor',
       ),
+      'video_mimes' => 
+      array (
+        0 => 'video/mp4',
+        1 => 'video/x-ms-wmv',
+        2 => 'video/x-ms-asf',
+        3 => 'video/quicktime',
+      ),
+      'image_mimes' => 
+      array (
+        0 => 'image/png',
+        1 => 'image/jpeg',
+        2 => 'image/svg+xml',
+      ),
     ),
   ),
   'laratrust_seeder' => 

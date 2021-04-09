@@ -178,10 +178,10 @@ class CommentAPIController extends AppBaseController
                         $url  = Storage::disk('s3')->url($path);
                         
                         $saved_asset[] = $comment->assets()->create([
-                            'asset_name'        => $assetsname,
+                            'asset_name'        => $assetname,
                             'asset_url'         => $url,
-                            'asset_size'        => $assetssize,
-                            'asset_mime'        => $assetsmime,
+                            'asset_size'        => $assetsize,
+                            'asset_mime'        => $assetmime,
                         ]);
                     }
                 // }
@@ -404,10 +404,10 @@ class CommentAPIController extends AppBaseController
 
                         $comment->assets()->delete();
                         $saved_asset[] = $comment->assets()->create([
-                            'asset_name'        => $assetsname,
+                            'asset_name'        => $assetname,
                             'asset_url'         => $url,
-                            'asset_size'        => $assetssize,
-                            'asset_mime'        => $assetsmime,
+                            'asset_size'        => $assetsize,
+                            'asset_mime'        => $assetmime,
                         ]);
                     }
                 // }

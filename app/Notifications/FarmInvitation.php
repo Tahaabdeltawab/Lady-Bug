@@ -73,11 +73,11 @@ class FarmInvitation extends Notification
         $farm_name = @$this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
 
         return [
+            'title'      => 'Farm Invitation',
+            'body'      => "$inviter_name has invited you to join his $farm_name farm as a/an $role_name",
             'inviter'   => $inviter,
             'role'      => $role,
             'farm'      => $farm,
-            'title'      => 'Farm Invitation',
-            'body'      => "$inviter_name has invited you to join his $farm_name farm as a/an $role_name",
             'url'       => $url,
             'expires'   => $expires,
             'signature' => $signature,

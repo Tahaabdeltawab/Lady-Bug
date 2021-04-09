@@ -1,0 +1,10 @@
+[2021-04-09 16:04:55.019] [exthost] [info] extension host started
+[2021-04-09 16:04:55.279] [exthost] [info] ExtensionService#_doActivateExtension vscode.debug-auto-launch {"startup":true,"extensionId":{"value":"vscode.debug-auto-launch","_lower":"vscode.debug-auto-launch"},"activationEvent":"*"}
+[2021-04-09 16:04:55.280] [exthost] [info] ExtensionService#loadCommonJSModule file:///src/build/code-server2.1650-vsc1.39.2-linux-x86_64-built/extensions/debug-auto-launch/dist/extension
+[2021-04-09 16:04:55.286] [exthost] [info] ExtensionService#_doActivateExtension vscode.emmet {"startup":true,"extensionId":{"value":"vscode.emmet","_lower":"vscode.emmet"},"activationEvent":"*"}
+[2021-04-09 16:04:55.286] [exthost] [info] ExtensionService#loadCommonJSModule file:///src/build/code-server2.1650-vsc1.39.2-linux-x86_64-built/extensions/emmet/dist/extension
+[2021-04-09 16:04:55.326] [exthost] [info] ExtensionService#_doActivateExtension vscode.git {"startup":true,"extensionId":{"value":"vscode.git","_lower":"vscode.git"},"activationEvent":"*"}
+[2021-04-09 16:04:55.326] [exthost] [info] ExtensionService#loadCommonJSModule file:///src/build/code-server2.1650-vsc1.39.2-linux-x86_64-built/extensions/git/dist/main
+[2021-04-09 16:04:55.407] [exthost] [info] ExtensionService#_doActivateExtension vscode.merge-conflict {"startup":true,"extensionId":{"value":"vscode.merge-conflict","_lower":"vscode.merge-conflict"},"activationEvent":"*"}
+[2021-04-09 16:04:55.407] [exthost] [info] ExtensionService#loadCommonJSModule file:///src/build/code-server2.1650-vsc1.39.2-linux-x86_64-built/extensions/merge-conflict/dist/extension
+[2021-04-09 16:04:55.412] [exthost] [info] eager extensions activated

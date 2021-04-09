@@ -18,9 +18,10 @@ class PostResource extends JsonResource
     {
         $farm = (new FarmRepository(app()))->find($this->farm_id);
         $post_type = (new PostTypeRepository(app()))->find($this->post_type_id);
+
         return [
             'id' => $this->id,
-            'title' => $this->when($this->title, $this->title),
+            // 'title' => $this->when($this->title, $this->title),
             'content' => $this->content,
             'author' => new UserResource($this->author),
             
@@ -30,8 +31,10 @@ class PostResource extends JsonResource
             'farm' => @$farm->farmed_type->name, //will show null if no farmed_type
             'farmed_type_photo' => @$farm->farmed_type->asset->asset_url,
             'solved' => $this->solved,
+    
+            'image_assets' => collect($this->assets)->whereIn('asset_mime', config('laratrust.taha.image_mimes'))->pluck('asset_url')->all(),
+            'video_assets' => collect($this->assets)->whereIn('asset_mime', config('laratrust.taha.video_mimes'))->pluck('asset_url')->all(),
 
-            'assets' => collect($this->assets)->pluck('asset_url')->all(),
             'post_type' => @$post_type->name, // @ because the 'farm' post type does not return by the global scope in the PostType model, so this will be null if the post type is 4 (farm) 
             'likers_count' => $this->likers->count(),
             'dislikers_count' => $this->dislikers->count(),
