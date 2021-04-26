@@ -89,14 +89,14 @@ class PostAPIController extends AppBaseController
     // timeline
     public function timeline(Request $request)
     {
-        $posts = $this->postRepository->all();
+        $posts = $this->postRepository->latest()->get();
 
         return $this->sendResponse(
             [
                 'posts' => PostResource::collection($posts),
                 'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
                 'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),
-            ], 
+            ],
             'Timeline retrieved successfully');
     }
 
@@ -106,14 +106,14 @@ class PostAPIController extends AppBaseController
         $posts = Post::whereHas('assets', function ($q)
         {
             $q->whereIn('asset_mime', config('laratrust.taha.video_mimes'));
-        })->get();
+        })->latest()->get();
 
         return $this->sendResponse(
             [
                 'posts' => PostResource::collection($posts),
                 'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
                 // 'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),
-            ], 
+            ],
             'Timeline retrieved successfully');
     }
 
@@ -150,7 +150,7 @@ class PostAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -222,20 +222,20 @@ class PostAPIController extends AppBaseController
             // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);
             if($validator->fails()){
                 $errors = $validator->errors();
-                
+
                 return $this->sendError(json_encode($errors), 777);
             }
 
-            $data['title'] = $request->title; 
-            $data['content'] = $request->content; 
-            $data['farm_id'] = $request->farm_id; 
-            $data['farmed_type_id'] = $request->farmed_type_id; 
-            $data['post_type_id'] = $request->post_type_id; 
-            $data['solved'] = $request->solved; 
+            $data['title'] = $request->title;
+            $data['content'] = $request->content;
+            $data['farm_id'] = $request->farm_id;
+            $data['farmed_type_id'] = $request->farmed_type_id;
+            $data['post_type_id'] = $request->post_type_id;
+            $data['solved'] = $request->solved;
             $data['author_id'] = auth()->id();
-            
+
             $post = $this->postRepository->save_localized($data);
-            
+
             if($assets = $request->file('assets'))
             {
                 /* if(!is_array($assets))
@@ -246,10 +246,10 @@ class PostAPIController extends AppBaseController
                     $assetsname = 'post-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
                     $assetssize = $assets->getSize(); //size in bytes 1k = 1000bytes
                     $assetsmime = $assets->getClientMimeType();
-                            
+
                     $path = $assets->storeAs('assets/posts', $assetsname, 's3');
                     // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-                    
+
                     $url  = Storage::disk('s3')->url($path);
 
                     $asset = $post->assets()->create([
@@ -269,10 +269,10 @@ class PostAPIController extends AppBaseController
                         $assetname = 'post-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
                         $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
                         $assetmime = $asset->getClientMimeType();
-                                
+
                         $path = $asset->storeAs('assets/posts', $assetname, 's3');
                         // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-                        
+
                         $url  = Storage::disk('s3')->url($path);
 
                         $asset = $post->assets()->create([
@@ -289,7 +289,7 @@ class PostAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -298,7 +298,7 @@ class PostAPIController extends AppBaseController
     //  //  //  //  //  L I K E S  &&  D I S L I K E S  //  //  //  //  //
 
     public function toggle_like($id)
-    {        
+    {
         try
         {
             $post = $this->postRepository->find($id);
@@ -313,14 +313,14 @@ class PostAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
- 
+
 
     public function toggle_dislike($id)
-    {        
+    {
         try
         {
             $post = $this->postRepository->find($id);
@@ -335,7 +335,7 @@ class PostAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -445,7 +445,7 @@ class PostAPIController extends AppBaseController
             if (empty($post)) {
                 return $this->sendError('Post not found');
             }
-            
+
             $validator = Validator::make($request->all(), [
                 'title' => ['nullable', 'max:200'],
                 'content' => ['required'],
@@ -458,20 +458,20 @@ class PostAPIController extends AppBaseController
 
             if($validator->fails()){
                 $errors = $validator->errors();
-                
+
                 return $this->sendError(json_encode($errors), 777);
             }
 
-             
 
-            $data['title'] = $request->title; 
-            $data['content'] = $request->content; 
-            $data['farmed_type_id'] = $request->farmed_type_id; 
-            $data['post_type_id'] = $request->post_type_id; 
-            $data['solved'] = $request->solved; 
-            
+
+            $data['title'] = $request->title;
+            $data['content'] = $request->content;
+            $data['farmed_type_id'] = $request->farmed_type_id;
+            $data['post_type_id'] = $request->post_type_id;
+            $data['solved'] = $request->solved;
+
             $post = $this->postRepository->save_localized($data, $id);
-            
+
             if($assets = $request->file('assets'))
             {
               /*   if(!is_array($assets))
@@ -480,12 +480,12 @@ class PostAPIController extends AppBaseController
                     $assetsname = 'post-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
                     $assetssize = $assets->getSize(); //size in bytes 1k = 1000bytes
                     $assetsmime = $assets->getClientMimeType();
-                            
+
                     $path = $assets->storeAs('assets/posts', $assetsname, 's3');
                     // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-                    
+
                     $url  = Storage::disk('s3')->url($path);
-                    
+
                     $saved_asset = $this->assetRepository->create([
                         'asset_name'        => $assetsname,
                         'asset_url'         => $url,
@@ -511,10 +511,10 @@ class PostAPIController extends AppBaseController
                         $assetname = 'post-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
                         $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
                         $assetmime = $asset->getClientMimeType();
-                                
+
                         $path = $asset->storeAs('assets/posts', $assetname, 's3');
                         // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-                        
+
                         $url  = Storage::disk('s3')->url($path);
 
                         $post->assets()->delete();
@@ -523,7 +523,7 @@ class PostAPIController extends AppBaseController
                             'asset_url'         => $url,
                             'asset_size'        => $assetsize,
                             'asset_mime'        => $assetmime,
-                        ]);    
+                        ]);
                     }
                 // }
             }
@@ -536,7 +536,7 @@ class PostAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 

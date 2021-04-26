@@ -120,13 +120,21 @@ abstract class BaseRepository
     public function all($search = [], $skip = null, $limit = null, $relations = [], $columns = ['*'])
     {
         $query = $this->allQuery($search, $skip, $limit);
-        
-        if (count($relations)) 
+
+        if (count($relations))
         {
             $query->with($relations);
         }
 
         return $query->get($columns);
+    }
+
+    //latest
+    public function latest()
+    {
+        $query = $this->model->newQuery();
+
+        return $query->latest();
     }
 
     /**
@@ -166,13 +174,13 @@ abstract class BaseRepository
             $localized_fields = $exploded->pluck(0)->mapWithKeys(function($value, $key){
                 return [$value => $key];
             })->keys();
-    
+
             $langs = $exploded->pluck(1)->mapWithKeys(function($value, $key){
                 return [$value => $key];
             })->keys();;
-                    
+
             foreach($localized_fields as $field){
-                foreach($langs as $lang){                
+                foreach($langs as $lang){
                     $data[$lang][$field] = $input[$field.'_'.$lang.'_localized'];
                     unset($input[$field.'_'.$lang.'_localized']);
                 }
@@ -184,7 +192,7 @@ abstract class BaseRepository
         {
             $tosave = $input;
         }
-        
+
         // return response()->json($tosave);
        if($id)
        {
@@ -258,13 +266,13 @@ abstract class BaseRepository
         return $model->delete();
     }
 
-    
+
 
     public function findBy(array $criteria, array $columns = [], bool $single = true)
     {
         $query = $this->model::query();
 
-        foreach ($criteria as $key => $item) 
+        foreach ($criteria as $key => $item)
         {
             $query->where($key, $item);
         }
@@ -278,7 +286,7 @@ abstract class BaseRepository
     {
         $query = $this->model::query();
 
-        foreach ($criteria as $key => $item) 
+        foreach ($criteria as $key => $item)
         {
             $query->where($key, $item);
         }
@@ -289,7 +297,7 @@ abstract class BaseRepository
     {
         $query = $this->model::query();
 
-        foreach ($criteria as $key => $item) 
+        foreach ($criteria as $key => $item)
         {
             $query->whereIn($key, $item);
         }
@@ -300,7 +308,7 @@ abstract class BaseRepository
     {
         $query = $this->model::query();
 
-        foreach ($criteria as $key => $value) 
+        foreach ($criteria as $key => $value)
         {
             $query->where($key, $value);
         }
@@ -336,7 +344,7 @@ abstract class BaseRepository
     public function restore(int $ID)
     {
         $query = $this->model::query();
-        
+
         return $query->withTrashed()->where('id', $ID)->restore();
     }
 }
