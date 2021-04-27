@@ -145,6 +145,18 @@ class Product extends Model implements TranslatableContract
         'external_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
     ];
 
+    public function city()
+    {
+        return $this->belongsTo(City::class);
+    }
+
+
+    public function district()
+    {
+        return $this->belongsTo(District::class);
+    }
+
+
     public function assets()
     {
         return $this->morphMany(Asset::class, 'assetable');
