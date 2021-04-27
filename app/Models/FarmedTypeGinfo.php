@@ -101,4 +101,16 @@ class FarmedTypeGinfo extends Model implements TranslatableContract
         return $this->morphMany(Asset::class, 'assetable');
     }
 
+
+    public function farmed_type_stage()
+    {
+        return $this->belongsTo(FarmedTypeStage::class);
+    }
+
+
+    public function farmed_type()
+    {
+        return $this->belongsTo(FarmedType::class);
+    }
+
 }
