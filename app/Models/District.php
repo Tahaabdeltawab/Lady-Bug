@@ -47,7 +47,7 @@ class District extends Model implements TranslatableContract
 
 
     public $table = 'districts';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -75,7 +75,8 @@ class District extends Model implements TranslatableContract
     public static $rules = [
         'name_ar_localized' => 'required|max:200',
         'name_en_localized' => 'required|max:200',
+        'city_id'           => 'required|exists:cities,id',
     ];
 
-    
+
 }

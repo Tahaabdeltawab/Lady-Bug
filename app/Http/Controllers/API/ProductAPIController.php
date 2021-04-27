@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\ProductResource;
 use Response;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 /**
  * Class ProductController
@@ -69,6 +72,47 @@ class ProductAPIController extends AppBaseController
         return $this->sendResponse(['all' => ProductResource::collection($products)], 'Products retrieved successfully');
     }
 
+
+
+    //  sell product
+    public function toggle_sell_product($id)
+    {
+        try
+        {
+            $product = $this->productRepository->find($id);
+
+            if (empty($product)) {
+                return $this->sendError('Product not found');
+            }
+
+            if($product->seller_id != auth()->id())
+            {
+                return $this->sendError(__('Sorry, You are not the product seller'));
+            }
+
+            if($product->sold)
+            {
+                $do = false;
+                $msg = 'Product unsold successfully';
+            }
+            else
+            {
+                $do = true;
+                $msg = 'Product sold successfully';
+            }
+
+            $this->productRepository->update(['sold' => $do], $id);
+
+            return $this->sendSuccess($msg);
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+
+
     /**
      * @param CreateProductAPIRequest $request
      * @return Response
@@ -107,14 +151,102 @@ class ProductAPIController extends AppBaseController
      *      )
      * )
      */
-    public function store(CreateProductAPIRequest $request)
-    {
-        $input = $request->validated();
 
-        $product = $this->productRepository->save_localized($input);
 
-        return $this->sendResponse(new ProductResource($product), 'Product saved successfully');
-    }
+    public function store(/* CreatePostAPI */Request $request)
+        {
+            try
+            {
+                $validator = Validator::make($request->all(), [
+                    'price' => 'required',
+                    'description_ar_localized' => 'required',
+                    'description_en_localized' => 'required',
+                    'name_ar_localized' => 'required|max:200',
+                    'name_en_localized' => 'required|max:200',
+                    'city_id' => 'required',
+                    'district_id' => 'required',
+                    'seller_mobile' => 'required|max:20',
+                    'other_links'  => 'nullable',
+                    'internal_assets' => ['nullable','array'],
+                    'external_assets' => ['nullable','array'],
+                    'internal_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg'],
+                    'external_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
+                ]);
+
+                // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);
+                if($validator->fails()){
+                    $errors = $validator->errors();
+
+                    return $this->sendError(json_encode($errors), 888);
+                }
+
+                $data['price'] = $request->price;
+                $data['seller_id'] = auth()->id();
+                $data['description_ar_localized'] = $request->description_ar_localized;
+                $data['description_en_localized'] = $request->description_en_localized;
+                $data['name_ar_localized'] = $request->name_ar_localized;
+                $data['name_en_localized'] = $request->name_en_localized;
+                $data['city_id'] = $request->city_id;
+                $data['district_id'] = $request->district_id;
+                $data['seller_mobile'] = $request->seller_mobile;
+                $data['other_links'] = $request->other_links;
+                $data['sold'] = 0;
+
+                $product = $this->productRepository->save_localized($data);
+
+                if($internal_assets = $request->file('internal_assets'))
+                {
+                    foreach($internal_assets as $asset)
+                    {
+                        $currentDate = Carbon::now()->toDateString();
+                        $assetname = 'product-internal-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
+                        $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
+                        $assetmime = $asset->getClientMimeType();
+
+                        $path = $asset->storeAs('assets/posts', $assetname, 's3');
+                        // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+
+                        $url  = Storage::disk('s3')->url($path);
+
+                        $asset = $product->assets()->create([
+                            'asset_name'        => $assetname,
+                            'asset_url'         => $url,
+                            'asset_size'        => $assetsize,
+                            'asset_mime'        => $assetmime,
+                        ]);
+                    }
+                }
+
+                if($external_assets = $request->file('external_assets'))
+                {
+                    foreach($external_assets as $asset)
+                    {
+                        $currentDate = Carbon::now()->toDateString();
+                        $assetname = 'product-external-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
+                        $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
+                        $assetmime = $asset->getClientMimeType();
+
+                        $path = $asset->storeAs('assets/posts', $assetname, 's3');
+                        // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+
+                        $url  = Storage::disk('s3')->url($path);
+
+                        $asset = $product->assets()->create([
+                            'asset_name'        => $assetname,
+                            'asset_url'         => $url,
+                            'asset_size'        => $assetsize,
+                            'asset_mime'        => $assetmime,
+                        ]);
+                    }
+                }
+
+                return $this->sendResponse(new ProductResource($product), __('Product saved successfully'));
+            }
+            catch(\Throwable $th)
+            {
+                return $this->sendError($th->getMessage(), 500);
+            }
+        }
 
     /**
      * @param int $id
@@ -212,20 +344,108 @@ class ProductAPIController extends AppBaseController
      *      )
      * )
      */
-    public function update($id, CreateProductAPIRequest $request)
+    public function update($id, Request $request)
     {
-        $input = $request->validated();
+        try
+        {
+            /** @var Product $product */
+            $product = $this->productRepository->find($id);
 
-        /** @var Product $product */
-        $product = $this->productRepository->find($id);
+            if (empty($product)) {
+                return $this->sendError('Product not found');
+            }
 
-        if (empty($product)) {
-            return $this->sendError('Product not found');
+            $validator = Validator::make($request->all(), [
+                'price' => 'required',
+                'description_ar_localized' => 'required',
+                'description_en_localized' => 'required',
+                'name_ar_localized' => 'required|max:200',
+                'name_en_localized' => 'required|max:200',
+                'city_id' => 'required',
+                'district_id' => 'required',
+                'seller_mobile' => 'required|max:20',
+                'other_links'  => 'nullable',
+                'internal_assets' => ['nullable','array'],
+                'external_assets' => ['nullable','array'],
+                'internal_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg'],
+                'external_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
+            ]);
+
+            // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);
+            if($validator->fails()){
+                $errors = $validator->errors();
+
+                return $this->sendError(json_encode($errors), 888);
+            }
+
+            $data['price'] = $request->price;
+            // $data['seller_id'] = auth()->id();
+            $data['description_ar_localized'] = $request->description_ar_localized;
+            $data['description_en_localized'] = $request->description_en_localized;
+            $data['name_ar_localized'] = $request->name_ar_localized;
+            $data['name_en_localized'] = $request->name_en_localized;
+            $data['city_id'] = $request->city_id;
+            $data['district_id'] = $request->district_id;
+            $data['seller_mobile'] = $request->seller_mobile;
+            $data['other_links'] = $request->other_links;
+            $data['sold'] = 0;
+
+            $product = $this->productRepository->save_localized($data, $id);
+
+            if($internal_assets = $request->file('internal_assets'))
+            {
+                $product->internal_assets()->delete();
+                foreach($internal_assets as $asset)
+                {
+                    $currentDate = Carbon::now()->toDateString();
+                    $assetname = 'product-internal-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
+                    $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
+                    $assetmime = $asset->getClientMimeType();
+
+                    $path = $asset->storeAs('assets/posts', $assetname, 's3');
+                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+
+                    $url  = Storage::disk('s3')->url($path);
+
+                    $asset = $product->assets()->create([
+                        'asset_name'        => $assetname,
+                        'asset_url'         => $url,
+                        'asset_size'        => $assetsize,
+                        'asset_mime'        => $assetmime,
+                    ]);
+                }
+            }
+
+            if($external_assets = $request->file('external_assets'))
+            {
+                $product->external_assets()->delete();
+                foreach($external_assets as $asset)
+                {
+                    $currentDate = Carbon::now()->toDateString();
+                    $assetname = 'product-external-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
+                    $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
+                    $assetmime = $asset->getClientMimeType();
+
+                    $path = $asset->storeAs('assets/posts', $assetname, 's3');
+                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+
+                    $url  = Storage::disk('s3')->url($path);
+
+                    $asset = $product->assets()->create([
+                        'asset_name'        => $assetname,
+                        'asset_url'         => $url,
+                        'asset_size'        => $assetsize,
+                        'asset_mime'        => $assetmime,
+                    ]);
+                }
+            }
+
+            return $this->sendResponse(new ProductResource($product), __('Product saved successfully'));
         }
-
-        $product = $this->productRepository->save_localized($input, $id);
-
-        return $this->sendResponse(new ProductResource($product), 'Product updated successfully');
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
     }
 
     /**

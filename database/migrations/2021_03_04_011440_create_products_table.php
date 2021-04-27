@@ -24,7 +24,7 @@ class CreateProductsTable extends Migration
             $table->foreignId('district_id')->constrained();
             $table->string('seller_mobile');
             $table->boolean('sold');
-            $table->string('other_links');
+            $table->string('other_links')->nullable();
             $table->timestamps();
             $table->softDeletes();
             // $table->foreign('seller_id')->references('id')->on('users')->onDelete('CASCADE');

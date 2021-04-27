@@ -503,6 +503,8 @@ class PostAPIController extends AppBaseController
                 }
                 else
                 { */
+                    $post->assets()->delete();
+
                     foreach($assets as $asset)
                     {
                         //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
@@ -517,7 +519,7 @@ class PostAPIController extends AppBaseController
 
                         $url  = Storage::disk('s3')->url($path);
 
-                        $post->assets()->delete();
+
                         $assets[] = $post->assets()->create([
                             'asset_name'        => $assetname,
                             'asset_url'         => $url,

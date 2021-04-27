@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 /**
@@ -42,11 +42,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Asset extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
 
     public $table = 'assets';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -96,5 +96,5 @@ class Asset extends Model
         return $this->morphTo();
     }
 
-    
+
 }

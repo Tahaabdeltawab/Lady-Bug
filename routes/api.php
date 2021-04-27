@@ -39,7 +39,7 @@ Route::group([
     Route::group(['middleware' => 'jwt.verify'], function(){
 
         Route::resource('assets', App\Http\Controllers\API\AssetAPIController::class);
-    
+
     });
 
 /*
@@ -55,7 +55,7 @@ Route::group([
     'prefix'        => 'admin/user-management',
     'as'            => 'admin.user_management.',
     'middleware'    => ['api', 'jwt.verify', /* 'role:Admin' */]
-], 
+],
 function () {
 
     ////    USER ROUTES
@@ -63,7 +63,7 @@ function () {
     Route::group([
         'prefix' => 'user',
         'as'     => 'user.'
-    ], 
+    ],
     function () {
 
         // admin.user_management.user.index
@@ -93,7 +93,7 @@ function () {
     Route::group([
         'prefix' => 'role',
         'as'     => 'role.'
-    ], 
+    ],
     function () {
 
         // admin.user_management.role.index
@@ -120,7 +120,7 @@ function () {
     Route::group([
         'prefix' => 'permission',
         'as'     => 'permission.'
-    ], 
+    ],
     function () {
 
         // admin.user_management.permission.index
@@ -147,7 +147,7 @@ function () {
     Route::group([
         'prefix' => 'department',
         'as'     => 'department.'
-    ], 
+    ],
     function () {
 
         // admin.user_management.department.index
@@ -186,7 +186,7 @@ Route::group(['middleware'=>['auth:api']], function()
     Route::get('farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('farms.show');
 
     // // // // //  USER AREA  // // // // //
-    
+
     // Route::group(['middleware'=>['role:app-user']], function()
     // {
 
@@ -212,7 +212,7 @@ Route::group(['middleware'=>['auth:api']], function()
             Route::get('roles/store/{user}/{role}/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('roles.first_attach');
             Route::post('user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('users.weather.index');
             Route::get('archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('get_archived');
-            
+
         });
 
         //get auth farms
@@ -235,10 +235,13 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::post('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'store_favorites'])->name('users.favorites.store');
         Route::get('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'my_favorites'])->name('users.favorites.index');
         Route::resource('users', App\Http\Controllers\API\UserAPIController::class)->except(['store', 'destroy']);
-        //with put and patch, laravel cannot read the request 
+        //with put and patch, laravel cannot read the request
         Route::match(['put', 'patch','post'], 'users/{id}', [App\Http\Controllers\API\UserAPIController::class, 'update'])->name('users.update');
 
-        Route::resource('products', App\Http\Controllers\API\ProductAPIController::class);
+        Route::resource('products', App\Http\Controllers\API\ProductAPIController::class)->except(['update']);
+        Route::match(['put', 'patch','post'], 'products/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'update'])->name('products.update');
+        Route::get('products/toggle_sell/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'toggle_sell_product']);
+
 
         Route::group(['middleware'=>['check_farm_role']], function()
         {
@@ -255,19 +258,19 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
         Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
         Route::get('posts/relations/index', [App\Http\Controllers\API\PostAPIController::class, 'posts_relations']);
-        
+
         Route::resource('comments', App\Http\Controllers\API\CommentAPIController::class);
         Route::match(['put', 'patch','post'], 'comments/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'update'])->name('comments.update');
         // // // LIKES // // //
         Route::get('comments/toggle_like/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_like']);
         Route::get('comments/toggle_dislike/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_dislike']);
 
-       
+
 
         // Route::resource('chemical_details', App\Http\Controllers\API\ChemicalDetailAPIController::class);
         // Route::resource('salt_details', App\Http\Controllers\API\SaltDetailAPIController::class);
 
-        
+
 
 
         Route::resource('animal_fodder_sources', App\Http\Controllers\API\AnimalFodderSourceAPIController::class);
@@ -312,9 +315,9 @@ Route::group(['middleware'=>['auth:api']], function()
 
         Route::resource('farmed_types', App\Http\Controllers\API\FarmedTypeAPIController::class);
         Route::match(['put', 'patch','post'], 'farmed_types/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'update'])->name('farmed_types.update');
-        
+
         Route::resource('farmed_type_classes', App\Http\Controllers\API\FarmedTypeClassAPIController::class);
-        
+
         Route::resource('farmed_type_ginfos', App\Http\Controllers\API\FarmedTypeGinfoAPIController::class);
 
         Route::resource('cities', App\Http\Controllers\API\CityAPIController::class);
@@ -331,15 +334,15 @@ Route::group(['middleware'=>['auth:api']], function()
 
         Route::resource('home_plant_pot_sizes', App\Http\Controllers\API\HomePlantPotSizeAPIController::class);
     // });
-    
+
 
 
     // // // // // //  ADMIN AREA  // // // // // //
-    
+
     Route::group(['middleware'=>['role:app-admin']], function()
     {
 
-        Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');        
+        Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
 
     });
 

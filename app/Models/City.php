@@ -41,14 +41,14 @@ class City extends Model implements TranslatableContract
 
 
     public $table = 'cities';
-    
+
 
     protected $dates = ['deleted_at'];
 
 
 
     public $fillable = [
-        
+
     ];
 
     /**
@@ -67,8 +67,15 @@ class City extends Model implements TranslatableContract
      */
     public static $rules = [
         'name_ar_localized' => 'required|max:200',
-        'name_en_localized' => 'required|max:200',  
+        'name_en_localized' => 'required|max:200',
     ];
 
-    
+
+
+    public function districts()
+    {
+        return $this->hasMany(District::class);
+    }
+
+
 }

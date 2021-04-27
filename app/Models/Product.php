@@ -87,7 +87,7 @@ class Product extends Model implements TranslatableContract
     public $translatedAttributes = ['name', 'description'];
 
     public $table = 'products';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -138,11 +138,25 @@ class Product extends Model implements TranslatableContract
         'city_id' => 'required',
         'district_id' => 'required',
         'seller_mobile' => 'required|max:20',
-        'sold' => 'required'
+        'sold' => 'required',
+        'internal_assets' => ['nullable','array'],
+        'external_assets' => ['nullable','array'],
+        'internal_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg'],
+        'external_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
     ];
 
     public function assets()
     {
         return $this->morphMany(Asset::class, 'assetable');
+    }
+
+    public function internal_assets()
+    {
+        return $this->assets()->where('asset_name', 'like', 'product-internal%');
+    }
+
+    public function external_assets()
+    {
+        return $this->assets()->where('asset_name', 'like', 'product-external%');
     }
 }

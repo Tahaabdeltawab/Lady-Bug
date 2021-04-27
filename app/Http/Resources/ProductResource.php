@@ -24,7 +24,9 @@ class ProductResource extends JsonResource
             'district_id' => $this->district_id,
             'seller_mobile' => $this->seller_mobile,
             'sold' => $this->sold,
-            'other_links' => $this->other_links
+            'other_links' => $this->other_links,
+            'internal_assets' => $this->internal_assets()->pluck('asset_url')->all(),
+            'external_assets' => $this->external_assets()->pluck('asset_url')->all(),
             // 'created_at' => $this->created_at,
             // 'updated_at' => $this->updated_at,
         ];

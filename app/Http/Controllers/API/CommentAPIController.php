@@ -117,7 +117,7 @@ class CommentAPIController extends AppBaseController
     public function store(/* CreateCommentAPI */Request $request)
     {
         try
-        {            
+        {
 
             $validator = Validator::make($request->all(), [
                 'content' => 'required',
@@ -129,17 +129,17 @@ class CommentAPIController extends AppBaseController
 
             if($validator->fails()){
                 $errors = $validator->errors();
-                
+
                 return $this->sendError(json_encode($errors), 777);
             }
 
             $data['commenter_id'] = auth()->id();
-            $data['content'] = $request->content; 
-            $data['post_id'] = $request->post_id; 
-            $data['parent_id'] = $request->parent_id; 
-            
+            $data['content'] = $request->content;
+            $data['post_id'] = $request->post_id;
+            $data['parent_id'] = $request->parent_id;
+
             $comment = $this->commentRepository->save_localized($data);
-            
+
             if($assets = $request->file('assets'))
             {
                /*  if(!is_array($assets))
@@ -148,12 +148,12 @@ class CommentAPIController extends AppBaseController
                     $assetsname = 'comment-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
                     $assetssize = $assets->getSize(); //size in bytes 1k = 1000bytes
                     $assetsmime = $assets->getClientMimeType();
-                            
+
                     $path = $assets->storeAs('assets/comments', $assetsname, 's3');
                     // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-                    
+
                     $url  = Storage::disk('s3')->url($path);
-                    
+
                     $saved_asset = $comment->assets()->create([
                         'asset_name'        => $assetsname,
                         'asset_url'         => $url,
@@ -171,12 +171,12 @@ class CommentAPIController extends AppBaseController
                         $assetname = 'comment-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
                         $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
                         $assetmime = $asset->getClientMimeType();
-                                
+
                         $path = $asset->storeAs('assets/comments', $assetname, 's3');
                         // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-                        
+
                         $url  = Storage::disk('s3')->url($path);
-                        
+
                         $saved_asset[] = $comment->assets()->create([
                             'asset_name'        => $assetname,
                             'asset_url'         => $url,
@@ -191,17 +191,17 @@ class CommentAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
-           
+
     }
 
-    
+
 
     //  //  //  //  //  L I K E S  &&  D I S L I K E S  //  //  //  //  //
 
     public function toggle_like($id)
-    {        
+    {
         try
         {
             $comment = $this->commentRepository->find($id);
@@ -216,14 +216,14 @@ class CommentAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
- 
+
 
     public function toggle_dislike($id)
-    {        
+    {
         try
         {
             $comment = $this->commentRepository->find($id);
@@ -238,7 +238,7 @@ class CommentAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -347,7 +347,7 @@ class CommentAPIController extends AppBaseController
             if (empty($comment)) {
                 return $this->sendError('comment not found');
             }
-            
+
             $validator = Validator::make($request->all(), [
                 'content' => 'required',
                 'assets' => ['nullable','array'],
@@ -356,14 +356,14 @@ class CommentAPIController extends AppBaseController
 
             if($validator->fails()){
                 $errors = $validator->errors();
-                
+
                 return $this->sendError(json_encode($errors), 777);
             }
 
-            $data['content'] = $request->content; 
-            
+            $data['content'] = $request->content;
+
             $comment = $this->commentRepository->save_localized($data, $id);
-            
+
             if($assets = $request->file('assets'))
             {
                /*  if(!is_array($assets))
@@ -372,12 +372,12 @@ class CommentAPIController extends AppBaseController
                     $assetsname = 'comment-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
                     $assetssize = $assets->getSize(); //size in bytes 1k = 1000bytes
                     $assetsmime = $assets->getClientMimeType();
-                            
+
                     $path = $assets->storeAs('assets/comments', $assetsname, 's3');
                     // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-                    
+
                     $url  = Storage::disk('s3')->url($path);
-                    
+
                     $comment->assets()->delete();
                     $saved_asset = $comment->assets()->create([
                         'asset_name'        => $assetsname,
@@ -388,6 +388,8 @@ class CommentAPIController extends AppBaseController
                 }
                 else
                 { */
+                    $comment->assets()->delete();
+
                     foreach($assets as $asset)
                     {
                         //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
@@ -396,13 +398,12 @@ class CommentAPIController extends AppBaseController
                         $assetname = 'comment-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
                         $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
                         $assetmime = $asset->getClientMimeType();
-                                
+
                         $path = $asset->storeAs('assets/comments', $assetname, 's3');
                         // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-                        
+
                         $url  = Storage::disk('s3')->url($path);
 
-                        $comment->assets()->delete();
                         $saved_asset[] = $comment->assets()->create([
                             'asset_name'        => $assetname,
                             'asset_url'         => $url,
@@ -421,7 +422,7 @@ class CommentAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
