@@ -63,7 +63,7 @@ class FarmedTypeGinfo extends Model implements TranslatableContract
 
 
     public $table = 'farmed_type_ginfos';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -94,18 +94,11 @@ class FarmedTypeGinfo extends Model implements TranslatableContract
      *
      * @var array
      */
-    public static $rules = [
-        'title_ar_localized' => 'required|max:200',
-        'title_en_localized' => 'required|max:200',
-        'content_ar_localized' => 'required',
-        'content_en_localized' => 'required',
-        'farmed_type_id' => 'required',
-        'farmed_type_stage_id' => 'required'
-    ];
+    public static $rules = [];
 
     public function assets()
     {
         return $this->morphMany(Asset::class, 'assetable');
     }
-    
+
 }

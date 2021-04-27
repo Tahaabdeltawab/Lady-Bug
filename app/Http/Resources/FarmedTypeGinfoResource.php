@@ -21,7 +21,8 @@ class FarmedTypeGinfoResource extends JsonResource
             'title' => $this->title,
             'content' => $this->content,
             'farmed_type_id' => $this->farmed_type_id,
-            'farmed_type_stage_id' => $this->farmed_type_stage_id
+            'farmed_type_stage_id' => $this->farmed_type_stage_id,
+            'assets' => collect($this->assets)->pluck('asset_url')->all()
         ];
     }
 }
