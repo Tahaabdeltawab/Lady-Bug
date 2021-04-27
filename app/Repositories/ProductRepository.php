@@ -21,8 +21,9 @@ class ProductRepository extends BaseRepository
         'description',
         'seller_id',
         'name',
-        'city',
-        'district',
+        'farmed_type_id',
+        'city_id',
+        'district_id',
         'seller_mobile',
         'sold',
         'other_links'

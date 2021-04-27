@@ -158,19 +158,20 @@ class ProductAPIController extends AppBaseController
             try
             {
                 $validator = Validator::make($request->all(), [
-                    'price' => 'required',
-                    'description_ar_localized' => 'required',
-                    'description_en_localized' => 'required',
-                    'name_ar_localized' => 'required|max:200',
-                    'name_en_localized' => 'required|max:200',
-                    'city_id' => 'required',
-                    'district_id' => 'required',
-                    'seller_mobile' => 'required|max:20',
-                    'other_links'  => 'nullable',
-                    'internal_assets' => ['nullable','array'],
-                    'external_assets' => ['nullable','array'],
-                    'internal_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg'],
-                    'external_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
+                    'price'                         => 'required',
+                    'description_ar_localized'      => 'required',
+                    'description_en_localized'      => 'required',
+                    'name_ar_localized'             => 'required|max:200',
+                    'name_en_localized'             => 'required|max:200',
+                    'farmed_type_id'                => 'required|exists:farmed_types,id',
+                    'city_id'                       => 'required|exists:cities,id',
+                    'district_id'                   => 'required|exists:districts,id',
+                    'seller_mobile'                 => 'required|max:20',
+                    'other_links'                   => 'nullable',
+                    'internal_assets'               => ['nullable','array'],
+                    'external_assets'               => ['nullable','array'],
+                    'internal_assets.*'             => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg'],
+                    'external_assets.*'             => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
                 ]);
 
                 // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);
@@ -186,6 +187,7 @@ class ProductAPIController extends AppBaseController
                 $data['description_en_localized'] = $request->description_en_localized;
                 $data['name_ar_localized'] = $request->name_ar_localized;
                 $data['name_en_localized'] = $request->name_en_localized;
+                $data['farmed_type_id'] = $request->farmed_type_id;
                 $data['city_id'] = $request->city_id;
                 $data['district_id'] = $request->district_id;
                 $data['seller_mobile'] = $request->seller_mobile;
@@ -356,19 +358,20 @@ class ProductAPIController extends AppBaseController
             }
 
             $validator = Validator::make($request->all(), [
-                'price' => 'required',
-                'description_ar_localized' => 'required',
-                'description_en_localized' => 'required',
-                'name_ar_localized' => 'required|max:200',
-                'name_en_localized' => 'required|max:200',
-                'city_id' => 'required',
-                'district_id' => 'required',
-                'seller_mobile' => 'required|max:20',
-                'other_links'  => 'nullable',
-                'internal_assets' => ['nullable','array'],
-                'external_assets' => ['nullable','array'],
-                'internal_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg'],
-                'external_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
+                'price'                         => 'required',
+                'description_ar_localized'      => 'required',
+                'description_en_localized'      => 'required',
+                'name_ar_localized'             => 'required|max:200',
+                'name_en_localized'             => 'required|max:200',
+                'farmed_type_id'                => 'required|exists:farmed_types,id',
+                'city_id'                       => 'required|exists:cities,id',
+                'district_id'                   => 'required|exists:districts,id',
+                'seller_mobile'                 => 'required|max:20',
+                'other_links'                   => 'nullable',
+                'internal_assets'               => ['nullable','array'],
+                'external_assets'               => ['nullable','array'],
+                'internal_assets.*'             => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg'],
+                'external_assets.*'             => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
             ]);
 
             // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);
@@ -384,6 +387,7 @@ class ProductAPIController extends AppBaseController
             $data['description_en_localized'] = $request->description_en_localized;
             $data['name_ar_localized'] = $request->name_ar_localized;
             $data['name_en_localized'] = $request->name_en_localized;
+            $data['farmed_type_id'] = $request->farmed_type_id;
             $data['city_id'] = $request->city_id;
             $data['district_id'] = $request->district_id;
             $data['seller_mobile'] = $request->seller_mobile;

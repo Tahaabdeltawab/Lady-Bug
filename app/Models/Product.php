@@ -98,6 +98,7 @@ class Product extends Model implements TranslatableContract
         'seller_id',
         // 'description',
         // 'name',
+        'farmed_type_id',
         'city_id',
         'district_id',
         'seller_mobile',
@@ -116,6 +117,7 @@ class Product extends Model implements TranslatableContract
         'description' => 'string',
         'seller_id' => 'integer',
         'name' => 'string',
+        'farmed_type_id' => 'integer',
         'city_id' => 'integer',
         'district_id' => 'integer',
         'seller_mobile' => 'string',
@@ -128,22 +130,7 @@ class Product extends Model implements TranslatableContract
      *
      * @var array
      */
-    public static $rules = [
-        'price' => 'required',
-        'seller_id' => 'required',
-        'description_ar_localized' => 'required',
-        'description_en_localized' => 'required',
-        'name_ar_localized' => 'required|max:200',
-        'name_en_localized' => 'required|max:200',
-        'city_id' => 'required',
-        'district_id' => 'required',
-        'seller_mobile' => 'required|max:20',
-        'sold' => 'required',
-        'internal_assets' => ['nullable','array'],
-        'external_assets' => ['nullable','array'],
-        'internal_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg'],
-        'external_assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
-    ];
+    public static $rules = [];
 
     public function city()
     {
@@ -154,6 +141,12 @@ class Product extends Model implements TranslatableContract
     public function district()
     {
         return $this->belongsTo(District::class);
+    }
+
+
+    public function farmed_type()
+    {
+        return $this->belongsTo(FarmedType::class);
     }
 
 
