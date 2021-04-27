@@ -241,6 +241,7 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::resource('products', App\Http\Controllers\API\ProductAPIController::class)->except(['update']);
         Route::match(['put', 'patch','post'], 'products/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'update'])->name('products.update');
         Route::get('products/toggle_sell/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'toggle_sell_product']);
+        Route::get('products/relations/index', [App\Http\Controllers\API\ProductAPIController::class, 'products_relations']);
 
 
         Route::group(['middleware'=>['check_farm_role']], function()

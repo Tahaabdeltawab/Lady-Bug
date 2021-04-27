@@ -6,9 +6,13 @@ use App\Http\Requests\API\CreateProductAPIRequest;
 use App\Http\Requests\API\UpdateProductAPIRequest;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
+use App\Repositories\CityRepository;
+use App\Repositories\FarmedTypeRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\CityResource;
+use App\Http\Resources\FarmedTypeResource;
 use Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -23,10 +27,14 @@ class ProductAPIController extends AppBaseController
 {
     /** @var  ProductRepository */
     private $productRepository;
+    private $farmedTypeRepository;
+    private $cityRepository;
 
-    public function __construct(ProductRepository $productRepo)
+    public function __construct(ProductRepository $productRepo, CityRepository $cityRepo, FarmedTypeRepository $farmedTypeRepo)
     {
         $this->productRepository = $productRepo;
+        $this->farmedTypeRepository = $farmedTypeRepo;
+        $this->cityRepository = $cityRepo;
     }
 
     /**
@@ -109,6 +117,20 @@ class ProductAPIController extends AppBaseController
         {
             return $this->sendError($th->getMessage(), 500);
         }
+    }
+
+
+    //products relations
+    public function products_relations()
+    {
+        $cities = $this->cityRepository->all();
+        $farmed_types = $this->farmedTypeRepository->all();
+
+        return $this->sendResponse(
+            [
+                'cities' => CityResource::collection($cities),
+                'farmed_types' => FarmedTypeResource::collection($farmed_types)
+            ], 'Products relations retrieved successfully');
     }
 
 
