@@ -18,6 +18,7 @@ use App\Http\Resources\FarmWithServiceTasksReource;
 use App\Http\Resources\NotificationResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\ServiceTaskResource;
+use App\Http\Resources\ProductResource;
 use Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
@@ -28,6 +29,7 @@ use App\Repositories\FarmedTypeRepository;
 use App\Repositories\HumanJobRepository;
 use App\Repositories\AssetRepository;
 use App\Repositories\ServiceTaskRepository;
+use App\Repositories\ProductRepository;
 
 /**
  * Class UserController
@@ -42,19 +44,23 @@ class UserAPIController extends AppBaseController
     private $assetRepository;
     private $farmedTypeRepository;
     private $serviceTaskRepository;
+    private $productRepository;
 
     public function __construct(
         HumanJobRepository $humanJobRepo,
         AssetRepository $assetRepo,
         UserRepository $userRepo,
         FarmedTypeRepository $farmedTypeRepo,
-        ServiceTaskRepository $serviceTaskRepo)
+        ServiceTaskRepository $serviceTaskRepo,
+        ProductRepository $productRepo
+        )
     {
         $this->userRepository = $userRepo;
         $this->humanJobRepository = $humanJobRepo;
         $this->assetRepository = $assetRepo;
         $this->farmedTypeRepository = $farmedTypeRepo;
         $this->serviceTaskRepository = $serviceTaskRepo;
+        $this->productRepository = $productRepo;
     }
 
     /**
@@ -112,7 +118,19 @@ class UserAPIController extends AppBaseController
 
             return $this->sendResponse(['all' => FarmResource::collection($farms)], 'Farms retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+
+    public function user_products(Request $request)
+    {
+        try{
+            $products = $this->productRepository->where(['seller_id' => auth()->id()])->all();
+
+            return $this->sendResponse(['all' => ProductResource::collection($products)], 'User products retrieved successfully');
+        }catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -132,12 +150,12 @@ class UserAPIController extends AppBaseController
 
             return $this->sendResponse(['all' => FarmWithServiceTasksReource::collection($farms)], 'Today\'s tasks retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
 
-// // // // // // NOTIFICATIONS // // // // // //  
+// // // // // // NOTIFICATIONS // // // // // //
 
     public function get_notifications()
     {
@@ -148,7 +166,7 @@ class UserAPIController extends AppBaseController
             auth()->user()->unreadNotifications->markAsRead();
             return $this->sendResponse(['count' => $notifications->count(),'all' => NotificationResource::collection($notifications)], 'Notifications retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -164,7 +182,7 @@ class UserAPIController extends AppBaseController
 
             return $this->sendSuccess('Notifications read successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
     public function unread_notification($id)
@@ -179,18 +197,18 @@ class UserAPIController extends AppBaseController
 
             return $this->sendSuccess('Notifications unread successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
-    
 
 
 
-    // // // // // //  POSTS  // // // // // //  
+
+    // // // // // //  POSTS  // // // // // //
 
     public function user_posts()
-    {        
+    {
         try
         {
             $posts = auth()->user()->posts;
@@ -198,12 +216,12 @@ class UserAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
     public function user_liked_posts()
-    {        
+    {
         try
         {
             $likeables = [];
@@ -218,13 +236,13 @@ class UserAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
 
     public function user_disliked_posts()
-    {        
+    {
         try
         {
             $dislikeables = [];
@@ -238,7 +256,7 @@ class UserAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -294,11 +312,11 @@ class UserAPIController extends AppBaseController
     public function my_favorites()
     {
         $my_favorites = auth()->user()->favorites;
-     
+
         return $this->sendResponse(['all' => FarmedTypeResource::collection($my_favorites)], 'User selected favorites retrieved successfully');
     }
-    
-    
+
+
     public function store_favorites(CreateUserFavoritesAPIRequest $request)
     {
         $input = $request->validated();
@@ -310,7 +328,7 @@ class UserAPIController extends AppBaseController
 
 
     // // // // FOLLOW // // // //
-    
+
     public function toggleFollow($id)
     {
         try
@@ -334,23 +352,23 @@ class UserAPIController extends AppBaseController
             }
         }
         catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
     public function my_followers()
     {
         $my_followers = auth()->user()->followers;
-     
+
         return $this->sendResponse(['count' => $my_followers->count(), 'all' => UserResource::collection($my_followers)], 'User followers retrieved successfully');
     }
     public function my_followings()
     {
         $my_followings = auth()->user()->followings;
-     
+
         return $this->sendResponse(['count' => $my_followings->count(), 'all' => UserResource::collection($my_followings)], 'User followings retrieved successfully');
     }
-    
+
 
 
 
@@ -371,7 +389,7 @@ class UserAPIController extends AppBaseController
             if($validator->fails()){
                 return $this->sendError(json_encode($validator->errors()), 422);
             }
-        
+
             $user = $this->userRepository->find($request->user);
 
             if (empty($user))
@@ -382,7 +400,7 @@ class UserAPIController extends AppBaseController
                 return $this->sendSuccess("You have rated $user->name with $request->rating stars successfully");
         }
         catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -523,7 +541,7 @@ class UserAPIController extends AppBaseController
                 'mobile' => $request->get('mobile'),
                 'human_job_id' => $request->get('human_job_id'),
             ];
-            
+
             if($request->password)
             {
                 $to_save['password'] = Hash::make($request->password);
@@ -537,12 +555,12 @@ class UserAPIController extends AppBaseController
                 $photoname = 'profile-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
                 $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
                 $photomime = $photo->getClientMimeType();
-                        
+
                 $path = $photo->storeAs('assets/images/profiles', $photoname, 's3');
                 // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
-                
+
                 $url  = Storage::disk('s3')->url($path);
-                
+
                 $user->asset()->delete();
                 $asset = $user->asset()->create([
                     'asset_name'        => $photoname,
@@ -552,15 +570,15 @@ class UserAPIController extends AppBaseController
                 ]);
             }
 
-           
+
 
             // $this->roleRepository->setRoleToMember($user, $userDefaultRole);
             return $this->sendResponse(new UserResource($user), __('Success'));
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
-        } 
+            return $this->sendError($th->getMessage(), 500);
+        }
     }
 
     /**

@@ -215,6 +215,8 @@ Route::group(['middleware'=>['auth:api']], function()
 
         });
 
+        //get auth products
+        Route::get('users/products/index', [App\Http\Controllers\API\UserAPIController::class, 'user_products']);
         //get auth farms
         Route::get('users/farms/index', [App\Http\Controllers\API\UserAPIController::class, 'user_farms']);
         Route::get('users/today_tasks/index', [App\Http\Controllers\API\UserAPIController::class, 'user_today_tasks']);
