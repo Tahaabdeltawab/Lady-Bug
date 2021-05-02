@@ -27,7 +27,7 @@ class CreateServiceTaskAPIRequest extends APIRequest
         return  [
             'name' => 'required|max:200',
             'start_at' => 'required|date_format:Y-m-d',
-            'notify_at' => 'required|date_format:Y-m-d|after:start_at',
+            'notify_at' => 'required|date_format:Y-m-d|before_or_equal:start_at',
             'due_at' => 'nullable|date_format:Y-m-d|after:start_at',
             'task_type_id' => 'required|exists:task_types,id',
             'quantity' => 'required',

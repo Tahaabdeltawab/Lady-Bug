@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFarmedTypeIdToProductsTable extends Migration
+class AddIsNotifiableToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddFarmedTypeIdToProductsTable extends Migration
      */
     public function up()
     {
-        Schema::table('products', function (Blueprint $table) {
-            $table->foreignId('farmed_type_id')->after('seller_id')->constrained();
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('is_notifiable')->default(1);
         });
     }
 
@@ -25,10 +25,11 @@ class AddFarmedTypeIdToProductsTable extends Migration
      */
     public function down()
     {
-        if (Schema::hasColumn('products', 'farmed_type_id'))
+        if (Schema::hasColumn('users', 'is_notifiable'))
         {
-            Schema::table('products', function (Blueprint $table) {
-                $table->dropColumn('farmed_type_id');
+            Schema::table('users', function (Blueprint $table)
+            {
+                $table->dropColumn('is_notifiable');
             });
         }
     }

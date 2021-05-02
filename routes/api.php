@@ -232,6 +232,8 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::get('users/toggle_follow/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggleFollow']);
         // // // RATE
         Route::post('users/rate', [App\Http\Controllers\API\UserAPIController::class, 'rate']);
+        // // // NOTIFIABLE
+        Route::get('users/toggle_notifiable', [App\Http\Controllers\API\UserAPIController::class, 'toggle_notifiable']);
 
         Route::get('users/search/{query}', [App\Http\Controllers\API\UserAPIController::class, 'search']);
 

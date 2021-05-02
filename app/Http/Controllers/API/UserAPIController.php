@@ -203,15 +203,30 @@ class UserAPIController extends AppBaseController
 
 // // // // // // NOTIFICATIONS // // // // // //
 
+    public function toggle_notifiable()
+    {
+        $msg = auth()->user()->is_notifiable ? 'User became not notifiable Successfully' : 'User became notifiable Successfully';
+        auth()->user()->is_notifiable = !auth()->user()->is_notifiable;
+        auth()->user()->save();
+
+        return $this->sendSuccess($msg);
+    }
+
     public function get_notifications()
     {
         try{
-            // $notifications = auth()->user()->unreadNotifications ;
-            $notifications = auth()->user()->notifications ;
+            if(auth()->user()->is_notifiable)
+            {
+                // $notifications = auth()->user()->unreadNotifications ;
+                $notifications = auth()->user()->notifications ;
 
-            auth()->user()->unreadNotifications->markAsRead();
-            return $this->sendResponse(['count' => $notifications->count(),'all' => NotificationResource::collection($notifications)], 'Notifications retrieved successfully');
-        }catch(\Throwable $th){
+                auth()->user()->unreadNotifications->markAsRead();
+                return $this->sendResponse(['count' => $notifications->count(),'all' => NotificationResource::collection($notifications)], 'Notifications retrieved successfully');
+            }
+            return $this->sendError(__('Your Notifications are off, turn them all to see your notifications.'));
+        }
+        catch(\Throwable $th)
+        {
             return $this->sendError($th->getMessage(), 500);
         }
     }
