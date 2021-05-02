@@ -262,6 +262,8 @@ Route::group(['middleware'=>['auth:api']], function()
             Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
         });
 
+        Route::get('service_tables/duplicate/{service_table}', [App\Http\Controllers\API\ServiceTableAPIController::class, 'duplicate']);
+
         Route::get('posts/toggle_solve/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_solve_post']);
         // // // LIKES // // //
         Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);

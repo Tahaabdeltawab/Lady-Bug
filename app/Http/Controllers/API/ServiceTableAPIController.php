@@ -11,6 +11,8 @@ use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\ServiceTableResource;
 use Response;
 
+use Illuminate\Support\Facades\DB;
+
 /**
  * Class ServiceTableController
  * @package App\Http\Controllers\API
@@ -70,6 +72,23 @@ class ServiceTableAPIController extends AppBaseController
         return $this->sendResponse(['all' => ServiceTableResource::collection($serviceTables)], 'Service Tables retrieved successfully');
     }
 
+    public function duplicate($id)
+    {
+        $serviceTable = $this->serviceTableRepository->find($id);
+
+        if (empty($serviceTable)) {
+            return $this->sendError('Service Table not found');
+        }
+
+        $serviceTable->tasks()->update(
+            [
+            'done' => 0,
+            'start_at'=> DB::raw('TIMESTAMPADD(YEAR,1,`start_at`)'),
+            'notify_at'=> DB::raw('TIMESTAMPADD(YEAR,1,`notify_at`)')
+            ]);
+
+        return $this->sendSuccess(__('Table duplicated for the next year successfully'));
+    }
     /**
      * @param CreateServiceTableAPIRequest $request
      * @return Response
