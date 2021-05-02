@@ -985,6 +985,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Http\\Controllers\\WorkableRoleController' => __DIR__ . '/../..' . '/app/Http/Controllers/WorkableRoleController.php',
         'App\\Http\\Controllers\\WorkableTypeController' => __DIR__ . '/../..' . '/app/Http/Controllers/WorkableTypeController.php',
         'App\\Http\\Helpers\\CheckPermission' => __DIR__ . '/../..' . '/app/Http/Helpers/CheckPermission.php',
+        'App\\Http\\Helpers\\WeatherApi' => __DIR__ . '/../..' . '/app/Http/Helpers/WeatherApi.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\ApiGeneralAuth' => __DIR__ . '/../..' . '/app/Http/Middleware/ApiGeneralAuth.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',

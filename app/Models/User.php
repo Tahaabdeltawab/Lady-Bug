@@ -20,7 +20,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use LaratrustUserTrait, HasFactory, Notifiable, Followable, Rateable, Liker, Subscriber, SoftDeletes;
 
-    
+
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
@@ -36,7 +36,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
     ];
 
- 
+
     protected $hidden = [
         'password',
         'remember_token',
@@ -47,13 +47,13 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
     ];
 
-  
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
- 
+
     public function getJWTCustomClaims()
     {
         return [];
@@ -63,16 +63,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->morphedByMany(Farm::class, 'workable', 'workables', 'worker_id', 'workable_id')->using(Workable::class)->withPivot('id', 'status')->withTimestamps();
     } */
-    
+
     public function favorites()
     {
-        return $this->morphedByMany(FarmedType::class, 'favoriteable', 'favorites', 'user_id', 'favoriteable_id')->withTimestamps();
+        return $this->morphedByMany(FarmedType::class, 'favoriteable', 'favorites', 'user_id', 'favoriteable_id');//->withTimestamps();
     }
 
-    // public function photo()
-    // {
-    //     return $this->belongsTo(Asset::class, 'photo_id');
-    // }
 
     public function asset()
     {

@@ -67,10 +67,11 @@ use Illuminate\Http\Request;
 use Flash;
 use Response;
 
+use App\Http\Helpers\WeatherApi;
 
 class FarmAPIController extends AppBaseController
 {
-    
+
     private $farmRepository;
     private $userRepository;
     private $saltDetailRepository;
@@ -100,8 +101,8 @@ class FarmAPIController extends AppBaseController
 
     public function __construct(
         FarmRepository $farmRepo,
-        UserRepository $userRepo, 
-        SaltDetailRepository $saltDetailRepo, 
+        UserRepository $userRepo,
+        SaltDetailRepository $saltDetailRepo,
         ChemicalDetailRepository $chemicalDetailRepo,
         PostRepository $postRepo,
 
@@ -131,7 +132,7 @@ class FarmAPIController extends AppBaseController
         $this->saltDetailRepository = $saltDetailRepo;
         $this->chemicalDetailRepository = $chemicalDetailRepo;
         $this->postRepository = $postRepo;
-        
+
         $this->acidityTypeRepository = $acidityTypeRepo;
         $this->saltTypeRepository = $saltTypeRepo;
         $this->homePlantPotSizeRepository = $homePlantPotSizeRepo;
@@ -150,12 +151,12 @@ class FarmAPIController extends AppBaseController
         $this->animalFodderSourceRepository = $animalFodderSourceRepo;
         $this->animalMedicineSourceRepository = $animalMedicineSourceRepo;
         $this->soilTypeRepository = $soilTypeRepo;
-        
+
         $this->locationRepository = $locationRepo;
     }
 
 
-    
+
 
 
 
@@ -173,53 +174,13 @@ class FarmAPIController extends AppBaseController
 
     public function get_weather(Request $request)
     {
-        
-        $response = Http::get('api.openweathermap.org/data/2.5/weather',
-            [
-                'appid' => 'cd06a1348bed1b281e3e139a96ee5324',
-                'lat' => $request->lat,
-                'lon' => $request->lon,
-                'lang' => $request->lang,
-                'units' =>'metric'//'standard''imperial'
-            ]
-        );
+        $resp = WeatherApi::instance()->weather_api($request);
 
-        if($response->ok())
-        {
-            $data = $response->json();
-            $weather_icon = $data['weather'][0]['icon'];
-
-            $carbon = new \Carbon\Carbon('+02:00');
-
-            $date = $carbon->parse(date("Y-m-d"))->locale($request->lang);
-            $date_new = $date->isoFormat('dddd D MMMM');
-
-            // $sunset = $carbon->parse($data['sys']['sunset'])->locale($request->lang);
-            // $sunset_new = $sunset->isoFormat('hh:mm a');
-
-            // $sunrise = $carbon->parse($data['sys']['sunrise'])->locale($request->lang);
-            // $sunrise_new = $sunset->isoFormat('hh:mm a');
-
-            $resp['weather_description']    = $data['weather'][0]['description'];
-            $resp['weather_icon_url']       = "https://openweathermap.org/img/w/$weather_icon.png";
-            $resp['temp']                   = $data['main']['temp']." C";
-            $resp['date']                   = $date_new;
-            $resp['sunrise']                = date("h:i a", $data['sys']['sunrise']);
-            $resp['sunset']                 = date("h:i a", $data['sys']['sunset']);
-            $resp['location']               = $data['name'];
-
-            return $this->sendResponse($resp , 'Weather data retrieved successfully');
-        }
-        else
-        {
-            return $this->sendError('Error fetching the weather data', $response->status(), $response->json());
-        }
+        return $resp['status'] ?
+        $this->sendResponse($resp['data'] , 'Weather data retrieved successfully')
+        :
+        $this->sendError('Error fetching the weather data', $resp['data']['cod'], $resp['data']['message']);
     }
-
-
-
-
-
 
 
 
@@ -234,12 +195,12 @@ class FarmAPIController extends AppBaseController
 
             return $this->sendResponse(['all' => FarmResource::collection($farms)], 'Farms retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
-   
-    
+
+
 
 
 
@@ -259,7 +220,7 @@ class FarmAPIController extends AppBaseController
             $data['salt_types'] = SaltTypeResource::collection($this->saltTypeRepository->all());
             $data['farm_activity_types'] = FarmActivityTypeResource::collection($this->farmActivityTypeRepository->all());
             $data['home_plant_pot_sizes'] = HomePlantPotSizeResource::collection($this->homePlantPotSizeRepository->all());
-         
+
 
             $data['crops_types'] = FarmedTypeResource::collection($this->farmedTypeRepository
             ->where(['farm_activity_type_id' => 1])->all());
@@ -293,15 +254,15 @@ class FarmAPIController extends AppBaseController
             return $this->sendResponse(['all' => $data], 'Farms relations retrieved successfully');
 
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
 
 
 
-            
-         
+
+
 
 
     public function toggleArchive($id)
@@ -327,7 +288,7 @@ class FarmAPIController extends AppBaseController
             }
         }
         catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -336,14 +297,14 @@ class FarmAPIController extends AppBaseController
     {
         try
         {
-            $archived_farms = auth()->user()->allTeams()->where('archived', true);           
+            $archived_farms = auth()->user()->allTeams()->where('archived', true);
             return $this->sendResponse(['all' => FarmResource::collection($archived_farms)], 'Archived farms retrieved successfully');
         }
         catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
-   
+
 
 
 
@@ -352,9 +313,9 @@ class FarmAPIController extends AppBaseController
         try{
 
             $input = $request->validated();
-            
+
             $fat_id = $input["farm_activity_type_id"];
-            
+
             //all 1,2,3,4
             $farm_detail['admin_id'] = auth()->id();
             $farm_detail['real'] = $input["real"];
@@ -385,14 +346,14 @@ class FarmAPIController extends AppBaseController
             {
                 $farm_detail['farming_way_id'] = $input["farming_way_id"];
             }
-            
+
 
             //crops, trees 1,2
             if($fat_id == 1 || $fat_id == 2)
             {
                 $farm_detail['area'] = $input["area"];
                 $farm_detail['area_unit_id'] = $input["area_unit_id"];
-                
+
                 $farm_detail['irrigation_way_id'] = $input["irrigation_way_id"];
                 $farm_detail['soil_type_id'] = $input["soil_type_id"];
                 //soil.salt
@@ -419,7 +380,7 @@ class FarmAPIController extends AppBaseController
                 $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"] ?? null;
                 $saved_soil_detail = $this->chemicalDetailRepository->save_localized($soil_detail);
                 $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
-                
+
                 //irrigation.salt
                 $irrigation_salt_detail["saltable_type"] = "irrigation";
                 $irrigation_salt_detail["PH"] = $input["irrigation"]["salt"]["PH"];
@@ -494,13 +455,13 @@ class FarmAPIController extends AppBaseController
                 $farm->animal_fodder_sources()->sync($input["animal_fodder_sources"]);
                 $farm->animal_fodder_types()->sync($input["animal_fodder_types"]);
             }
-          
+
             auth()->user()->attachRole('farm-admin', $farm);
 
             return $this->sendResponse(new FarmResource($farm), 'Farm saved successfully');
 
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -567,18 +528,18 @@ class FarmAPIController extends AppBaseController
 
             $user = $this->userRepository->find($request->user);
             $farm = $this->farmRepository->find($request->farm);
-            
+
             $user->attachRole($request->role, $farm);
 
             return $this->sendResponse(new UserResource($user), __('Member added to farm successfully'));
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
-    
+
 
 
 
@@ -610,8 +571,8 @@ class FarmAPIController extends AppBaseController
 
             $user = $this->userRepository->find($request->user);
             $farm = $this->farmRepository->find($request->farm);
-           
-            
+
+
             if($request->role)   //first attach or edit roles
             {
                 $role = Role::find($request->role);
@@ -619,7 +580,7 @@ class FarmAPIController extends AppBaseController
                 {
                     return $this->sendError('Invalid Role');
                 }
-                
+
                 if($user->getRoles($farm)) //edit roles
                 {
                     $user->syncRoles([$request->role], $farm);
@@ -627,36 +588,36 @@ class FarmAPIController extends AppBaseController
                 else            // first attach role
                 {
                     //send invitation to assignee user
-                   
+
                     $user->notify(new \App\Notifications\FarmInvitation(
                         auth()->user(),
                         $role,
                         $farm,
-                        URL::temporarySignedRoute('api.farms.roles.first_attach', now()->addDays(10), 
+                        URL::temporarySignedRoute('api.farms.roles.first_attach', now()->addDays(10),
                             [
                                 'user' => $request->user,
                                 'farm' => $request->farm,
                                 'role' => $request->role,
                             ])
-                        )); 
+                        ));
                     return $this->sendSuccess(__('Invitation sent successfully'));
                 }
-                
+
             }
             else                    //delete roles
             {
                 if($user->getRoles($farm)){
                     $user->detachRoles([], $farm);
                 }else{
-                    return $this->sendError(__('This user is not a member in this farm'), 7000); 
-                }            
+                    return $this->sendError(__('This user is not a member in this farm'), 7000);
+                }
             }
-            
+
             return $this->sendResponse(new UserResource($user), __('Farm roles saved successfully'));
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -675,7 +636,7 @@ class FarmAPIController extends AppBaseController
 
 
     public function get_farm_users($id)
-    {        
+    {
         try
         {
             /** @var Farm $farm */
@@ -691,7 +652,7 @@ class FarmAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -710,7 +671,7 @@ class FarmAPIController extends AppBaseController
 
 
     public function get_farm_posts($id)
-    {        
+    {
         try
         {
             /** @var Farm $farm */
@@ -727,7 +688,7 @@ class FarmAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -755,7 +716,7 @@ class FarmAPIController extends AppBaseController
 
             return $this->sendResponse(new FarmResource($farm), 'Farm retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -784,9 +745,9 @@ class FarmAPIController extends AppBaseController
             if (empty($farm)) {
                 return $this->sendError('Farm not found');
             }
-                
+
             $fat_id = $input["farm_activity_type_id"];
-            
+
             //all 1,2,3,4
             $farm_detail['real'] = $input["real"];
             $farm_detail['archived'] = $input["archived"];
@@ -816,7 +777,7 @@ class FarmAPIController extends AppBaseController
             {
                 $farm_detail['farming_way_id'] = $input["farming_way_id"];
             }
-            
+
 
             //crops, trees 1,2
             if($fat_id == 1 || $fat_id == 2)
@@ -850,8 +811,8 @@ class FarmAPIController extends AppBaseController
                 $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"] ?? null;
                 $saved_soil_detail = $this->chemicalDetailRepository->save_localized($soil_detail, $farm->soil_detail_id);
                 $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
-                
-                //irrigation.salt 
+
+                //irrigation.salt
                 $irrigation_salt_detail["saltable_type"] = "irrigation";
                 $irrigation_salt_detail["PH"] = $input["irrigation"]["salt"]["PH"];
                 $irrigation_salt_detail["CO3"] = $input["irrigation"]["salt"]["CO3"];
@@ -925,10 +886,10 @@ class FarmAPIController extends AppBaseController
                 $farm->animal_fodder_sources()->sync($input["animal_fodder_sources"]);
                 $farm->animal_fodder_types()->sync($input["animal_fodder_types"]);
             }
-            
+
             return $this->sendResponse(new FarmResource($farm), 'Farm updated successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
 
     }
@@ -956,7 +917,7 @@ class FarmAPIController extends AppBaseController
 
             return $this->sendSuccess('Farm deleted successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 

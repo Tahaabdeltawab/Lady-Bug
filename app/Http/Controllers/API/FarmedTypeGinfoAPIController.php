@@ -141,8 +141,8 @@ class FarmedTypeGinfoAPIController extends AppBaseController
                     'title_en_localized' => 'required|max:200',
                     'content_ar_localized' => 'required',
                     'content_en_localized' => 'required',
-                    'farmed_type_id' => 'required',
-                    'farmed_type_stage_id' => 'required',
+                    'farmed_type_id' => 'required|exists:farmed_types,id',
+                    'farmed_type_stage_id' => 'required|exists:farmed_type_stages,id',
                     'assets' => ['nullable','array'],
                     'assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
                 ]);
@@ -306,8 +306,8 @@ class FarmedTypeGinfoAPIController extends AppBaseController
                 'title_en_localized' => 'required|max:200',
                 'content_ar_localized' => 'required',
                 'content_en_localized' => 'required',
-                'farmed_type_id' => 'required',
-                'farmed_type_stage_id' => 'required',
+                'farmed_type_id' => 'required|exists:farmed_types,id',
+                'farmed_type_stage_id' => 'required|exists:farmed_type_stages,id',
                 'assets' => ['nullable','array'],
                 'assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
             ]);

@@ -233,6 +233,7 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Flash' => Laracasts\Flash\Flash::class,
         'CheckPermission'=> App\Http\Helpers\CheckPermission::class,
+        'WeatherApi'=> App\Http\Helpers\WeatherApi::class,
     ],
 
 ];

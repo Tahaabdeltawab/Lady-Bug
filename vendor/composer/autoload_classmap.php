@@ -120,6 +120,7 @@ return array(
     'App\\Http\\Controllers\\WorkableRoleController' => $baseDir . '/app/Http/Controllers/WorkableRoleController.php',
     'App\\Http\\Controllers\\WorkableTypeController' => $baseDir . '/app/Http/Controllers/WorkableTypeController.php',
     'App\\Http\\Helpers\\CheckPermission' => $baseDir . '/app/Http/Helpers/CheckPermission.php',
+    'App\\Http\\Helpers\\WeatherApi' => $baseDir . '/app/Http/Helpers/WeatherApi.php',
     'App\\Http\\Kernel' => $baseDir . '/app/Http/Kernel.php',
     'App\\Http\\Middleware\\ApiGeneralAuth' => $baseDir . '/app/Http/Middleware/ApiGeneralAuth.php',
     'App\\Http\\Middleware\\Authenticate' => $baseDir . '/app/Http/Middleware/Authenticate.php',

@@ -215,11 +215,13 @@ Route::group(['middleware'=>['auth:api']], function()
 
         });
 
+        //get weather and auth interests
+        Route::post('users/interests/index', [App\Http\Controllers\API\UserAPIController::class, 'user_interests']);
         //get auth products
         Route::get('users/products/index', [App\Http\Controllers\API\UserAPIController::class, 'user_products']);
-        //get auth farms
-        Route::get('users/farms/index', [App\Http\Controllers\API\UserAPIController::class, 'user_farms']);
-        Route::get('users/today_tasks/index', [App\Http\Controllers\API\UserAPIController::class, 'user_today_tasks']);
+        //get weather and auth farms
+        Route::post('users/farms/index', [App\Http\Controllers\API\UserAPIController::class, 'user_farms']);
+        Route::post('users/today_tasks/index', [App\Http\Controllers\API\UserAPIController::class, 'user_today_tasks']);
         // // // NOTIFICATIONS
         Route::get('users/notifications/index', [App\Http\Controllers\API\UserAPIController::class, 'get_notifications']);
         Route::get('users/notifications/read/{notification}', [App\Http\Controllers\API\UserAPIController::class, 'read_notification']);

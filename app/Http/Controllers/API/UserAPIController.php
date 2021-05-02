@@ -7,6 +7,7 @@ use App\Http\Requests\API\UpdateUserAPIRequest;
 use App\Http\Requests\API\CreateUserFavoritesAPIRequest;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\Product;
 use App\Models\ServiceTask;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
@@ -19,6 +20,7 @@ use App\Http\Resources\NotificationResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\ServiceTaskResource;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\FarmedTypeGinfoResource;
 use Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Http;
@@ -30,6 +32,9 @@ use App\Repositories\HumanJobRepository;
 use App\Repositories\AssetRepository;
 use App\Repositories\ServiceTaskRepository;
 use App\Repositories\ProductRepository;
+use App\Repositories\FarmedTypeGinfoRepository;
+
+use App\Http\Helpers\WeatherApi;
 
 /**
  * Class UserController
@@ -45,6 +50,7 @@ class UserAPIController extends AppBaseController
     private $farmedTypeRepository;
     private $serviceTaskRepository;
     private $productRepository;
+    private $farmedTypeGinfoRepository;
 
     public function __construct(
         HumanJobRepository $humanJobRepo,
@@ -52,7 +58,8 @@ class UserAPIController extends AppBaseController
         UserRepository $userRepo,
         FarmedTypeRepository $farmedTypeRepo,
         ServiceTaskRepository $serviceTaskRepo,
-        ProductRepository $productRepo
+        ProductRepository $productRepo,
+        FarmedTypeGinfoRepository $farmedTypeGinfoRepo
         )
     {
         $this->userRepository = $userRepo;
@@ -61,6 +68,7 @@ class UserAPIController extends AppBaseController
         $this->farmedTypeRepository = $farmedTypeRepo;
         $this->serviceTaskRepository = $serviceTaskRepo;
         $this->productRepository = $productRepo;
+        $this->farmedTypeGinfoRepository = $farmedTypeGinfoRepo;
     }
 
     /**
@@ -113,10 +121,37 @@ class UserAPIController extends AppBaseController
     public function user_farms(Request $request)
     {
         try{
-            // $farms = $this->farmRepository->where(['admin_id' => auth()->id()])->all();
+            $weather_resp = WeatherApi::instance()->weather_api($request);
+            $weather_data = $weather_resp['data'];
+
             $farms = auth()->user()->allTeams();
 
-            return $this->sendResponse(['all' => FarmResource::collection($farms)], 'Farms retrieved successfully');
+            return $this->sendResponse([
+                'weather_data' => $weather_data,
+                'farms' => FarmResource::collection($farms)
+            ], 'Farms retrieved successfully');
+        }catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    
+    public function user_today_tasks(Request $request)
+    {
+        try{
+            $weather_resp = WeatherApi::instance()->weather_api($request);
+            $weather_data = $weather_resp['data'];
+
+            $farms = auth()->user()->rolesTeams()->with('service_tasks', function($query){
+                $query->where('start_at', date('Y-m-d'));
+            })->whereHas('service_tasks', function($q){
+                $q->where('start_at', date('Y-m-d'));
+            })->get();
+
+            return $this->sendResponse([
+                'weather_data' => $weather_data,
+                'tasks' => FarmWithServiceTasksReource::collection($farms)
+            ], 'Today\'s tasks retrieved successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
         }
@@ -134,25 +169,32 @@ class UserAPIController extends AppBaseController
         }
     }
 
-    public function user_today_tasks()
+
+    //user interests -> farmed_type_ginfos, products, interests
+    public function user_interests(Request $request)
     {
-        try{
-           /*  $user_farms = auth()->user()->rolesTeams()->whereHas('service_tasks', function($q){
-                $q->where('start_at', date('Y-m-d'));
-            })->get();
-            $today_tasks =  ServiceTask::whereIn('farm_id', $user_farms)->where('start_at', date('Y-m-d'))->get(); */
+        $weather_resp = WeatherApi::instance()->weather_api($request);
+        $weather_data = $weather_resp['data'];
 
-            $farms = auth()->user()->rolesTeams()->with('service_tasks', function($query){
-                $query->where('start_at', date('Y-m-d'));
-            })->whereHas('service_tasks', function($q){
-                $q->where('start_at', date('Y-m-d'));
-            })->get();
+        $favorites = auth()->user()->favorites;
+        $fav_farmed_types_ids = $favorites->pluck('id');
 
-            return $this->sendResponse(['all' => FarmWithServiceTasksReource::collection($farms)], 'Today\'s tasks retrieved successfully');
-        }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500);
-        }
+        $fav_farmed_type_ginfos = $this->farmedTypeGinfoRepository->whereIn(['farmed_type_id' => $fav_farmed_types_ids])->all();
+
+        $fav_products = Product::whereIn('farmed_type_id', $fav_farmed_types_ids)->limit(10)->get();
+        $latest_products = Product::latest()->limit(10)->get();
+
+        return $this->sendResponse(
+            [
+                'weather_data' => $weather_data,
+                'favourites' => FarmedTypeResource::collection($favorites),
+                'farmed_type_ginfos' => FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
+                'favorite_products' => ProductResource::collection($fav_products),
+                'latest_products' => ProductResource::collection($latest_products)
+            ], 'Farmed Type General Information relations retrieved successfully');
     }
+
+
 
 
 // // // // // // NOTIFICATIONS // // // // // //
@@ -261,52 +303,7 @@ class UserAPIController extends AppBaseController
     }
 
 
-    /**
-     * @param CreateUserAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Post(
-     *      path="/users",
-     *      summary="Store a newly created User in storage",
-     *      tags={"User"},
-     *      description="Store User",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="User that should be stored",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/User")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/User"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
-    public function store(CreateUserAPIRequest $request)
-    {
-        $input = $request->validated();
 
-        $user = $this->userRepository->save_localized($input);
-
-        return $this->sendResponse(new UserResource($user), 'User saved successfully');
-    }
 
 
     public function my_favorites()
@@ -403,6 +400,55 @@ class UserAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
+
+
+    /**
+     * @param CreateUserAPIRequest $request
+     * @return Response
+     *
+     * @SWG\Post(
+     *      path="/users",
+     *      summary="Store a newly created User in storage",
+     *      tags={"User"},
+     *      description="Store User",
+     *      produces={"application/json"},
+     *      @SWG\Parameter(
+     *          name="body",
+     *          in="body",
+     *          description="User that should be stored",
+     *          required=false,
+     *          @SWG\Schema(ref="#/definitions/User")
+     *      ),
+     *      @SWG\Response(
+     *          response=200,
+     *          description="successful operation",
+     *          @SWG\Schema(
+     *              type="object",
+     *              @SWG\Property(
+     *                  property="success",
+     *                  type="boolean"
+     *              ),
+     *              @SWG\Property(
+     *                  property="data",
+     *                  ref="#/definitions/User"
+     *              ),
+     *              @SWG\Property(
+     *                  property="message",
+     *                  type="string"
+     *              )
+     *          )
+     *      )
+     * )
+     */
+    public function store(CreateUserAPIRequest $request)
+    {
+        $input = $request->validated();
+
+        $user = $this->userRepository->save_localized($input);
+
+        return $this->sendResponse(new UserResource($user), 'User saved successfully');
+    }
+
 
     /**
      * @param int $id
