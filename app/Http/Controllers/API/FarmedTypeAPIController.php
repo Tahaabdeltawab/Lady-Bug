@@ -75,6 +75,16 @@ class FarmedTypeAPIController extends AppBaseController
         return $this->sendResponse(['all' => FarmedTypeResource::collection($farmedTypes)], 'Farmed Types retrieved successfully');
     }
 
+    public function search($query)
+    {
+        $farmedTypes = FarmedType::whereHas('translations', function($q) use($query)
+        {
+            $q->where('name','like', '%'.$query.'%' );
+        })->get();
+
+        return $this->sendResponse(['all' => FarmedTypeResource::collection($farmedTypes)], 'Farmed Types retrieved successfully');
+    }
+
     /**
      * @param CreateFarmedTypeAPIRequest $request
      * @return Response
@@ -132,7 +142,7 @@ class FarmedTypeAPIController extends AppBaseController
         {
             return $this->sendError(json_encode($validator->errors()), 5050);
         }
-        
+
         $to_save['name_ar_localized'] = $request->name_ar_localized;
         $to_save['name_en_localized'] = $request->name_en_localized;
         $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
@@ -145,12 +155,12 @@ class FarmedTypeAPIController extends AppBaseController
             $photoname = 'farmedType-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
             $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
             $photomime = $photo->getClientMimeType();
-                    
+
             $path = $photo->storeAs('assets/images/farmedTypes', $photoname, 's3');
             // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
-            
+
             $url  = Storage::disk('s3')->url($path);
-            
+
             $saved_photo = $farmedType->asset()->create([
                 'asset_name'        => $photoname,
                 'asset_url'         => $url,
@@ -159,7 +169,7 @@ class FarmedTypeAPIController extends AppBaseController
             ]);
 
         }
-       
+
 
         return $this->sendResponse(new FarmedTypeResource($farmedType), 'Farmed Type saved successfully');
     }
@@ -287,7 +297,7 @@ class FarmedTypeAPIController extends AppBaseController
         {
             return $this->sendError(json_encode($validator->errors()), 5050);
         }
-        
+
         $to_save['name_ar_localized'] = $request->name_ar_localized;
         $to_save['name_en_localized'] = $request->name_en_localized;
         $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
@@ -300,12 +310,12 @@ class FarmedTypeAPIController extends AppBaseController
             $photoname = 'farmedType-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
             $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
             $photomime = $photo->getClientMimeType();
-                    
+
             $path = $photo->storeAs('assets/images/farmedTypes', $photoname, 's3');
             // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
-            
+
             $url  = Storage::disk('s3')->url($path);
-            
+
             $farmedType->asset()->delete();
             $saved_photo = $farmedType->asset()->create([
                 'asset_name'        => $photoname,

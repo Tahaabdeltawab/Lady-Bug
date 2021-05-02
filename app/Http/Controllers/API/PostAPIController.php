@@ -100,6 +100,12 @@ class PostAPIController extends AppBaseController
             'Timeline retrieved successfully');
     }
 
+    public function search($query)
+    {
+        $posts = Post::where('content','like', '%'.$query.'%' )->get();
+        return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
+    }
+
     // video_timeline
     public function video_timeline(Request $request)
     {

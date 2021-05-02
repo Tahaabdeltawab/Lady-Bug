@@ -81,6 +81,16 @@ class ProductAPIController extends AppBaseController
     }
 
 
+    public function search($query)
+    {
+        $products = Product::whereHas('translations', function($q) use($query)
+        {
+            $q->where('name','like', '%'.$query.'%' )->orWhere('description','like', '%'.$query.'%');
+        })->get();
+
+        return $this->sendResponse(['all' => ProductResource::collection($products)], 'Products retrieved successfully');
+    }
+
 
     //  sell product
     public function toggle_sell_product($id)

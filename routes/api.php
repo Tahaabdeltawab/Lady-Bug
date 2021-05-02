@@ -233,6 +233,8 @@ Route::group(['middleware'=>['auth:api']], function()
         // // // RATE
         Route::post('users/rate', [App\Http\Controllers\API\UserAPIController::class, 'rate']);
 
+        Route::get('users/search/{query}', [App\Http\Controllers\API\UserAPIController::class, 'search']);
+
         Route::get('users/posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_posts']);
         Route::get('users/liked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_liked_posts']);
         Route::get('users/disliked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_disliked_posts']);
@@ -246,6 +248,7 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::match(['put', 'patch','post'], 'products/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'update'])->name('products.update');
         Route::get('products/toggle_sell/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'toggle_sell_product']);
         Route::get('products/relations/index', [App\Http\Controllers\API\ProductAPIController::class, 'products_relations']);
+        Route::get('products/search/{query}', [App\Http\Controllers\API\ProductAPIController::class, 'search']);
 
 
         Route::group(['middleware'=>['check_farm_role']], function()
@@ -253,6 +256,7 @@ Route::group(['middleware'=>['auth:api']], function()
             Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
             Route::get('posts/timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'timeline'])->name('timeline'); // the name must remain timeline because it's checked in UserResource
             Route::get('posts/video_timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'video_timeline'])->name('video_timeline'); // the name must remain timeline because it's checked in UserResource
+            Route::get('posts/search/{query}', [App\Http\Controllers\API\PostAPIController::class, 'search']);
             Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
             Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
             Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
@@ -320,6 +324,7 @@ Route::group(['middleware'=>['auth:api']], function()
 
         Route::resource('farmed_types', App\Http\Controllers\API\FarmedTypeAPIController::class);
         Route::match(['put', 'patch','post'], 'farmed_types/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'update'])->name('farmed_types.update');
+        Route::get('farmed_types/search/{query}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'search']);
 
         Route::resource('farmed_type_classes', App\Http\Controllers\API\FarmedTypeClassAPIController::class);
 

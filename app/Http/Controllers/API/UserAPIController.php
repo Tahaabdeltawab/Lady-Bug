@@ -115,7 +115,11 @@ class UserAPIController extends AppBaseController
     }
 
 
-
+    public function search($query)
+    {
+        $users = User::where('name','like', '%'.$query.'%' )->orWhere('email','like', '%'.$query.'%')->orWhere('mobile','like', '%'.$query.'%')->get();
+        return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
+    }
 
 
     public function user_farms(Request $request)
@@ -135,7 +139,7 @@ class UserAPIController extends AppBaseController
         }
     }
 
-    
+
     public function user_today_tasks(Request $request)
     {
         try{
