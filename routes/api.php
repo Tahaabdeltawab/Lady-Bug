@@ -266,6 +266,7 @@ Route::group(['middleware'=>['auth:api']], function()
         // // // LIKES // // //
         Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
         Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
+        Route::get('post_types/posts/{post_type}', [App\Http\Controllers\API\PostAPIController::class, 'get_posts_by_post_type_id']);
         Route::get('posts/relations/index', [App\Http\Controllers\API\PostAPIController::class, 'posts_relations']);
 
         Route::resource('comments', App\Http\Controllers\API\CommentAPIController::class);
