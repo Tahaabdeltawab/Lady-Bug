@@ -94,6 +94,18 @@ class FarmedTypeGinfoAPIController extends AppBaseController
              ], 'Farmed Type General Information relations retrieved successfully');
      }
 
+
+     //get farmed type ginfos by farmed_type_id
+     public function farmed_type_ginfos_by_farmed_type_id($farmed_type_id, $stage_id = null)
+     {
+
+         $farmedTypeGinfos = FarmedTypeGinfo::where('farmed_type_id', $farmed_type_id)->when($stage_id, function($q) use($stage_id) {
+             $q->where('farmed_type_stage_id', $stage_id);
+         })->get();
+
+        return $this->sendResponse(['all' => FarmedTypeGinfoResource::collection($farmedTypeGinfos)], 'Farmed Type Ginfos retrieved successfully');
+     }
+
     /**
      * @param CreateFarmedTypeGinfoAPIRequest $request
      * @return Response
