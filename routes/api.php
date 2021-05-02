@@ -262,6 +262,7 @@ Route::group(['middleware'=>['auth:api']], function()
             Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
             Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
             Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
+            Route::get('service_tasks/toggle_finish/{service_task}', [App\Http\Controllers\API\ServiceTaskAPIController::class, 'toggle_finish']);
         });
 
         Route::get('service_tables/duplicate/{service_table}', [App\Http\Controllers\API\ServiceTableAPIController::class, 'duplicate']);

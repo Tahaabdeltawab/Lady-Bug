@@ -69,6 +69,19 @@ class ServiceTaskAPIController extends AppBaseController
         return $this->sendResponse(['all' => ServiceTaskResource::collection($serviceTasks)], 'Service Tasks retrieved successfully');
     }
 
+    public function toggle_finish($id)
+    {
+        $serviceTask = $this->serviceTaskRepository->find($id);
+
+        if (empty($serviceTask)) {
+            return $this->sendError('Service Task not found');
+        }
+
+        $msg = $serviceTask->done ? 'Task unfinished successfully' : 'Task finished successfully' ;
+        $this->serviceTaskRepository->save_localized(['done' => !$serviceTask->done], $id);
+
+        return $this->sendSuccess($msg);
+    }
     /**
      * @param CreateServiceTaskAPIRequest $request
      * @return Response
