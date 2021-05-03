@@ -103,7 +103,16 @@ class FarmedTypeGinfoAPIController extends AppBaseController
              $q->where('farmed_type_stage_id', $stage_id);
          })->get();
 
-        return $this->sendResponse(['all' => FarmedTypeGinfoResource::collection($farmedTypeGinfos)], 'Farmed Type Ginfos retrieved successfully');
+         $data = [];
+         $farmed_type_stages = $this->farmedTypeStageRepository->all();
+
+         foreach($farmed_type_stages as $stage)
+         {
+            $r = $farmedTypeGinfos->where('farmed_type_stage_id', $stage->id);
+            $data[] = ['stage' => $stage->name, 'news' => FarmedTypeGinfoResource::collection($r)];
+         }
+
+        return $this->sendResponse(['all' => $data], 'Farmed Type Ginfos retrieved successfully');
      }
 
     /**
