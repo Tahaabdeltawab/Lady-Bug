@@ -40,13 +40,13 @@ use Astrotomic\Translatable\Translatable;
 
 class FarmedTypeStage extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['name'];
 
 
     public $table = 'farmed_type_stages';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -76,5 +76,5 @@ class FarmedTypeStage extends Model implements TranslatableContract
         'name_en_localized' => 'required|max:200',
     ];
 
-    
+
 }

@@ -40,12 +40,12 @@ use Astrotomic\Translatable\Translatable;
 
 class SeedlingSource extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['name'];
 
     public $table = 'seedling_sources';
-    
+
     protected $dates = ['deleted_at'];
 
 
@@ -74,5 +74,5 @@ class SeedlingSource extends Model implements TranslatableContract
         'name_en_localized' => 'required|max:200',
     ];
 
-    
+
 }

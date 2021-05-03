@@ -38,11 +38,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class HomePlantPotSize extends Model
 {
-    use SoftDeletes;
+  // use SoftDeletes;
 
 
     public $table = 'home_plant_pot_sizes';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -71,5 +71,5 @@ class HomePlantPotSize extends Model
         'size' => 'required|integer'
     ];
 
-    
+
 }

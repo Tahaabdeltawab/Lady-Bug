@@ -41,13 +41,13 @@ use Astrotomic\Translatable\Translatable;
 
 class HumanJob extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable, HasFactory;
+    use /*SoftDeletes,*/ Translatable, HasFactory;
 
     public $translatedAttributes = ['name'];
 
 
     public $table = 'human_jobs';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -77,5 +77,5 @@ class HumanJob extends Model implements TranslatableContract
         'name_en_localized' => 'required|max:200',
     ];
 
-    
+
 }

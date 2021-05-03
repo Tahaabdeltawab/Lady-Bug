@@ -18,7 +18,8 @@ use Laratrust\Traits\LaratrustUserTrait;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use LaratrustUserTrait, HasFactory, Notifiable, Followable, Rateable, Liker, Subscriber, SoftDeletes;
+    use LaratrustUserTrait, HasFactory, Notifiable, Followable, Rateable, Liker, Subscriber;
+    // use SoftDeletes;
 
 
     protected $dates = ['deleted_at'];
@@ -28,6 +29,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'mobile',
         'status',
+        'is_notifiable',
         'activity_points',
         'email_verified',
         'mobile_verified',
@@ -45,6 +47,7 @@ class User extends Authenticatable implements JWTSubject
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_notifiable' => 'boolean',
     ];
 
 

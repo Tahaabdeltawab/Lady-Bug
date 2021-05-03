@@ -89,11 +89,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServiceTask extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
-    
     public $table = 'service_tasks';
-    
+
 
     protected $dates = ['deleted_at'];
 

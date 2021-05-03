@@ -42,13 +42,13 @@ use Astrotomic\Translatable\Translatable;
 
 class AnimalBreedingPurpose extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['name'];
 
 
     public $table = 'animal_breeding_purposes';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -78,5 +78,5 @@ class AnimalBreedingPurpose extends Model implements TranslatableContract
         'name_en_localized' => 'required|max:200',
     ];
 
-    
+
 }

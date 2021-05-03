@@ -12,10 +12,11 @@ use Overtrue\LaravelSubscribe\Traits\Subscriber;
 
 class User extends UserManagement implements JWTSubject
 {
-    use HasFactory, Followable, Favoriter, Liker, Subscriber, SoftDeletes;
+    use HasFactory, Followable, Favoriter, Liker, Subscriber;
+    // use SoftDeletes;
 
     protected $guard_name =  'web';
-    
+
     protected $fillable = [
         'name',
         'email',
@@ -23,7 +24,7 @@ class User extends UserManagement implements JWTSubject
         'password',
         'status',           // 'pending','accepted','blocked' | DEFAULT: pending
         'email_verified',
-        'mobile_verified',        
+        'mobile_verified',
     ];
 
      /**
@@ -34,20 +35,20 @@ class User extends UserManagement implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
-    ];  
+    ];
 
     public function getJWTIdentifier()
     {
         return $this->getKey();
     }
 
- 
+
     public function getJWTCustomClaims()
     {
         return [];
     }
 
-    
+
     public function farms(){
         return $this->morphedByMany(Farm::class, 'workable', 'workables', 'worker_id', 'workable_id')->using(Workable::class)->withPivot('id', 'status')->withTimestamps();
     }

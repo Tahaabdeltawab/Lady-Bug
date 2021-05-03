@@ -56,11 +56,11 @@ use Overtrue\LaravelLike\Traits\Likeable;
  */
 class Comment extends Model
 {
-    use SoftDeletes, Likeable;
+    use /*SoftDeletes,*/ Likeable;
 
 
     public $table = 'comments';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -122,5 +122,5 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
-    
+
 }

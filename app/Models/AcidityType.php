@@ -35,19 +35,19 @@ use Astrotomic\Translatable\Translatable;
 
 class AcidityType extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['name'];
 
     public $table = 'acidity_types';
-    
+
 
     protected $dates = ['deleted_at'];
 
 
 
     public $fillable = [
-        
+
     ];
 
     /**
@@ -69,5 +69,5 @@ class AcidityType extends Model implements TranslatableContract
         'name_en_localized' => 'required|max:200',
     ];
 
-    
+
 }

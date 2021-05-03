@@ -78,11 +78,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class ChemicalDetail extends Model
 {
-    use SoftDeletes;
+  // use SoftDeletes;
 
 
     public $table = 'chemical_details';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -136,7 +136,7 @@ class ChemicalDetail extends Model
     {
         return $this->belongsTo(SaltType::class);
     }
-    
+
     public function salt_detail()
     {
         return $this->belongsTo(SaltDetail::class);
@@ -151,10 +151,10 @@ class ChemicalDetail extends Model
     {
         return $this->belongsTo(MeasuringUnit::class, 'acidity_unit_id');
     }
-    
+
     public function salt_concentration_unit()
     {
         return $this->belongsTo(MeasuringUnit::class, 'salt_concentration_unit_id');
     }
-    
+
 }

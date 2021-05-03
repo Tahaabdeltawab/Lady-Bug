@@ -35,7 +35,7 @@ use Astrotomic\Translatable\Translatable;
 
 class City extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['name'];
 

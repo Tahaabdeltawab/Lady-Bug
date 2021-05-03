@@ -57,7 +57,7 @@ use Astrotomic\Translatable\Translatable;
 
 class FarmedTypeGinfo extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['title', 'content'];
 

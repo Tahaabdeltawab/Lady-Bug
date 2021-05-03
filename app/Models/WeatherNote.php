@@ -43,11 +43,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class WeatherNote extends Model
 {
-    use SoftDeletes;
+  // use SoftDeletes;
 
 
     public $table = 'weather_notes';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -79,5 +79,5 @@ class WeatherNote extends Model
         'user_id' => 'required'
     ];
 
-    
+
 }

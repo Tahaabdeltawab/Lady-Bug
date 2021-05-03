@@ -98,11 +98,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class SaltDetail extends Model
 {
-    use SoftDeletes;
+  // use SoftDeletes;
 
 
     public $table = 'salt_details';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -161,5 +161,5 @@ class SaltDetail extends Model
         'Na2CO3' => 'required'
     ];
 
-    
+
 }

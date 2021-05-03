@@ -44,12 +44,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ServiceTable extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
 
     public $translatedAttributes = ['name'];
-    
+
     public $table = 'service_tables';
-    
+
 
     protected $dates = [
         'deleted_at',
@@ -90,5 +90,5 @@ class ServiceTable extends Model
         return $this->hasMany(ServiceTask::class);
     }
 
-    
+
 }

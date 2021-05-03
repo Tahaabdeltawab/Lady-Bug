@@ -82,7 +82,7 @@ use Astrotomic\Translatable\Translatable;
 
 class Product extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['name', 'description'];
 

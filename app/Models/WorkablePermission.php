@@ -42,7 +42,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class WorkablePermission extends Model
 {
-    use SoftDeletes;
+  // use SoftDeletes;
 
 
     public $table = 'workable_permissions';

@@ -11,6 +11,8 @@ use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\ServiceTaskResource;
 use Response;
 
+use App\Http\Helpers\CheckPermission;
+
 /**
  * Class ServiceTaskController
  * @package App\Http\Controllers\API

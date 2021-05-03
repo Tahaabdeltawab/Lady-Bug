@@ -46,12 +46,12 @@ use Astrotomic\Translatable\Translatable;
 
 class FarmedType extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable/* , Favoriteable */;
-    
+    use /*SoftDeletes,*/ Translatable/* , Favoriteable */;
+
     public $translatedAttributes = ['name'];
 
     public $table = 'farmed_types';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -95,7 +95,7 @@ class FarmedType extends Model implements TranslatableContract
     public function farm_activity_type(){
         return $this->belongsTo(FarmActivityType::class);
     }
-    
+
     public function favoriters()
     {
         return $this->morphToMany(User::class, 'favoriteable', 'favorites', 'favoriteable_id', 'user_id');
@@ -115,5 +115,5 @@ class FarmedType extends Model implements TranslatableContract
     {
         return $this->hasMany(FarmedTypeClass::class);
     }
-    
+
 }

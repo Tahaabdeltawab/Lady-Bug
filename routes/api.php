@@ -190,30 +190,37 @@ Route::group(['middleware'=>['auth:api']], function()
     // Route::group(['middleware'=>['role:app-user']], function()
     // {
 
-        Route::group(['as'=>'farms.', 'prefix'=>'farms', 'middleware'=>[]], function()
+        // the above resource routes but separated because when using the middleware on the resource I cannot catch the request->id in the middleware wauth. but in this way I can do.
+        // also I tried to apply the middleware on the controller itself but the same problem occurred.
+        Route::get('farms/relations/index', [App\Http\Controllers\API\FarmAPIController::class, 'relations_index'])->name('farms.relations.index');
+        Route::post('farms/', [App\Http\Controllers\API\FarmAPIController::class, 'store'])->name('farms.store');
+
+        // Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy')->middleware('check_farm_role');
+        Route::group(['middleware'=>['check_farm_role']], function()
         {
-            // the above resource routes but separated because when using the middleware on the resource I cannot catch the request->id in the middleware wauth. but in this way I can do.
-            // also I tried to apply the middleware on the controller itself but the same problem occurred.
-            Route::get('/relations/index', [App\Http\Controllers\API\FarmAPIController::class, 'relations_index'])->name('relations.index');
-            Route::post('/', [App\Http\Controllers\API\FarmAPIController::class, 'store'])->name('store');
+            Route::match(['put', 'patch', 'post'], 'farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('farms.update');
+            Route::get('farms/users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_users'])->name('farms.users.index');
+            Route::get('farms/app_users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'app_users']);
+            Route::get('farms/posts/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_posts'])->name('farms.posts.index');
+            Route::get('farms/toggle_archive/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'toggleArchive'])->name('farms.toggle_archive');
+            Route::get('farms/app_roles/index', [App\Http\Controllers\API\FarmAPIController::class, 'app_roles']);
 
-            // Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy')->middleware('check_farm_role');
-            Route::group(['middleware'=>['check_farm_role']], function()
-            {
-                Route::match(['put', 'patch', 'post'], '{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('update');
-                Route::get('users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_users'])->name('users.index');
-                Route::get('app_users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'app_users']);;
-                Route::get('app_roles/index', [App\Http\Controllers\API\FarmAPIController::class, 'app_roles']);;
-                Route::get('posts/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_posts'])->name('posts.index');
-                Route::get('toggle_archive/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'toggleArchive'])->name('toggle_archive');
-
-            });
-            Route::post('roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('roles.store');
-            Route::get('roles/store/{user}/{role}/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('roles.first_attach');
-            Route::post('user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('users.weather.index');
-            Route::get('archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('get_archived');
-
+            Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
+            Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
+            Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
+            Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
+            Route::get('service_tasks/toggle_finish/{service_task}', [App\Http\Controllers\API\ServiceTaskAPIController::class, 'toggle_finish']);
+            Route::get('service_tables/duplicate/{service_table}', [App\Http\Controllers\API\ServiceTableAPIController::class, 'duplicate']);
+            Route::get('posts/toggle_solve/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_solve_post']);
+            // // // LIKES // // //
+            Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
+            Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
         });
+        Route::post('farms/roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('farms.roles.store');
+        Route::get('farms/roles/store/{user}/{role}/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('farms.roles.first_attach');
+        Route::post('farms/user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('farms.users.weather.index');
+        Route::get('farms/archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('farms.get_archived');
+
 
         //get weather and auth interests
         Route::post('users/interests/index', [App\Http\Controllers\API\UserAPIController::class, 'user_interests']);
@@ -253,24 +260,11 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::get('products/search/{query}', [App\Http\Controllers\API\ProductAPIController::class, 'search']);
 
 
-        Route::group(['middleware'=>['check_farm_role']], function()
-        {
-            Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
-            Route::get('posts/timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'timeline'])->name('timeline'); // the name must remain timeline because it's checked in UserResource
-            Route::get('posts/video_timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'video_timeline'])->name('video_timeline'); // the name must remain timeline because it's checked in UserResource
-            Route::get('posts/search/{query}', [App\Http\Controllers\API\PostAPIController::class, 'search']);
-            Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
-            Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
-            Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
-            Route::get('service_tasks/toggle_finish/{service_task}', [App\Http\Controllers\API\ServiceTaskAPIController::class, 'toggle_finish']);
-        });
+        Route::get('posts/search/{query}', [App\Http\Controllers\API\PostAPIController::class, 'search']);
+        Route::get('posts/timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'timeline'])->name('timeline'); // the name must remain timeline because it's checked in UserResource
+        Route::get('posts/video_timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'video_timeline'])->name('video_timeline'); // the name must remain timeline because it's checked in UserResource
 
-        Route::get('service_tables/duplicate/{service_table}', [App\Http\Controllers\API\ServiceTableAPIController::class, 'duplicate']);
 
-        Route::get('posts/toggle_solve/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_solve_post']);
-        // // // LIKES // // //
-        Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
-        Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
         Route::get('post_types/posts/{post_type}', [App\Http\Controllers\API\PostAPIController::class, 'get_posts_by_post_type_id']);
         Route::get('posts/relations/index', [App\Http\Controllers\API\PostAPIController::class, 'posts_relations']);
 

@@ -40,12 +40,12 @@ use Astrotomic\Translatable\Translatable;
 
 class PostType extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['name'];
-    
+
     public $table = 'post_types';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -84,5 +84,5 @@ class PostType extends Model implements TranslatableContract
         });
     }
 
-    
+
 }

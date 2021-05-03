@@ -45,13 +45,13 @@ use Astrotomic\Translatable\Translatable;
 
 class Information extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['title', 'content'];
 
 
     public $table = 'information';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -87,5 +87,5 @@ class Information extends Model implements TranslatableContract
         // 'content' => 'required'
     ];
 
-    
+
 }

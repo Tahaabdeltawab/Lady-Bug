@@ -42,20 +42,21 @@ class UserResource extends JsonResource
             'job_name'          => $this->job->name,
             'photo_url'         => isset($this->asset->asset_url)?$this->asset->asset_url:'',
             'status'            => $this->status,
+            'is_notifiable'     => $this->is_notifiable,
             'mobile_verified'   => $this->mobile_verified,
             'email_verified'    => $this->email_verified,
             'roles'             => $this->getRoles(),
             'rating'            => $this->averageRating,
-           
+
             'is_following'      => $this->isFollowedBy(auth()->user()), // Am I following him?
             'is_rated'          => $this->isRatedBy(auth()->id()), // Did I rate him?
-            
+
             // 'farm_roles'        => $this->when($this->farm, $this->getRoles($this->farm)),
             'farm_roles'        => $this->when($farm, $this->getRoles($farm)),
             // 'roles'             => RoleResource::collection($this->roles),
             // 'created_at'        => $this->created_at,
             // 'updated_at'        => $this->updated_at,
-            // 'deleted_at'        => $this->deleted_at,            
+            // 'deleted_at'        => $this->deleted_at,
         ];
 
         return $return;

@@ -41,7 +41,7 @@ use Astrotomic\Translatable\Translatable;
 
 class District extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['name'];
 

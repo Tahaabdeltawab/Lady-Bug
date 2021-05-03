@@ -71,11 +71,11 @@ use Overtrue\LaravelLike\Traits\Likeable;
  */
 class Post extends Model
 {
-    use SoftDeletes, Likeable;
+    use /*SoftDeletes,*/ Likeable;
 
 
     public $table = 'posts';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -159,5 +159,5 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
-    
+
 }

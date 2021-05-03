@@ -65,7 +65,7 @@
 </div>
 
 
-@if(CheckPermission::instance()->allowed_permissions('edit-users', auth()->id(), @$farm->id))
+{{-- @if(CheckPermission::instance()->allowed_permissions('edit-users', auth()->id(), @$farm->id)) --}}
     <!-- Workers Field -->
     <div class="col-12 grid-margin stretch-card">
         <div class="card">
@@ -106,7 +106,7 @@
             </div>
         </div>
     </div>
-@endif
+{{-- @endif --}}
 
 <!-- Submit Field -->
 <div class="form-group col-sm-12">

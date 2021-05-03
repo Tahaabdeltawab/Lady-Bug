@@ -40,13 +40,13 @@ use Astrotomic\Translatable\Translatable;
 
 class HomePlantIlluminatingSource extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['name'];
 
 
     public $table = 'home_plant_illuminating_sources';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -76,5 +76,5 @@ class HomePlantIlluminatingSource extends Model implements TranslatableContract
         'name_en_localized' => 'required|max:200',
     ];
 
-    
+
 }

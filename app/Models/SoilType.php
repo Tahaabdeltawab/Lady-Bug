@@ -40,11 +40,11 @@ use Astrotomic\Translatable\Translatable;
 
 class SoilType extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
 
     public $table = 'soil_types';
-    
+
     public $translatedAttributes = ['name'];
 
     protected $dates = ['deleted_at'];
@@ -75,5 +75,5 @@ class SoilType extends Model implements TranslatableContract
         'name_en_localized' => 'required|max:200',
     ];
 
-    
+
 }

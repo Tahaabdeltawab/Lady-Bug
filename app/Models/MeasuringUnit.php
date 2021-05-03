@@ -45,13 +45,13 @@ use Astrotomic\Translatable\Translatable;
 
 class MeasuringUnit extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['name'];
 
 
     public $table = 'measuring_units';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -87,5 +87,5 @@ class MeasuringUnit extends Model implements TranslatableContract
         'measurable' => 'required|max:200'
     ];
 
-    
+
 }

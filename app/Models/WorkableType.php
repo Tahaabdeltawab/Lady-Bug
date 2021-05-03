@@ -37,11 +37,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class WorkableType extends Model
 {
-    use SoftDeletes;
+  // use SoftDeletes;
 
 
     public $table = 'workable_types';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -70,5 +70,5 @@ class WorkableType extends Model
         'name' => 'required|max:200',
     ];
 
-    
+
 }

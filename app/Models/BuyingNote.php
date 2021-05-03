@@ -40,13 +40,13 @@ use Astrotomic\Translatable\Translatable;
 
 class BuyingNote extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['content'];
 
 
     public $table = 'buying_notes';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -76,5 +76,5 @@ class BuyingNote extends Model implements TranslatableContract
         'content_en_localized' => 'required',
     ];
 
-    
+
 }

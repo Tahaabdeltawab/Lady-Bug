@@ -143,11 +143,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Farm extends Team
 {
-    use SoftDeletes;
+  // use SoftDeletes;
 
 
     public $table = 'farms';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -218,7 +218,7 @@ class Farm extends Team
     {
         return $this->morphToMany(User::class, 'workable', 'workables', 'workable_id', 'worker_id')->using(Workable::class)->withPivot('id', 'status')->withTimestamps();
     }
-    
+
     public function admin()
     {
         return $this->belongsTo(User::class, 'admin_id');
@@ -228,12 +228,12 @@ class Farm extends Team
     {
         return $this->belongsTo(FarmActivityType::class);
     }
-    
+
     public function farmed_type()
     {
         return $this->belongsTo(FarmedType::class);
     }
-    
+
     public function farmed_type_class()
     {
         return $this->belongsTo(FarmedTypeClass::class);
@@ -305,7 +305,7 @@ class Farm extends Team
     {
         return $this->hasMany(Post::class);
     }
-    
+
     public function service_tables()
     {
         return $this->hasMany(ServiceTable::class);
@@ -344,9 +344,9 @@ class Farm extends Team
 
 
 
-  
 
 
 
-    
+
+
 }

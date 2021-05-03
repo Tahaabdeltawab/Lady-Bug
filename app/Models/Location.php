@@ -64,11 +64,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class Location extends Model
 {
-    use SoftDeletes;
+  // use SoftDeletes;
 
 
     public $table = 'locations';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -104,8 +104,8 @@ class Location extends Model
      * @var array
      */
     public static $rules = [
-        
+
     ];
 
-    
+
 }

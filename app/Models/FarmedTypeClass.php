@@ -46,13 +46,13 @@ use Astrotomic\Translatable\Translatable;
 
 class FarmedTypeClass extends Model implements TranslatableContract
 {
-    use SoftDeletes, Translatable;
+    use /*SoftDeletes,*/ Translatable;
 
     public $translatedAttributes = ['name'];
 
 
     public $table = 'farmed_type_classes';
-    
+
 
     protected $dates = ['deleted_at'];
 
@@ -89,5 +89,5 @@ class FarmedTypeClass extends Model implements TranslatableContract
         return $this->belongsTo(FarmedType::class);
     }
 
-    
+
 }

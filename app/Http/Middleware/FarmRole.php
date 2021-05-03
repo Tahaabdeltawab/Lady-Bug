@@ -6,6 +6,13 @@ use Closure;
 use App\Models\Farm;
 use Illuminate\Http\Request;
 
+use App\Models\Post;
+use App\Models\ServiceTable;
+use App\Models\ServiceTask;
+
+use App\Http\Helpers\CheckPermission;
+use App\Http\Controllers\AppBaseController;
+
 class FarmRole
 {
     /**
@@ -17,51 +24,60 @@ class FarmRole
      */
     public function handle(Request $request, Closure $next)
     {
+        $app_base_controller = new AppBaseController;
+
         if (isset($request->farm) || isset($request->farm_id))
         {
-            $farm = Farm::where('id', $request->farm ?? $request->farm_id)->first();
-    
-            if (empty($farm))
+            $farm_id = $request->farm ?? $request->farm_id;
+        }
+
+        elseif(isset($request->service_task) || isset($request->service_table) || isset($request->post))
+
+        {
+            // farm relations [post, service task, table], tables that have farm_id
+            // check for "farm_id" in these relations and the auth user
+            if (isset($request->service_task))
             {
-                return response()->json([
-                    'success' => false,
-                    'data' => (object)[],
-                    'code' => 404,
-                    'message' => 'Farm not found'
-                ]);
+                $service_task = ServiceTask::find($request->service_task);
+                if(empty($service_task))
+                {
+                    return $app_base_controller->sendError('Not Found Service task');
+                }
+                $farm_id = $service_task->farm_id;
             }
-    
-            if(!auth()->user()->hasRole(config('laratrust.taha.admin_role')))
+
+            elseif(isset($request->service_table))
+
             {
-                $farm_id = $farm->id;
-    
-                $user_farm = auth()->user()->allTeams()->where('id', $farm_id)->first();
-    
-                if(!$user_farm)
+                $service_table = ServiceTable::find($request->service_table);
+                if(empty($service_table))
                 {
-                    return response()->json([
-                        'success' => false,
-                        'data' => (object)[],
-                        'code' => 989,
-                        'message' => 'User is not a member in this farm'
-                    ]);
+                    return $app_base_controller->sendError('Not Found Service table');
                 }
-    
-    
-                $allowed_roles = config('laratrust.taha.edit_farm_allowed_roles');
-    
-                if(!auth()->user()->hasRole($allowed_roles, $farm_id))
+                $farm_id = $service_table->farm_id;
+            }
+
+            elseif(isset($request->post))
+            
+            {
+                $post = Post::find($request->post);
+                if(empty($post))
                 {
-                    return response()->json([
-                        'success' => false,
-                        'data' => (object)[],
-                        'code' => 499,
-                        'message' => 'User does not have any of the necessary access rights.'
-                    ]);
+                    return $app_base_controller->sendError('Not Found Post');
                 }
-                return $next($request);
+                $farm_id = $post->farm_id; // may be null
             }
         }
+
+
+        if($farm_id)
+        {
+            if(!CheckPermission::instance()->check_farm_permission($farm_id, auth()->user())['success'])
+            {
+                return response()->json(CheckPermission::instance()->check_farm_permission($farm_id, auth()->user()));
+            }
+        }
+
         return $next($request);
     }
 }
