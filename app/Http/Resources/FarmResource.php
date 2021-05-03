@@ -19,6 +19,7 @@ class FarmResource extends JsonResource
          //all 1,2,3,4
          $farm_detail['id'] = $this->id;
          $farm_detail['admin_id'] = $this->admin_id;
+         $farm_detail['code'] = $this->code;
          $farm_detail['real'] = $this->real;
          $farm_detail['archived'] = $this->archived;
          $farm_detail['farm_activity_type'] = new FarmActivityTypeResource($this->farm_activity_type);
@@ -72,7 +73,7 @@ class FarmResource extends JsonResource
              $farm_detail['animal_medicine_sources'] =  AnimalMedicineSourceResource::collection($this->animal_medicine_sources);
              $farm_detail['animal_fodder_sources'] =  AnimalFodderSourceResource::collection($this->animal_fodder_sources);
              $farm_detail['animal_fodder_types'] =  AnimalFodderTypeResource::collection($this->animal_fodder_types);
-        //  }           
+        //  }
 
          //crops, trees, homeplants 1,2,3
         //  if($fat_id == 1 || $fat_id == 2 || $fat_id == 3)
@@ -88,7 +89,7 @@ class FarmResource extends JsonResource
          $farm_detail['posts'] = PostResource::collection($this->posts);
          $farm_detail['service_tables'] = ServiceTableResource::collection($this->service_tables);
          $farm_detail['coming_task'] = $this->service_tasks()->orderBy('start_at', 'asc')->first() ?? (object) [] ;
-       
+
          return $farm_detail;
 
         /* return [

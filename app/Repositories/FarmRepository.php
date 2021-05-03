@@ -19,6 +19,7 @@ class FarmRepository extends BaseRepository
     protected $fieldSearchable = [
         'admin_id',
         'real',
+        'code',
         'archived',
         'location',
         'farming_date',

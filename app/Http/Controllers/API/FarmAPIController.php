@@ -306,7 +306,15 @@ class FarmAPIController extends AppBaseController
     }
 
 
-
+    protected function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
 
     public function store(CreateFarmAPIRequest $request)
     {
@@ -325,6 +333,7 @@ class FarmAPIController extends AppBaseController
             $farm_detail['farmed_type_class_id'] = $input["farmed_type_class_id"] ?? null;
             $farm_detail['farming_date'] = $input["farming_date"];
             $farm_detail['farming_compatibility'] = $input["farming_compatibility"];
+            $farm_detail['code'] = $this->generateRandomString();
 
             $location['latitude'] = $input["location"]["latitude"];
             $location['longitude'] = $input["location"]["longitude"];
@@ -469,16 +478,6 @@ class FarmAPIController extends AppBaseController
 
 
 
-
-
-
-
-
-
-
-
-
-
     public function app_roles(Request $request)
     {
         $roles = Role::whereIn('name', config('laratrust.taha.farm_allowed_roles'))->get();
@@ -504,19 +503,6 @@ class FarmAPIController extends AppBaseController
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
     // attach a farm role to a user who has an invitation link
     public function first_attach_farm_role(Request $request)
     {
@@ -538,18 +524,6 @@ class FarmAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -620,16 +594,6 @@ class FarmAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
-
-
-
-
-
-
-
-
-
-
 
 
 

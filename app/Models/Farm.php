@@ -155,6 +155,7 @@ class Farm extends Team
 
     public $fillable = [
         'admin_id',
+        'code',
         'real',
         'archived',
         'location_id',
@@ -186,6 +187,7 @@ class Farm extends Team
     protected $casts = [
         'id' => 'integer',
         'admin_id' => 'integer',
+        'code' => 'string',
         'real' => 'boolean',
         'archived' => 'boolean',
         'location_id' => 'integer',
