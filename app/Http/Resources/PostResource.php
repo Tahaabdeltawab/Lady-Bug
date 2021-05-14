@@ -41,6 +41,8 @@ class PostResource extends JsonResource
             'comments_count' => $this->comments->count(),
             'likers' => $this->when( auth()->id() == $this->author_id ,UserResource::collection($this->likers)),
             'dislikers' => $this->when( auth()->id() == $this->author_id ,UserResource::collection($this->dislikers)),
+            'liked_by_me' => $this->likers->where('id', auth()->id())->count() ? true : false ,
+            'disliked_by_me' => $this->dislikers->where('id', auth()->id())->count() ? true : false ,
             'comments' => CommentResource::collection($this->comments->whereNull('parent_id')),
             // 'farmed_type_id' => $this->farmed_type_id,
             'created_at' => $this->created_at->diffForHumans(),
