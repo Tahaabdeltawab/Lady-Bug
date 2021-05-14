@@ -56,17 +56,17 @@ class AuthController extends AppBaseController
         $request->merge([$field => $value]);
 
         $credentials = array_merge($request->only($field, 'password'), ['status'=>'accepted']); //['email_or_phone'=>$email_or_phone, 'password'=>$password, 'status'=>'accepted']
-    
+
         // return response()->json($credentials);
         try {
             $user = User::where("$field", request()->{$field})->first();
             // $ttl = $request->get('remember_me') ? null : 60;
             $ttl = 1440000; // 1000 days
             // if (! $token = auth('api')->attempt($credentials)) {             // use the default ttl (time period in which the token expires) set in config('jwt.ttl')
-            
+
             if (! $token = auth('api')->setTTL($ttl)->attempt($credentials)) {  // if setTTL(null) not expiring token //used for mobile application as the token should not expire except with logout
                 // $user = $this->userRepository->findBy(["$field" => request()->{$field}]);
-                
+
                 if($user && $user->status != 'accepted')
                 {
                      return $this->sendError(__('trans.your_account_is_not_accepted'), 5010);
@@ -148,12 +148,12 @@ class AuthController extends AppBaseController
                 $photoname = 'profile-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
                 $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
                 $photomime = $photo->getClientMimeType();
-                        
+
                 $path = $photo->storeAs('assets/images/profiles', $photoname, 's3');
                 // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
-                
+
                 $url  = Storage::disk('s3')->url($path);
-                
+
                 $asset = $user->asset()->create([
                     'asset_name'        => $photoname,
                     'asset_url'         => $url,
@@ -178,8 +178,8 @@ class AuthController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            return $this->sendError($th->getMessage(), 500); 
-        }    
+            return $this->sendError($th->getMessage(), 500);
+        }
     }
 
 
@@ -187,7 +187,7 @@ class AuthController extends AppBaseController
     {
             $user = JWTAuth::parseToken()->toUser();
             // $user = auth('api')->user();
-            return $this->sendResponse($user, __('user retrieved successfully'));
+            return $this->sendResponse(new UserResource($user), __('user retrieved successfully'));
     }
 
 
