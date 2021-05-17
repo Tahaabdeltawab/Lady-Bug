@@ -27,6 +27,8 @@ class CommentResource extends JsonResource
             'dislikers_count' => $this->dislikers->count(),
             'likers' => $this->when( auth()->id() == $this->commenter_id ,UserResource::collection($this->likers)),
             'dislikers' => $this->when( auth()->id() == $this->commenter_id ,UserResource::collection($this->dislikers)),
+            'liked_by_me' => $this->likers->where('id', auth()->id())->count() ? true : false,
+            'disliked_by_me' => $this->dislikers->where('id', auth()->id())->count() ? true : false,
             'replies' => $this->when(!$this->parent_id, CommentResource::collection($this->replies)),
             'created_at' => $this->created_at->diffForHumans(),
             // 'updated_at' => $this->updated_at,

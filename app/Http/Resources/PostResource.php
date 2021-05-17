@@ -30,6 +30,7 @@ class PostResource extends JsonResource
             // 'solved' => $this->when($this->solved, $this->solved),
             'farm' => @$farm->farmed_type->name, //will show null if no farmed_type
             'farmed_type_photo' => @$farm->farmed_type->asset->asset_url,
+            'farmed_type_id' => $this->farmed_type_id ?? @$farm->farmed_type_id ,
             'solved' => $this->solved,
 
             'image_assets' => collect($this->assets)->whereIn('asset_mime', config('laratrust.taha.image_mimes'))->pluck('asset_url')->all(),

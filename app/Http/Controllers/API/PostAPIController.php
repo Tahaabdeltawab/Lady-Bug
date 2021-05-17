@@ -106,6 +106,12 @@ class PostAPIController extends AppBaseController
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
 
+    public function get_posts_by_farmed_type_id($farmed_type_id)
+    {
+        $posts = Post::where('farmed_type_id', $farmed_type_id)->get();
+        return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
+    }
+
     public function get_posts_by_post_type_id($post_type_id)
     {
         $posts = Post::where('post_type_id', $post_type_id)->get();
