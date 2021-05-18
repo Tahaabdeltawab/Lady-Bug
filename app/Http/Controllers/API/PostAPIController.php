@@ -5,16 +5,19 @@ namespace App\Http\Controllers\API;
 use App\Http\Requests\API\CreatePostAPIRequest;
 use App\Http\Requests\API\UpdatePostAPIRequest;
 use App\Models\Post;
+use App\Models\FarmedTypeGinfo;
 use App\Repositories\PostRepository;
 use App\Repositories\AssetRepository;
 use App\Repositories\PostTypeRepository;
 use App\Repositories\FarmedTypeRepository;
+use App\Repositories\FarmedTypeGinfoRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\PostTypeResource;
 use App\Http\Resources\FarmedTypeResource;
+use App\Http\Resources\FarmedTypeGinfoResource;
 use Response;
 use App\Http\Resources\AssetResource;
 use Illuminate\Support\Facades\Validator;
@@ -32,13 +35,15 @@ class PostAPIController extends AppBaseController
     private $postRepository;
     private $assetRepository;
     private $farmedTypeRepository;
+    private $farmedTypeGinfoRepository;
     private $postTypeRepository;
 
-    public function __construct(PostRepository $postRepo, AssetRepository $assetRepo, PostTypeRepository $postTypeRepo, FarmedTypeRepository $farmedTypeRepo)
+    public function __construct(PostRepository $postRepo, AssetRepository $assetRepo, PostTypeRepository $postTypeRepo, FarmedTypeRepository $farmedTypeRepo, FarmedTypeGinfoRepository $farmedTypeGinfoRepo)
     {
         $this->postRepository = $postRepo;
         $this->assetRepository = $assetRepo;
         $this->farmedTypeRepository = $farmedTypeRepo;
+        $this->farmedTypeGinfoRepository = $farmedTypeGinfoRepo;
         $this->postTypeRepository = $postTypeRepo;
     }
 
@@ -90,10 +95,22 @@ class PostAPIController extends AppBaseController
     public function timeline(Request $request)
     {
         $posts = $this->postRepository->latest()->get();
+        $posts1 = $posts->take(5);
+        $posts2 = $posts->skip(5);
+
+        $favorites = auth()->user()->favorites;
+        $fav_farmed_types_ids = $favorites->pluck('id');
+
+        $fav_farmed_type_ginfos = FarmedTypeGinfo::whereIn('farmed_type_id', $fav_farmed_types_ids)->OrderByDesc('created_at')->limit(10)->get();
 
         return $this->sendResponse(
             [
-                'posts' => PostResource::collection($posts),
+                'posts1_count' => $posts1->count(),
+                'news_count' => $fav_farmed_type_ginfos->count(),
+                'posts2_count' => $posts2->count(),
+                'posts1' => PostResource::collection($posts1),
+                'news' => FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
+                'posts2' => PostResource::collection($posts2),
                 'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
                 'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),
             ],
