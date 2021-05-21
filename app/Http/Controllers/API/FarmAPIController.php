@@ -244,12 +244,13 @@ class FarmAPIController extends AppBaseController
             $data['breeding_ways'] = FarmingWayResource::collection($this->farmingWayRepository->where(['type' => 'breeding'])->all());
             $data['animal_breeding_purposes'] = AnimalBreedingPurposeResource::collection($this->animalBreedingPurposeRepository->all());
             $data['farming_methods'] = FarmingMethodResource::collection($this->farmingMethodRepository->all());
+            $data['animal_fodder_types'] = AnimalFodderTypeResource::collection($this->animalFodderTypeRepository->all());
+            $data['soil_types'] = SoilTypeResource::collection($this->soilTypeRepository->all());
+
             $data['seedling_sources'] = SeedlingSourceResource::collection($this->seedlingSourceRepository->all());
             $data['chemical_fertilizer_sources'] = ChemicalFertilizerSourceResource::collection($this->chemicalFertilizerSourceRepository->all());
-            $data['animal_fodder_types'] = AnimalFodderTypeResource::collection($this->animalFodderTypeRepository->all());
             $data['animal_fodder_sources'] = AnimalFodderSourceResource::collection($this->animalFodderSourceRepository->all());
             $data['animal_medicine_sources'] = AnimalMedicineSourceResource::collection($this->animalMedicineSourceRepository->all());
-            $data['soil_types'] = SoilTypeResource::collection($this->soilTypeRepository->all());
 
             return $this->sendResponse(['all' => $data], 'Farms relations retrieved successfully');
 
@@ -480,7 +481,7 @@ class FarmAPIController extends AppBaseController
 
     public function app_roles(Request $request)
     {
-        $roles = Role::whereIn('name', config('laratrust.taha.farm_allowed_roles'))->get();
+        $roles = Role::whereIn('name', config('myconfig.farm_allowed_roles'))->get();
         return $this->sendResponse(['all' =>  RoleResource::collection($roles)], 'Roles retrieved successfully');
     }
     public function app_users(Request $request)
@@ -494,7 +495,7 @@ class FarmAPIController extends AppBaseController
         $farm_users = $farm->users->pluck('id');
         $farm_users[] = auth()->id();
         $users = User::whereNotIn('id', $farm_users)->whereHas('roles', function($q){
-            $q->where('name', config('laratrust.taha.user_default_role'));
+            $q->where('name', config('myconfig.user_default_role'));
         })->get();
 
         return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
@@ -550,7 +551,7 @@ class FarmAPIController extends AppBaseController
             if($request->role)   //first attach or edit roles
             {
                 $role = Role::find($request->role);
-                if(!in_array($role->name, config('laratrust.taha.farm_allowed_roles')))
+                if(!in_array($role->name, config('myconfig.farm_allowed_roles')))
                 {
                     return $this->sendError('Invalid Role');
                 }

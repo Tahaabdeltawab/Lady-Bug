@@ -121,7 +121,7 @@ class AuthController extends AppBaseController
                 return $this->sendError(json_encode($validator->errors()), $code);
             }
 
-            $user_role = Role::where('name', config('laratrust.taha.user_default_role'))->first();
+            $user_role = Role::where('name', config('myconfig.user_default_role'))->first();
             if(!$user_role)
             {
                 return $this->sendError(__('Role app-user not found'), 4044);
@@ -138,7 +138,7 @@ class AuthController extends AppBaseController
 
             if($user_role)
             {
-                $user->attachRole(config('laratrust.taha.user_default_role'));
+                $user->attachRole(config('myconfig.user_default_role'));
             }
 
 

@@ -21,7 +21,7 @@ class CheckPermission{
             ];
         }
 
-        if(!$user->hasRole(config('laratrust.taha.admin_role')))
+        if(!$user->hasRole(config('myconfig.admin_role')))
         {
             $user_farm = $user->allTeams()->where('id', $farm_id)->first();
             if(!$user_farm)
@@ -35,7 +35,7 @@ class CheckPermission{
             }
 
 
-            $allowed_roles = config('laratrust.taha.edit_farm_allowed_roles');
+            $allowed_roles = config('myconfig.edit_farm_allowed_roles');
             if(!$user->hasRole($allowed_roles, $farm_id))
             {
                 return [

@@ -33,8 +33,8 @@ class PostResource extends JsonResource
             'farmed_type_id' => $this->farmed_type_id ?? @$farm->farmed_type_id ,
             'solved' => $this->solved,
 
-            'image_assets' => collect($this->assets)->whereIn('asset_mime', config('laratrust.taha.image_mimes'))->pluck('asset_url')->all(),
-            'video_assets' => collect($this->assets)->whereIn('asset_mime', config('laratrust.taha.video_mimes'))->pluck('asset_url')->all(),
+            'image_assets' => collect($this->assets)->whereIn('asset_mime', config('myconfig.image_mimes'))->pluck('asset_url')->all(),
+            'video_assets' => collect($this->assets)->whereIn('asset_mime', config('myconfig.video_mimes'))->pluck('asset_url')->all(),
 
             'post_type' => @new PostTypeResource($post_type), // @ because the 'farm' post type does not return by the global scope in the PostType model, so this will be null if the post type is 4 (farm)
             'likers_count' => $this->likers->count(),

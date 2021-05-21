@@ -140,7 +140,7 @@ class PostAPIController extends AppBaseController
     {
         $posts = Post::whereHas('assets', function ($q)
         {
-            $q->whereIn('asset_mime', config('laratrust.taha.video_mimes'));
+            $q->whereIn('asset_mime', config('myconfig.video_mimes'));
         })->latest()->get();
 
         return $this->sendResponse(
