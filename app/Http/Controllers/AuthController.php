@@ -16,6 +16,14 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\HumanJob;
+use App\Models\HumanJobTranslation;
+
+use App\Repositories\AnimalMedicineSourceRepository;
+use App\Repositories\AnimalFodderSourceRepository;
+use App\Repositories\ChemicalFertilizerSourceRepository;
+use App\Repositories\SeedlingSourceRepository;
+
 use App\Http\Resources\AssetResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -29,6 +37,12 @@ class AuthController extends AppBaseController
     private $userRepository;
     private $humanJobRepository;
     private $assetRepository;
+
+    private $animalMedicineSourceRepository;
+    private $animalFodderSourceRepository;
+    private $chemicalFertilizerSourceRepository;
+    private $seedlingSourceRepository;
+
     // private $roleRepository;
     // private $userRepository;
     /**
@@ -36,13 +50,23 @@ class AuthController extends AppBaseController
      *
      * @return void
      */
-    public function __construct(HumanJobRepository $humanJobRepo, AssetRepository $assetRepo, UserRepository $userRepo/* ,UserRepository $userRepo,RoleRepository $roleRepo */)
+    public function __construct(
+        HumanJobRepository $humanJobRepo, 
+        AssetRepository $assetRepo, 
+        UserRepository $userRepo,
+        SeedlingSourceRepository $seedlingSourceRepo,
+        ChemicalFertilizerSourceRepository $chemicalFertilizerSourceRepo,
+        AnimalFodderSourceRepository $animalFodderSourceRepo,
+        AnimalMedicineSourceRepository $animalMedicineSourceRepo
+        )
     {
         $this->userRepository = $userRepo;
         $this->humanJobRepository = $humanJobRepo;
         $this->assetRepository = $assetRepo;
-        // $this->roleRepository = $roleRepo;
-        // $this->userRepository = $userRepo;
+        $this->seedlingSourceRepository = $seedlingSourceRepo;
+        $this->chemicalFertilizerSourceRepository = $chemicalFertilizerSourceRepo;
+        $this->animalFodderSourceRepository = $animalFodderSourceRepo;
+        $this->animalMedicineSourceRepository = $animalMedicineSourceRepo;
         // $this->middleware('auth:api', ['except' => ['login', 'register']]);
         $this->middleware('jwt.verify', ['except' => ['login', 'register']]);
     }
@@ -136,11 +160,41 @@ class AuthController extends AppBaseController
                 'password' => Hash::make($request->get('password')),
             ]);
 
-            if($user_role)
-            {
-                $user->attachRole(config('myconfig.user_default_role'));
-            }
+            $user->attachRole(config('myconfig.user_default_role'));
 
+            // when a user registers
+            // if he selected his job, for example, plant nursery, a new record should be added to the seedlings_sources table, 
+            $companiesJobs = config('myconfig.companies_jobs');
+            $userJob = $user->job;
+            $userJobEName = $userJob->translate('en')->name;
+            if (in_array($userJobEName, array_values($companiesJobs)))
+            {
+               if ($userJobEName == $companiesJobs['pharma']) 
+               {
+                   $this->animalMedicineSourceRepository->save_localized([
+                    'name_ar_localized' => $user->name,
+                    'name_en_localized' => $user->name,
+                    ]);
+               }
+               elseif ($userJobEName == $companiesJobs['chem'])   
+               {
+                    $this->chemicalFertilizerSourceRepository->save_localized([
+                    'name_ar_localized' => $user->name,
+                    'name_en_localized' => $user->name,
+                    ]);               }
+               elseif ($userJobEName == $companiesJobs['feed'])   
+               {
+                    $this->animalFodderSourceRepository->save_localized([
+                    'name_ar_localized' => $user->name,
+                    'name_en_localized' => $user->name,
+                    ]);               }
+               elseif ($userJobEName == $companiesJobs['seed'])   
+               {
+                    $this->seedlingSourceRepository->save_localized([
+                    'name_ar_localized' => $user->name,
+                    'name_en_localized' => $user->name,
+                    ]);               }
+            }
 
             if($photo = $request->file('photo'))
             {
@@ -178,6 +232,7 @@ class AuthController extends AppBaseController
         }
         catch(\Throwable $th)
         {
+            throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }
