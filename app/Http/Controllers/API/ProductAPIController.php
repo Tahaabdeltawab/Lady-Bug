@@ -77,7 +77,9 @@ class ProductAPIController extends AppBaseController
             $request->get('limit')
         );
 
-        return $this->sendResponse(['all' => ProductResource::collection($products)], 'Products retrieved successfully');
+        $user = auth()->user();
+
+        return $this->sendResponse([  'unread_notifications_count' => $user->unreadNotifications->count(), 'all' => ProductResource::collection($products)], 'Products retrieved successfully');
     }
 
 

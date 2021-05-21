@@ -127,10 +127,10 @@ class UserAPIController extends AppBaseController
         try{
             $weather_resp = WeatherApi::instance()->weather_api($request);
             $weather_data = $weather_resp['data'];
-
-            $farms = auth()->user()->allTeams();
-
+            $user = auth()->user();
+            $farms = $user->allTeams();
             return $this->sendResponse([
+                'unread_notifications_count' => $user->unreadNotifications->count(),
                 'weather_data' => $weather_data,
                 'farms' => FarmResource::collection($farms)
             ], 'Farms retrieved successfully');
@@ -217,11 +217,11 @@ class UserAPIController extends AppBaseController
         try{
             if(auth()->user()->is_notifiable)
             {
-                // $notifications = auth()->user()->unreadNotifications ;
-                $notifications = auth()->user()->notifications ;
+                $user = auth()->user();
+                $user->unreadNotifications->markAsRead();
+                $notifications = $user->notifications ;
 
-                auth()->user()->unreadNotifications->markAsRead();
-                return $this->sendResponse(['count' => $notifications->count(),'all' => NotificationResource::collection($notifications)], 'Notifications retrieved successfully');
+                return $this->sendResponse(['all' => NotificationResource::collection($notifications)], 'Notifications retrieved successfully');
             }
             return $this->sendError(__('Your Notifications are off, turn them all to see your notifications.'));
         }
