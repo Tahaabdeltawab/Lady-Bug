@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-
+use Illuminate\Support\Facades\DB;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\FarmedType;
@@ -517,6 +517,15 @@ class FarmAPIController extends AppBaseController
             $farm = $this->farmRepository->find($request->farm);
 
             $user->attachRole($request->role, $farm);
+
+            DB::table('notifications')
+            ->where('type', 'App\Notifications\FarmInvitation')
+            ->where('notifiable_type', 'App\Models\User')
+            ->where('notifiable_id', $request->user)
+            ->where('data->invitee', $request->user)
+            ->where('data->farm', $request->farm)
+            ->where('data->role', $request->role)
+            ->update(['data->accepted' => true]);
 
             return $this->sendResponse(new UserResource($user), __('Member added to farm successfully'));
         }

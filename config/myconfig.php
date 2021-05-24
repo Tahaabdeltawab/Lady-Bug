@@ -4,7 +4,7 @@ return [
 
     //farmed_types should be of ids 1 for crops, 2 for trees, 3 for home_plants, 4 for animals
 
-    // this array values should be identical to the db human_jobs table jobs english names
+    // there should be 4 records in the human_jobs table with english names identical to the coming array values
     // used in auth->register
     'companies_jobs' => [
         'pharma'    => 'Pharmaceutical Company',

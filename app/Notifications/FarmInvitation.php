@@ -48,9 +48,9 @@ class FarmInvitation extends Notification
         $role = $this->role->name;
         // the @ sign here because not all farms have farmedtypeclass
         $farm = @$this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
-    
+
         return (new MailMessage)
-                    ->greeting('Hello!')
+                    ->greeting('Hello ' . $notifiable->name)
                     ->subject('Farm Invitation')
                     ->line("$inviter has invited you to join his $farm farm as a/an $role")
                     ->action('Join Farm', $url);
@@ -62,8 +62,8 @@ class FarmInvitation extends Notification
     {
         $url        = $this->url;
         parse_str(parse_url($url, PHP_URL_QUERY), $query);
-        $expires = $query['expires']; 
-        $signature = $query['signature']; 
+        $expires = $query['expires'];
+        $signature = $query['signature'];
         $inviter    = $this->inviter->id;
         $inviter_name    = $this->inviter->name;
         $role       = $this->role->id;
@@ -72,12 +72,17 @@ class FarmInvitation extends Notification
         // the @ sign here because not all farms have farmedtypeclass
         $farm_name = @$this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
 
+        // $invitee_accepted_invitation = in_array($this->role->name, $notifiable->getRoles($this->farm));
+
         return [
-            'title'      => 'Farm Invitation',
+            'title'      => 'Farm Invitation', // if changed, change in noti_resource as well.
             'body'      => "$inviter_name has invited you to join his $farm_name farm as a/an $role_name",
             'inviter'   => $inviter,
+            'invitee'   => $notifiable->id,
             'role'      => $role,
             'farm'      => $farm,
+            // 'accepted'  => $invitee_accepted_invitation,
+            'accepted'  => false,
             'url'       => $url,
             'expires'   => $expires,
             'signature' => $signature,
