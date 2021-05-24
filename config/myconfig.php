@@ -37,6 +37,7 @@ return [
 
     'video_mimes' => [
         'video/mp4',
+        'video/*',
         'video/x-ms-wmv',
         'video/x-ms-asf', // for wmv
         'video/quicktime',
@@ -44,6 +45,7 @@ return [
 
     'image_mimes' => [
         'image/png',
+        'image/*',
         'image/jpeg',
         'image/svg+xml',
     ],

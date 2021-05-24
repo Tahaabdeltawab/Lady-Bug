@@ -58,7 +58,7 @@ class FarmRole
             }
 
             elseif(isset($request->post))
-            
+
             {
                 $post = Post::find($request->post);
                 if(empty($post))
@@ -70,7 +70,7 @@ class FarmRole
         }
 
 
-        if($farm_id)
+        if(isset($farm_id))
         {
             if(!CheckPermission::instance()->check_farm_permission($farm_id, auth()->user())['success'])
             {
