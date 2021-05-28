@@ -19,7 +19,7 @@ trait Liker
             'likeable_type' => $object->getMorphClass(),
             'likeable_id' => $object->getKey(),
             config('like.user_foreign_key') => $this->getKey(),
-            'is_like' => 1, 
+            'is_like' => 1,
         ];
 
         /* @var \Illuminate\Database\Eloquent\Model $like */
@@ -102,7 +102,6 @@ trait Liker
         return ($this->relationLoaded('likes') ? $this->likes : $this->likes())
                 ->where('likeable_id', $object->getKey())
                 ->where('likeable_type', $object->getMorphClass())
-                ->where('is_like', 1)
                 ->count() > 0;
     }
 
@@ -123,13 +122,13 @@ trait Liker
 ///////////////////////////////////////////////////////////////////
         //DISLIKES (THE OPPOSITE OF LIKES) {BY ME: TAHA}//
 
-    public function dislike(Model $object): Like   
+    public function dislike(Model $object): Like
     {
         $attributes = [
             'likeable_type' => $object->getMorphClass(),
             'likeable_id' => $object->getKey(),
             config('like.user_foreign_key') => $this->getKey(), //liker_id
-            'is_like' => 0, 
+            'is_like' => 0,
         ];
 
         /* @var \Illuminate\Database\Eloquent\Model $like */
@@ -209,10 +208,9 @@ trait Liker
      */
     public function hasDisliked(Model $object): bool
     {
-        return ($this->relationLoaded('likes') ? $this->likes : $this->likes())
+        return ($this->relationLoaded('likes') ? $this->dislikes : $this->dislikes())
                 ->where('likeable_id', $object->getKey())
                 ->where('likeable_type', $object->getMorphClass())
-                ->where('is_like', 0)
                 ->count() > 0;
     }
 }

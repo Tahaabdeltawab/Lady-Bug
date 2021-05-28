@@ -18,7 +18,7 @@ class CommentResource extends JsonResource
             'id' => $this->id,
             'content' => $this->content,
             // 'commenter_id' => $this->commenter_id,
-            'commenter' => $this->commenter,
+            'commenter' => new UserResource($this->commenter),
             'parent_id' => $this->when($this->parent_id, $this->parent_id),
             'post_id' => $this->post_id,
             'assets' => collect($this->assets)->pluck('asset_url')->all(),
