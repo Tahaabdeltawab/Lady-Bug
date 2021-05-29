@@ -128,7 +128,7 @@ class UserAPIController extends AppBaseController
             $weather_resp = WeatherApi::instance()->weather_api($request);
             $weather_data = $weather_resp['data'];
             $user = auth()->user();
-            $farms = $user->allTeams();
+            $farms = $user->allTeams()->where('archived', false);
             return $this->sendResponse([
                 'unread_notifications_count' => $user->unreadNotifications->count(),
                 'weather_data' => $weather_data,

@@ -95,22 +95,33 @@ class PostAPIController extends AppBaseController
     public function timeline(Request $request)
     {
         $posts = $this->postRepository->latest()->get();
-        $posts1 = $posts->take(5);
-        $posts2 = $posts->skip(5);
 
         $favorites = auth()->user()->favorites;
         $fav_farmed_types_ids = $favorites->pluck('id');
+        $fav_farmed_type_ginfos = FarmedTypeGinfo::whereIn('farmed_type_id', $fav_farmed_types_ids)->OrderByDesc('created_at')/* ->limit(10) */->get();
 
-        $fav_farmed_type_ginfos = FarmedTypeGinfo::whereIn('farmed_type_id', $fav_farmed_types_ids)->OrderByDesc('created_at')->limit(10)->get();
+        $chuncked = PostResource::collection($posts)->chunk(3);
+        $i = 0;
+        foreach($chuncked as $chunk){
+            if ( $i < ($fav_farmed_type_ginfos->count() ) ){
+                $grouped[] = $chunk->push(FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos)->all()[$i]);
+            }else{
+                $grouped[] = $chunk;
+            }
+            $i++;
+        }
+
+        foreach($grouped as $chunk){
+           foreach ($chunk as $one){
+               $all[] = $one;
+           }
+        }
 
         return $this->sendResponse(
             [
-                'posts1_count' => $posts1->count(),
-                'news_count' => $fav_farmed_type_ginfos->count(),
-                'posts2_count' => $posts2->count(),
-                'posts1' => PostResource::collection($posts1),
-                'news' => FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
-                'posts2' => PostResource::collection($posts2),
+                'all_count' => count($all),
+                'all' => $all,
+
                 'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
                 'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),
             ],
