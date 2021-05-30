@@ -51,8 +51,8 @@ class AuthController extends AppBaseController
      * @return void
      */
     public function __construct(
-        HumanJobRepository $humanJobRepo, 
-        AssetRepository $assetRepo, 
+        HumanJobRepository $humanJobRepo,
+        AssetRepository $assetRepo,
         UserRepository $userRepo,
         SeedlingSourceRepository $seedlingSourceRepo,
         ChemicalFertilizerSourceRepository $chemicalFertilizerSourceRepo,
@@ -155,6 +155,7 @@ class AuthController extends AppBaseController
             $user = $this->userRepository->create([
                 'name' => $request->get('name'),
                 'email' => $request->get('email'),
+                'type'  => "app_user",
                 'mobile' => $request->get('mobile'),
                 'human_job_id' => $request->get('human_job_id'),
                 'password' => Hash::make($request->get('password')),
@@ -163,32 +164,32 @@ class AuthController extends AppBaseController
             $user->attachRole(config('myconfig.user_default_role'));
 
             // when a user registers
-            // if he selected his job, for example, plant nursery, a new record should be added to the seedlings_sources table, 
+            // if he selected his job, for example, plant nursery, a new record should be added to the seedlings_sources table,
             $companiesJobs = config('myconfig.companies_jobs');
             $userJob = $user->job;
             $userJobEName = $userJob->translate('en')->name;
             if (in_array($userJobEName, array_values($companiesJobs)))
             {
-               if ($userJobEName == $companiesJobs['pharma']) 
+               if ($userJobEName == $companiesJobs['pharma'])
                {
                    $this->animalMedicineSourceRepository->save_localized([
                     'name_ar_localized' => $user->name,
                     'name_en_localized' => $user->name,
                     ]);
                }
-               elseif ($userJobEName == $companiesJobs['chem'])   
+               elseif ($userJobEName == $companiesJobs['chem'])
                {
                     $this->chemicalFertilizerSourceRepository->save_localized([
                     'name_ar_localized' => $user->name,
                     'name_en_localized' => $user->name,
                     ]);               }
-               elseif ($userJobEName == $companiesJobs['feed'])   
+               elseif ($userJobEName == $companiesJobs['feed'])
                {
                     $this->animalFodderSourceRepository->save_localized([
                     'name_ar_localized' => $user->name,
                     'name_en_localized' => $user->name,
                     ]);               }
-               elseif ($userJobEName == $companiesJobs['seed'])   
+               elseif ($userJobEName == $companiesJobs['seed'])
                {
                     $this->seedlingSourceRepository->save_localized([
                     'name_ar_localized' => $user->name,

@@ -17,6 +17,12 @@ return [
 
     'admin_role' => 'app-admin',
 
+    'farm_roles' => [ // used not to get with app Roles of the dashboard
+        'farm-admin',
+        'farm-editor',
+        'farm-supervisor'
+    ],
+
     'farm_allowed_roles' => [ // used in sending the app roles and users api for the farm owner to edit the roles
         // 'farm-admin', // this role is only for the farm creator
         'farm-editor',

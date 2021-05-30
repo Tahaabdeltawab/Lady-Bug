@@ -378,6 +378,7 @@ class UserAPIController extends AppBaseController
 
         return $this->sendResponse(['count' => $my_followers->count(), 'all' => UserResource::collection($my_followers)], 'User followers retrieved successfully');
     }
+
     public function my_followings()
     {
         $my_followings = auth()->user()->followings;
@@ -421,51 +422,110 @@ class UserAPIController extends AppBaseController
     }
 
 
-    /**
-     * @param CreateUserAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Post(
-     *      path="/users",
-     *      summary="Store a newly created User in storage",
-     *      tags={"User"},
-     *      description="Store User",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="User that should be stored",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/User")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/User"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
-    public function store(CreateUserAPIRequest $request)
+    // admins
+    public function store(Request $request)
     {
-        $input = $request->validated();
+        try
+        {
+            $validator = Validator::make($request->all(), [
+                'name' => ['required', 'string', 'max:255'],
+                "email" => ["required", "string", "email", "max:255", "unique:users,email,".null.",id"],
+                "mobile" => ["required", "string", "max:255", "unique:users,mobile,".null.",id"],
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+                'human_job_id' => ['nullable', 'exists:human_jobs,id'],
+                'photo' => ['nullable', 'max:2000', 'image', 'mimes:jpeg,jpg,png'],
+                'roles'   => ['nullable', 'array'],
+                'roles.*' => ['nullable', 'exists:roles,id'],
+            ]);
 
-        $user = $this->userRepository->save_localized($input);
+            if($validator->fails()){
+                $errors = $validator->errors();
+                if ($errors->has('email') && $errors->has('mobile'))
+                    $code = 5031;
+                elseif($errors->has('email') && !$errors->has('mobile'))
+                    $code = 5032;
+                elseif(!$errors->has('email') && $errors->has('mobile'))
+                    $code = 5033;
+                elseif($errors->has('photo'))
+                    $code = 5034;
+                else
+                    $code = 5030;
+                return $this->sendError(json_encode($validator->errors()), $code);
+            }
 
-        return $this->sendResponse(new UserResource($user), 'User saved successfully');
+            $user = $this->userRepository->create([
+                'name' => $request->get('name'),
+                'email' => $request->get('email'),
+                'type'  => "app_admin",
+                'mobile' => $request->get('mobile'),
+                'human_job_id' => $request->get('human_job_id'),
+                'password' => Hash::make($request->get('password')),
+            ]);
+
+            if (isset($request->roles) && ! empty($request->roles))
+            {
+                $user->attachRoles($request->roles);
+            }
+
+            if($photo = $request->file('photo'))
+            {
+                $currentDate = Carbon::now()->toDateString();
+                $photoname = 'profile-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
+                $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
+                $photomime = $photo->getClientMimeType();
+
+                $path = $photo->storeAs('assets/images/profiles', $photoname, 's3');
+                // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
+
+                $url  = Storage::disk('s3')->url($path);
+
+                $asset = $user->asset()->create([
+                    'asset_name'        => $photoname,
+                    'asset_url'         => $url,
+                    'asset_size'        => $photosize,
+                    'asset_mime'        => $photomime,
+                ]);
+            }
+
+            $data = [
+                'user' => new UserResource($user),
+            ];
+            return $this->sendResponse($data, __('Success'));
+        }
+        catch(\Throwable $th)
+        {
+            throw $th;
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+
+    //attach, edit or delete farm roles (send empty or no role_id when deleting a role)
+    public function update_user_roles(Request $request)
+    {
+        try
+        {
+            $validator = Validator::make($request->all(), [
+                'user' => 'integer|required|exists:users,id',
+                'roles' => 'nullable|array',
+                'roles.*' => 'exists:roles,id',
+            ]);
+
+            if ($validator->fails()) {
+                return $this->sendError(json_encode($validator->errors()));
+            }
+
+            $user = $this->userRepository->find($request->user);
+
+            $user->syncRoles($request->roles);
+            // $user->attachRoles([$request->roles]);
+
+              return $this->sendResponse(new UserResource($user), __('User roles saved successfully'));
+        }
+        catch(\Throwable $th)
+        {throw $th;
+            return $this->sendError($th->getMessage(), 500);
+        }
     }
 
 
@@ -519,6 +579,37 @@ class UserAPIController extends AppBaseController
         return $this->sendResponse(new UserResource($user), 'User retrieved successfully');
     }
 
+    public function toggle_activate_user($id)
+    {
+        try
+        {
+            $user = $this->userRepository->find($id);
+
+            if (empty($user)) {
+                return $this->sendError('User not found');
+            }
+
+            if($user->status == 'accepted')
+            {
+                $user->status = 'blocked';
+                $user->save();
+                $msg = 'User blocked successfully';
+                return $this->sendSuccess($msg);
+            }
+            elseif($user->status == 'blocked')
+            {
+                $user->status = 'accepted';
+                $user->save();
+                $msg = 'User activated successfully';
+                return $this->sendSuccess($msg);
+            }
+
+        }
+        catch(\Throwable $th)
+        {throw $th;
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
     /**
      * @param int $id
      * @param UpdateUserAPIRequest $request
@@ -581,8 +672,10 @@ class UserAPIController extends AppBaseController
                 "email" => ["required", "string", "email", "max:255", "unique:users,email,$id,id"],
                 "mobile" => ["required", "string", "max:255", "unique:users,mobile,$id,id"],
                 "password" => ["nullable", "string", "min:8", "confirmed"],
-                "human_job_id" => ["required", "exists:human_jobs,id"],
+                "human_job_id" => ["nullable", "exists:human_jobs,id"],
                 "photo" => ["nullable", "max:2000", "mimes:jpeg,jpg,png"],
+                'roles'   => ['nullable', 'array'],
+                'roles.*' => ['nullable', 'exists:roles,id'],
             ]);
 
             if($validator->fails()){
@@ -614,6 +707,11 @@ class UserAPIController extends AppBaseController
 
             $user = $this->userRepository->save_localized($to_save, $id);
 
+            if (isset($request->roles))
+            {
+                $user->syncRoles($request->roles);
+            }
+
             if($photo = $request->file('photo'))
             {
                 $currentDate = Carbon::now()->toDateString();
@@ -637,7 +735,6 @@ class UserAPIController extends AppBaseController
 
 
 
-            // $this->roleRepository->setRoleToMember($user, $userDefaultRole);
             return $this->sendResponse(new UserResource($user), __('Success'));
         }
         catch(\Throwable $th)

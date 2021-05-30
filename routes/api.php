@@ -249,7 +249,7 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::get('users/disliked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_disliked_posts']);
         Route::post('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'store_favorites'])->name('users.favorites.store');
         Route::get('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'my_favorites'])->name('users.favorites.index');
-        Route::resource('users', App\Http\Controllers\API\UserAPIController::class)->except(['store', 'destroy']);
+        Route::resource('users', App\Http\Controllers\API\UserAPIController::class)->except(['store', 'destroy', 'index']);
         //with put and patch, laravel cannot read the request
         Route::match(['put', 'patch','post'], 'users/{id}', [App\Http\Controllers\API\UserAPIController::class, 'update'])->name('users.update');
 
@@ -353,10 +353,29 @@ Route::group(['middleware'=>['auth:api']], function()
 
     // // // // // //  ADMIN AREA  // // // // // //
 
-    Route::group(['middleware'=>['role:app-admin']], function()
+    Route::group([
+        'prefix'        => 'admin/',
+        'as'            => 'admin.',
+        'middleware'=>['role:'.config('myconfig.admin_role') ]], function()
     {
 
         Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
+
+
+        Route::get('users', [App\Http\Controllers\API\UserAPIController::class, 'index']);
+        Route::get('users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'show']);
+
+        Route::get('users/toggle_activate/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggle_activate_user']);
+
+        Route::delete('users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'destroy']);
+        Route::post('users', [App\Http\Controllers\API\UserAPIController::class, 'store']);
+
+        Route::Resource('roles', App\Http\Controllers\API\RoleAPIController::class);
+        Route::Resource('permissions', App\Http\Controllers\API\PermissionAPIController::class);
+
+        Route::post('users/roles/save', [App\Http\Controllers\API\UserAPIController::class, 'update_user_roles']);
+        Route::post('roles/permissions/save', [App\Http\Controllers\API\RoleAPIController::class, 'update_role_permissions']);
+
 
     });
 

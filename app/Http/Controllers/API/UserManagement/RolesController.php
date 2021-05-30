@@ -28,33 +28,9 @@ class RolesController extends AppBaseController
             $roles = $this->roleRepository->all();
             return $this->sendResponse(RoleResource::collection($roles), 'Roles retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
-
-   /*  public function create()
-    {
-        $permissions = $this->permissionRepository->all();
-
-        return view('user-management.role.create', compact('permissions'));    
-    }
-
-    public function edit(int $ID)
-    {
-        if($role = $this->roleRepository->find($ID))
-        {
-            $permissions        = $this->permissionRepository->all();
-            $roleHasPermissions = array_column(json_decode($role->permissions, true), 'id');
-            
-            return view('user-management.role.edit', compact('role', 'permissions', 'roleHasPermissions'));    
-        }
-
-        return redirect()->route('admin.user_management.role.index')->with('message',[
-            'type'  => 'danger',
-            'text'  => 'This role does not exist!'
-        ]);
-
-    } */
 
     public function store(StoreRole $request)
     {
@@ -65,7 +41,7 @@ class RolesController extends AppBaseController
                 'guard_name'    => $request->guard_name,
                 'description'   => $request->description,
             ]);
-            
+
             if(! empty($request->permissions))
             {
                 $this->permissionRepository->setPermissionToRole($role->id, $request->permissions);
@@ -73,7 +49,7 @@ class RolesController extends AppBaseController
         return $this->sendResponse($role, 'Role created successfully');
 
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
 
     }
@@ -92,13 +68,13 @@ class RolesController extends AppBaseController
 
                 $permissions = $request->permissions ?? [];
                 $this->permissionRepository->SyncPermToRole($role->id, $permissions);
-    
+
                 return $this->sendResponse($this->roleRepository->find($ID), 'Role updated successfully');
             }
 
             return $this->sendError('This role does not exist');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -115,9 +91,9 @@ class RolesController extends AppBaseController
             return $this->sendError('This role does not exist');
 
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
 
     }
-    
+
 }

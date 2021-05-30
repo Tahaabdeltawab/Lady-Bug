@@ -156,20 +156,6 @@ class FarmAPIController extends AppBaseController
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // // // // WEATHER // // // //
 
     public function get_weather(Request $request)
@@ -182,12 +168,6 @@ class FarmAPIController extends AppBaseController
         $this->sendError('Error fetching the weather data', $resp['data']['cod'], $resp['data']['message']);
     }
 
-
-
-
-
-
-
     public function index(Request $request)
     {
         try{
@@ -198,20 +178,6 @@ class FarmAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     public function relations_index()
     {
@@ -258,13 +224,6 @@ class FarmAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
-
-
-
-
-
-
-
 
     public function toggleArchive($id)
     {
@@ -475,15 +434,13 @@ class FarmAPIController extends AppBaseController
         }
     }
 
-
-
-
-
     public function app_roles(Request $request)
     {
-        $roles = Role::whereIn('name', config('myconfig.farm_allowed_roles'))->get();
+        $roles = Role::farmAllowedRoles()->get();
         return $this->sendResponse(['all' =>  RoleResource::collection($roles)], 'Roles retrieved successfully');
     }
+
+
     public function app_users(Request $request)
     {
         $farm = $this->farmRepository->find($request->farm);
@@ -500,9 +457,6 @@ class FarmAPIController extends AppBaseController
 
         return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
     }
-
-
-
 
     // attach a farm role to a user who has an invitation link
     public function first_attach_farm_role(Request $request)
