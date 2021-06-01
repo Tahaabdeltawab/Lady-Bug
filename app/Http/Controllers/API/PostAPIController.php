@@ -91,104 +91,25 @@ class PostAPIController extends AppBaseController
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
 
-        /*
-      // timeline
-      public function timeline(Request $request)
-      {
-          $posts = $this->postRepository->latest()->get();
-
-          $favorites = auth()->user()->favorites;
-          $fav_farmed_types_ids = $favorites->pluck('id');
-          $fav_farmed_type_ginfos = FarmedTypeGinfo::whereIn('farmed_type_id', $fav_farmed_types_ids)->OrderByDesc('created_at')->get();// ->limit(10)
-
-          // this is to make like this
-          // [
-          //    $post,
-          //    $post,
-          //    $post,
-          //    $news,
-          //    $post,
-          //    ...
-          // ]
-
-        //  $chuncked = PostResource::collection($posts)->chunk(3);
-        //   $i = 0;
-        //   foreach($chuncked as $chunk){[1,2]
-        //       if ( $i < ($fav_farmed_type_ginfos->count() ) ){
-        //           $grouped[] = $chunk->push(FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos)->all()[$i]);
-        //       }else{
-        //           $grouped[] = $chunk;
-        //       }
-        //       $i++;
-        //   }
-
-        //   foreach($grouped as $chunk){
-        //      foreach ($chunk as $one){
-        //          $all[] = $one;
-        //      }
-        //   }
-
-          return $this->sendResponse(
-              [
-                  'posts' =>  PostResource::collection($posts),
-                  'news'  =>  FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
-                  'posts_count' => $posts->count(),
-                  'news_count' => $fav_farmed_type_ginfos->count(),
-
-                  'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
-                  'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),
-              ],
-              'Timeline retrieved successfully');
-      }
-      */
-    // timeline
+    // post_timeline
     public function timeline(Request $request)
     {
         $posts = $this->postRepository->latest()->get();
-        foreach ($posts as $post)
-        {
-            $data_posts []  = [
-                "type" => "post",
-                "data" => new PostResource($post)
-            ];
-        }
+        $posts1 = $posts->take(5);
+        $posts2 = $posts->skip(5);
 
         $favorites = auth()->user()->favorites;
         $fav_farmed_types_ids = $favorites->pluck('id');
-        $fav_farmed_type_ginfos = FarmedTypeGinfo::whereIn('farmed_type_id', $fav_farmed_types_ids)->OrderByDesc('created_at')/* ->limit(10) */->get();
-
-
-        foreach ($fav_farmed_type_ginfos as $fav_farmed_type_ginfo)
-        {
-            $data_news []  = [
-                "type" => "news",
-                "data" => new FarmedTypeGinfoResource($fav_farmed_type_ginfo)
-            ];
-        }
-
-
-        // $chuncked = PostResource::collection($posts)->chunk(3);
-        $chuncked = collect($data_posts)->chunk(3);
-        $i = 0;
-        foreach($chuncked as $chunk){
-            if ( $i < (count($data_news) ) ){
-                $grouped[] = $chunk->push($data_news[$i]);
-            }else{
-                $grouped[] = $chunk;
-            }
-            $i++;
-        }
-
-        foreach($grouped as $chunk){
-           foreach ($chunk as $one){
-               $all[] = $one;
-           }
-        }
+        $fav_farmed_type_ginfos = FarmedTypeGinfo::whereIn('farmed_type_id', $fav_farmed_types_ids)->OrderByDesc('created_at')->limit(10)->get();
 
         return $this->sendResponse(
             [
-                'all_count' => count($all),
-                'all' => $all,
+                'posts1_count' => $posts1->count(),
+                'news_count' => $fav_farmed_type_ginfos->count(),
+                'posts2_count' => $posts2->count(),
+                'posts1' => PostResource::collection($posts1),
+                'news' => FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
+                'posts2' => PostResource::collection($posts2),
 
                 'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
                 'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),
