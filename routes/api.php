@@ -205,7 +205,7 @@ Route::group(['middleware'=>['auth:api']], function()
             Route::get('farms/toggle_archive/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'toggleArchive'])->name('farms.toggle_archive');
             Route::get('farms/app_roles/index', [App\Http\Controllers\API\FarmAPIController::class, 'app_roles']);
 
-            Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update']);
+            Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update', 'show']);
             Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
             Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
             Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
@@ -216,6 +216,7 @@ Route::group(['middleware'=>['auth:api']], function()
             Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
             Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
         });
+        Route::get('posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'show']);
         Route::post('farms/roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('farms.roles.store');
         Route::get('farms/roles/store/{user}/{role}/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('farms.roles.first_attach');
         Route::post('farms/user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('farms.users.weather.index');
