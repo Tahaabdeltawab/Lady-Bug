@@ -49,8 +49,8 @@ class UserResource extends JsonResource
             'rating'            => $this->averageRating,
 
             'income'            => $this->income,
-            'dob'               => date('Y-m-d', strtotime($this->dob)),
-            'city'              => $this->city->name,
+            'dob'               => date('Y-m-d', strtotime($this->dob)) ?? '',
+            'city'              => $this->city->name ?? '',
 
             'is_following'      => $this->isFollowedBy(auth()->user()), // Am I following him?
             'is_rated'          => $this->isRatedBy(auth()->id()), // Did I rate him?
