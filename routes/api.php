@@ -216,7 +216,7 @@ Route::group(['middleware'=>['auth:api']], function()
             Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
             Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
         });
-        Route::get('posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'show']);
+        Route::get('posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'show'])->name('posts.show');
         Route::post('farms/roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('farms.roles.store');
         Route::get('farms/roles/store/{user}/{role}/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('farms.roles.first_attach');
         Route::post('farms/user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('farms.users.weather.index');
