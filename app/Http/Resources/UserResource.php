@@ -50,6 +50,7 @@ class UserResource extends JsonResource
 
             'income'            => $this->income,
             'dob'               => date('Y-m-d', strtotime($this->dob)) ?? '',
+            'city_id'           => $this->city_id,
             'city'              => $this->city->name ?? '',
 
             'is_following'      => $this->isFollowedBy(auth()->user()), // Am I following him?
