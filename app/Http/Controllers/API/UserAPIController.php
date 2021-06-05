@@ -673,6 +673,9 @@ class UserAPIController extends AppBaseController
                 "mobile" => ["required", "string", "max:255", "unique:users,mobile,$id,id"],
                 "password" => ["nullable", "string", "min:8", "confirmed"],
                 "human_job_id" => ["nullable", "exists:human_jobs,id"],
+                "income" => ["nullable", "integer", "min:0"],
+                "dob" => ["nullable", "date_format:Y-m-d"],
+                "city_id" => ["nullable", "exists:cities,id"],
                 "photo" => ["nullable", "max:2000", "mimes:jpeg,jpg,png"],
                 'roles'   => ['nullable', 'array'],
                 'roles.*' => ['nullable', 'exists:roles,id'],
@@ -700,10 +703,25 @@ class UserAPIController extends AppBaseController
                 'human_job_id' => $request->get('human_job_id'),
             ];
 
-            if($request->password)
+            if($request->password && ! empty($request->password))
             {
                 $to_save['password'] = Hash::make($request->password);
             }
+
+
+            if($request->income && ! empty($request->income))
+            {
+                $to_save['income'] = $request->income;
+            }
+            if($request->dob && ! empty($request->dob))
+            {
+                $to_save['dob'] = $request->dob;
+            }
+            if($request->city_id && ! empty($request->city_id))
+            {
+                $to_save['city_id'] = $request->city_id;
+            }
+
 
             $user = $this->userRepository->save_localized($to_save, $id);
 

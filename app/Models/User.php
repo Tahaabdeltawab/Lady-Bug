@@ -35,6 +35,9 @@ class User extends Authenticatable implements JWTSubject
         'mobile_verified',
         'human_job_id',
         'password',
+        'income',
+        'city_id',
+        'dob',
     ];
 
 
@@ -80,6 +83,11 @@ class User extends Authenticatable implements JWTSubject
     public function job()
     {
         return $this->belongsTo(HumanJob::class, 'human_job_id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'city_id');
     }
 
     public function posts()
