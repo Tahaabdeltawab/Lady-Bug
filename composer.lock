@@ -1084,16 +1084,16 @@
         },
         {
             "name": "fruitcake/laravel-cors",
-            "version": "v2.0.3",
+            "version": "v2.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fruitcake/laravel-cors.git",
-                "reference": "01de0fe5f71c70d1930ee9a80385f9cc28e0f63a"
+                "reference": "a8ccedc7ca95189ead0e407c43b530dc17791d6a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fruitcake/laravel-cors/zipball/01de0fe5f71c70d1930ee9a80385f9cc28e0f63a",
-                "reference": "01de0fe5f71c70d1930ee9a80385f9cc28e0f63a",
+                "url": "https://api.github.com/repos/fruitcake/laravel-cors/zipball/a8ccedc7ca95189ead0e407c43b530dc17791d6a",
+                "reference": "a8ccedc7ca95189ead0e407c43b530dc17791d6a",
                 "shasum": ""
             },
             "require": {
@@ -1106,8 +1106,8 @@
             },
             "require-dev": {
                 "laravel/framework": "^6|^7|^8",
-                "orchestra/testbench-dusk": "^4|^5|^6",
-                "phpunit/phpunit": "^6|^7|^8",
+                "orchestra/testbench-dusk": "^4|^5|^6|^7",
+                "phpunit/phpunit": "^6|^7|^8|^9",
                 "squizlabs/php_codesniffer": "^3.5"
             },
             "type": "library",
@@ -1147,7 +1147,13 @@
                 "crossdomain",
                 "laravel"
             ],
-            "time": "2020-10-22T13:57:20+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/barryvdh",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-04-26T11:24:25+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -1481,12 +1487,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/InfyOmLabs/generator-builder.git",
-                "reference": "6f6ece5b0466c0a757417a9ea63c0b4684188545"
+                "reference": "935dfaca51eceb11176c8354587caffa95b0e8d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InfyOmLabs/generator-builder/zipball/6f6ece5b0466c0a757417a9ea63c0b4684188545",
-                "reference": "6f6ece5b0466c0a757417a9ea63c0b4684188545",
+                "url": "https://api.github.com/repos/InfyOmLabs/generator-builder/zipball/935dfaca51eceb11176c8354587caffa95b0e8d8",
+                "reference": "935dfaca51eceb11176c8354587caffa95b0e8d8",
                 "shasum": ""
             },
             "require": {
@@ -1533,7 +1539,7 @@
                     "type": "opencollective"
                 }
             ],
-            "time": "2021-01-04T17:52:25+00:00"
+            "time": "2021-05-10T09:53:53+00:00"
         },
         {
             "name": "infyomlabs/laravel-generator",
@@ -1612,12 +1618,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/InfyOmLabs/swagger-generator.git",
-                "reference": "9ba01594147e5b85560d827fa3cb755e5bd19fc0"
+                "reference": "267c274b5628bfad6ec85397a5f8943b8d3ffc10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InfyOmLabs/swagger-generator/zipball/9ba01594147e5b85560d827fa3cb755e5bd19fc0",
-                "reference": "9ba01594147e5b85560d827fa3cb755e5bd19fc0",
+                "url": "https://api.github.com/repos/InfyOmLabs/swagger-generator/zipball/267c274b5628bfad6ec85397a5f8943b8d3ffc10",
+                "reference": "267c274b5628bfad6ec85397a5f8943b8d3ffc10",
                 "shasum": ""
             },
             "require": {
@@ -1647,7 +1653,7 @@
                     "type": "opencollective"
                 }
             ],
-            "time": "2020-12-19T07:28:40+00:00"
+            "time": "2021-05-10T09:56:40+00:00"
         },
         {
             "name": "intervention/image",
@@ -10992,5 +10998,5 @@
         "php": "^7.3|^8.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+    "plugin-api-version": "1.1.0"
 }
