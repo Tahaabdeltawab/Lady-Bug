@@ -46,6 +46,7 @@ class UserResource extends JsonResource
             'mobile_verified'   => $this->mobile_verified,
             'email_verified'    => $this->email_verified,
             'roles'             => $this->getRoles(),
+            'type'              => $this->type,
             'rating'            => $this->averageRating,
 
             'income'            => $this->income,

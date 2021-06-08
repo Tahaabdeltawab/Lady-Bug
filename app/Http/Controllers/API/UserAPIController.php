@@ -6,6 +6,7 @@ use App\Http\Requests\API\CreateUserAPIRequest;
 use App\Http\Requests\API\UpdateUserAPIRequest;
 use App\Http\Requests\API\CreateUserFavoritesAPIRequest;
 use App\Models\User;
+use App\Models\Role;
 use App\Models\Post;
 use App\Models\Product;
 use App\Models\ServiceTask;
@@ -500,7 +501,7 @@ class UserAPIController extends AppBaseController
     }
 
 
-    //attach, edit or delete farm roles (send empty or no role_id when deleting a role)
+    //admins
     public function update_user_roles(Request $request)
     {
         try
@@ -517,10 +518,16 @@ class UserAPIController extends AppBaseController
 
             $user = $this->userRepository->find($request->user);
 
-            $user->syncRoles($request->roles);
-            // $user->attachRoles([$request->roles]);
+            $admin_allowed_roles = Role::appAllowedRoles()->pluck('id')->toArray();
 
-              return $this->sendResponse(new UserResource($user), __('User roles saved successfully'));
+            if (array_diff($request->roles,$admin_allowed_roles))
+            {
+                return $this->sendError('Not allowed roles');
+            }
+
+            $user->syncRoles($request->roles);
+
+            return $this->sendResponse(new UserResource($user), __('User roles saved successfully'));
         }
         catch(\Throwable $th)
         {throw $th;
