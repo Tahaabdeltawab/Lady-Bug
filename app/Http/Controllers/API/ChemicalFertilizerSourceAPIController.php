@@ -268,6 +268,8 @@ class ChemicalFertilizerSourceAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var ChemicalFertilizerSource $chemicalFertilizerSource */
         $chemicalFertilizerSource = $this->chemicalFertilizerSourceRepository->find($id);
 
@@ -277,6 +279,14 @@ class ChemicalFertilizerSourceAPIController extends AppBaseController
 
         $chemicalFertilizerSource->delete();
 
-        return $this->sendSuccess('Chemical Fertilizer Source deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

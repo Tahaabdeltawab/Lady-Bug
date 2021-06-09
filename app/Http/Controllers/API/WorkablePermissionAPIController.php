@@ -73,7 +73,7 @@ class WorkablePermissionAPIController extends AppBaseController
 
             return $this->sendResponse(['all' => WorkablePermissionResource::collection($workablePermissions)], 'Workable Permissions retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -124,7 +124,7 @@ class WorkablePermissionAPIController extends AppBaseController
 
             return $this->sendResponse(new WorkablePermissionResource($workablePermission), 'Workable Permission saved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -178,7 +178,7 @@ class WorkablePermissionAPIController extends AppBaseController
 
             return $this->sendResponse(new WorkablePermissionResource($workablePermission), 'Workable Permission retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -244,7 +244,7 @@ class WorkablePermissionAPIController extends AppBaseController
 
             return $this->sendResponse(new WorkablePermissionResource($workablePermission), 'WorkablePermission updated successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -288,19 +288,25 @@ class WorkablePermissionAPIController extends AppBaseController
      */
     public function destroy($id)
     {
-        try{
-            /** @var WorkablePermission $workablePermission */
-            $workablePermission = $this->workablePermissionRepository->find($id);
+        try
+        {
+        /** @var WorkablePermission $workablePermission */
+        $workablePermission = $this->workablePermissionRepository->find($id);
 
-            if (empty($workablePermission)) {
-                return $this->sendError('Workable Permission not found');
-            }
+        if (empty($workablePermission)) {
+            return $this->sendError('Workable Permission not found');
+        }
 
-            $workablePermission->delete();
+        $workablePermission->delete();
 
-            return $this->sendSuccess('Workable Permission deleted successfully');
-        }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
         }
     }
 

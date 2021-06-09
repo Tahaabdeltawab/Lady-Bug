@@ -466,6 +466,8 @@ class CommentAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Comment $comment */
         $comment = $this->commentRepository->find($id);
 
@@ -475,6 +477,14 @@ class CommentAPIController extends AppBaseController
 
         $comment->delete();
 
-        return $this->sendSuccess('Comment deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

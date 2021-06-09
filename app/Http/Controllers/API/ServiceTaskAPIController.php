@@ -284,6 +284,8 @@ class ServiceTaskAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var ServiceTask $serviceTask */
         $serviceTask = $this->serviceTaskRepository->find($id);
 
@@ -293,6 +295,14 @@ class ServiceTaskAPIController extends AppBaseController
 
         $serviceTask->delete();
 
-        return $this->sendSuccess('Service Task deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

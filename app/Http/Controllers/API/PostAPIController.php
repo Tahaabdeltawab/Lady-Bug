@@ -617,6 +617,8 @@ class PostAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Post $post */
         $post = $this->postRepository->find($id);
 
@@ -626,6 +628,14 @@ class PostAPIController extends AppBaseController
 
         $post->delete();
 
-        return $this->sendSuccess('Post deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

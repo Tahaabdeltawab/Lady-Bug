@@ -76,7 +76,7 @@ class WorkableRoleAPIController extends AppBaseController
 
             return $this->sendResponse(['all' => WorkableRoleResource::collection($workableRoles)], 'Workable Roles retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -93,7 +93,7 @@ class WorkableRoleAPIController extends AppBaseController
             })->get();
             return $this->sendResponse($workablePermissions, 'Workable Permissions retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -149,7 +149,7 @@ class WorkableRoleAPIController extends AppBaseController
 
             return $this->sendResponse(new WorkableRoleResource($workableRole), 'Workable Role saved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -203,7 +203,7 @@ class WorkableRoleAPIController extends AppBaseController
 
             return $this->sendResponse(new WorkableRoleResource($workableRole), 'Workable Role retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -271,7 +271,7 @@ class WorkableRoleAPIController extends AppBaseController
 
             return $this->sendResponse(new WorkableRoleResource($workableRole), 'WorkableRole updated successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -315,19 +315,25 @@ class WorkableRoleAPIController extends AppBaseController
      */
     public function destroy($id)
     {
-        try{
-            /** @var WorkableRole $workableRole */
-            $workableRole = $this->workableRoleRepository->find($id);
+        try
+        {
+        /** @var WorkableRole $workableRole */
+        $workableRole = $this->workableRoleRepository->find($id);
 
-            if (empty($workableRole)) {
-                return $this->sendError('Workable Role not found');
-            }
+        if (empty($workableRole)) {
+            return $this->sendError('Workable Role not found');
+        }
 
-            $workableRole->delete();
+        $workableRole->delete();
 
-            return $this->sendSuccess('Workable Role deleted successfully');
-        }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
         }
     }
 

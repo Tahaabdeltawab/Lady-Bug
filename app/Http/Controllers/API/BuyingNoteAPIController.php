@@ -268,6 +268,8 @@ class BuyingNoteAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var BuyingNote $buyingNote */
         $buyingNote = $this->buyingNoteRepository->find($id);
 
@@ -277,6 +279,14 @@ class BuyingNoteAPIController extends AppBaseController
 
         $buyingNote->delete();
 
-        return $this->sendSuccess('Buying Note deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

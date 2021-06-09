@@ -526,6 +526,8 @@ class ProductAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Product $product */
         $product = $this->productRepository->find($id);
 
@@ -535,6 +537,14 @@ class ProductAPIController extends AppBaseController
 
         $product->delete();
 
-        return $this->sendSuccess('Product deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

@@ -268,6 +268,8 @@ class WorkableTypeAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var WorkableType $workableType */
         $workableType = $this->workableTypeRepository->find($id);
 
@@ -277,6 +279,14 @@ class WorkableTypeAPIController extends AppBaseController
 
         $workableType->delete();
 
-        return $this->sendSuccess('Workable Type deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

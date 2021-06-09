@@ -268,6 +268,8 @@ class FarmingWayAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var FarmingWay $farmingWay */
         $farmingWay = $this->farmingWayRepository->find($id);
 
@@ -277,6 +279,14 @@ class FarmingWayAPIController extends AppBaseController
 
         $farmingWay->delete();
 
-        return $this->sendSuccess('Farming Way deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

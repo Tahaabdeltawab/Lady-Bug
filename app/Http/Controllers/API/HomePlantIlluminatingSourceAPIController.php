@@ -268,6 +268,8 @@ class HomePlantIlluminatingSourceAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var HomePlantIlluminatingSource $homePlantIlluminatingSource */
         $homePlantIlluminatingSource = $this->homePlantIlluminatingSourceRepository->find($id);
 
@@ -277,6 +279,14 @@ class HomePlantIlluminatingSourceAPIController extends AppBaseController
 
         $homePlantIlluminatingSource->delete();
 
-        return $this->sendSuccess('Home Plant Illuminating Source deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

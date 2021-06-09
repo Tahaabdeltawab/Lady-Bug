@@ -421,6 +421,8 @@ class FarmedTypeGinfoAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var FarmedTypeGinfo $farmedTypeGinfo */
         $farmedTypeGinfo = $this->farmedTypeGinfoRepository->find($id);
 
@@ -430,6 +432,14 @@ class FarmedTypeGinfoAPIController extends AppBaseController
 
         $farmedTypeGinfo->delete();
 
-        return $this->sendSuccess('Farmed Type Ginfo deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

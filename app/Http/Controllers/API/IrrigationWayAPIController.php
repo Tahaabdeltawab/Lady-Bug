@@ -268,6 +268,8 @@ class IrrigationWayAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var IrrigationWay $irrigationWay */
         $irrigationWay = $this->irrigationWayRepository->find($id);
 
@@ -277,6 +279,14 @@ class IrrigationWayAPIController extends AppBaseController
 
         $irrigationWay->delete();
 
-        return $this->sendSuccess('Irrigation Way deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

@@ -268,6 +268,8 @@ class AnimalMedicineSourceAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var AnimalMedicineSource $animalMedicineSource */
         $animalMedicineSource = $this->animalMedicineSourceRepository->find($id);
 
@@ -277,6 +279,14 @@ class AnimalMedicineSourceAPIController extends AppBaseController
 
         $animalMedicineSource->delete();
 
-        return $this->sendSuccess('Animal Medicine Source deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

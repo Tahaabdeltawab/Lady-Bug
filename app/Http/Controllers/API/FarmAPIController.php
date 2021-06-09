@@ -833,19 +833,25 @@ class FarmAPIController extends AppBaseController
 
     public function destroy($id)
     {
-        try{
-            /** @var Farm $farm */
-            $farm = $this->farmRepository->find($id);
+        try
+        {
+        /** @var Farm $farm */
+        $farm = $this->farmRepository->find($id);
 
-            if (empty($farm)) {
-                return $this->sendError('Farm not found');
-            }
+        if (empty($farm)) {
+            return $this->sendError('Farm not found');
+        }
 
-            $farm->delete();
+        $farm->delete();
 
-            return $this->sendSuccess('Farm deleted successfully');
-        }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500);
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
         }
     }
 

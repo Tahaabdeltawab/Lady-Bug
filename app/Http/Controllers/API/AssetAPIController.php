@@ -71,7 +71,7 @@ class AssetAPIController extends AppBaseController
 
             return $this->sendResponse(['all' => AssetResource::collection($assets)], 'Assets retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -123,12 +123,12 @@ class AssetAPIController extends AppBaseController
                 $assetname = 'asset-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
                 $assetsize = $asset->getSize();
                 $assetmime = $asset->getClientMimeType();
-                        
+
                 $path = $asset->storeAs('assets/images', $assetname, 's3');
                 // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-                
+
                 $url  = Storage::disk('s3')->url($path);
-                
+
                 $asset = $this->assetRepository->create([
                     'asset_name'    => $assetname,
                     'asset_url'     => $url,
@@ -142,7 +142,7 @@ class AssetAPIController extends AppBaseController
                 return $this->sendResponse('No assets found');
             }
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -196,7 +196,7 @@ class AssetAPIController extends AppBaseController
 
             return $this->sendResponse(new AssetResource($asset), 'Asset retrieved successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -262,7 +262,7 @@ class AssetAPIController extends AppBaseController
 
             return $this->sendResponse(new AssetResource($asset), 'Asset updated successfully');
         }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+            return $this->sendError($th->getMessage(), 500);
         }
     }
 
@@ -306,19 +306,25 @@ class AssetAPIController extends AppBaseController
      */
     public function destroy($id)
     {
-        try{
-            /** @var Asset $asset */
-            $asset = $this->assetRepository->find($id);
+        try
+        {
+        /** @var Asset $asset */
+        $asset = $this->assetRepository->find($id);
 
-            if (empty($asset)) {
-                return $this->sendError('Asset not found');
-            }
+        if (empty($asset)) {
+            return $this->sendError('Asset not found');
+        }
 
-            $asset->delete();
+        $asset->delete();
 
-            return $this->sendSuccess('Asset deleted successfully');
-        }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500); 
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
         }
     }
 }

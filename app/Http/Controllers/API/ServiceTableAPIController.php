@@ -288,6 +288,8 @@ class ServiceTableAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var ServiceTable $serviceTable */
         $serviceTable = $this->serviceTableRepository->find($id);
 
@@ -297,6 +299,14 @@ class ServiceTableAPIController extends AppBaseController
 
         $serviceTable->delete();
 
-        return $this->sendSuccess('Service Table deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

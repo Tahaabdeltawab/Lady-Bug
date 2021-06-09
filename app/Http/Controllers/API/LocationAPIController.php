@@ -268,6 +268,8 @@ class LocationAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Location $location */
         $location = $this->locationRepository->find($id);
 
@@ -277,6 +279,14 @@ class LocationAPIController extends AppBaseController
 
         $location->delete();
 
-        return $this->sendSuccess('Location deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

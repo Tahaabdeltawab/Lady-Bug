@@ -264,6 +264,8 @@ class HumanJobAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Job $job */
         $job = $this->humanJobRepository->find($id);
 
@@ -273,6 +275,14 @@ class HumanJobAPIController extends AppBaseController
 
         $job->delete();
 
-        return $this->sendSuccess('Job deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

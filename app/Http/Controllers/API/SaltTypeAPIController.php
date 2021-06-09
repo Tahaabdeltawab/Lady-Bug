@@ -268,6 +268,8 @@ class SaltTypeAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var SaltType $saltType */
         $saltType = $this->saltTypeRepository->find($id);
 
@@ -277,6 +279,14 @@ class SaltTypeAPIController extends AppBaseController
 
         $saltType->delete();
 
-        return $this->sendSuccess('Salt Type deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

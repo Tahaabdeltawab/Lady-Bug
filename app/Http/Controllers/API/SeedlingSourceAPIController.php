@@ -268,6 +268,8 @@ class SeedlingSourceAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var SeedlingSource $seedlingSource */
         $seedlingSource = $this->seedlingSourceRepository->find($id);
 
@@ -277,6 +279,14 @@ class SeedlingSourceAPIController extends AppBaseController
 
         $seedlingSource->delete();
 
-        return $this->sendSuccess('Seedling Source deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

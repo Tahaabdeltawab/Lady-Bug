@@ -268,6 +268,8 @@ class HomePlantPotSizeAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var HomePlantPotSize $homePlantPotSize */
         $homePlantPotSize = $this->homePlantPotSizeRepository->find($id);
 
@@ -277,6 +279,14 @@ class HomePlantPotSizeAPIController extends AppBaseController
 
         $homePlantPotSize->delete();
 
-        return $this->sendSuccess('Home Plant Pot Size deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

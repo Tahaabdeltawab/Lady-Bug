@@ -268,6 +268,8 @@ class SoilTypeAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var SoilType $soilType */
         $soilType = $this->soilTypeRepository->find($id);
 
@@ -277,6 +279,14 @@ class SoilTypeAPIController extends AppBaseController
 
         $soilType->delete();
 
-        return $this->sendSuccess('Soil Type deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

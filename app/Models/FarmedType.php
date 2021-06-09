@@ -101,11 +101,6 @@ class FarmedType extends Model implements TranslatableContract
         return $this->morphToMany(User::class, 'favoriteable', 'favorites', 'favoriteable_id', 'user_id');
     }
 
-    // public function photo()
-    // {
-    //     return $this->belongsTo(Asset::class, 'photo_id');
-    // }
-
     public function asset()
     {
         return $this->morphOne(Asset::class, 'assetable');

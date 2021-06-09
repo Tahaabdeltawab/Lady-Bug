@@ -268,6 +268,8 @@ class MeasuringUnitAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var MeasuringUnit $measuringUnit */
         $measuringUnit = $this->measuringUnitRepository->find($id);
 
@@ -277,6 +279,14 @@ class MeasuringUnitAPIController extends AppBaseController
 
         $measuringUnit->delete();
 
-        return $this->sendSuccess('Measuring Unit deleted successfully');
+          return $this->sendSuccess('Model deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }
