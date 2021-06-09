@@ -187,8 +187,8 @@ Route::group(['middleware'=>['auth:api']], function()
 
     // // // // //  USER AREA  // // // // //
 
-    // Route::group(['middleware'=>['role:app-user']], function()
-    // {
+    Route::group(['middleware'=>['role:app-user']], function()
+    {
 
         // the above resource routes but separated because when using the middleware on the resource I cannot catch the request->id in the middleware wauth. but in this way I can do.
         // also I tried to apply the middleware on the controller itself but the same problem occurred.
@@ -275,11 +275,45 @@ Route::group(['middleware'=>['auth:api']], function()
         // // // LIKES // // //
         Route::get('comments/toggle_like/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_like']);
         Route::get('comments/toggle_dislike/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_dislike']);
-
+    });
 
 
         // Route::resource('chemical_details', App\Http\Controllers\API\ChemicalDetailAPIController::class);
         // Route::resource('salt_details', App\Http\Controllers\API\SaltDetailAPIController::class);
+
+
+
+
+            // });
+
+
+
+    // // // // // //  ADMIN AREA  // // // // // //
+
+    Route::group([
+        'prefix'        => 'admin/',
+        'as'            => 'admin.',
+        'middleware'=>['role:'.config('myconfig.admin_role') ]], function()
+    {
+
+        Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
+
+
+        Route::get('users', [App\Http\Controllers\API\UserAPIController::class, 'index']);
+        Route::get('users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'show']);
+
+        Route::get('users/toggle_activate/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggle_activate_user']);
+
+        Route::delete('users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'destroy']);
+        Route::post('users', [App\Http\Controllers\API\UserAPIController::class, 'store']);
+
+        Route::Resource('roles', App\Http\Controllers\API\RoleAPIController::class);
+        Route::Resource('permissions', App\Http\Controllers\API\PermissionAPIController::class);
+
+        Route::post('users/roles/save', [App\Http\Controllers\API\UserAPIController::class, 'update_user_roles']);
+        Route::post('roles/permissions/save', [App\Http\Controllers\API\RoleAPIController::class, 'update_role_permissions']);
+
+
 
 
 
@@ -348,35 +382,6 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::resource('acidity_types', App\Http\Controllers\API\AcidityTypeAPIController::class);
 
         Route::resource('home_plant_pot_sizes', App\Http\Controllers\API\HomePlantPotSizeAPIController::class);
-    // });
-
-
-
-    // // // // // //  ADMIN AREA  // // // // // //
-
-    Route::group([
-        'prefix'        => 'admin/',
-        'as'            => 'admin.',
-        'middleware'=>['role:'.config('myconfig.admin_role') ]], function()
-    {
-
-        Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
-
-
-        Route::get('users', [App\Http\Controllers\API\UserAPIController::class, 'index']);
-        Route::get('users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'show']);
-
-        Route::get('users/toggle_activate/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggle_activate_user']);
-
-        Route::delete('users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'destroy']);
-        Route::post('users', [App\Http\Controllers\API\UserAPIController::class, 'store']);
-
-        Route::Resource('roles', App\Http\Controllers\API\RoleAPIController::class);
-        Route::Resource('permissions', App\Http\Controllers\API\PermissionAPIController::class);
-
-        Route::post('users/roles/save', [App\Http\Controllers\API\UserAPIController::class, 'update_user_roles']);
-        Route::post('roles/permissions/save', [App\Http\Controllers\API\RoleAPIController::class, 'update_role_permissions']);
-
 
     });
 
