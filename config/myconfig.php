@@ -56,4 +56,9 @@ return [
         'image/svg+xml',
     ],
 
+    'post_statuses' => [
+        'accepted',
+        'reported',
+        'blocked',
+    ],
 ];

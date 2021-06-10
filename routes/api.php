@@ -182,8 +182,17 @@ function () {
 Route::group(['middleware'=>['auth:api']], function()
 {
 
+    // start routes for users and admins
+
+    Route::get('products', [App\Http\Controllers\API\ProductAPIController::class, 'index']);
+
+    Route::group(['middleware'=>['check_farm_role']], function()
+    {
+        Route::delete('posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'destroy'])->name('posts.destroy');
+    });
 
     Route::get('farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('farms.show');
+    // end routes for users and admins
 
     // // // // //  USER AREA  // // // // //
 
@@ -205,7 +214,7 @@ Route::group(['middleware'=>['auth:api']], function()
             Route::get('farms/toggle_archive/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'toggleArchive'])->name('farms.toggle_archive');
             Route::get('farms/app_roles/index', [App\Http\Controllers\API\FarmAPIController::class, 'app_roles']);
 
-            Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['update', 'show']);
+            Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['index', 'update', 'show', 'destroy']);
             Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
             Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
             Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
@@ -254,7 +263,7 @@ Route::group(['middleware'=>['auth:api']], function()
         //with put and patch, laravel cannot read the request
         Route::match(['put', 'patch','post'], 'users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'update'])->name('users.update');
 
-        Route::resource('products', App\Http\Controllers\API\ProductAPIController::class)->except(['update']);
+        Route::resource('products', App\Http\Controllers\API\ProductAPIController::class)->except(['update', 'index']);
         Route::match(['put', 'patch','post'], 'products/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'update'])->name('products.update');
         Route::get('products/toggle_sell/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'toggle_sell_product']);
         Route::get('products/relations/index', [App\Http\Controllers\API\ProductAPIController::class, 'products_relations']);
@@ -299,7 +308,9 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
 
 
-        Route::get('users', [App\Http\Controllers\API\UserAPIController::class, 'index']);
+        Route::get('users', [App\Http\Controllers\API\UserAPIController::class, 'admin_index']);
+        Route::get('generic_users', [App\Http\Controllers\API\UserAPIController::class, 'index']);
+
         Route::get('users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'show']);
 
         Route::get('users/toggle_activate/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggle_activate_user']);
@@ -314,7 +325,10 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::post('roles/permissions/save', [App\Http\Controllers\API\RoleAPIController::class, 'update_role_permissions']);
 
 
+        Route::get('posts', [App\Http\Controllers\API\PostAPIController::class, 'index']);
+        Route::get('posts/toggle_activate/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_activate']);
 
+        Route::post('products/rate', [App\Http\Controllers\API\ProductAPIController::class, 'rate']);
 
 
 

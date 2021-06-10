@@ -131,6 +131,34 @@ class ProductAPIController extends AppBaseController
         }
     }
 
+    
+    // // // // // RATE // // // //
+
+    public function rate(Request $request)
+    {
+        try
+        {
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'rating' => ['required', 'numeric', 'max:5', 'min:1'],
+                    'product' => ['required', 'integer', 'exists:products,id']
+                ]
+            );
+
+            if($validator->fails()){
+                return $this->sendError(json_encode($validator->errors()), 422);
+            }
+
+            $product = $this->productRepository->find($request->product);
+
+                $product->rateOnce($request->rating);
+                return $this->sendSuccess("You have rated $product->name with $request->rating stars successfully");
+        }
+        catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
 
     //products relations
     public function products_relations()

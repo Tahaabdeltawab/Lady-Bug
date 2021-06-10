@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use willvincent\Rateable\Rateable;
 
 
 /**
@@ -82,7 +83,7 @@ use Astrotomic\Translatable\Translatable;
 
 class Product extends Model implements TranslatableContract
 {
-    use /*SoftDeletes,*/ Translatable;
+    use /*SoftDeletes,*/ Translatable, Rateable;
 
     public $translatedAttributes = ['name', 'description'];
 

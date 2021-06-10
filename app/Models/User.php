@@ -75,6 +75,16 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
+    public function scopeAdmin($q)
+    {
+        return $q->where('type', 'app_admin');
+    }
+
+    public function scopeUser($q)
+    {
+        return $q->where('type', 'app_user');
+    }
+    
     public function asset()
     {
         return $this->morphOne(Asset::class, 'assetable');

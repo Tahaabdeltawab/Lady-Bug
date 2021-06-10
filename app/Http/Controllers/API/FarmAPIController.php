@@ -610,7 +610,7 @@ class FarmAPIController extends AppBaseController
                 return $this->sendError('Farm not found');
             }
 
-            $posts = $farm->posts;
+            $posts = $farm->posts()->accepted()->get();
             $postResource = new PostResource($posts);
             return $this->sendResponse(['all' => $postResource->collection($posts)], 'Farm posts retrieved successfully');
         }

@@ -104,13 +104,19 @@ class UserAPIController extends AppBaseController
      *      )
      * )
      */
+
+    // app users
     public function index(Request $request)
     {
-        $users = $this->userRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
-        );
+        $users = User::user()->get();
+
+        return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
+    }
+
+    // app admins
+    public function admin_index(Request $request)
+    {
+        $users = User::admin()->get();
 
         return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
     }
@@ -273,7 +279,7 @@ class UserAPIController extends AppBaseController
     {
         try
         {
-            $posts = auth()->user()->posts;
+            $posts = auth()->user()->posts()->accepted()->get();
             return $this->sendResponse(['all' => PostResource::collection($posts)], 'User posts retrieved successfully');
         }
         catch(\Throwable $th)
@@ -294,7 +300,7 @@ class UserAPIController extends AppBaseController
                     $likeables[] = $like->likeable;
                 }
             }
-            return $this->sendResponse(['all' => PostResource::collection($likeables)], 'User liked posts retrieved successfully');
+            return $this->sendResponse(['all' => PostResource::collection(collect($likeables)->where('status', 'accepted'))], 'User liked posts retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -314,7 +320,7 @@ class UserAPIController extends AppBaseController
                     $dislikeables[] = $dislike->likeable;
                 }
             }
-            return $this->sendResponse(['all' => PostResource::collection($dislikeables)], 'User disliked posts retrieved successfully');
+            return $this->sendResponse(['all' => PostResource::collection(collect($dislikeables)->where('status', 'accepted'))], 'User disliked posts retrieved successfully');
         }
         catch(\Throwable $th)
         {

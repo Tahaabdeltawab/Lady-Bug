@@ -82,11 +82,7 @@ class PostAPIController extends AppBaseController
 
     public function index(Request $request)
     {
-        $posts = $this->postRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
-        );
+        $posts = Post::accepted()->get();
 
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
@@ -94,7 +90,8 @@ class PostAPIController extends AppBaseController
     // post_timeline
     public function timeline(Request $request)
     {
-        $posts = $this->postRepository->latest()->get();
+        // $posts = $this->postRepository->latest()->get();
+        $posts = Post::accepted()->latest()->get();
         $posts1 = $posts->take(5);
         $posts2 = $posts->skip(5);
 
@@ -119,26 +116,26 @@ class PostAPIController extends AppBaseController
 
     public function search($query)
     {
-        $posts = Post::where('content','like', '%'.$query.'%' )->get();
+        $posts = Post::accepted()->where('content','like', '%'.$query.'%' )->get();
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
 
     public function get_posts_by_farmed_type_id($farmed_type_id)
     {
-        $posts = Post::where('farmed_type_id', $farmed_type_id)->get();
+        $posts = Post::accepted()->where('farmed_type_id', $farmed_type_id)->get();
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
 
     public function get_posts_by_post_type_id($post_type_id)
     {
-        $posts = Post::where('post_type_id', $post_type_id)->get();
+        $posts = Post::accepted()->where('post_type_id', $post_type_id)->get();
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
 
     // video_timeline
     public function video_timeline(Request $request)
     {
-        $posts = Post::whereHas('assets', function ($q)
+        $posts = Post::accepted()->whereHas('assets', function ($q)
         {
             $q->whereIn('asset_mime', config('myconfig.video_mimes'));
         })->latest()->get();
@@ -157,7 +154,7 @@ class PostAPIController extends AppBaseController
     {
         try
         {
-            $post = $this->postRepository->find($id);
+            $post = Post::accepted()->find($id);
 
             if (empty($post)) {
                 return $this->sendError('Post not found');
@@ -336,7 +333,7 @@ class PostAPIController extends AppBaseController
     {
         try
         {
-            $post = $this->postRepository->find($id);
+            $post = Post::accepted()->find($id);
 
             if (empty($post))
             {
@@ -358,7 +355,7 @@ class PostAPIController extends AppBaseController
     {
         try
         {
-            $post = $this->postRepository->find($id);
+            $post = Post::accepted()->find($id);
 
             if (empty($post))
             {
@@ -370,6 +367,38 @@ class PostAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    public function toggle_activate($id)
+    {
+        try
+        {
+            $post = $this->postRepository->find($id);
+
+            if (empty($post)) {
+                return $this->sendError('Post not found');
+            }
+
+            if($post->status == 'accepted')
+            {
+                $post->status = 'blocked';
+                $post->save();
+                $msg = 'Post blocked successfully';
+                return $this->sendSuccess($msg);
+            }
+            elseif($post->status == 'blocked')
+            {
+                $post->status = 'accepted';
+                $post->save();
+                $msg = 'Post activated successfully';
+                return $this->sendSuccess($msg);
+            }
+
+        }
+        catch(\Throwable $th)
+        {throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -415,7 +444,7 @@ class PostAPIController extends AppBaseController
     public function show($id)
     {
         /** @var Post $post */
-        $post = $this->postRepository->find($id);
+        $post = Post::accepted()->find($id);
 
         if (empty($post)) {
             return $this->sendError('Post not found');
@@ -475,7 +504,7 @@ class PostAPIController extends AppBaseController
         try
         {
             /** @var Post $post */
-            $post = $this->postRepository->find($id);
+            $post = Post::accepted()->find($id);
 
             if (empty($post)) {
                 return $this->sendError('Post not found');
@@ -620,7 +649,7 @@ class PostAPIController extends AppBaseController
         try
         {
         /** @var Post $post */
-        $post = $this->postRepository->find($id);
+        $post = Post::accepted()->find($id);
 
         if (empty($post)) {
             return $this->sendError('Post not found');

@@ -124,6 +124,21 @@ class Post extends Model
     ];
 
 
+    public function scopeAccepted($query)
+    {
+        return $query->where('status', 'accepted');
+    }
+
+    public function scopeReported($query)
+    {
+        return $query->where('status', 'reported');
+    }
+
+    public function scopeBlocked($query)
+    {
+        return $query->where('status', 'blocked');
+    }
+    
     public function author()
     {
         return $this->belongsTo(User::class);
