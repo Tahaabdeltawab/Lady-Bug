@@ -774,6 +774,46 @@ class UserAPIController extends AppBaseController
         }
     }
 
+    public function update_password($id, Request $request)
+    {
+        try
+        {
+            $user = $this->userRepository->find($id);
+
+            if (empty($user)) {
+                return $this->sendError('User not found');
+            }
+
+            $validator = Validator::make($request->all(), [
+                "old_password" => ["required", "string"],
+                "password" => ["required", "string", "min:8", "confirmed"],
+            ]);
+
+            if($validator->fails()){
+                return $this->sendError(json_encode($validator->errors()));
+            }
+
+            if(! password_verify($request->old_password, $user->password))
+            {
+                return $this->sendError('Incorrect old password');
+            }
+
+            if(password_verify($request->password, $user->password))
+            {
+                return $this->sendError('The new password is identical to the old password');
+            }
+
+            $user->password = Hash::make($request->password);
+            $user->save();
+
+            return $this->sendSuccess(__('Password updated successfully'));
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
     /**
      * @param int $id
      * @return Response

@@ -219,6 +219,7 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::post('farms/user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('farms.users.weather.index');
         Route::get('farms/archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('farms.get_archived');
 
+        Route::post('users/update_password/{user}', [App\Http\Controllers\API\UserAPIController::class, 'update_password']);
 
         //get weather and auth interests
         Route::post('users/interests/index', [App\Http\Controllers\API\UserAPIController::class, 'user_interests']);
