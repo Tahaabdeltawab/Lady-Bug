@@ -182,18 +182,6 @@ function () {
 Route::group(['middleware'=>['auth:api']], function()
 {
 
-    // start routes for users and admins
-
-    Route::get('products', [App\Http\Controllers\API\ProductAPIController::class, 'index']);
-
-    Route::group(['middleware'=>['check_farm_role']], function()
-    {
-        Route::delete('posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'destroy'])->name('posts.destroy');
-    });
-
-    Route::get('farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('farms.show');
-    // end routes for users and admins
-
     // // // // //  USER AREA  // // // // //
 
     Route::group(['middleware'=>['role:app-user']], function()
@@ -332,73 +320,139 @@ Route::group(['middleware'=>['auth:api']], function()
 
 
 
-        Route::resource('animal_fodder_sources', App\Http\Controllers\API\AnimalFodderSourceAPIController::class);
+        Route::resource('animal_fodder_sources', App\Http\Controllers\API\AnimalFodderSourceAPIController::class)->except(['index']);
 
-        Route::resource('farmed_type_stages', App\Http\Controllers\API\FarmedTypeStageAPIController::class);
+        Route::resource('farmed_type_stages', App\Http\Controllers\API\FarmedTypeStageAPIController::class)->except(['index']);
 
         // SHOULD BE ID 1 FOR CROPS, 2 FOR TREES, 3 FOR HOMEPLANTS, 4 FOR ANIMALS
         // BECAUSE THERE IS CHECK ON THESE IDs ON FARM_RELATIONS METHOD IN FARMAPICONTROLLER
         // Route::resource('farm_activity_types', App\Http\Controllers\API\FarmActivityTypeAPIController::class);
 
-        Route::resource('chemical_fertilizer_sources', App\Http\Controllers\API\ChemicalFertilizerSourceAPIController::class);
+        Route::resource('chemical_fertilizer_sources', App\Http\Controllers\API\ChemicalFertilizerSourceAPIController::class)->except(['index']);
 
-        Route::resource('animal_breeding_purposes', App\Http\Controllers\API\AnimalBreedingPurposeAPIController::class);
+        Route::resource('animal_breeding_purposes', App\Http\Controllers\API\AnimalBreedingPurposeAPIController::class)->except(['index']);
 
-        Route::resource('home_plant_illuminating_sources', App\Http\Controllers\API\HomePlantIlluminatingSourceAPIController::class);
+        Route::resource('home_plant_illuminating_sources', App\Http\Controllers\API\HomePlantIlluminatingSourceAPIController::class)->except(['index']);
 
-        Route::resource('farming_methods', App\Http\Controllers\API\FarmingMethodAPIController::class);
+        Route::resource('farming_methods', App\Http\Controllers\API\FarmingMethodAPIController::class)->except(['index']);
 
-        Route::resource('animal_fodder_types', App\Http\Controllers\API\AnimalFodderTypeAPIController::class);
+        Route::resource('animal_fodder_types', App\Http\Controllers\API\AnimalFodderTypeAPIController::class)->except(['index']);
 
-        Route::resource('animal_medicine_sources', App\Http\Controllers\API\AnimalMedicineSourceAPIController::class);
+        Route::resource('animal_medicine_sources', App\Http\Controllers\API\AnimalMedicineSourceAPIController::class)->except(['index']);
 
-        Route::resource('human_jobs', App\Http\Controllers\API\HumanJobAPIController::class)->except(['index']);
+        Route::resource('human_jobs', App\Http\Controllers\API\HumanJobAPIController::class)->except(['index']);//
 
-        Route::resource('post_types', App\Http\Controllers\API\PostTypeAPIController::class);
+        Route::resource('post_types', App\Http\Controllers\API\PostTypeAPIController::class)->except(['index']);
 
-        Route::resource('seedling_sources', App\Http\Controllers\API\SeedlingSourceAPIController::class);
+        Route::resource('seedling_sources', App\Http\Controllers\API\SeedlingSourceAPIController::class)->except(['index']);
 
-        Route::resource('measuring_units', App\Http\Controllers\API\MeasuringUnitAPIController::class);
+        Route::resource('measuring_units', App\Http\Controllers\API\MeasuringUnitAPIController::class)->except(['index']);
 
-        Route::resource('buying_notes', App\Http\Controllers\API\BuyingNoteAPIController::class);
+        Route::resource('buying_notes', App\Http\Controllers\API\BuyingNoteAPIController::class)->except(['index']);
 
-        Route::resource('information', App\Http\Controllers\API\InformationAPIController::class);
+        Route::resource('information', App\Http\Controllers\API\InformationAPIController::class)->except(['index']);
 
-        Route::resource('weather_notes', App\Http\Controllers\API\WeatherNoteAPIController::class);
+        Route::resource('weather_notes', App\Http\Controllers\API\WeatherNoteAPIController::class)->except(['index']);
 
-        Route::resource('soil_types', App\Http\Controllers\API\SoilTypeAPIController::class);
+        Route::resource('soil_types', App\Http\Controllers\API\SoilTypeAPIController::class)->except(['index']);
 
-        Route::resource('irrigation_ways', App\Http\Controllers\API\IrrigationWayAPIController::class);
+        Route::resource('irrigation_ways', App\Http\Controllers\API\IrrigationWayAPIController::class)->except(['index']);
 
-        Route::resource('farming_ways', App\Http\Controllers\API\FarmingWayAPIController::class);
+        Route::resource('farming_ways', App\Http\Controllers\API\FarmingWayAPIController::class)->except(['index']);
 
-        Route::resource('farmed_types', App\Http\Controllers\API\FarmedTypeAPIController::class);
+        Route::resource('farmed_types', App\Http\Controllers\API\FarmedTypeAPIController::class)->except(['index']);
         Route::match(['put', 'patch','post'], 'farmed_types/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'update'])->name('farmed_types.update');
         Route::get('farmed_types/search/{query}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'search']);
 
-        Route::resource('farmed_type_classes', App\Http\Controllers\API\FarmedTypeClassAPIController::class);
+        Route::resource('farmed_type_classes', App\Http\Controllers\API\FarmedTypeClassAPIController::class)->except(['index']);
 
-        Route::resource('farmed_type_ginfos', App\Http\Controllers\API\FarmedTypeGinfoAPIController::class)->except(['update']);
+        Route::resource('farmed_type_ginfos', App\Http\Controllers\API\FarmedTypeGinfoAPIController::class)->except(['index', 'update']);
         Route::match(['put', 'patch','post'], 'farmed_type_ginfos/{farmed_type_ginfo}', [App\Http\Controllers\API\FarmedTypeGinfoAPIController::class, 'update'])->name('farmed_type_ginfos.update');
         Route::get('farmed_type_ginfos/relations/index', [App\Http\Controllers\API\FarmedTypeGinfoAPIController::class, 'farmed_type_ginfos_relations']);
         Route::get('farmed_types/farmed_type_ginfos/{farmed_type}/{stage?}', [App\Http\Controllers\API\FarmedTypeGinfoAPIController::class, 'farmed_type_ginfos_by_farmed_type_id']);
 
-        Route::resource('cities', App\Http\Controllers\API\CityAPIController::class);
+        Route::resource('cities', App\Http\Controllers\API\CityAPIController::class)->except(['index']);
 
-        Route::resource('districts', App\Http\Controllers\API\DistrictAPIController::class);
+        Route::resource('districts', App\Http\Controllers\API\DistrictAPIController::class)->except(['index']);
 
-        Route::resource('task_types', App\Http\Controllers\API\TaskTypeAPIController::class);
+        Route::resource('task_types', App\Http\Controllers\API\TaskTypeAPIController::class)->except(['index']);
 
-        Route::resource('salt_types', App\Http\Controllers\API\SaltTypeAPIController::class);
+        Route::resource('salt_types', App\Http\Controllers\API\SaltTypeAPIController::class)->except(['index']);
 
-        Route::resource('locations', App\Http\Controllers\API\LocationAPIController::class);
+        Route::resource('locations', App\Http\Controllers\API\LocationAPIController::class)->except(['index']);
 
-        Route::resource('acidity_types', App\Http\Controllers\API\AcidityTypeAPIController::class);
+        Route::resource('acidity_types', App\Http\Controllers\API\AcidityTypeAPIController::class)->except(['index']);
 
-        Route::resource('home_plant_pot_sizes', App\Http\Controllers\API\HomePlantPotSizeAPIController::class);
+        Route::resource('home_plant_pot_sizes', App\Http\Controllers\API\HomePlantPotSizeAPIController::class)->except(['index']);
 
     });
 
+    // start routes for users and admins
+
+    Route::get('products', [App\Http\Controllers\API\ProductAPIController::class, 'index']);
+
+    Route::group(['middleware'=>['check_farm_role']], function()
+    {
+        Route::delete('posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'destroy'])->name('posts.destroy');
+    });
+
+    Route::get('farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('farms.show');
+
+    Route::get('animal_fodder_sources', [App\Http\Controllers\API\AnimalFodderSourceAPIController::class, 'index']);
+
+    Route::get('farmed_type_stages', [App\Http\Controllers\API\FarmedTypeStageAPIController::class, 'index']);
+
+    Route::get('chemical_fertilizer_sources', [App\Http\Controllers\API\ChemicalFertilizerSourceAPIController::class, 'index']);
+
+    Route::get('animal_breeding_purposes', [App\Http\Controllers\API\AnimalBreedingPurposeAPIController::class, 'index']);
+
+    Route::get('home_plant_illuminating_sources', [App\Http\Controllers\API\HomePlantIlluminatingSourceAPIController::class, 'index']);
+
+    Route::get('farming_methods', [App\Http\Controllers\API\FarmingMethodAPIController::class, 'index']);
+
+    Route::get('animal_fodder_types', [App\Http\Controllers\API\AnimalFodderTypeAPIController::class, 'index']);
+
+    Route::get('animal_medicine_sources', [App\Http\Controllers\API\AnimalMedicineSourceAPIController::class, 'index']);
+
+    Route::get('post_types', [App\Http\Controllers\API\PostTypeAPIController::class, 'index']);
+
+    Route::get('seedling_sources', [App\Http\Controllers\API\SeedlingSourceAPIController::class, 'index']);
+
+    Route::get('measuring_units', [App\Http\Controllers\API\MeasuringUnitAPIController::class, 'index']);
+
+    Route::get('buying_notes', [App\Http\Controllers\API\BuyingNoteAPIController::class, 'index']);
+
+    Route::get('information', [App\Http\Controllers\API\InformationAPIController::class, 'index']);
+
+    Route::get('weather_notes', [App\Http\Controllers\API\WeatherNoteAPIController::class, 'index']);
+
+    Route::get('soil_types', [App\Http\Controllers\API\SoilTypeAPIController::class, 'index']);
+
+    Route::get('irrigation_ways', [App\Http\Controllers\API\IrrigationWayAPIController::class, 'index']);
+
+    Route::get('farming_ways', [App\Http\Controllers\API\FarmingWayAPIController::class, 'index']);
+
+    Route::get('farmed_types', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'index']);
+
+    Route::get('farmed_type_classes', [App\Http\Controllers\API\FarmedTypeClassAPIController::class, 'index']);
+
+    Route::get('farmed_type_ginfos', [App\Http\Controllers\API\FarmedTypeGinfoAPIController::class, 'index']);
+
+    Route::get('cities', [App\Http\Controllers\API\CityAPIController::class, 'index']);
+
+    Route::get('districts', [App\Http\Controllers\API\DistrictAPIController::class, 'index']);
+
+    Route::get('task_types', [App\Http\Controllers\API\TaskTypeAPIController::class, 'index']);
+
+    Route::get('salt_types', [App\Http\Controllers\API\SaltTypeAPIController::class, 'index']);
+
+    Route::get('locations', [App\Http\Controllers\API\LocationAPIController::class, 'index']);
+
+    Route::get('acidity_types', [App\Http\Controllers\API\AcidityTypeAPIController::class, 'index']);
+
+    Route::get('home_plant_pot_sizes', [App\Http\Controllers\API\HomePlantPotSizeAPIController::class, 'index']);
+
+    // end routes for users and admins
 
 });
 
