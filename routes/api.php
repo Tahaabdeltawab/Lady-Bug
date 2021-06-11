@@ -398,6 +398,8 @@ Route::group(['middleware'=>['auth:api']], function()
 
     Route::get('farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('farms.show');
 
+    Route::get('farm_activity_types', [App\Http\Controllers\API\FarmActivityTypeAPIController::class, 'index']);
+
     Route::get('animal_fodder_sources', [App\Http\Controllers\API\AnimalFodderSourceAPIController::class, 'index']);
 
     Route::get('farmed_type_stages', [App\Http\Controllers\API\FarmedTypeStageAPIController::class, 'index']);
