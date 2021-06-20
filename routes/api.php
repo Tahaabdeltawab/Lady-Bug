@@ -300,12 +300,16 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::get('users', [App\Http\Controllers\API\UserAPIController::class, 'admin_index']);
         Route::get('generic_users', [App\Http\Controllers\API\UserAPIController::class, 'index']);
 
-        Route::get('users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'show']);
+        Route::get('users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'admin_show']);
+        Route::get('generic_users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'show']);
 
         Route::get('users/toggle_activate/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggle_activate_user']);
 
         Route::delete('users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'destroy']);
         Route::post('users', [App\Http\Controllers\API\UserAPIController::class, 'store']);
+
+        //with put and patch, laravel cannot read the request
+        Route::match(['put', 'patch','post'], 'users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'update'])->name('users.update');
 
         Route::Resource('roles', App\Http\Controllers\API\RoleAPIController::class);
         Route::Resource('permissions', App\Http\Controllers\API\PermissionAPIController::class);

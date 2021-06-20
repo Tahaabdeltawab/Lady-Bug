@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\API\CreateUserAPIRequest;
 use App\Http\Requests\API\UpdateUserAPIRequest;
 use App\Http\Requests\API\CreateUserFavoritesAPIRequest;
@@ -460,6 +461,7 @@ class UserAPIController extends AppBaseController
                 return $this->sendError(json_encode($validator->errors()), $code);
             }
 
+            DB::beginTransaction();
             $user = $this->userRepository->create([
                 'name' => $request->get('name'),
                 'email' => $request->get('email'),
@@ -494,6 +496,8 @@ class UserAPIController extends AppBaseController
                 ]);
             }
 
+            DB::commit();
+
             $data = [
                 'user' => new UserResource($user),
             ];
@@ -501,7 +505,7 @@ class UserAPIController extends AppBaseController
         }
         catch(\Throwable $th)
         {
-            throw $th;
+            DB::rollback();
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -536,7 +540,7 @@ class UserAPIController extends AppBaseController
             return $this->sendResponse(new UserResource($user), __('User roles saved successfully'));
         }
         catch(\Throwable $th)
-        {throw $th;
+        {
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -579,14 +583,27 @@ class UserAPIController extends AppBaseController
      *          )
      *      )
      * )
-     */
+    */
+
+    // users
     public function show($id)
     {
-        /** @var User $user */
-        $user = $this->userRepository->find($id);
+        $user = User::user()->find($id);
 
         if (empty($user)) {
-            return $this->sendError('User not found');
+            return $this->sendError('Admin not found');
+        }
+
+        return $this->sendResponse(new UserResource($user), 'User retrieved successfully');
+    }
+
+    // admins
+    public function admin_show($id)
+    {
+        $user = User::admin()->find($id);
+
+        if (empty($user)) {
+            return $this->sendError('Admin not found');
         }
 
         return $this->sendResponse(new UserResource($user), 'User retrieved successfully');
@@ -669,6 +686,8 @@ class UserAPIController extends AppBaseController
      *      )
      * )
      */
+
+    // users and admins
     public function update($id, /* CreateUserAPI */Request $request)
     {
         try
@@ -736,11 +755,21 @@ class UserAPIController extends AppBaseController
             }
 
 
+            DB::beginTransaction();
             $user = $this->userRepository->save_localized($to_save, $id);
 
             if (isset($request->roles))
             {
-                $user->syncRoles($request->roles);
+                if(auth()->user()->hasRole(config('myconfig.admin_role'))) // because the current method (update) is for both admins and users
+                {
+                    $admin_allowed_roles = Role::appAllowedRoles()->pluck('id')->toArray();
+
+                    if (array_diff($request->roles,$admin_allowed_roles))
+                    {
+                        return $this->sendError('Not allowed roles');
+                    }
+                    $user->syncRoles($request->roles);
+                }
             }
 
             if($photo = $request->file('photo'))
@@ -764,12 +793,15 @@ class UserAPIController extends AppBaseController
                 ]);
             }
 
+            DB::commit();
+
 
 
             return $this->sendResponse(new UserResource($user), __('Success'));
         }
         catch(\Throwable $th)
         {
+            DB::rollback();
             return $this->sendError($th->getMessage(), 500);
         }
     }

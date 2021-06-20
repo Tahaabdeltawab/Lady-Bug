@@ -45,7 +45,8 @@ class UserResource extends JsonResource
             'is_notifiable'     => $this->is_notifiable,
             'mobile_verified'   => $this->mobile_verified,
             'email_verified'    => $this->email_verified,
-            'roles'             => $this->getRoles(),
+            // 'roles'             => $this->getRoles(),
+            'roles'             => $this->get_roles(),
             'type'              => $this->type,
             'rating'            => $this->averageRating,
 

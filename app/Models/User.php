@@ -64,6 +64,14 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function get_roles($farm_id=null)
+    {
+        return $this->roles->filter(function ($role) use($farm_id) {
+            return $role['pivot'][config('laratrust.foreign_keys.team')] == $farm_id;
+        })->map->only(['id', 'name'])->toArray();
+    }
+
+
    /*  public function farms()
     {
         return $this->morphedByMany(Farm::class, 'workable', 'workables', 'worker_id', 'workable_id')->using(Workable::class)->withPivot('id', 'status')->withTimestamps();
@@ -84,7 +92,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $q->where('type', 'app_user');
     }
-    
+
     public function asset()
     {
         return $this->morphOne(Asset::class, 'assetable');
