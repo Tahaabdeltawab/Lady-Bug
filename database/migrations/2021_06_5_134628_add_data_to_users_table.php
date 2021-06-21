@@ -15,7 +15,7 @@ class AddDataToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->integer('income')->nullable();
-            $table->timestamp('dob')->nullable();
+            $table->date('dob')->nullable();
             $table->foreignId('city_id')->nullable()->constrained();
         });
     }
