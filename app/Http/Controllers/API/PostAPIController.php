@@ -82,7 +82,7 @@ class PostAPIController extends AppBaseController
 
     public function index(Request $request)
     {
-        $posts = Post::accepted()->get();
+        $posts = Post::get();
 
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
