@@ -9,7 +9,7 @@ class WeatherApi{
     public function weather_api($request)
     {
 
-        $response = Http::get('http://history.openweathermap.org/data/2.5/history/city',
+        $response = Http::get('api.openweathermap.org/data/2.5/weather',
             [
                 'appid' => 'cd06a1348bed1b281e3e139a96ee5324',
                 'lat' => $request->lat,
@@ -18,15 +18,6 @@ class WeatherApi{
                 'units' =>'metric'//'standard''imperial'
             ]
         );
-        // $response = Http::get('api.openweathermap.org/data/2.5/weather',
-        //     [
-        //         'appid' => 'cd06a1348bed1b281e3e139a96ee5324',
-        //         'lat' => $request->lat,
-        //         'lon' => $request->lon,
-        //         'lang' => $request->lang,
-        //         'units' =>'metric'//'standard''imperial'
-        //     ]
-        // );
 
         if($response->ok())
         {
