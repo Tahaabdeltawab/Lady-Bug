@@ -28,10 +28,7 @@ class AddStatusToPostsTable extends Migration
         Schema::table('posts', function (Blueprint $table) {
             if (Schema::hasColumn('posts', 'status'))
             {
-                Schema::table('posts', function (Blueprint $table)
-                {
-                    $table->dropColumn('status');
-                });
+                $table->dropColumn('status');
             }
         });
     }

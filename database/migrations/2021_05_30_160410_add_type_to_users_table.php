@@ -28,10 +28,7 @@ class AddTypeToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             if (Schema::hasColumn('users', 'type'))
             {
-                Schema::table('users', function (Blueprint $table)
-                {
-                    $table->dropColumn('type');
-                });
+                $table->dropColumn('type');
             }
         });
     }

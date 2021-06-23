@@ -30,12 +30,9 @@ class AddDataToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             if (Schema::hasColumn('users', 'income') && Schema::hasColumn('users', 'dob') && Schema::hasColumn('users', 'city_id'))
             {
-                Schema::table('users', function (Blueprint $table)
-                {
-                    $table->dropColumn('income');
-                    $table->dropColumn('dob');
-                    $table->dropColumn('city_id');
-                });
+                $table->dropColumn('income');
+                $table->dropColumn('dob');
+                $table->dropColumn('city_id');
             }
         });
     }

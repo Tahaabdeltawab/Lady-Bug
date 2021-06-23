@@ -17,10 +17,10 @@ class CreateFarmedTypesTable extends Migration
         Schema::create('farmed_types', function (Blueprint $table) {
             $table->id();
             $table->foreignId('farm_activity_type_id')->constrained();
-            $table->double('farming_temperature')->nullable();
-            $table->double('flowering_temperature')->nullable();
-            $table->double('maturity_temperature')->nullable();
-            $table->double('humidity')->nullable();
+            $table->string('farming_temperature')->nullable();
+            $table->string('flowering_temperature')->nullable();
+            $table->string('maturity_temperature')->nullable();
+            $table->string('humidity')->nullable();
             $table->integer('flowering_time')->nullable();
             $table->integer('maturity_time')->nullable();
             $table->timestamps();

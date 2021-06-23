@@ -168,6 +168,122 @@ class FarmAPIController extends AppBaseController
         $this->sendError('Error fetching the weather data', $resp['data']['cod'], $resp['data']['message']);
     }
 
+    // // // // COMPATIBILITY // // // //
+
+    protected function avg($array)
+    {
+        return count($array) ? array_sum($array) / count($array) : 0;
+    }
+
+    protected function min_max($array)
+    {
+        if(count($array))
+        {
+            $min = $array[0] < $array[1] ? $array[0] : $array[1];
+            $max = $min == $array[0] ? $array[1] : $array[0];
+            return [$min, $max];
+        }
+        return false;
+    }
+
+    protected function in_range($num, $array)
+    {
+        if(count($array))
+        {
+            $min = $this->min_max($array)[0];
+            $max = $this->min_max($array)[1];
+            return ($num >= $min && $num <= $max);
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    protected function calc_soil_type($soil_type_id, $suitable_soil_types, $full_deg)
+    {
+        $deg = 0;
+        if((count($suitable_soil_types) > 0) && in_array($soil_type_id, $suitable_soil_types))
+        {
+            $deg = $soil_type_id == $suitable_soil_types[0] ? 0.5 : 0.25;
+        }
+
+        return $deg = $deg * $full_deg;
+    }
+
+    protected function calc_deg_avg($value, $model, $full_deg) // get degree in things whose best degree is the average value
+    {
+        $deg = 0;
+        if((count($model) > 0))
+        {
+            if($this->in_range($value, $model))
+            {
+                $best   = $this->avg($model);
+                $min    = $this->min_max($model)[0];
+                $max    = $this->min_max($model)[1];
+                $deg    = $value < $best ? ($value - $min) / ($best - $min) : ($max - $value) / ($max - $best);
+            }
+        }
+
+        return $deg = $deg * $full_deg;
+    }
+
+    protected function calc_deg_min($value, $model, $full_deg) // get degree in things whose best degree is the minimum value
+    {
+        $deg = 0;
+        if((count($model) > 0))
+        {
+            if($this->in_range($value, $model))
+            {
+                $best   = $this->min_max($model)[0];
+                $min    = $this->min_max($model)[0];
+                $max    = $this->min_max($model)[1];
+                $deg    = ($max - $value) / ($max - $best);
+            }
+        }
+
+        return $deg = $deg * $full_deg;
+    }
+
+    public function calculate_compatibility($id)
+    {
+        $farm = \App\Models\Farm::with(['farmed_type', 'soil_detail', 'irrigation_water_detail'])->find($id);
+
+        if (empty($farm))
+        {
+            return $this->sendError('Farm not found');
+        }
+
+        $soil_type_deg = $this->calc_soil_type($farm->soil_type_id, $farm->farmed_type->suitable_soil_types, 5);
+
+        $soil_salt_deg = $this->calc_deg_min($farm->soil_detail->salt_concentration_value, $farm->farmed_type->suitable_soil_salts_concentration, 20);
+
+        $water_salt_deg = $this->calc_deg_min($farm->irrigation_water_detail->salt_concentration_value, $farm->farmed_type->suitable_water_salts_concentration, 25);
+
+        $ph_deg = $this->calc_deg_avg($farm->soil_detail->acidity_value, $farm->farmed_type->suitable_ph, 5);
+
+        $farming_temperature = 27; // 20% // from weather api
+        $tfarming_deg = $this->calc_deg_avg($farming_temperature, $farm->farmed_type->farming_temperature, 20);
+
+        $flowering_temperature_average = 30;  // 15% // from weather api // average of 10 days before and after the flowering_time
+        $tflowering_deg = $this->calc_deg_avg($flowering_temperature_average, $farm->farmed_type->flowering_temperature, 15);
+
+        $maturity_temperature = 35;  // 5% // from weather api
+        $tmaturity_deg = $this->calc_deg_avg($maturity_temperature, $farm->farmed_type->maturity_temperature, 5);
+
+        $humidity = 25;  // 5% // from weather api // humidity on maturity day (maturity_time)
+        $hmaturity_deg = $this->calc_deg_avg($humidity, $farm->farmed_type->humidity, 5);
+
+        $total = $soil_type_deg + $soil_salt_deg + $water_salt_deg + $ph_deg + $tfarming_deg + $tflowering_deg + $tmaturity_deg + $hmaturity_deg;
+        // $total = 'soil_type_deg = ' . $soil_type_deg . ' - ' . 'soil_salt_deg = ' . $soil_salt_deg . ' - ' . 'water_salt_deg = ' . $water_salt_deg . ' - ' . 'ph_deg = ' . $ph_deg . ' - ' . 'tfarming_deg = ' . $tfarming_deg . ' - ' . 'tflowering_deg = ' . $tflowering_deg . ' - ' . 'tmaturity_deg = ' . $tmaturity_deg . ' - ' . 'hmaturity_deg = ' . $hmaturity_deg;
+
+        return response()->json(['total' => $total]);
+
+        // farmed_type->flowering_time,
+        // farmed_type->maturity_time,
+    }
+
+
     public function index(Request $request)
     {
         try{
@@ -489,9 +605,6 @@ class FarmAPIController extends AppBaseController
         }
     }
 
-
-
-
     //attach, edit or delete farm roles (send empty or no role_id when deleting a role)
     public function update_farm_role(Request $request)
     {
@@ -560,9 +673,6 @@ class FarmAPIController extends AppBaseController
     }
 
 
-
-
-
     public function get_farm_users($id)
     {
         try
@@ -583,19 +693,6 @@ class FarmAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public function get_farm_posts($id)
@@ -621,17 +718,6 @@ class FarmAPIController extends AppBaseController
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
     public function show($id)
     {
         try{
@@ -647,19 +733,6 @@ class FarmAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     public function update($id, CreateFarmAPIRequest $request)
@@ -821,14 +894,6 @@ class FarmAPIController extends AppBaseController
         }
 
     }
-
-
-
-
-
-
-
-
 
 
     public function destroy($id)

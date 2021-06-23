@@ -405,60 +405,88 @@ Route::group(['middleware'=>['auth:api']], function()
     Route::get('farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('farms.show');
 
     Route::get('farm_activity_types', [App\Http\Controllers\API\FarmActivityTypeAPIController::class, 'index']);
+    Route::get('farm_activity_types/{farm_activity_type}', [App\Http\Controllers\API\FarmActivityTypeAPIController::class, 'show'])->name('farm_activity_types.show');
 
     Route::get('animal_fodder_sources', [App\Http\Controllers\API\AnimalFodderSourceAPIController::class, 'index']);
+    Route::get('animal_fodder_sources/{animal_fodder_source}', [App\Http\Controllers\API\AnimalFodderSourceAPIController::class, 'show'])->name('animal_fodder_sources.show');
 
     Route::get('farmed_type_stages', [App\Http\Controllers\API\FarmedTypeStageAPIController::class, 'index']);
+    Route::get('farmed_type_stages/{farmed_type_stage}', [App\Http\Controllers\API\FarmedTypeStageAPIController::class, 'show'])->name('farmed_type_stages.show');
 
     Route::get('chemical_fertilizer_sources', [App\Http\Controllers\API\ChemicalFertilizerSourceAPIController::class, 'index']);
+    Route::get('chemical_fertilizer_sources/{chemical_fertilizer_source}', [App\Http\Controllers\API\ChemicalFertilizerSourceAPIController::class, 'show'])->name('chemical_fertilizer_sources.show');
 
     Route::get('animal_breeding_purposes', [App\Http\Controllers\API\AnimalBreedingPurposeAPIController::class, 'index']);
+    Route::get('animal_breeding_purposes/{animal_breeding_purpose}', [App\Http\Controllers\API\AnimalBreedingPurposeAPIController::class, 'show'])->name('animal_breeding_purposes.show');
 
     Route::get('home_plant_illuminating_sources', [App\Http\Controllers\API\HomePlantIlluminatingSourceAPIController::class, 'index']);
+    Route::get('home_plant_illuminating_sources/{home_plant_illuminating_source}', [App\Http\Controllers\API\HomePlantIlluminatingSourceAPIController::class, 'show'])->name('home_plant_illuminating_sources.show');
 
     Route::get('farming_methods', [App\Http\Controllers\API\FarmingMethodAPIController::class, 'index']);
+    Route::get('farming_methods/{farming_method}', [App\Http\Controllers\API\FarmingMethodAPIController::class, 'show'])->name('farming_methods.show');
 
     Route::get('animal_fodder_types', [App\Http\Controllers\API\AnimalFodderTypeAPIController::class, 'index']);
+    Route::get('animal_fodder_types/{animal_fodder_type}', [App\Http\Controllers\API\AnimalFodderTypeAPIController::class, 'show'])->name('animal_fodder_types.show');
 
     Route::get('animal_medicine_sources', [App\Http\Controllers\API\AnimalMedicineSourceAPIController::class, 'index']);
+    Route::get('animal_medicine_sources/{animal_medicine_source}', [App\Http\Controllers\API\AnimalMedicineSourceAPIController::class, 'show'])->name('animal_medicine_sources.show');
 
     Route::get('post_types', [App\Http\Controllers\API\PostTypeAPIController::class, 'index']);
+    Route::get('post_types/{post_type}', [App\Http\Controllers\API\PostTypeAPIController::class, 'show'])->name('post_types.show');
 
     Route::get('seedling_sources', [App\Http\Controllers\API\SeedlingSourceAPIController::class, 'index']);
+    Route::get('seedling_sources/{seedling_source}', [App\Http\Controllers\API\SeedlingSourceAPIController::class, 'show'])->name('seedling_sources.show');
 
     Route::get('measuring_units', [App\Http\Controllers\API\MeasuringUnitAPIController::class, 'index']);
+    Route::get('measuring_units/{measuring_unit}', [App\Http\Controllers\API\MeasuringUnitAPIController::class, 'show'])->name('measuring_units.show');
 
     Route::get('buying_notes', [App\Http\Controllers\API\BuyingNoteAPIController::class, 'index']);
+    Route::get('buying_notes/{buying_note}', [App\Http\Controllers\API\BuyingNoteAPIController::class, 'show'])->name('buying_notes.show');
 
     Route::get('information', [App\Http\Controllers\API\InformationAPIController::class, 'index']);
+    Route::get('information/{information}', [App\Http\Controllers\API\InformationAPIController::class, 'show'])->name('information.show');
 
     Route::get('weather_notes', [App\Http\Controllers\API\WeatherNoteAPIController::class, 'index']);
+    Route::get('weather_notes/{weather_note}', [App\Http\Controllers\API\WeatherNoteAPIController::class, 'show'])->name('weather_notes.show');
 
     Route::get('soil_types', [App\Http\Controllers\API\SoilTypeAPIController::class, 'index']);
+    Route::get('soil_types/{soil_type}', [App\Http\Controllers\API\SoilTypeAPIController::class, 'show'])->name('soil_types.show');
 
     Route::get('irrigation_ways', [App\Http\Controllers\API\IrrigationWayAPIController::class, 'index']);
+    Route::get('irrigation_ways/{irrigation_way}', [App\Http\Controllers\API\IrrigationWayAPIController::class, 'show'])->name('irrigation_ways.show');
 
     Route::get('farming_ways', [App\Http\Controllers\API\FarmingWayAPIController::class, 'index']);
+    Route::get('farming_ways/{farming_way}', [App\Http\Controllers\API\FarmingWayAPIController::class, 'show'])->name('farming_ways.show');
 
     Route::get('farmed_types', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'index']);
+    Route::get('farmed_types/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'show'])->name('farmed_types.show');
 
     Route::get('farmed_type_classes', [App\Http\Controllers\API\FarmedTypeClassAPIController::class, 'index']);
+    Route::get('farmed_type_classes/{farmed_type_classe}', [App\Http\Controllers\API\FarmedTypeClassAPIController::class, 'show'])->name('farmed_type_classes.show');
 
     Route::get('farmed_type_ginfos', [App\Http\Controllers\API\FarmedTypeGinfoAPIController::class, 'index']);
+    Route::get('farmed_type_ginfos/{farmed_type_ginfo}', [App\Http\Controllers\API\FarmedTypeGinfoAPIController::class, 'show'])->name('farmed_type_ginfos.show');
 
     Route::get('cities', [App\Http\Controllers\API\CityAPIController::class, 'index']);
+    Route::get('cities/{citie}', [App\Http\Controllers\API\CityAPIController::class, 'show'])->name('cities.show');
 
     Route::get('districts', [App\Http\Controllers\API\DistrictAPIController::class, 'index']);
+    Route::get('districts/{district}', [App\Http\Controllers\API\DistrictAPIController::class, 'show'])->name('districts.show');
 
     Route::get('task_types', [App\Http\Controllers\API\TaskTypeAPIController::class, 'index']);
+    Route::get('task_types/{task_type}', [App\Http\Controllers\API\TaskTypeAPIController::class, 'show'])->name('task_types.show');
 
     Route::get('salt_types', [App\Http\Controllers\API\SaltTypeAPIController::class, 'index']);
+    Route::get('salt_types/{salt_type}', [App\Http\Controllers\API\SaltTypeAPIController::class, 'show'])->name('salt_types.show');
 
     Route::get('locations', [App\Http\Controllers\API\LocationAPIController::class, 'index']);
+    Route::get('locations/{location}', [App\Http\Controllers\API\LocationAPIController::class, 'show'])->name('locations.show');
 
     Route::get('acidity_types', [App\Http\Controllers\API\AcidityTypeAPIController::class, 'index']);
+    Route::get('acidity_types/{acidity_type}', [App\Http\Controllers\API\AcidityTypeAPIController::class, 'show'])->name('acidity_types.show');
 
     Route::get('home_plant_pot_sizes', [App\Http\Controllers\API\HomePlantPotSizeAPIController::class, 'index']);
+    Route::get('home_plant_pot_sizes/{home_plant_pot_size}', [App\Http\Controllers\API\HomePlantPotSizeAPIController::class, 'show'])->name('home_plant_pot_sizes.show');
 
     // end routes for users and admins
 

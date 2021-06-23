@@ -36,7 +36,7 @@ class CreateFarmAPIRequest extends APIRequest
             'location.details'                      => 'nullable',
             'farming_date'                          => 'required|date_format:Y-m-d',//|after_or_equal:' . date('Y-m-d'),
             'farming_compatibility'                 => 'required',
-            'farm_activity_type_id'                 => 'required|exists:farm_activity_types,id', 
+            'farm_activity_type_id'                 => 'required|exists:farm_activity_types,id',
             // 1-crops, 2-trees, 3-homeplants, 4-animals
             'farmed_type_id'                        => 'required|exists:farmed_types,id',
             'farmed_type_class_id'                  => 'nullable|exists:farmed_type_classes,id',  //|exists:farmed_type_classes,id => deleted this validation because if the farmed_type has no classes, the farm saving request will send it as 0
@@ -45,18 +45,18 @@ class CreateFarmAPIRequest extends APIRequest
             'irrigation_way_id'                     => 'requiredIf:farm_activity_type_id,1,2|exists:irrigation_ways,id',
             'area'                                  => 'requiredIf:farm_activity_type_id,1,2',
             'area_unit_id'                          => 'requiredIf:farm_activity_type_id,1,2',
-            
+
             'soil'                                  => 'array|requiredIf:farm_activity_type_id,1,2',
             'soil.salt'                             => 'array|requiredIf:farm_activity_type_id,1,2',
             'soil.acidity_type_id'                  => 'requiredIf:farm_activity_type_id,1,2',
-            'soil.acidity_value'                    => 'requiredIf:farm_activity_type_id,1,2',
+            'soil.acidity_value'                    => 'requiredIf:farm_activity_type_id,1,2|numeric|max:14|min:0',
             'soil.acidity_unit_id'                  => 'requiredIf:farm_activity_type_id,1,2',
             'soil.salt_type_id'                     => 'requiredIf:farm_activity_type_id,1,2',
             'soil.salt_concentration_value'         => 'requiredIf:farm_activity_type_id,1,2',
             // 'soil.salt_concentration_unit_id'       => 'requiredIf:farm_activity_type_id,1,2',
             'soil.salt_concentration_unit_id'       => 'nullable',
             'soil.salt'                             => 'requiredIf:farm_activity_type_id,1,2',
-                'soil.salt.PH'                      => 'requiredIf:farm_activity_type_id,1,2',
+                'soil.salt.PH'                      => 'requiredIf:farm_activity_type_id,1,2|numeric|max:14|min:0',
                 'soil.salt.CO3'                     => 'requiredIf:farm_activity_type_id,1,2',
                 'soil.salt.HCO3'                    => 'requiredIf:farm_activity_type_id,1,2',
                 'soil.salt.Cl'                      => 'requiredIf:farm_activity_type_id,1,2',
@@ -66,20 +66,20 @@ class CreateFarmAPIRequest extends APIRequest
                 'soil.salt.K'                       => 'requiredIf:farm_activity_type_id,1,2',
                 'soil.salt.Na'                      => 'requiredIf:farm_activity_type_id,1,2',
                 'soil.salt.Na2CO3'                  => 'requiredIf:farm_activity_type_id,1,2',
-            
-           
-            
+
+
+
             'irrigation'                            => 'array|requiredIf:farm_activity_type_id,1,2',
             'irrigation.salt'                       => 'array|requiredIf:farm_activity_type_id,1,2',
             'irrigation.acidity_type_id'            => 'requiredIf:farm_activity_type_id,1,2',
-            'irrigation.acidity_value'                    => 'requiredIf:farm_activity_type_id,1,2',
+            'irrigation.acidity_value'                    => 'requiredIf:farm_activity_type_id,1,2|numeric|max:14|min:0',
             'irrigation.acidity_unit_id'                  => 'requiredIf:farm_activity_type_id,1,2',
             'irrigation.salt_type_id'                        => 'requiredIf:farm_activity_type_id,1,2',
             'irrigation.salt_concentration_value'         => 'requiredIf:farm_activity_type_id,1,2',
             // 'irrigation.salt_concentration_unit_id'       => 'requiredIf:farm_activity_type_id,1,2',
             'irrigation.salt_concentration_unit_id'       => 'nullable',
             'irrigation.salt'                             => 'requiredIf:farm_activity_type_id,1,2',
-                'irrigation.salt.PH'                      => 'requiredIf:farm_activity_type_id,1,2',
+                'irrigation.salt.PH'                      => 'requiredIf:farm_activity_type_id,1,2|numeric|max:14|min:0',
                 'irrigation.salt.CO3'                     => 'requiredIf:farm_activity_type_id,1,2',
                 'irrigation.salt.HCO3'                    => 'requiredIf:farm_activity_type_id,1,2',
                 'irrigation.salt.Cl'                      => 'requiredIf:farm_activity_type_id,1,2',
@@ -89,7 +89,7 @@ class CreateFarmAPIRequest extends APIRequest
                 'irrigation.salt.K'                       => 'requiredIf:farm_activity_type_id,1,2',
                 'irrigation.salt.Na'                      => 'requiredIf:farm_activity_type_id,1,2',
                 'irrigation.salt.Na2CO3'                  => 'requiredIf:farm_activity_type_id,1,2',
-           
+
             //animals 4
             "animal_medicine_sources"               => "array|requiredIf:farm_activity_type_id,4",
             "animal_medicine_sources.*"             => "requiredIf:farm_activity_type_id,4|exists:animal_medicine_sources,id",
@@ -99,7 +99,7 @@ class CreateFarmAPIRequest extends APIRequest
             "animal_fodder_types.*"                 => "requiredIf:farm_activity_type_id,4|exists:animal_fodder_types,id",
             'animal_breeding_purpose_id'            => 'requiredIf:farm_activity_type_id,4|exists:animal_breeding_purposes,id',
             'drink.salt'                            => 'array|requiredIf:farm_activity_type_id,4',
-                'drink.salt.PH'                      => 'requiredIf:farm_activity_type_id,4',
+                'drink.salt.PH'                      => 'requiredIf:farm_activity_type_id,4|numeric|max:14|min:0',
                 'drink.salt.CO3'                     => 'requiredIf:farm_activity_type_id,4',
                 'drink.salt.HCO3'                    => 'requiredIf:farm_activity_type_id,4',
                 'drink.salt.Cl'                      => 'requiredIf:farm_activity_type_id,4',
@@ -109,7 +109,7 @@ class CreateFarmAPIRequest extends APIRequest
                 'drink.salt.K'                       => 'requiredIf:farm_activity_type_id,4',
                 'drink.salt.Na'                      => 'requiredIf:farm_activity_type_id,4',
                 'drink.salt.Na2CO3'                  => 'requiredIf:farm_activity_type_id,4',
-           
+
             //crops, trees, homeplants 1,2,3
             "chemical_fertilizer_sources"           => "array|requiredIf:farm_activity_type_id,1,2,3",
             "chemical_fertilizer_sources.*"         => "requiredIf:farm_activity_type_id,1,2,3|exists:chemical_fertilizer_sources,id",
@@ -123,7 +123,7 @@ class CreateFarmAPIRequest extends APIRequest
             //crops 1
             'farming_method_id'                     => 'requiredIf:farm_activity_type_id,1|exists:farming_methods,id',
             //crops, animals 1,4
-            'farming_way_id'                        => 'requiredIf:farm_activity_type_id,1,4|exists:farming_ways,id',    
-        ];    
+            'farming_way_id'                        => 'requiredIf:farm_activity_type_id,1,4|exists:farming_ways,id',
+        ];
     }
 }
