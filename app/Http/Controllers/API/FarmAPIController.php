@@ -254,6 +254,11 @@ class FarmAPIController extends AppBaseController
             return $this->sendError('Farm not found');
         }
 
+        if (!in_array($farm->farm_activity_type_id, [1, 2])) // farm must be crops or trees
+        {
+            return $this->sendError('Farm type not valid');
+        }
+
         $soil_type_deg = $this->calc_soil_type($farm->soil_type_id, $farm->farmed_type->suitable_soil_types, 5);
 
         $soil_salt_deg = $this->calc_deg_min($farm->soil_detail->salt_concentration_value, $farm->farmed_type->suitable_soil_salts_concentration, 20);
@@ -274,10 +279,34 @@ class FarmAPIController extends AppBaseController
         $humidity = 25;  // 5% // from weather api // humidity on maturity day (maturity_time)
         $hmaturity_deg = $this->calc_deg_avg($humidity, $farm->farmed_type->humidity, 5);
 
+
         $total = $soil_type_deg + $soil_salt_deg + $water_salt_deg + $ph_deg + $tfarming_deg + $tflowering_deg + $tmaturity_deg + $hmaturity_deg;
         // $total = 'soil_type_deg = ' . $soil_type_deg . ' - ' . 'soil_salt_deg = ' . $soil_salt_deg . ' - ' . 'water_salt_deg = ' . $water_salt_deg . ' - ' . 'ph_deg = ' . $ph_deg . ' - ' . 'tfarming_deg = ' . $tfarming_deg . ' - ' . 'tflowering_deg = ' . $tflowering_deg . ' - ' . 'tmaturity_deg = ' . $tmaturity_deg . ' - ' . 'hmaturity_deg = ' . $hmaturity_deg;
 
-        return response()->json(['total' => $total]);
+        $msg = '';
+        if($total < 50)
+        {
+            $msg = "incompatible. ";
+        }
+        else
+        {
+            $msg = "compatible. ";
+        }
+        if($water_salt_deg == 0)
+        {
+            $msg = "incompatible because of non suitable water salts concentration. ";
+        }
+        if($soil_salt_deg == 0)
+        {
+            $msg .= "incompatible because of non suitable soil salts concentration. ";
+        }
+        if($tflowering_deg == 0)
+        {
+            $msg .= "incompatible because of non suitable flowering temperature. ";
+        }
+
+
+        return $this->sendResponse(["total" => $total], $msg);
 
         // farmed_type->flowering_time,
         // farmed_type->maturity_time,
