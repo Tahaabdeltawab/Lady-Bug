@@ -393,6 +393,8 @@ Route::group(['middleware'=>['auth:api']], function()
 
     // start routes for users and admins
 
+    Route::get('farms/calculate_compatibility/{id}', [App\Http\Controllers\API\FarmAPIController::class, 'calculate_compatibility']);
+
     Route::get('products', [App\Http\Controllers\API\ProductAPIController::class, 'index']);
 
     Route::group(['middleware'=>['check_farm_role']], function()
