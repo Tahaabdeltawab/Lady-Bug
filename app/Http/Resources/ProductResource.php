@@ -14,11 +14,9 @@ class ProductResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $return = [
             'id' => $this->id,
-            'name' => $this->name,
             'price' => $this->price,
-            'description' => $this->description,
             'seller_id' => $this->seller_id,
             'farmed_type' => $this->farmed_type->name,
             'city' => $this->city->name,
@@ -29,8 +27,22 @@ class ProductResource extends JsonResource
             'other_links' => $this->other_links,
             'internal_assets' => $this->internal_assets()->pluck('asset_url')->all(),
             'external_assets' => $this->external_assets()->pluck('asset_url')->all(),
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
         ];
+
+        if($request->header('Accept-Language') == 'all')
+        {
+            foreach(config('translatable.locales') as $locale)
+            {
+                $return["name_" . $locale . "_localized"] = $this->translate($locale)->name;
+                $return["description_" . $locale . "_localized"] = $this->translate($locale)->description;
+            }
+        }
+        else
+        {
+            $return['name'] = $this->name;
+            $return['description'] = $this->description;
+        }
+
+        return $return;
     }
 }

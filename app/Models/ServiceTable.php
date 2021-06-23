@@ -46,8 +46,6 @@ class ServiceTable extends Model
 {
     // use SoftDeletes;
 
-    public $translatedAttributes = ['name'];
-
     public $table = 'service_tables';
 
 

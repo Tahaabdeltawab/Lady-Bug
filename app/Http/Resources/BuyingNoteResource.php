@@ -14,11 +14,22 @@ class BuyingNoteResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $return = [
             'id' => $this->id,
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
-            'content' => $this->content
         ];
+
+        if($request->header('Accept-Language') == 'all')
+        {
+            foreach(config('translatable.locales') as $locale)
+            {
+                $return["content_" . $locale . "_localized"] = $this->translate($locale)->content;
+            }
+        }
+        else
+        {
+            $return['content'] = $this->content;
+        }
+
+        return $return;
     }
 }

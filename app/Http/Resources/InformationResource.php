@@ -14,12 +14,24 @@ class InformationResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $return = [
             'id' => $this->id,
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
-            'title' => $this->title,
-            'content' => $this->content
         ];
+
+        if($request->header('Accept-Language') == 'all')
+        {
+            foreach(config('translatable.locales') as $locale)
+            {
+                $return["title_" . $locale . "_localized"] = $this->translate($locale)->title;
+                $return["content_" . $locale . "_localized"] = $this->translate($locale)->content;
+            }
+        }
+        else
+        {
+            $return['title'] = $this->title;
+            $return['content'] = $this->content;
+        }
+
+        return $return;
     }
 }

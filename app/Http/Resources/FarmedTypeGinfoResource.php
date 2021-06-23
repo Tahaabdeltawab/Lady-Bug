@@ -14,16 +14,28 @@ class FarmedTypeGinfoResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $return = [
             'id' => $this->id,
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
-            'title' => $this->title,
-            'content' => $this->content,
             'farmed_type_id' => $this->farmed_type_id,
             'farmed_type' => $this->farmed_type->name,
             'farmed_type_stage' => $this->farmed_type_stage->name,
             'assets' => collect($this->assets)->pluck('asset_url')->all()
         ];
+
+        if($request->header('Accept-Language') == 'all')
+        {
+            foreach(config('translatable.locales') as $locale)
+            {
+                $return["title_" . $locale . "_localized"] = $this->translate($locale)->title;
+                $return["content_" . $locale . "_localized"] = $this->translate($locale)->content;
+            }
+        }
+        else
+        {
+            $return['title'] = $this->title;
+            $return['content'] = $this->content;
+        }
+
+        return $return;
     }
 }

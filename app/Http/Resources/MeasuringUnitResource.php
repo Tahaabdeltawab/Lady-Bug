@@ -14,13 +14,24 @@ class MeasuringUnitResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $return = [
             'id' => $this->id,
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
-            'name' => $this->name,
             'code' => $this->code,
             'measurable' => $this->measurable
         ];
+
+        if($request->header('Accept-Language') == 'all')
+        {
+            foreach(config('translatable.locales') as $locale)
+            {
+                $return["name_" . $locale . "_localized"] = $this->translate($locale)->name;
+            }
+        }
+        else
+        {
+            $return['name'] = $this->name;
+        }
+
+        return $return;
     }
 }

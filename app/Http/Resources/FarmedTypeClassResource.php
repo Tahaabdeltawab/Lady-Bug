@@ -14,13 +14,24 @@ class FarmedTypeClassResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $return = [
             'id' => $this->id,
-            'name' => $this->name,
             'farmed_type_id' => $this->farmed_type_id,
             'farmed_type_name' => $this->farmed_type->name,
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
         ];
+
+        if($request->header('Accept-Language') == 'all')
+        {
+            foreach(config('translatable.locales') as $locale)
+            {
+                $return["name_" . $locale . "_localized"] = $this->translate($locale)->name;
+            }
+        }
+        else
+        {
+            $return['name'] = $this->name;
+        }
+
+        return $return;
     }
 }

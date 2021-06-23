@@ -28,8 +28,6 @@ class ServiceTaskResource extends JsonResource
             // 'due_at' => date('Y-m-d', strtotime($this->due_at)),
             'due_at' => $this->due_at,
             'done' => $this->done
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
         ];
     }
 }
