@@ -184,7 +184,9 @@ Route::group(['middleware'=>['auth:api']], function()
 
     // // // // //  USER AREA  // // // // //
 
-    Route::group(['middleware'=>['role:app-user']], function()
+    Route::group(
+        ['middleware'=>[/* 'role:app-user' */]],
+        function()
     {
 
         // the above resource routes but separated because when using the middleware on the resource I cannot catch the request->id in the middleware wauth. but in this way I can do.
@@ -290,7 +292,8 @@ Route::group(['middleware'=>['auth:api']], function()
     Route::group([
         'prefix'        => 'admin/',
         'as'            => 'admin.',
-        'middleware'=>['role:'.config('myconfig.admin_role') ]], function()
+        // 'middleware'=>['role:'.config('myconfig.admin_role') ]
+    ], function()
     {
 
         Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
