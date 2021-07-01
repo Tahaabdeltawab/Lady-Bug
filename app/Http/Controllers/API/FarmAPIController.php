@@ -661,7 +661,7 @@ class FarmAPIController extends AppBaseController
                     return $this->sendError('Invalid Role');
                 }
 
-                if($user->getRoles($farm)) //edit roles
+                if($user->get_roles($request->farm)) //edit roles
                 {
                     $user->syncRoles([$request->role], $farm);
                 }
@@ -686,7 +686,7 @@ class FarmAPIController extends AppBaseController
             }
             else                    //delete roles
             {
-                if($user->getRoles($farm)){
+                if($user->get_roles($request->farm)){
                     $user->detachRoles([], $farm);
                 }else{
                     return $this->sendError(__('This user is not a member in this farm'), 7000);
