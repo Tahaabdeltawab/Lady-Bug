@@ -6,6 +6,33 @@ use Illuminate\Support\Facades\Http;
 
 class WeatherApi{
 
+    public function weather_history($lat, $lon, $day)
+    {
+        $response = Http::get('https://api.worldweatheronline.com/premium/v1/past-weather.ashx',
+        [
+            'key' => '874d43b2addd44c8b8e121336211107',
+            'q' => "$lat,$lon",
+            'date' => $day,
+            'format' => 'json',
+            'tp' => 24,
+        ]
+    );
+
+    if($response->ok())
+    {
+        $data = $response->json()['data'];
+        $resp['temperature'] = $data['weather'][0]['avgtempC'];
+        $resp['humidity'] = $data['weather'][0]['hourly'][0]['humidity'];
+
+        return $resp;
+        return $data['weather'][0];
+    }
+    else
+    {
+        return ['status' => false, 'data' => $response->json()];
+        // return $this->sendError('Error fetching the weather data', $response->status(), $response->json());
+    }
+    }
     public function weather_api($request)
     {
 

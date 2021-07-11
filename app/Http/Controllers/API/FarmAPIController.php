@@ -267,16 +267,43 @@ class FarmAPIController extends AppBaseController
 
         $ph_deg = $this->calc_deg_avg($farm->soil_detail->acidity_value, $farm->farmed_type->suitable_ph, 5);
 
-        $farming_temperature = 27; // 20% // from weather api
+
+
+
+        $farming_day    = date("Y-m-d", strtotime($farm->farming_date));
+
+        $flowering_day1  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time - 10) . ' days'));
+        $flowering_day2  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time - 05) . ' days'));
+        $flowering_day3  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time - 00) . ' days'));
+        $flowering_day4  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time + 05) . ' days'));
+        $flowering_day5  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time + 10) . ' days'));
+
+        $maturity_day   = date("Y-m-d", strtotime($farm->farming_date . ' + ' . $farm->farmed_type->maturity_time . ' days'));
+
+        $lat = $farm->location->latitude;
+        $lon = $farm->location->longitude;
+
+        $farming_info   = WeatherApi::instance()->weather_history($lat, $lon, $farming_day);
+
+        $flowering_info1 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day1);
+        $flowering_info2 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day2);
+        $flowering_info3 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day3);
+        $flowering_info4 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day4);
+        $flowering_info5 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day5);
+
+        $maturity_info  = WeatherApi::instance()->weather_history($lat, $lon, $maturity_day);
+
+        $farming_temperature = $farming_info['temperature'];
+        $flowering_temperature_average = ($flowering_info1['temperature'] + $flowering_info2['temperature'] + $flowering_info3['temperature'] + $flowering_info4['temperature'] + $flowering_info5['temperature']) / 5 ;
+        $maturity_temperature = $maturity_info['temperature'];
+        $humidity = $maturity_info['humidity'];
+
         $tfarming_deg = $this->calc_deg_avg($farming_temperature, $farm->farmed_type->farming_temperature, 20);
 
-        $flowering_temperature_average = 30;  // 15% // from weather api // average of 10 days before and after the flowering_time
         $tflowering_deg = $this->calc_deg_avg($flowering_temperature_average, $farm->farmed_type->flowering_temperature, 15);
 
-        $maturity_temperature = 35;  // 5% // from weather api
         $tmaturity_deg = $this->calc_deg_avg($maturity_temperature, $farm->farmed_type->maturity_temperature, 5);
 
-        $humidity = 25;  // 5% // from weather api // humidity on maturity day (maturity_time)
         $hmaturity_deg = $this->calc_deg_avg($humidity, $farm->farmed_type->humidity, 5);
 
 
