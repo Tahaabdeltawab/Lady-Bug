@@ -268,8 +268,8 @@ class FarmAPIController extends AppBaseController
         $ph_deg = $this->calc_deg_avg($farm->soil_detail->acidity_value, $farm->farmed_type->suitable_ph, 5);
 
 
-
-
+        if(!$farm->farmed_type->flowering_time || !$farm->farmed_type->maturity_time)
+        return $this->sendError('crop flowering and maturity times cannot be null');
         $year_before = $farm->farming_date . ' - 1 year';
         $farming_day    = date("Y-m-d", strtotime($year_before));
 
@@ -285,14 +285,20 @@ class FarmAPIController extends AppBaseController
         $lon = $farm->location->longitude;
 
         $farming_info   = WeatherApi::instance()->weather_history($lat, $lon, $farming_day);
-
+        if(isset($farming_info['error'])){return $this->sendError($farming_info['error']);}
         $flowering_info1 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day1);
+        if(isset($flowering_info1['error'])){return $this->sendError($flowering_info1['error']);}
         $flowering_info2 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day2);
+        if(isset($flowering_info2['error'])){return $this->sendError($flowering_info2['error']);}
         $flowering_info3 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day3);
+        if(isset($flowering_info3['error'])){return $this->sendError($flowering_info3['error']);}
         $flowering_info4 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day4);
+        if(isset($flowering_info4['error'])){return $this->sendError($flowering_info4['error']);}
         $flowering_info5 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day5);
-
+        if(isset($flowering_info5['error'])){return $this->sendError($flowering_info5['error']);}
         $maturity_info  = WeatherApi::instance()->weather_history($lat, $lon, $maturity_day);
+        if(isset($maturity_info['error'])){return $this->sendError($maturity_info['error']);}
+
 
         $farming_temperature = $farming_info['temperature'];
         $flowering_temperature_average = ($flowering_info1['temperature'] + $flowering_info2['temperature'] + $flowering_info3['temperature'] + $flowering_info4['temperature'] + $flowering_info5['temperature']) / 5 ;

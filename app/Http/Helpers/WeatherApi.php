@@ -21,8 +21,12 @@ class WeatherApi{
     if($response->ok())
     {
         $data = $response->json()['data'];
-        $resp['temperature'] = $data['weather'][0]['avgtempC'];
-        $resp['humidity'] = $data['weather'][0]['hourly'][0]['humidity'];
+        if(isset($data['error'])){
+            $resp['error'] = $data['error'][0]['msg'];
+        }else{
+            $resp['temperature'] = $data['weather'][0]['avgtempC'];
+            $resp['humidity'] = $data['weather'][0]['hourly'][0]['humidity'];
+        }
 
         return $resp;
         return $data['weather'][0];
