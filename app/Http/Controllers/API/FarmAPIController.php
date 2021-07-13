@@ -270,15 +270,16 @@ class FarmAPIController extends AppBaseController
 
 
 
-        $farming_day    = date("Y-m-d", strtotime($farm->farming_date . ' - 1 year'));
+        $year_before = $farm->farming_date . ' - 1 year';
+        $farming_day    = date("Y-m-d", strtotime($year_before));
 
-        $flowering_day1  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time - 10) . ' days'));
-        $flowering_day2  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time - 05) . ' days'));
-        $flowering_day3  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time - 00) . ' days'));
-        $flowering_day4  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time + 05) . ' days'));
-        $flowering_day5  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time + 10) . ' days'));
+        $flowering_day1  = date("Y-m-d", strtotime($year_before . ' + ' . ($farm->farmed_type->flowering_time - 10) . ' days'));
+        $flowering_day2  = date("Y-m-d", strtotime($year_before . ' + ' . ($farm->farmed_type->flowering_time - 05) . ' days'));
+        $flowering_day3  = date("Y-m-d", strtotime($year_before . ' + ' . ($farm->farmed_type->flowering_time - 00) . ' days'));
+        $flowering_day4  = date("Y-m-d", strtotime($year_before . ' + ' . ($farm->farmed_type->flowering_time + 05) . ' days'));
+        $flowering_day5  = date("Y-m-d", strtotime($year_before . ' + ' . ($farm->farmed_type->flowering_time + 10) . ' days'));
 
-        $maturity_day   = date("Y-m-d", strtotime($farm->farming_date . ' + ' . $farm->farmed_type->maturity_time . ' days'));
+        $maturity_day   = date("Y-m-d", strtotime($year_before . ' + ' . $farm->farmed_type->maturity_time . ' days'));
 
         $lat = $farm->location->latitude;
         $lon = $farm->location->longitude;
