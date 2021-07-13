@@ -270,7 +270,7 @@ class FarmAPIController extends AppBaseController
 
 
 
-        $farming_day    = date("Y-m-d", strtotime($farm->farming_date));
+        $farming_day    = date("Y-m-d", strtotime($farm->farming_date . ' - 1 year'));
 
         $flowering_day1  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time - 10) . ' days'));
         $flowering_day2  = date("Y-m-d", strtotime($farm->farming_date . ' + ' . ($farm->farmed_type->flowering_time - 05) . ' days'));
