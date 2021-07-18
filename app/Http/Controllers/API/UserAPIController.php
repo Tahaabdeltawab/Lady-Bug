@@ -37,6 +37,7 @@ use App\Repositories\ProductRepository;
 use App\Repositories\FarmedTypeGinfoRepository;
 
 use App\Http\Helpers\WeatherApi;
+use App\Http\Resources\FarmCollection;
 
 /**
  * Class UserController
@@ -140,7 +141,7 @@ class UserAPIController extends AppBaseController
             return $this->sendResponse([
                 'unread_notifications_count' => $user->unreadNotifications->count(),
                 'weather_data' => $weather_data,
-                'farms' => FarmResource::collection($farms)
+                'farms' => FarmCollection::collection($farms)
             ], 'Farms retrieved successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
