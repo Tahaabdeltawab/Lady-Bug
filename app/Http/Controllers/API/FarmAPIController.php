@@ -69,6 +69,7 @@ use Flash;
 use Response;
 
 use App\Http\Helpers\WeatherApi;
+use App\Http\Resources\FarmCollection;
 
 class FarmAPIController extends AppBaseController
 {
@@ -175,8 +176,8 @@ class FarmAPIController extends AppBaseController
         try{
             $farms = $this->farmRepository->all();
 
-            return $this->sendResponse(['all' => FarmResource::collection($farms)], 'Farms retrieved successfully');
-        }catch(\Throwable $th){
+            return $this->sendResponse(['all' => FarmCollection::collection($farms)], 'Farms retrieved successfully');
+        }catch(\Throwable $th){throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }

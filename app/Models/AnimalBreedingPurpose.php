@@ -50,9 +50,6 @@ class AnimalBreedingPurpose extends Model implements TranslatableContract
     public $table = 'animal_breeding_purposes';
 
 
-    protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
         // 'name'
