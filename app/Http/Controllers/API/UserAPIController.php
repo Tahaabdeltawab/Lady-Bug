@@ -141,7 +141,7 @@ class UserAPIController extends AppBaseController
             return $this->sendResponse([
                 'unread_notifications_count' => $user->unreadNotifications->count(),
                 'weather_data' => $weather_data,
-                'farms' => FarmCollection::collection($farms)
+                'farms' => FarmResource::collection($farms)
             ], 'Farms retrieved successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
