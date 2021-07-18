@@ -134,8 +134,14 @@ class Compatibility{
         // if the database has compatibility set
         if($compat = json_decode($farm->farming_compatibility)){
             // check if the conditions, when the compat first set, are the same as now => so dont calculate compat again
-            if(json_encode($compat->conditions) == json_encode($conditions))
-            return Resp::makeResponse(['total' => $compat->total, 'message' => $compat->message], 'Compatibility retrieved');
+            if(json_encode($compat->conditions) == json_encode($conditions)){
+                $messages = [];
+                foreach($compat->messages as $message){
+                    $message = __($message);
+                    $messages[] = $message;
+                }
+                return Resp::makeResponse(['total' => $compat->total, 'messages' => $messages], 'Compatibility retrieved');
+            }
         }
         // calculate compat if not set or set but conditions changed
 
@@ -172,36 +178,39 @@ class Compatibility{
         $total = $soil_type_deg + $soil_salt_deg + $water_salt_deg + $ph_deg + $tfarming_deg + $tflowering_deg + $tmaturity_deg + $hmaturity_deg;
         // $total = 'soil_type_deg = ' . $soil_type_deg . ' - ' . 'soil_salt_deg = ' . $soil_salt_deg . ' - ' . 'water_salt_deg = ' . $water_salt_deg . ' - ' . 'ph_deg = ' . $ph_deg . ' - ' . 'tfarming_deg = ' . $tfarming_deg . ' - ' . 'tflowering_deg = ' . $tflowering_deg . ' - ' . 'tmaturity_deg = ' . $tmaturity_deg . ' - ' . 'hmaturity_deg = ' . $hmaturity_deg;
 
-        $msg = '';
+        $messages = [];
         if($total < 50)
         {
-            $msg = "incompatible. ";
+            $messages[] = "incompatible";
         }
         else
         {
-            $msg = "compatible. ";
+            $messages []= "compatible";
         }
         if($water_salt_deg == 0)
         {
-            $msg = "incompatible because of non suitable water salts concentration. ";
+            $messages[] = "incompatible because of non suitable water salts concentration";
         }
         if($soil_salt_deg == 0)
         {
-            $msg .= "incompatible because of non suitable soil salts concentration. ";
+            $messages[] = "incompatible because of non suitable soil salts concentration";
         }
         if($tflowering_deg == 0)
         {
-            $msg .= "incompatible because of non suitable flowering temperature. ";
+            $messages[] = "incompatible because of non suitable flowering temperature";
         }
 
         $data = [
             'total' => $total,
             'conditions' => $conditions,
-            'message' => $msg
+            'messages' => $messages
         ];
         $farm->farming_compatibility = json_encode($data);
         $farm->save();
 
-        return Resp::makeResponse(['total' => $total, 'message' => $msg], 'Compatibility retrieved');
+        foreach($messages as &$message){
+            $message = __($message);
+        }
+        return Resp::makeResponse(['total' => $total, 'messages' => $messages], 'Compatibility retrieved');
     }
 }
