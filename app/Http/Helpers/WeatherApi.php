@@ -10,7 +10,9 @@ class WeatherApi{
     {
         $response = Http::get('https://api.worldweatheronline.com/premium/v1/past-weather.ashx',
         [
-            'key' => '874d43b2addd44c8b8e121336211107',
+            // 'key' => '874d43b2addd44c8b8e121336211107',
+            // 'key' => 'c150bb44b59c4ac5be6204447193108',
+            'key' => '02bf992d90fe471aaf1133645211807',
             'q' => "$lat,$lon",
             'date' => $day,
             'format' => 'json',
