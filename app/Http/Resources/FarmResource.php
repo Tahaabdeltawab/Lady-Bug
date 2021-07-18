@@ -28,7 +28,8 @@ class FarmResource extends JsonResource
          $farm_detail['farmed_type_class'] = new FarmedTypeClassResource($this->farmed_type_class);
          $farm_detail['location'] = new LocationResource($this->location);
          $farm_detail['farming_date'] = date('Y-m-d', strtotime($this->farming_date));
-         $farm_detail['farming_compatibility'] = (new Compatibility())->calculate_compatibility($this->id)['data'];
+         $compat = (new Compatibility())->calculate_compatibility($this->id)['data'];
+         $farm_detail['farming_compatibility'] = (array)$compat ?: null;
 
          //crops 1
         //  if($fat_id == 1)
