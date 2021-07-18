@@ -191,7 +191,6 @@ class Farm extends Team
         'real' => 'boolean',
         'archived' => 'boolean',
         'location_id' => 'integer',
-        'farming_compatibility' => 'double',
         'home_plant_pot_size_id' => 'integer',
         'area' => 'double',
         'area_unit_id' => 'integer',

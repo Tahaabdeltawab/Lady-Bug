@@ -19,7 +19,7 @@ class CreateFarmsTable extends Migration
             $table->boolean('real');
             $table->boolean('archived');
             $table->timestamp('farming_date');
-            $table->double('farming_compatibility');
+            $table->text('farming_compatibility')->nullable();
             $table->foreignId('home_plant_pot_size_id')->nullable()->constrained();
             $table->double('area')->nullable();
             $table->bigInteger('farmed_number')->nullable();
