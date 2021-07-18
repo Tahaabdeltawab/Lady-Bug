@@ -145,26 +145,30 @@ class Compatibility{
         }
         // calculate compat if not set or set but conditions changed
 
-        $farming_info   = WeatherApi::instance()->weather_history($lat, $lon, $farming_day);
-        if(isset($farming_info['error'])){return Resp::makeError($farming_info['error']);}
-        $flowering_info1 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day1);
-        if(isset($flowering_info1['error'])){return Resp::makeError($flowering_info1['error']);}
-        $flowering_info2 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day2);
-        if(isset($flowering_info2['error'])){return Resp::makeError($flowering_info2['error']);}
-        $flowering_info3 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day3);
-        if(isset($flowering_info3['error'])){return Resp::makeError($flowering_info3['error']);}
-        $flowering_info4 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day4);
-        if(isset($flowering_info4['error'])){return Resp::makeError($flowering_info4['error']);}
-        $flowering_info5 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day5);
-        if(isset($flowering_info5['error'])){return Resp::makeError($flowering_info5['error']);}
-        $maturity_info  = WeatherApi::instance()->weather_history($lat, $lon, $maturity_day);
-        if(isset($maturity_info['error'])){return Resp::makeError($maturity_info['error']);}
+        // $farming_info   = WeatherApi::instance()->weather_history($lat, $lon, $farming_day);
+        // if(isset($farming_info['error'])){return Resp::makeError($farming_info['error']);}
+        // $flowering_info1 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day1);
+        // if(isset($flowering_info1['error'])){return Resp::makeError($flowering_info1['error']);}
+        // $flowering_info2 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day2);
+        // if(isset($flowering_info2['error'])){return Resp::makeError($flowering_info2['error']);}
+        // $flowering_info3 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day3);
+        // if(isset($flowering_info3['error'])){return Resp::makeError($flowering_info3['error']);}
+        // $flowering_info4 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day4);
+        // if(isset($flowering_info4['error'])){return Resp::makeError($flowering_info4['error']);}
+        // $flowering_info5 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day5);
+        // if(isset($flowering_info5['error'])){return Resp::makeError($flowering_info5['error']);}
+        // $maturity_info  = WeatherApi::instance()->weather_history($lat, $lon, $maturity_day);
+        // if(isset($maturity_info['error'])){return Resp::makeError($maturity_info['error']);}
 
 
-        $farming_temperature = $farming_info['temperature'];
-        $flowering_temperature_average = ($flowering_info1['temperature'] + $flowering_info2['temperature'] + $flowering_info3['temperature'] + $flowering_info4['temperature'] + $flowering_info5['temperature']) / 5 ;
-        $maturity_temperature = $maturity_info['temperature'];
-        $humidity = $maturity_info['humidity'];
+        // $farming_temperature = $farming_info['temperature'];
+        // $flowering_temperature_average = ($flowering_info1['temperature'] + $flowering_info2['temperature'] + $flowering_info3['temperature'] + $flowering_info4['temperature'] + $flowering_info5['temperature']) / 5 ;
+        // $maturity_temperature = $maturity_info['temperature'];
+        // $humidity = $maturity_info['humidity'];
+        $farming_temperature = 33;
+        $flowering_temperature_average = 35;
+        $maturity_temperature = 37;
+        $humidity = 77;
 
         $tfarming_deg = $this->calc_deg_avg($farming_temperature, $farm->farmed_type->farming_temperature, 20);
 
