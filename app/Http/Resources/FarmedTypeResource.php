@@ -19,7 +19,7 @@ class FarmedTypeResource extends JsonResource
             'id' => $this->id,
             'farm_activity_type_name' => $this->farm_activity_type->name,
             'farm_activity_type_id' => $this->farm_activity_type_id,
-            'photo_url' => $this->asset->asset_url,
+            'photo_url' => $this->asset->asset_url ?? 'https://via.placeholder.com/150',
             'selected' => $selected,
             'farmed_type_classes' => FarmedTypeClassResource::collection($this->farmed_type_classes),
         ];

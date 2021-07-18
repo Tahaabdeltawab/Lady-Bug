@@ -129,7 +129,7 @@ class FarmedTypeAPIController extends AppBaseController
             'name_ar_localized'                     => 'required|max:200',
             'name_en_localized'                     => 'required|max:200',
             'farm_activity_type_id'                 => 'required',
-            'photo'                                 => 'required|max:2000|mimes:jpeg,jpg,png',
+            'photo'                                 => 'nullable|max:2000|mimes:jpeg,jpg,png',
             'farming_temperature'                   => 'nullable',
             'flowering_time'                        => 'nullable|integer', // number of days till flowering
             'maturity_time'                         => 'nullable|integer',  // number of days till maturity
