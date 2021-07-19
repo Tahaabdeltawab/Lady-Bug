@@ -209,8 +209,8 @@ class Compatibility{
             'conditions' => $conditions,
             'messages' => $messages
         ];
-        $farm->farming_compatibility = json_encode($data);
-        $farm->save();
+
+        $farm->update(['farming_compatibility' => json_encode($data)]);
 
         foreach($messages as &$message){
             $message = __($message);

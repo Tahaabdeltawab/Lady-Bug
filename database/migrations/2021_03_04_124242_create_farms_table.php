@@ -18,7 +18,7 @@ class CreateFarmsTable extends Migration
             $table->id();
             $table->boolean('real');
             $table->boolean('archived');
-            $table->timestamp('farming_date');
+            $table->date('farming_date');
             $table->text('farming_compatibility')->nullable();
             $table->foreignId('home_plant_pot_size_id')->nullable()->constrained();
             $table->double('area')->nullable();
