@@ -118,21 +118,48 @@ class PostAPIController extends AppBaseController
     {
         $posts = Post::accepted()->latest()->get();
         $posts1 = $posts->take($this->skip);
+        $posts2 = $this->paginate($posts->skip($this->skip));
+        if($posts2->currentPage() > 1)
+        {
+            $data =  [
+                'posts1_count' => null,
+                'news_count' => null,
+                'posts1' => null,
+                'posts2' => [
+                    'data' => PostResource::collection($posts2->items()),
+                    'meta' => $posts2->toArrayWithoutData(),
+                ],
+                'news' => null,
+                'unread_notifications_count' => null,
+                'favorites' => null,
+            ];
+            $data['posts2'] = [
+                'data' => PostResource::collection($posts2->items()),
+                'meta' => $posts2->toArrayWithoutData(),
+            ];
+        }
+        else
+        {
+            $favorites = auth()->user()->favorites;
+            $fav_farmed_types_ids = $favorites->pluck('id');
+            $fav_farmed_type_ginfos = FarmedTypeGinfo::whereIn('farmed_type_id', $fav_farmed_types_ids)->OrderByDesc('created_at')->limit(10)->get();
 
-        $favorites = auth()->user()->favorites;
-        $fav_farmed_types_ids = $favorites->pluck('id');
-        $fav_farmed_type_ginfos = FarmedTypeGinfo::whereIn('farmed_type_id', $fav_farmed_types_ids)->OrderByDesc('created_at')->limit(10)->get();
-
-        return $this->sendResponse(
-            [
+            $data =  [
                 'posts1_count' => $posts1->count(),
                 'news_count' => $fav_farmed_type_ginfos->count(),
                 'posts1' => PostResource::collection($posts1),
+                'posts2' => [
+                    'data' => PostResource::collection($posts2->items()),
+                    'meta' => $posts2->toArrayWithoutData(),
+                ],
                 'news' => FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
-
                 'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
                 'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),
-            ],
+            ];
+        }
+
+        return $this->sendResponse(
+           $data,
             'Timeline retrieved successfully');
     }
 
