@@ -14,15 +14,14 @@ use App\Repositories\FarmedTypeGinfoRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\PostResource;
-use App\Http\Resources\UserResource;
 use App\Http\Resources\PostTypeResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\FarmedTypeGinfoResource;
 use Response;
-use App\Http\Resources\AssetResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * Class PostController
@@ -37,6 +36,9 @@ class PostAPIController extends AppBaseController
     private $farmedTypeRepository;
     private $farmedTypeGinfoRepository;
     private $postTypeRepository;
+
+    private $skip       = 5;
+    private $perPage    = 10;
 
     public function __construct(PostRepository $postRepo, AssetRepository $assetRepo, PostTypeRepository $postTypeRepo, FarmedTypeRepository $farmedTypeRepo, FarmedTypeGinfoRepository $farmedTypeGinfoRepo)
     {
@@ -87,13 +89,35 @@ class PostAPIController extends AppBaseController
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
 
+    private function paginate($data)
+    {
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+
+        $start = ($currentPage - 1) * $this->perPage;
+
+        $currentPageCollection = $data->slice($start, $this->perPage)->all();
+
+        $paginatedData = new LengthAwarePaginator($currentPageCollection, count($data), $this->perPage);
+
+        $paginatedData->setPath(LengthAwarePaginator::resolveCurrentPath());
+        return $paginatedData;
+
+    }
     // post_timeline
+    public function paginated_posts(Request $request){
+        $posts = $this->paginate(Post::accepted()->latest()->get()
+        ->skip($this->skip));
+
+        return $this->sendResponse([
+            'data' => PostResource::collection($posts->items()),
+            'meta' => $posts->toArrayWithoutData(),
+        ], '');
+
+    }
     public function timeline(Request $request)
     {
-        // $posts = $this->postRepository->latest()->get();
         $posts = Post::accepted()->latest()->get();
-        $posts1 = $posts->take(5);
-        $posts2 = $posts->skip(5);
+        $posts1 = $posts->take($this->skip);
 
         $favorites = auth()->user()->favorites;
         $fav_farmed_types_ids = $favorites->pluck('id');
@@ -103,10 +127,8 @@ class PostAPIController extends AppBaseController
             [
                 'posts1_count' => $posts1->count(),
                 'news_count' => $fav_farmed_type_ginfos->count(),
-                'posts2_count' => $posts2->count(),
                 'posts1' => PostResource::collection($posts1),
                 'news' => FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
-                'posts2' => PostResource::collection($posts2),
 
                 'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
                 'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),

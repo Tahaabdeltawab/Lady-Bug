@@ -261,6 +261,7 @@ Route::group(['middleware'=>['auth:api']], function()
 
 
         Route::get('posts/search/{query}', [App\Http\Controllers\API\PostAPIController::class, 'search']);
+        Route::get('posts/timeline/posts', [App\Http\Controllers\API\PostAPIController::class, 'paginated_posts'])->name('paginated_posts');
         Route::get('posts/timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'timeline'])->name('timeline'); // the name must remain timeline because it's checked in UserResource
         Route::get('posts/video_timeline/index', [App\Http\Controllers\API\PostAPIController::class, 'video_timeline'])->name('video_timeline'); // the name must remain timeline because it's checked in UserResource
 
