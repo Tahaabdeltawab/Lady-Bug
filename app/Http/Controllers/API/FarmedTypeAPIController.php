@@ -130,23 +130,23 @@ class FarmedTypeAPIController extends AppBaseController
             'name_en_localized'                     => 'required|max:200',
             'farm_activity_type_id'                 => 'required',
             'photo'                                 => 'nullable|max:2000|mimes:jpeg,jpg,png',
-            'farming_temperature'                   => 'nullable',
-            'flowering_time'                        => 'nullable|integer', // number of days till flowering
-            'maturity_time'                         => 'nullable|integer',  // number of days till maturity
-            'flowering_temperature'                 => 'nullable|array|size:2',
-            'flowering_temperature.*'               => 'nullable|numeric',
-            'maturity_temperature'                  => 'nullable|array|size:2',
-            'maturity_temperature.*'                => 'nullable|numeric',
-            'humidity'                              => 'nullable|array|size:2', // in the time of maturity
-            'humidity.*'                            => 'nullable|numeric', // in the time of maturity
-            'suitable_soil_salts_concentration'     => 'nullable|array|size:2',
-            'suitable_soil_salts_concentration.*'   => 'nullable|numeric',
-            'suitable_water_salts_concentration'    => 'nullable|array|size:2',
-            'suitable_water_salts_concentration.*'  => 'nullable|numeric',
-            'suitable_ph'                           => 'nullable|array|size:2',
-            'suitable_ph.*'                         => 'nullable|numeric',
-            'suitable_soil_types'                   => 'nullable|array|size:2',
-            'suitable_soil_types.*'                 => 'nullable|integer|exists:soil_types,id',
+            'farming_temperature'                   => 'required',
+            'flowering_time'                        => 'required|integer', // number of days till flowering
+            'maturity_time'                         => 'required|integer',  // number of days till maturity
+            'flowering_temperature'                 => 'required|array|size:2',
+            'flowering_temperature.*'               => 'required|numeric',
+            'maturity_temperature'                  => 'required|array|size:2',
+            'maturity_temperature.*'                => 'required|numeric',
+            'humidity'                              => 'required|array|size:2', // in the time of maturity
+            'humidity.*'                            => 'required|numeric', // in the time of maturity
+            'suitable_soil_salts_concentration'     => 'required|array|size:2',
+            'suitable_soil_salts_concentration.*'   => 'required|numeric',
+            'suitable_water_salts_concentration'    => 'required|array|size:2',
+            'suitable_water_salts_concentration.*'  => 'required|numeric',
+            'suitable_ph'                           => 'required|array|size:2',
+            'suitable_ph.*'                         => 'required|numeric',
+            'suitable_soil_types'                   => 'required|array|size:2',
+            'suitable_soil_types.*'                 => 'required|integer|exists:soil_types,id',
         ]);
 
         if($validator->fails())
@@ -306,23 +306,23 @@ class FarmedTypeAPIController extends AppBaseController
             'name_en_localized'                     => 'required|max:200',
             'farm_activity_type_id'                 => 'required',
             'photo'                                 => 'nullable|max:2000|mimes:jpeg,jpg,png', // nullable only for update
-            'farming_temperature'                   => 'nullable',
-            'flowering_time'                        => 'nullable|integer', // number of days till flowering
-            'maturity_time'                         => 'nullable|integer',  // number of days till maturity
-            'flowering_temperature'                 => 'nullable|array|size:2',
-            'flowering_temperature.*'               => 'nullable|numeric',
-            'maturity_temperature'                  => 'nullable|array|size:2',
-            'maturity_temperature.*'                => 'nullable|numeric',
-            'humidity'                              => 'nullable|array|size:2', // in the time of maturity
-            'humidity.*'                            => 'nullable|numeric', // in the time of maturity
-            'suitable_soil_salts_concentration'     => 'nullable|array|size:2',
-            'suitable_soil_salts_concentration.*'   => 'nullable|numeric',
-            'suitable_water_salts_concentration'    => 'nullable|array|size:2',
-            'suitable_water_salts_concentration.*'  => 'nullable|numeric',
-            'suitable_ph'                           => 'nullable|array|size:2',
-            'suitable_ph.*'                         => 'nullable|numeric',
-            'suitable_soil_types'                   => 'nullable|array|size:2',
-            'suitable_soil_types.*'                 => 'nullable|integer|exists:soil_types,id',
+            'farming_temperature'                   => 'required',
+            'flowering_time'                        => 'required|integer', // number of days till flowering
+            'maturity_time'                         => 'required|integer',  // number of days till maturity
+            'flowering_temperature'                 => 'required|array|size:2',
+            'flowering_temperature.*'               => 'required|numeric',
+            'maturity_temperature'                  => 'required|array|size:2',
+            'maturity_temperature.*'                => 'required|numeric',
+            'humidity'                              => 'required|array|size:2', // in the time of maturity
+            'humidity.*'                            => 'required|numeric', // in the time of maturity
+            'suitable_soil_salts_concentration'     => 'required|array|size:2',
+            'suitable_soil_salts_concentration.*'   => 'required|numeric',
+            'suitable_water_salts_concentration'    => 'required|array|size:2',
+            'suitable_water_salts_concentration.*'  => 'required|numeric',
+            'suitable_ph'                           => 'required|array|size:2',
+            'suitable_ph.*'                         => 'required|numeric',
+            'suitable_soil_types'                   => 'required|array|size:2',
+            'suitable_soil_types.*'                 => 'required|integer|exists:soil_types,id',
         ]);
 
         if($validator->fails())
