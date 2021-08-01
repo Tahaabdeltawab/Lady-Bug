@@ -77,7 +77,8 @@ class Compatibility{
                 $deg    = ($max - $value) / ($max - $best);
             }
         }
-
+        // in case of the min is 300 and max = 1000; if given the value less than 300, the deg will be greater than 1 (which is wrong because it makes the full degree > max degree)
+        $deg = $deg > 1 ? 1 : $deg;
         return $deg = $deg * $full_deg;
     }
 
@@ -202,6 +203,26 @@ class Compatibility{
         if($tflowering_deg == 0)
         {
             $messages[] = "incompatible because of non suitable flowering temperature";
+        }
+        if($tfarming_deg == 0)
+        {
+            $messages[] = "incompatible because of non suitable farming temperature";
+        }
+        if($tmaturity_deg == 0)
+        {
+            $messages[] = "incompatible because of non suitable maturity temperature";
+        }
+        if($ph_deg == 0)
+        {
+            $messages[] = "incompatible because of non suitable PH";
+        }
+        if($soil_type_deg == 0)
+        {
+            $messages[] = "incompatible because of non suitable soil type";
+        }
+        if($hmaturity_deg == 0)
+        {
+            $messages[] = "incompatible because of non suitable humidity";
         }
 
         $data = [
