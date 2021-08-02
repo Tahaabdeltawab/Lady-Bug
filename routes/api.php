@@ -294,7 +294,7 @@ Route::group(['middleware'=>['auth:api']], function()
     Route::group([
         'prefix'        => 'admin/',
         'as'            => 'admin.',
-        // 'middleware'=>['role:'.config('myconfig.admin_role') ]
+        'middleware'=>['role:'.config('myconfig.admin_role') ]
     ], function()
     {
 
@@ -371,7 +371,6 @@ Route::group(['middleware'=>['auth:api']], function()
 
         Route::resource('farmed_types', App\Http\Controllers\API\FarmedTypeAPIController::class)->except(['index']);
         Route::match(['put', 'patch','post'], 'farmed_types/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'update'])->name('farmed_types.update');
-        Route::get('farmed_types/search/{query}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'search']);
 
         Route::resource('farmed_type_classes', App\Http\Controllers\API\FarmedTypeClassAPIController::class)->except(['index']);
 
@@ -396,6 +395,7 @@ Route::group(['middleware'=>['auth:api']], function()
     });
 
     // start routes for users and admins
+    Route::get('farmed_types/search/{query}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'search']);
 
     Route::get('farmed_types/farmed_type_ginfos/{farmed_type}/{stage?}', [App\Http\Controllers\API\FarmedTypeGinfoAPIController::class, 'farmed_type_ginfos_by_farmed_type_id']);
 
