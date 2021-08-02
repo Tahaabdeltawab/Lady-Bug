@@ -27,8 +27,8 @@ class UpdateServiceTaskAPIRequest extends APIRequest
         return  [
             'name' => 'required|max:200',
             'start_at' => 'required|date_format:Y-m-d',
-            'notify_at' => 'required|date_format:Y-m-d|before_or_equal:start_at',
-            'due_at' => 'nullable|date_format:Y-m-d|after:start_at',
+            'notify_at' => 'required|date_format:Y-m-d',
+            'due_at' => 'nullable|date_format:Y-m-d',
             'task_type_id' => 'required|exists:task_types,id',
             'quantity' => 'nullable',
             'quantity_unit_id' => 'required|exists:measuring_units,id',
