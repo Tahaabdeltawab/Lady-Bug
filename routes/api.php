@@ -452,7 +452,6 @@ Route::group(['middleware'=>['auth:api']], function()
     Route::get('buying_notes/{buying_note}', [App\Http\Controllers\API\BuyingNoteAPIController::class, 'show'])->name('buying_notes.show');
 
     Route::get('information', [App\Http\Controllers\API\InformationAPIController::class, 'index']);
-    Route::get('information/{information}', [App\Http\Controllers\API\InformationAPIController::class, 'show'])->name('information.show');
 
     Route::get('weather_notes', [App\Http\Controllers\API\WeatherNoteAPIController::class, 'index']);
     Route::get('weather_notes/{weather_note}', [App\Http\Controllers\API\WeatherNoteAPIController::class, 'show'])->name('weather_notes.show');
@@ -502,3 +501,4 @@ Route::group(['middleware'=>['auth:api']], function()
 
 // ROUTES DON'T NEED LOGIN AS THEY ARE USED IN REGISTRATION
 Route::get('human_jobs', [App\Http\Controllers\API\HumanJobAPIController::class, 'index'])->name('human_jobs.index');
+Route::get('information/{information}', [App\Http\Controllers\API\InformationAPIController::class, 'show'])->name('information.show');
