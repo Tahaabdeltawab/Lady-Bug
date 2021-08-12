@@ -465,14 +465,42 @@ class FarmAPIController extends AppBaseController
         return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
     }
 
+    private function is_valid_invitation($request){
+        $invitation = DB::table('notifications')
+        ->where('type', 'App\Notifications\FarmInvitation')
+        ->where('notifiable_type', 'App\Models\User')
+        ->where('notifiable_id', $request->user)
+        ->where('data->invitee', $request->user)
+        ->where('data->farm', $request->farm)
+        ->where('data->role', $request->role)
+        ->select(['data'])
+        ->first();
+
+        if( ! $invitation )
+        return false;
+
+        $accepted = json_decode($invitation->data)->accepted;
+        if($accepted !== null ) // if the $accepted = null means that it was not accepted nor declined
+        {
+           return false;
+        }
+
+        return true;
+    }
+
     // attach a farm role to a user who has an invitation link
     public function first_attach_farm_role(Request $request)
     {
         try
         {
-            if (! $request->hasValidSignature() || !$request->user || !$request->role || !$request->farm) {
-                return $this->sendError('Wrong url', 401);
-            }
+            if ( ! $request->hasValidSignature() || !$request->user || !$request->role || !$request->farm )
+            return $this->sendError('Wrong url', 401);
+
+            if( ! $this->is_valid_invitation($request) )
+            return $this->sendError('Wrong Invitation', 403);
+
+            if( auth()->id() != $request->user )
+            return $this->sendError('You are not the invited person', 403);
 
             $user = $this->userRepository->find($request->user);
             $farm = $this->farmRepository->find($request->farm);
@@ -489,6 +517,38 @@ class FarmAPIController extends AppBaseController
             ->update(['data->accepted' => true]);
 
             return $this->sendResponse(new UserResource($user), __('Member added to farm successfully'));
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    // decline farm invitation
+    public function decline_farm_invitation(Request $request)
+    {
+        try
+        {
+            if (! $request->hasValidSignature() || !$request->user || !$request->role || !$request->farm) {
+                return $this->sendError('Wrong url', 401);
+            }
+
+            if(!$this->is_valid_invitation($request))
+            return $this->sendError('Wrong Invitation', 403);
+
+            if( auth()->id() != $request->user )
+            return $this->sendError('You are not the invited person', 403);
+
+            DB::table('notifications')
+            ->where('type', 'App\Notifications\FarmInvitation')
+            ->where('notifiable_type', 'App\Models\User')
+            ->where('notifiable_id', $request->user)
+            ->where('data->invitee', $request->user)
+            ->where('data->farm', $request->farm)
+            ->where('data->role', $request->role)
+            ->update(['data->accepted' => false]);
+
+            return $this->sendSuccess(__('Invitation declined'));
         }
         catch(\Throwable $th)
         {
@@ -535,12 +595,8 @@ class FarmAPIController extends AppBaseController
                         auth()->user(),
                         $role,
                         $farm,
-                        URL::temporarySignedRoute('api.farms.roles.first_attach', now()->addDays(10),
-                            [
-                                'user' => $request->user,
-                                'farm' => $request->farm,
-                                'role' => $request->role,
-                            ])
+                        URL::temporarySignedRoute('api.farms.roles.first_attach', now()->addDays(10),['user' => $request->user,'farm' => $request->farm,'role' => $request->role,]),
+                        URL::temporarySignedRoute('api.farms.roles.decline_farm_invitation', now()->addDays(10),['user' => $request->user,'farm' => $request->farm,'role' => $request->role,])
                         ));
                     return $this->sendSuccess(__('Invitation sent successfully'));
                 }
