@@ -278,7 +278,7 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::get('comments/toggle_like/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_like']);
         Route::get('comments/toggle_dislike/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_dislike']);
 
-        Route::resource('reports', App\Http\Controllers\API\ReportAPIController::class)->except(['index']);
+        Route::resource('reports', App\Http\Controllers\API\ReportAPIController::class)->except(['index', 'show']);
 
     });
 
@@ -304,6 +304,7 @@ Route::group(['middleware'=>['auth:api']], function()
 
         Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
         Route::get('reports', [App\Http\Controllers\API\ReportAPIController::class, 'index'])->name('reports.index');
+        Route::get('reports/{report}', [App\Http\Controllers\API\ReportAPIController::class, 'show'])->name('reports.show');
 
 
         Route::get('users', [App\Http\Controllers\API\UserAPIController::class, 'admin_index']);
