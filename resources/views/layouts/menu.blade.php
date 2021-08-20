@@ -285,3 +285,9 @@
         <span>Home Plant Pot Sizes</span>
     </a>
 </li>
+<li class="nav-item {{ Request::is('reports*') ? 'active' : '' }}">
+    <a class="nav-link" href="{{ route('reports.index') }}">
+        <i class="nav-icon icon-cursor"></i>
+        <span>Reports</span>
+    </a>
+</li>

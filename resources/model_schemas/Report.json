@@ -1,0 +1,110 @@
+[
+    {
+        "name": "id",
+        "dbType": "increments",
+        "htmlType": "number",
+        "validations": "",
+        "searchable": false,
+        "fillable": false,
+        "primary": true,
+        "inForm": false,
+        "inIndex": false,
+        "inView": true
+    },
+    {
+        "name": "created_at",
+        "dbType": "timestamp",
+        "htmlType": "date",
+        "validations": "",
+        "searchable": false,
+        "fillable": false,
+        "primary": false,
+        "inForm": false,
+        "inIndex": false,
+        "inView": true
+    },
+    {
+        "name": "updated_at",
+        "dbType": "timestamp",
+        "htmlType": "date",
+        "validations": "",
+        "searchable": false,
+        "fillable": false,
+        "primary": false,
+        "inForm": false,
+        "inIndex": false,
+        "inView": true
+    },
+    {
+        "name": "report_type_id",
+        "dbType": "integer:unsigned:foreign,report_types,id",
+        "htmlType": "text",
+        "validations": "required,exists:report_types,id",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "reportable_type",
+        "dbType": "string",
+        "htmlType": "text",
+        "validations": "",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "reportable_id",
+        "dbType": "integer",
+        "htmlType": "text",
+        "validations": "",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "description",
+        "dbType": "text",
+        "htmlType": "text",
+        "validations": "nullable,string",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "image",
+        "dbType": "string",
+        "htmlType": "text",
+        "validations": "nullable",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "status",
+        "dbType": "boolean",
+        "htmlType": "text",
+        "validations": "required",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    }
+]

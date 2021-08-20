@@ -277,6 +277,9 @@ Route::group(['middleware'=>['auth:api']], function()
         // // // LIKES // // //
         Route::get('comments/toggle_like/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_like']);
         Route::get('comments/toggle_dislike/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_dislike']);
+
+        Route::resource('reports', App\Http\Controllers\API\ReportAPIController::class)->except(['index']);
+
     });
 
 
@@ -300,6 +303,7 @@ Route::group(['middleware'=>['auth:api']], function()
     {
 
         Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
+        Route::get('reports', [App\Http\Controllers\API\ReportAPIController::class, 'index'])->name('reports.index');
 
 
         Route::get('users', [App\Http\Controllers\API\UserAPIController::class, 'admin_index']);
@@ -392,6 +396,8 @@ Route::group(['middleware'=>['auth:api']], function()
         Route::resource('acidity_types', App\Http\Controllers\API\AcidityTypeAPIController::class)->except(['index']);
 
         Route::resource('home_plant_pot_sizes', App\Http\Controllers\API\HomePlantPotSizeAPIController::class)->except(['index']);
+
+        Route::resource('report_types', App\Http\Controllers\API\ReportTypeAPIController::class)->except(['index']);
 
     });
 
@@ -496,6 +502,8 @@ Route::group(['middleware'=>['auth:api']], function()
     Route::get('home_plant_pot_sizes', [App\Http\Controllers\API\HomePlantPotSizeAPIController::class, 'index']);
     Route::get('home_plant_pot_sizes/{home_plant_pot_size}', [App\Http\Controllers\API\HomePlantPotSizeAPIController::class, 'show'])->name('home_plant_pot_sizes.show');
 
+    Route::get('report_types', [App\Http\Controllers\API\ReportTypeAPIController::class, 'index']);
+    Route::get('report_types/{report_type}', [App\Http\Controllers\API\ReportTypeAPIController::class, 'show'])->name('report_types.show');
     // end routes for users and admins
 
 });
@@ -503,3 +511,4 @@ Route::group(['middleware'=>['auth:api']], function()
 // ROUTES DON'T NEED LOGIN AS THEY ARE USED IN REGISTRATION
 Route::get('human_jobs', [App\Http\Controllers\API\HumanJobAPIController::class, 'index'])->name('human_jobs.index');
 Route::get('information/{information}', [App\Http\Controllers\API\InformationAPIController::class, 'show'])->name('information.show');
+Route::get('check-user-exists', [App\Http\Controllers\AuthController::class, 'checkUserExists'])->name('auth.checkUserExists');

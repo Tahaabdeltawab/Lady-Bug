@@ -214,7 +214,7 @@ class SaltTypeAPIController extends AppBaseController
      */
     public function update($id, CreateSaltTypeAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var SaltType $saltType */
         $saltType = $this->saltTypeRepository->find($id);
@@ -223,7 +223,7 @@ class SaltTypeAPIController extends AppBaseController
             return $this->sendError('Salt Type not found');
         }
 
-        $saltType = $this->saltTypeRepository->update($input, $id);
+        $saltType = $this->saltTypeRepository->save_localized($input, $id);
 
         return $this->sendResponse(new SaltTypeResource($saltType), 'SaltType updated successfully');
     }

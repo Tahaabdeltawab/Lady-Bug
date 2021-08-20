@@ -138,7 +138,7 @@ class Post extends Model
     {
         return $query->where('status', 'blocked');
     }
-    
+
     public function author()
     {
         return $this->belongsTo(User::class);
@@ -167,6 +167,11 @@ class Post extends Model
     public function assets()
     {
         return $this->morphMany(Asset::class, 'assetable');
+    }
+
+    public function reports()
+    {
+        return $this->morphMany(Report::class, 'reportable');
     }
 
     public function comments()
