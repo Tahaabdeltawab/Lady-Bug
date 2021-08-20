@@ -40,7 +40,7 @@ class UserResource extends JsonResource
             'mobile'            => $this->mobile,
             'activity_points'   => $this->activity_points,
             'job_name'          => $this->job->name ?? "",
-            'photo_url'         => isset($this->asset->asset_url)?$this->asset->asset_url:'',
+            'photo_url'         => $this->avatar ? $this->avatar : (isset($this->asset->asset_url) ? $this->asset->asset_url:''),
             'status'            => $this->status,
             'is_notifiable'     => $this->is_notifiable,
             'mobile_verified'   => $this->mobile_verified,
@@ -64,6 +64,9 @@ class UserResource extends JsonResource
             // 'created_at'        => $this->created_at,
             // 'updated_at'        => $this->updated_at,
             // 'deleted_at'        => $this->deleted_at,
+            // 'avatar'            => $this->avatar,
+            // 'provider'          => $this->provider,
+            // 'fcm'               => $this->fcm,
         ];
 
         return $return;

@@ -16,6 +16,7 @@ class AddDataToUsersTable extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('provider')->nullable();
             $table->string('fcm')->nullable();
+            $table->string('avatar')->nullable();
         });
     }
 
@@ -31,6 +32,8 @@ class AddDataToUsersTable extends Migration
                 $table->dropColumn('provider');
             if (Schema::hasColumn('users', 'fcm'))
                 $table->dropColumn('fcm');
+            if (Schema::hasColumn('users', 'avatar'))
+                $table->dropColumn('avatar');
         });
     }
 }

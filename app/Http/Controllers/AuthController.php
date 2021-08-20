@@ -60,6 +60,8 @@ class AuthController extends AppBaseController
         AnimalMedicineSourceRepository $animalMedicineSourceRepo
         )
     {
+
+        $this->ttl = 1440000; // 1000 days
         $this->userRepository = $userRepo;
         $this->humanJobRepository = $humanJobRepo;
         $this->assetRepository = $assetRepo;
@@ -74,12 +76,29 @@ class AuthController extends AppBaseController
 
     public function checkUserExists(Request $request)
     {
-        $field = 'email';
-        $user = User::where("$field", $request->{$field})->first();
+        $user = User::where("email", $request->email)->first();
         if($user){
             $code = 1111;
             $msg = 'User Exists';
-            return $this->sendResponse(new UserResource($user), __($msg), $code);
+            if(!$request->provider == $user->provider){
+                $user->provider = $request->provider;
+                $user->name = $request->name;
+                $user->fcm = $request->fcm;
+                $user->avatar = $request->avatar;
+                $user->save();
+            }
+
+            // $token = auth('api')->setTTL($this->ttl)->attempt(['email' => $user->email]);
+            $token = auth('api')->setTTL($this->ttl)->login($user);
+            $data = [
+                'user'              => new UserResource($user),
+                'access_token'      => $token,
+                'token_type'        => 'bearer',
+                'expires_in_minutes'=>auth('api')->factory()->getTTL()
+            ];
+
+            return $this->sendResponse($data, __($msg), $code);
+
         }
         $code = 1112;
         $msg = 'User Does not Exist';
@@ -100,10 +119,9 @@ class AuthController extends AppBaseController
         try {
             $user = User::where("$field", request()->{$field})->first();
             // $ttl = $request->get('remember_me') ? null : 60;
-            $ttl = 1440000; // 1000 days
             // if (! $token = auth('api')->attempt($credentials)) {             // use the default ttl (time period in which the token expires) set in config('jwt.ttl')
 
-            if (! $token = auth('api')->setTTL($ttl)->attempt($credentials)) {  // if setTTL(null) not expiring token //used for mobile application as the token should not expire except with logout
+            if (! $token = auth('api')->setTTL($this->ttl)->attempt($credentials)) {  // if setTTL(null) not expiring token //used for mobile application as the token should not expire except with logout
                 // $user = $this->userRepository->findBy(["$field" => request()->{$field}]);
 
                 if($user && $user->status != 'accepted')
