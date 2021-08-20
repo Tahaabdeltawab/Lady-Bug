@@ -72,6 +72,21 @@ class AuthController extends AppBaseController
     }
 
 
+    public function checkUserExists(Request $request)
+    {
+        $field = 'email';
+        $user = User::where("$field", $request->{$field})->first();
+        if($user){
+            $code = 1111;
+            $msg = 'User Exists';
+            return $this->sendResponse(new UserResource($user), __($msg), $code);
+        }
+        $code = 1112;
+        $msg = 'User Does not Exist';
+        return $this->sendSuccess(__($msg), $code);
+    }
+
+
     public function login(Request $request)
     {
 
@@ -128,6 +143,8 @@ class AuthController extends AppBaseController
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
                 'human_job_id' => ['required', 'exists:human_jobs,id'],
                 'photo' => ['nullable', 'max:2000', 'image', 'mimes:jpeg,jpg,png'],
+                'fcm'  => ['nullable'],
+                'provider'  => ['nullable'],
             ]);
 
             if($validator->fails()){
@@ -159,6 +176,8 @@ class AuthController extends AppBaseController
                 'mobile' => $request->get('mobile'),
                 'human_job_id' => $request->get('human_job_id'),
                 'password' => Hash::make($request->get('password')),
+                'fcm' => $request->fcm,
+                'provider' => $request->provider,
             ]);
 
             $user->attachRole(config('myconfig.user_default_role'));
