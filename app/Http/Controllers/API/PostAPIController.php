@@ -163,9 +163,16 @@ class PostAPIController extends AppBaseController
             'Timeline retrieved successfully');
     }
 
-    public function search($query)
+    public function search($query, Request $request)
     {
-        $posts = Post::accepted()->where('content','like', '%'.$query.'%' )->get();
+        $posts = Post::accepted()->where('content','like', '%'.$query.'%' )
+        ->when($request->type == 'video', function($q){
+            return $q->whereHas('assets', function ($q)
+            {
+                $q->whereIn('asset_mime', config('myconfig.video_mimes'));
+            });
+        })
+        ->get();
         return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
 
