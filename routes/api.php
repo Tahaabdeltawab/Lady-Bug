@@ -512,4 +512,4 @@ Route::group(['middleware'=>['auth:api']], function()
 // ROUTES DON'T NEED LOGIN AS THEY ARE USED IN REGISTRATION
 Route::get('human_jobs', [App\Http\Controllers\API\HumanJobAPIController::class, 'index'])->name('human_jobs.index');
 Route::get('information/{information}', [App\Http\Controllers\API\InformationAPIController::class, 'show'])->name('information.show');
-Route::post('check-user-exists', [App\Http\Controllers\AuthController::class, 'checkUserExists'])->name('auth.checkUserExists');
+// Route::post('check-user-exists', [App\Http\Controllers\AuthController::class, 'checkUserExists'])->name('auth.checkUserExists');
