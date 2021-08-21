@@ -59,7 +59,7 @@ class ReportAPIController extends AppBaseController
     {
         try {
             $validator = Validator::make($request->all(), [
-                'description' => ['required'],
+                'description' => ['nullable'],
                 'post_id' => ['required', 'exists:posts,id'],
                 'report_type_id' => ['required', 'exists:report_types,id'],
                 'assets' => ['nullable', 'array'],
@@ -150,7 +150,7 @@ class ReportAPIController extends AppBaseController
 
         try {
             $validator = Validator::make($request->all(), [
-                'description' => ['required'],
+                'description' => ['nullable'],
                 'post_id' => ['required', 'exists:posts,id'],
                 'report_type_id' => ['required', 'exists:report_types,id'],
                 'assets' => ['nullable', 'array'],

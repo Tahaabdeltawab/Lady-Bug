@@ -46,12 +46,12 @@ class Upload implements ShouldQueue
         $assetsname = 'post-'.$currentDate.'-'.uniqid().'.'.$this->request['assets']->getClientOriginalExtension();
         $assetssize = $this->request['assets']->getSize(); //size in bytes 1k = 1000bytes
         $assetsmime = $this->request['assets']->getClientMimeType();
-                
+
         $path = $this->request['assets']->storeAs('assets/posts', $assetname, 's3');
         // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-        
+
         $url  = Storage::disk('s3')->url($path);
-        
+
         $asset = $this->post->assets()->create([
             'asset_name'        => $assetsname,
             'asset_url'         => $url,
