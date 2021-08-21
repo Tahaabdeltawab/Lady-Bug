@@ -17,11 +17,11 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
-            $table->text('content');
+            $table->text('content')->nullable();
             $table->foreignId('author_id')->constrained('users');
             $table->foreignId('farm_id')->nullable()->constrained();
             $table->foreignId('farmed_type_id')->nullable()->constrained();
-            $table->foreignId('post_type_id')->constrained();
+            $table->foreignId('post_type_id')->nullable()->constrained();
             $table->boolean('solved')->nullable();
             $table->timestamps();
             $table->softDeletes();

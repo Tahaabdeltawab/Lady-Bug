@@ -88,7 +88,8 @@ class Post extends Model
         'farm_id',
         'farmed_type_id',
         'post_type_id',
-        'solved'
+        'solved',
+        'shared_id',
     ];
 
     /**
@@ -104,7 +105,8 @@ class Post extends Model
         'farm_id' => 'integer',
         'farmed_type_id' => 'integer',
         'post_type_id' => 'integer',
-        'solved' => 'boolean'
+        'solved' => 'boolean',
+        'shared_id' => 'integer',
     ];
 
     /**
@@ -177,6 +179,11 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function shared()
+    {
+        return $this->belongsTo(Post::class, 'shared_id', 'id');
     }
 
 

@@ -39,6 +39,7 @@ class PostResource extends JsonResource
             'disliked_by_me' => $this->dislikers->where('id', auth()->id())->count() ? true : false ,
             'comments' => $request->routeIs('api.posts.show') ? CommentResource::collection($this->comments->whereNull('parent_id')) : [],
             'created_at' => $this->created_at->diffForHumans(),
+            'shared' => new PostResource($this->shared),
         ];
     }
 }

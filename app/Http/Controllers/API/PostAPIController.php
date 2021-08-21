@@ -298,11 +298,12 @@ class PostAPIController extends AppBaseController
         {
             $validator = Validator::make($request->all(), [
                 'title' => ['nullable', 'max:200'],
-                'content' => ['required'],
+                'content' => ['nullable'],
                 'farm_id' => ['nullable', 'exists:farms,id'],
                 'farmed_type_id' => ['nullable'],
-                'post_type_id' => ['required', 'exists:post_types,id'],
+                'post_type_id' => ['nullable', 'exists:post_types,id'],
                 'solved' => ['nullable'],
+                'shared_id' => ['nullable'],
                 'assets' => ['nullable','array'],
                 'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv,qt,asf'] //qt for mov , asf for wmv
             ]);
@@ -314,6 +315,7 @@ class PostAPIController extends AppBaseController
                 return $this->sendError(json_encode($errors), 777);
             }
 
+            $data['shared_id'] = $request->shared_id;
             $data['title'] = $request->title;
             $data['content'] = $request->content;
             $data['farm_id'] = $request->farm_id;
