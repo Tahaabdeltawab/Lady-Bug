@@ -22,7 +22,7 @@ class PostResource extends JsonResource
 
         $return = [
             'id' => $this->id,
-            'status' => $post->status,
+            'status' => $this->status,
             'content' => $post->content,
             'author' => new UserResource($this->author),
             'farmed_type_photo' => @$farm->farmed_type->asset->asset_url,
