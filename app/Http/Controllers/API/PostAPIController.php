@@ -303,7 +303,7 @@ class PostAPIController extends AppBaseController
                 'farmed_type_id' => ['nullable'],
                 'post_type_id' => ['nullable', 'exists:post_types,id'],
                 'solved' => ['nullable'],
-                'shared_id' => ['nullable'],
+                'shared_id' => ['nullable', 'exists:posts,id'],
                 'assets' => ['nullable','array'],
                 'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv,qt,asf'] //qt for mov , asf for wmv
             ]);

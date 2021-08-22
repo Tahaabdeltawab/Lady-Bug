@@ -41,6 +41,7 @@ class PostResource extends JsonResource
             'comments' => $request->routeIs('api.posts.show') ? CommentResource::collection($post->comments->whereNull('parent_id')) : [],
             'created_at' => $post->created_at->diffForHumans(),
             'shared' => $this->shared == null ? null : new UserResource($this->shared->author),
+            'share_id' => $post->id, // used to share the post. if this is an original post its value will be $this->id, if it's a shared post , its value will be the original post id
         ];
 
         return $return;
