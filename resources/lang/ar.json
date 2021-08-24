@@ -56,6 +56,8 @@
     "incompatible because of non suitable maturity temperature": "غير ملائم لأن درجة الحرارة عند النضج غير مناسبة",
     "incompatible because of non suitable PH": "غير ملائم لأن درجة PH غير مناسبة",
     "incompatible because of non suitable soil type": "غير ملائم لأن نوع التربة غير مناسبة",
-    "incompatible because of non suitable humidity": "غير ملائم لأن درجة الرطوبة غير مناسبة"
+    "incompatible because of non suitable humidity": "غير ملائم لأن درجة الرطوبة غير مناسبة",
+    "Your verification code is ": "كود التحقيق الخاص بك ",
+    "Wrong verification code": "كود التحقيق غير صحيح "
 
 }

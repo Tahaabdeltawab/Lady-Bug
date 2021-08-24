@@ -17,6 +17,7 @@ class AddDataToUsersTable extends Migration
             $table->string('provider')->nullable();
             $table->string('fcm')->nullable();
             $table->string('avatar')->nullable();
+            $table->string('code')->nullable();
         });
     }
 
@@ -34,6 +35,8 @@ class AddDataToUsersTable extends Migration
                 $table->dropColumn('fcm');
             if (Schema::hasColumn('users', 'avatar'))
                 $table->dropColumn('avatar');
+            if (Schema::hasColumn('users', 'code'))
+                $table->dropColumn('code');
         });
     }
 }
