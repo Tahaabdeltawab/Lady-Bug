@@ -120,9 +120,9 @@ class CommentAPIController extends AppBaseController
         {
 
             $validator = Validator::make($request->all(), [
-                'content' => 'required',
-                'post_id' => 'required|integer|exists:posts,id',
-                'parent_id' => 'nullable|integer|exists:comments,id',
+                'content' => ['requiredIf:assets,null'],
+                'post_id' => ['required', 'integer', 'exists:posts,id'],
+                'parent_id' => ['nullable', 'integer', 'exists:comments,id'],
                 'assets' => ['nullable','array'],
                 'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg']
             ]);
@@ -349,7 +349,7 @@ class CommentAPIController extends AppBaseController
             }
 
             $validator = Validator::make($request->all(), [
-                'content' => 'required',
+                'content' => ['requiredIf:assets,null'],
                 'assets' => ['nullable','array'],
                 'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg']
             ]);
