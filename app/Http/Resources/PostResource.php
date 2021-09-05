@@ -16,7 +16,8 @@ class PostResource extends JsonResource
      */
     public function toArray($request)
     {
-        $post = $this->shared == null ? $this : $this->shared;
+        $notShared = $this->shared == null;
+        $post = $notShared ? $this : $this->shared;
         $farm = (new FarmRepository(app()))->find($post->farm_id);
         $post_type = (new PostTypeRepository(app()))->find($post->post_type_id);
 
@@ -40,8 +41,9 @@ class PostResource extends JsonResource
             'disliked_by_me' => $post->dislikers->where('id', auth()->id())->count() ? true : false ,
             'comments' => $request->routeIs('api.posts.show') ? CommentResource::collection($post->comments->whereNull('parent_id')) : [],
             'created_at' => $post->created_at->diffForHumans(),
-            'shared' => $this->shared == null ? null : new UserResource($this->shared->author),
+            'shared' => $notShared ? null : new UserResource($this->shared->author),
             'share_id' => $post->id, // used to share the post. if this is an original post its value will be $this->id, if it's a shared post , its value will be the original post id
+            'shared_content' => $notShared ? null : $this->content,
         ];
 
         return $return;
