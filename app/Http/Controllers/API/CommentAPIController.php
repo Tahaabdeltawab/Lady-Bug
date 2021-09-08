@@ -187,6 +187,7 @@ class CommentAPIController extends AppBaseController
                 // }
             }
 
+            $comment->post->author->notify(new \App\Notifications\TimelineInteraction($comment));
             return $this->sendResponse(new CommentResource($comment), __('Comment saved successfully'));
         }
         catch(\Throwable $th)

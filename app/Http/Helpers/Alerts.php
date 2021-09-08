@@ -5,7 +5,7 @@ namespace App\Http\Helpers;
 
 class Alerts
 {
-    public static function sendMobileNotification($title, $message, $registrationId = null)
+    public static function sendMobileNotification($title, $message, $registrationId = null, $info = [], $receivers = 'single')
     {
         $server_key =  env('FIREBASE_SERVER_KEY', 'AAAA5dV7edQ:APA91bENVOrfYuUmkuslx6qFbj_XGkMg-u5QLtyPjpYnLOS6wJ2ScLsDLwnOvRn3ks1Rm2G5A1SCFJbFFYTFieIuozO9UjhxC5FBNjylZUjHLvQ999QgXuG-IFYUtnQccOT3NXFnSC2T');
 
@@ -21,14 +21,14 @@ class Alerts
             // 'smallIcon'	=> 'small_icon'
         ];
 
-        $data['data'] = [
-        //     'image'     => $image,
-        //     'action'    => $action,
-        ];
+        $data['data'] = $info;
 
-        $to = $registrationId == null ?
-        ["to" => "/topics/all"] :
-        ["registration_ids" => !is_array($registrationId) ? [$registrationId] : $registrationId];
+        if($receivers == 'single' && $registrationId == null)
+        return;
+
+        $to = ($receivers == 'all' && $registrationId == null)
+        ? ["to" => "/topics/all"]
+        : ["registration_ids" => !is_array($registrationId) ? [$registrationId] : $registrationId];
 
         $fields = array_merge($msg, $data, $to);
 

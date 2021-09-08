@@ -27,7 +27,7 @@ Route::group([
 
 ], function ($router) {
 
-    Route::post('login', 'AuthController@login')->middleware('jwt.guest');
+    Route::post('login', 'AuthController@login');
     Route::post('register', 'AuthController@register');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');

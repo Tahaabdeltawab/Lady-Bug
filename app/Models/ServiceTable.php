@@ -88,5 +88,8 @@ class ServiceTable extends Model
         return $this->hasMany(ServiceTask::class);
     }
 
+    public function farm(){
+        return $this->belongsTo(Farm::class);
+    }
 
 }

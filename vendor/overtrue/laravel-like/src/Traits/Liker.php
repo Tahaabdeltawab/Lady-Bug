@@ -81,15 +81,12 @@ trait Liker
     {
         if($this->hasLiked($object))
         {
-            $this->unlike($object);
-            $msg = 'Like removed successfully';
+            return $this->unlike($object);
         }
         else
         {
-            $this->like($object);
-            $msg = 'Liked successfully';
+            return $this->like($object);
         }
-        return $msg;
     }
 
     /**
@@ -190,15 +187,13 @@ trait Liker
     {
         if($this->hasDisliked($object))
         {
-            $this->undislike($object);
-            $msg = 'Dislike removed successfully';
+            return $this->undislike($object);
         }
         else
         {
-            $this->dislike($object);
-            $msg = 'Disliked successfully';
+            return $this->dislike($object);
+
         }
-        return $msg;
     }
 
     /**

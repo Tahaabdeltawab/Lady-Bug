@@ -4,21 +4,21 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class UploadCommand extends Command
+class NotifyTaskCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'upload:file';
+    protected $signature = 'notify:task';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'upload files in background';
+    protected $description = 'notify users by coming tasks';
 
     /**
      * Create a new command instance.
@@ -37,6 +37,6 @@ class UploadCommand extends Command
      */
     public function handle()
     {
-        return 0;
+
     }
 }

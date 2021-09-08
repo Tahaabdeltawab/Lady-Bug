@@ -138,4 +138,9 @@ class ServiceTask extends Model
     {
         return $this->belongsTo(TaskType::class);
     }
+
+    public function farm(){
+        return $this->belongsTo(Farm::class);
+    }
+
 }

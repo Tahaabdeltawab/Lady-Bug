@@ -125,6 +125,11 @@ class Post extends Model
         'asset' => 'nullable'
     ];
 
+    protected static function booted(){
+        static::addGlobalScope('latest', function($q){
+             $q->latest();
+        });
+    }
 
     public function scopeAccepted($query)
     {
@@ -139,6 +144,10 @@ class Post extends Model
     public function scopeBlocked($query)
     {
         return $query->where('status', 'blocked');
+    }
+
+    public function user_id(){
+        return $this->author_id;
     }
 
     public function author()

@@ -133,6 +133,13 @@ class Product extends Model implements TranslatableContract
      */
     public static $rules = [];
 
+    protected static function booted()
+    {
+        static::addGlobalScope('latest', function ($q) {
+            $q->latest();
+        });
+    }
+
     public function city()
     {
         return $this->belongsTo(City::class);

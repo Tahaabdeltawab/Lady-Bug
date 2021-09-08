@@ -116,7 +116,23 @@ class PostAPIController extends AppBaseController
     }
     public function timeline(Request $request)
     {
-        $posts = Post::accepted()->latest()->get();
+        $posts = Post::accepted()->get();
+
+        // Sorting
+        $followings_ids = auth()->user()->followings->pluck('id');
+        $favorites_ids = auth()->user()->favorites->pluck('id');
+
+        $favfollowings_posts = $posts->whereIn('author_id', $followings_ids)->whereIn('farmed_type_id', $favorites_ids);
+        $remnant_posts = $posts->whereNotIn('id', $favfollowings_posts->pluck('id'));
+
+        $followings_posts = $remnant_posts->whereIn('author_id', $followings_ids);
+        $remnant_posts = $remnant_posts->whereNotIn('id', $followings_posts->pluck('id'));
+
+        $favourites_posts = $remnant_posts->whereIn('farmed_type_id', $favorites_ids);
+        $remnant_posts = $remnant_posts->whereNotIn('id', $favourites_posts->pluck('id'));
+
+        $posts = $favfollowings_posts->merge($followings_posts)->merge($favourites_posts)->merge($remnant_posts);
+
         $posts1 = $posts->take($this->skip);
         $posts2 = $this->paginate($posts->skip($this->skip));
         if($posts2->currentPage() > 1)
@@ -397,9 +413,19 @@ class PostAPIController extends AppBaseController
             {
                 return $this->sendError('post not found');
             }
+            $like = auth()->user()->toggleLike($post); // $like may be Like obj (in case of creating) or 1 (in case of deleting)
+            $like_model = config('like.like_model');
+            if($like instanceOf  $like_model)
+            {
+                $msg = 'Post liked successfully';
+                $post->author->notify(new \App\Notifications\TimelineInteraction($like));
+            }
+            else
+            {
+                $msg = 'Post like removed successfully';
+            }
 
-            $msg = auth()->user()->toggleLike($post);
-            return $this->sendSuccess('Post '.$msg);
+            return $this->sendSuccess($msg);
         }
         catch(\Throwable $th)
         {
@@ -420,8 +446,19 @@ class PostAPIController extends AppBaseController
                 return $this->sendError('post not found');
             }
 
-            $msg = auth()->user()->toggleDislike($post);
-            return $this->sendSuccess('Post '.$msg);
+            $dislike = auth()->user()->toggleDislike($post); // $dislike may be Like obj (in case of creating) or 1 (in case of deleting)
+            $like_model = config('like.like_model');
+            if($dislike instanceOf  $like_model)
+            {
+                $msg = 'Post disliked successfully';
+                $post->author->notify(new \App\Notifications\TimelineInteraction($dislike));
+            }
+            else
+            {
+                $msg = 'Post dislike removed successfully';
+            }
+
+            return $this->sendSuccess($msg);
         }
         catch(\Throwable $th)
         {

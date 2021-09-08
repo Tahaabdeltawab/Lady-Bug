@@ -232,7 +232,7 @@ class UserAPIController extends AppBaseController
 
                 return $this->sendResponse(['all' => NotificationResource::collection($notifications)], 'Notifications retrieved successfully');
             }
-            return $this->sendError(__('Your Notifications are off, turn them all to see your notifications.'));
+            return $this->sendError(__('Your Notifications are off, turn them on to see your notifications.'));
         }
         catch(\Throwable $th)
         {
@@ -373,6 +373,7 @@ class UserAPIController extends AppBaseController
             else
             {
                 auth()->user()->follow($user);
+                $user->notify(new \App\Notifications\Follow(auth()->user()));
                 return $this->sendSuccess("You have followed $user->name successfully");
             }
         }

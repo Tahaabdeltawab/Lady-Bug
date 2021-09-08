@@ -273,7 +273,7 @@ class AuthController extends AppBaseController
 
         $user = User::where('mobile', $request->mobile)->first();
 
-        if (!$user = User::where('mobile', $request->mobile)->first()) 
+        if (!$user = User::where('mobile', $request->mobile)->first())
             return $this->sendError(__('No user found'));
 
         $user->code = User::generate_code();
@@ -288,7 +288,7 @@ class AuthController extends AppBaseController
         $data = [
             'code' => $user->code,
         ];
-        return $this->sendResponse($data, __('success'));           
+        return $this->sendResponse($data, __('success'));
     }
 
 
@@ -304,7 +304,7 @@ class AuthController extends AppBaseController
         if ($validator->fails())
             return $this->sendError(json_encode($validator->errors()));
 
-        if (!$user = User::where('mobile', $request->mobile)->first()) 
+        if (!$user = User::where('mobile', $request->mobile)->first())
             return $this->sendError(__('No user found'));
 
         if ($user->code != $request->code)
@@ -329,7 +329,7 @@ class AuthController extends AppBaseController
         if ($validator->fails())
             return $this->sendError(json_encode($validator->errors()));
 
-        if (!$user = User::where('mobile', $request->mobile)->first()) 
+        if (!$user = User::where('mobile', $request->mobile)->first())
             return $this->sendError(__('No user found'));
 
         if ($user->code != $request->code)

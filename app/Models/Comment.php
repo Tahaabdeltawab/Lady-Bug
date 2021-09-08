@@ -97,6 +97,11 @@ class Comment extends Model
         'parent_id' => 'nullable|integer|exists:comments,id'
     ];
 
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+
     public function parent()
     {
         return $this->belongsTo(Comment::class, 'parent_id');
@@ -122,5 +127,8 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function user_id(){
+        return $this->commenter_id;
+    }
 
 }

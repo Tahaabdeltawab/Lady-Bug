@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Http\Helpers\Alerts;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -18,6 +19,10 @@ class FarmInvitation extends Notification
      */
     public function __construct($inviter, $role, $farm, $accept_url, $decline_url)
     {
+        $farm_name          = @$this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
+        $this->title        = 'Farm Invitation';// if changed, change in noti_resource as well.
+        $this->msg          = $this->inviter->name . " has invited you to join his $farm_name farm as a/an " . $this->role->name;
+        $this->type         = 'farm_invitation';
         $this->inviter      = $inviter;
         $this->role         = $role;
         $this->farm         = $farm;
@@ -46,15 +51,11 @@ class FarmInvitation extends Notification
     {
         $accept_url = $this->accept_url;
         $decline_url = $this->decline_url;
-        $inviter = $this->inviter->name;
-        $role = $this->role->name;
-        // the @ sign here because not all farms have farmedtypeclass
-        $farm = @$this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
 
         return (new MailMessage)
                     ->greeting('Hello ' . $notifiable->name)
                     ->subject('Farm Invitation')
-                    ->line("$inviter has invited you to join his $farm farm as a/an $role")
+                    ->line($this->msg)
                     ->action('Join Farm', $accept_url)
                     ->line("To decline the invitation, visit the link below")
                     ->line($decline_url);
@@ -75,28 +76,30 @@ class FarmInvitation extends Notification
         $decline_signature = $decline_query['signature'];
 
         $inviter    = $this->inviter->id;
-        $inviter_name    = $this->inviter->name;
         $role       = $this->role->id;
-        $role_name       = $this->role->name;
         $farm       = $this->farm->id;
-        // the @ sign here because not all farms have farmedtypeclass
-        $farm_name = @$this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
 
-        return [
-            'title'      => 'Farm Invitation', // if changed, change in noti_resource as well.
-            'body'      => "$inviter_name has invited you to join his $farm_name farm as a/an $role_name",
-            'inviter'   => $inviter,
-            'invitee'   => $notifiable->id,
-            'role'      => $role,
-            'farm'      => $farm,
-            'accepted'  => null,
-            'accept_url'       => $accept_url,
-            'accept_expires'   => $accept_expires,
-            'accept_signature' => $accept_signature,
+        $return = [
+            'title'             => $this->title,
+            'body'              => $this->msg,
+            'inviter'           => $inviter,
+            'invitee'           => $notifiable->id,
+            'role'              => $role,
+            'farm'              => $farm,
+            'accepted'          => null,
+            'type'              => $this->type,
+            'accept_url'        => $accept_url,
+            'accept_expires'    => $accept_expires,
+            'accept_signature'  => $accept_signature,
             'decline_url'       => $decline_url,
             'decline_expires'   => $decline_expires,
             'decline_signature' => $decline_signature,
         ];
+
+        if($notifiable->is_notifiable)
+        Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, $return);
+
+        return $return;
     }
 
     /**
