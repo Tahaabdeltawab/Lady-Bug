@@ -818,23 +818,26 @@ class UserAPIController extends AppBaseController
                 return $this->sendError('User not found');
             }
 
+            $old_password_required = $user->password ? 'required' : 'nullable';
+
             $validator = Validator::make($request->all(), [
-                "old_password" => ["required", "string"],
+                "old_password" => [$old_password_required, "string"],
                 "password" => ["required", "string", "min:8", "confirmed"],
             ]);
 
             if($validator->fails()){
                 return $this->sendError(json_encode($validator->errors()));
             }
+            if($old_password_required == 'required'){
+                if(! password_verify($request->old_password, $user->password))
+                {
+                    return $this->sendError('Incorrect old password');
+                }
 
-            if(! password_verify($request->old_password, $user->password))
-            {
-                return $this->sendError('Incorrect old password');
-            }
-
-            if(password_verify($request->password, $user->password))
-            {
-                return $this->sendError('The new password is identical to the old password');
+                if(password_verify($request->password, $user->password))
+                {
+                    return $this->sendError('The new password is identical to the old password');
+                }
             }
 
             $user->password = Hash::make($request->password);
