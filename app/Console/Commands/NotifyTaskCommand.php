@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\ServiceTask;
 use Illuminate\Console\Command;
 
 class NotifyTaskCommand extends Command
@@ -11,7 +12,7 @@ class NotifyTaskCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'notify:task';
+    protected $signature = 'alarm:task';
 
     /**
      * The console command description.
@@ -37,6 +38,11 @@ class NotifyTaskCommand extends Command
      */
     public function handle()
     {
-
+        $alarmed_tasks = ServiceTask::open()->where('notify_at', today())->get();
+        foreach($alarmed_tasks as $task){
+            foreach($task->farm->users as $user){
+                $user->notify(new \App\Notifications\TaskAlarm($task));
+            }
+        }
     }
 }

@@ -143,4 +143,12 @@ class ServiceTask extends Model
         return $this->belongsTo(Farm::class);
     }
 
+    public function scopeDone($q){
+        return $q->where('done', true);
+    }
+
+    public function scopeOpen($q){
+        return $q->where('done', false);
+    }
+
 }
