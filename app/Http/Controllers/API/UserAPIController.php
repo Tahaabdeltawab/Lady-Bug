@@ -913,13 +913,4 @@ class UserAPIController extends AppBaseController
         }
     }
 
-    public function forgetPassword(Request $request)
-    {
-        return app('App\Http\Controllers\AuthController')->forgetPassword($request);
-    }
-
-    public function resetPassword(Request $request)
-    {
-        return app('App\Http\Controllers\AuthController')->resetPassword($request);
-    }
 }
