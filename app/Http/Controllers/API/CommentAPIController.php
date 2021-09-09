@@ -186,7 +186,7 @@ class CommentAPIController extends AppBaseController
                     }
                 // }
             }
-
+            if($comment->commenter_id != $comment->post->author_id)
             $comment->post->author->notify(new \App\Notifications\TimelineInteraction($comment));
             return $this->sendResponse(new CommentResource($comment), __('Comment saved successfully'));
         }
@@ -217,7 +217,8 @@ class CommentAPIController extends AppBaseController
             if($like instanceOf  $like_model)
             {
                 $msg = 'Comment liked successfully';
-                $comment->post->author->notify(new \App\Notifications\TimelineInteraction($like));
+                if($like->user_id != $comment->commenter_id)
+                $comment->commenter->notify(new \App\Notifications\TimelineInteraction($like));
             }
             else
             {

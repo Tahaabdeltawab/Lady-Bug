@@ -418,7 +418,7 @@ class PostAPIController extends AppBaseController
             if($like instanceOf  $like_model)
             {
                 $msg = 'Post liked successfully';
-                if($like->user_id != $post->author->id)
+                if($like->user_id != $post->author_id)
                 $post->author->notify(new \App\Notifications\TimelineInteraction($like));
             }
             else
