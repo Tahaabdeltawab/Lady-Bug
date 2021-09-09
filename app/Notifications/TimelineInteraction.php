@@ -117,7 +117,7 @@ class TimelineInteraction extends Notification
         //     $return['like_id'] = $this->like->id;
         // }
 
-        if($notifiable->is_notifiable && $this->reactor->id != $notifiable->id)
+        if($notifiable->is_notifiable)
         Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id']]);
 
 
