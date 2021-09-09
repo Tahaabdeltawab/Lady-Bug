@@ -512,5 +512,7 @@ Route::group(['middleware'=>['auth:api']], function()
 // ROUTES DON'T NEED LOGIN AS THEY ARE USED IN REGISTRATION
 Route::get('human_jobs', [App\Http\Controllers\API\HumanJobAPIController::class, 'index'])->name('human_jobs.index');
 Route::get('information/{information}', [App\Http\Controllers\API\InformationAPIController::class, 'show'])->name('information.show');
-Route::post('forget_password', [App\Http\Controllers\AuthController::class, 'forgetPassword'])->name('auth.forgetPassword');
-Route::post('reset_password', [App\Http\Controllers\AuthController::class, 'resetPassword'])->name('auth.resetPassword');
+Route::post('forget_password', [App\Http\Controllers\API\UserAPIController::class, 'forgetPassword'])->name('auth.forgetPassword');
+Route::post('reset_password', [App\Http\Controllers\API\UserAPIController::class, 'resetPassword'])->name('auth.resetPassword');
+// Route::post('forget_password', [App\Http\Controllers\AuthController::class, 'forgetPassword'])->name('auth.forgetPassword');
+// Route::post('reset_password', [App\Http\Controllers\AuthController::class, 'resetPassword'])->name('auth.resetPassword');

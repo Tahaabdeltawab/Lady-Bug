@@ -255,7 +255,6 @@ class AuthController extends AppBaseController
             ];
             return $this->sendResponse($data, __('Success'));
         } catch (\Throwable $th) {
-            throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -283,13 +282,17 @@ class AuthController extends AppBaseController
         //send sms to user
         $msg = __('Your verification code is ') . $user->code;
         $mobile = $user->mobile;
-
-        Twilio::message('+2'.$mobile, $msg);
+        $res_msg = __('success');
+        try{
+            Twilio::message('+2'.$mobile, $msg);
+        } catch (\Throwable $th) {
+            $res_msg = $th->getMessage();
+        }
 
         $data = [
             'code' => $user->code,
         ];
-        return $this->sendResponse($data, __('success'));
+        return $this->sendResponse($data, $res_msg);
     }
 
 
