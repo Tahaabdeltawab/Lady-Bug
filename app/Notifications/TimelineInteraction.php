@@ -108,17 +108,17 @@ class TimelineInteraction extends Notification
         $return =  [
             'title'     => $this->title,
             'body'      => $this->msg,
-            'post_id'   => $this->post->id,
             'type'      => $this->type,
+            'id'        => $this->post->id,
         ];
-        if($this->type == 'comment'){
-            $return['comment_id'] = $this->comment->id;
-        }elseif($this->type == 'like'){
-            $return['like_id'] = $this->like->id;
-        }
+        // if($this->type == 'comment'){
+        //     $return['comment_id'] = $this->comment->id;
+        // }elseif($this->type == 'like'){
+        //     $return['like_id'] = $this->like->id;
+        // }
 
         if($notifiable->is_notifiable && $this->reactor->id != $notifiable->id)
-        Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, $return);
+        Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id']]);
 
 
 

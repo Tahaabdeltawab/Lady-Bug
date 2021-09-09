@@ -58,11 +58,11 @@ class Follow extends Notification
             'title'             => $this->title,
             'body'              => $this->msg,
             'type'              => $this->type,
-            'follower_id'       => $this->follower->id,
+            'id'                => $this->follower->id,
         ];
 
         if($notifiable->is_notifiable)
-        Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, $return);
+        Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id']]);
 
         return $return;
     }
