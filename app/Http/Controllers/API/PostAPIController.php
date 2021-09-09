@@ -116,8 +116,7 @@ class PostAPIController extends AppBaseController
     }
     public function timeline(Request $request)
     {
-        $posts = Post::accepted()->get();
-
+        $posts = Post::accepted()->orderByDesc('reactions_count')->get();
         // Sorting
         $followings_ids = auth()->user()->followings->pluck('id');
         $favorites_ids = auth()->user()->favorites->pluck('id');
@@ -210,7 +209,7 @@ class PostAPIController extends AppBaseController
         $posts = Post::accepted()->whereHas('assets', function ($q)
         {
             $q->whereIn('asset_mime', config('myconfig.video_mimes'));
-        })->latest()->get();
+        })->orderByDesc('reactions_count')->get();
 
         return $this->sendResponse(
             [
@@ -414,6 +413,7 @@ class PostAPIController extends AppBaseController
                 return $this->sendError('post not found');
             }
             $like = auth()->user()->toggleLike($post); // $like may be Like obj (in case of creating) or 1 (in case of deleting)
+            $post->updateReactions();
             $like_model = config('like.like_model');
             if($like instanceOf  $like_model)
             {
@@ -447,6 +447,7 @@ class PostAPIController extends AppBaseController
             }
 
             $dislike = auth()->user()->toggleDislike($post); // $dislike may be Like obj (in case of creating) or 1 (in case of deleting)
+            $post->updateReactions();
             $like_model = config('like.like_model');
             if($dislike instanceOf  $like_model)
             {

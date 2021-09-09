@@ -125,6 +125,10 @@ class Post extends Model
         'asset' => 'nullable'
     ];
 
+    public function updateReactions(){
+        $this->reactions_count = $this->comments->count() + $this->likers->count() + $this->dislikers->count();
+        $this->save();
+    }
     protected static function booted(){
         static::addGlobalScope('latest', function($q){
              $q->latest();

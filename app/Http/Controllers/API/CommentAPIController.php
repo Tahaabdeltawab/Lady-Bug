@@ -139,7 +139,7 @@ class CommentAPIController extends AppBaseController
             $data['parent_id'] = $request->parent_id;
 
             $comment = $this->commentRepository->save_localized($data);
-
+            $comment->post->updateReactions();
             if($assets = $request->file('assets'))
             {
                /*  if(!is_array($assets))
@@ -212,8 +212,19 @@ class CommentAPIController extends AppBaseController
                 return $this->sendError('Comment not found');
             }
 
-            $msg = auth()->user()->toggleLike($comment);
-            return $this->sendSuccess('Comment '.$msg);
+            $like = auth()->user()->toggleLike($comment);
+            $like_model = config('like.like_model');
+            if($like instanceOf  $like_model)
+            {
+                $msg = 'Comment liked successfully';
+                $comment->post->author->notify(new \App\Notifications\TimelineInteraction($like));
+            }
+            else
+            {
+                $msg = 'Comment like removed successfully';
+            }
+
+            return $this->sendSuccess($msg);
         }
         catch(\Throwable $th)
         {
@@ -475,8 +486,9 @@ class CommentAPIController extends AppBaseController
         if (empty($comment)) {
             return $this->sendError('Comment not found');
         }
-
+        // $comment
         $comment->delete();
+        $comment->post->updateReactions();
 
           return $this->sendSuccess('Model deleted successfully');
         }

@@ -23,6 +23,7 @@ class PostResource extends JsonResource
 
         $return = [
             'id' => $this->id,
+            'reactions_count' => $post->reactions_count,
             'status' => $this->status,
             'content' => $post->content,
             'author' => new UserResource($this->author),

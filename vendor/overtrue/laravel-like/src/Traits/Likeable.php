@@ -42,6 +42,17 @@ trait Likeable
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
+    public function reactors(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(
+            config('auth.providers.users.model'),
+            config('like.likes_table'),
+            'likeable_id',
+            config('like.user_foreign_key')
+        )
+            ->where('likeable_type', $this->getMorphClass());
+    }
+
     public function likers(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(
