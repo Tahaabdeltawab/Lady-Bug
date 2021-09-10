@@ -13,7 +13,7 @@ class Alerts
             'body'         => $message,
             'title'        => $title,
             // 'image'     => $image,
-            // 'sound'        => 1,
+            'sound'        => 1,
             // 'subtitle'	=> 'This is a subtitle. subtitle',
             // 'tickerText'	=> 'Ticker text here...Ticker text here...Ticker text here',
             // 'vibrate'	=> 1,
