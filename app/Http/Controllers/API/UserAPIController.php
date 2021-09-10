@@ -227,8 +227,8 @@ class UserAPIController extends AppBaseController
             if(auth()->user()->is_notifiable)
             {
                 $user = auth()->user();
-                $user->unreadNotifications->markAsRead();
                 $notifications = $user->notifications ;
+                $user->unreadNotifications->markAsRead();
 
                 return $this->sendResponse(['all' => NotificationResource::collection($notifications)], 'Notifications retrieved successfully');
             }

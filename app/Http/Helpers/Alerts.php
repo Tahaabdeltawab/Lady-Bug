@@ -14,7 +14,7 @@ class Alerts
             'title'        => $title,
             'click_action' => '.ui.BaseActivity',
             // 'image'     => $image,
-            // 'sound'        => 1,
+            'sound'        => 'default',
             // 'subtitle'	=> 'This is a subtitle. subtitle',
             // 'tickerText'	=> 'Ticker text here...Ticker text here...Ticker text here',
             // 'vibrate'	=> 1,
