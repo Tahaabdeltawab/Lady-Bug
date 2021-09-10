@@ -62,7 +62,7 @@ class TaskAlarm extends Notification
         ];
 
         if($notifiable->is_notifiable)
-        Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id'], ['type' => $return['type']]]);
+        Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id'], 'type' => $return['type']]);
 
         return $return;
     }
