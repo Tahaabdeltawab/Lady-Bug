@@ -12,6 +12,7 @@ class Alerts
         $msg['notification'] = [
             'body'         => $message,
             'title'        => $title,
+            'click_action' => '.ui.BaseActivity',
             // 'image'     => $image,
             // 'sound'        => 1,
             // 'subtitle'	=> 'This is a subtitle. subtitle',
