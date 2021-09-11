@@ -356,6 +356,9 @@ class AuthController extends AppBaseController
         // $token = substr($request->header('Authorization'), 7); //7 to remove "bearer "
         // JWTAuth::setToken($token)->invalidate(); // also the same but use the Request to get the Authorization header (token)
         // JWTAuth::parseToken()->invalidate(); // the same
+        auth()->user()->fcm = null;
+        auth()->user()->save();
+
         auth('api')->logout();
         return $this->sendSuccess(__('Successfully logged out'));
     }
