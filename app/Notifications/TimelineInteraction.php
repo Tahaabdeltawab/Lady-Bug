@@ -43,23 +43,23 @@ class TimelineInteraction extends Notification
             $this->commenter    = $this->comment->commenter;
             $this->reactor      = $this->commenter;
             $this->post         = $this->comment->post;
-            $this->title        = 'Post Comment';
+            $this->title        = __('Post Comment');
             $post_substr        = $this->post->content ? substr($this->post->content, 0, 20).'...' : '';
-            $this->msg          = $this->commenter->name . " has commented on your post $post_substr";
+            $this->msg = $this->commenter->name . ' ' . __('has commented on') . ' ' . __('your post') . ' ' . $post_substr;
         }elseif($obj instanceOf  $like_model){
             $this->type         = 'like';
             $this->like         = $obj;
             $this->reactor      = $this->like->liker;
-            $msg                = $this->like->liker->name . " has %s your %s";
+            $liker_name = $this->like->liker->name;
             if($this->like->likeable_type == 'App\Models\Post'){
                 $this->post         = $this->like->likeable;
                 $post_substr        = $this->post->content ? substr($this->post->content, 0, 20).'...' : '';
                 if($this->like->is_like){
-                    $this->title        = 'Post Like';
-                    $this->msg          = sprintf($msg, 'liked', "post $post_substr");
+                    $this->title        = __('Post Like');
+                    $this->msg          = $liker_name . ' ' . __('has liked') . ' ' . __('your post') . ' ' . $post_substr;
                 }else{
-                    $this->title        = 'Post Dislike';
-                    $this->msg          = sprintf($msg, 'disliked', "post $post_substr");
+                    $this->title        = __('Post Dislike');
+                    $this->msg          = $liker_name . ' ' . __('has disliked') . ' ' . __('your post') . ' ' . $post_substr;
                 }
             }
             if($this->like->likeable_type == 'App\Models\Comment'){
@@ -67,11 +67,11 @@ class TimelineInteraction extends Notification
                 $this->post     = $this->comment->post;
                 $comment_substr        = $this->comment->content ? substr($this->comment->content, 0, 20).'...' : '';
                 if($this->like->is_like){
-                    $this->title        = 'Comment Like';
-                    $this->msg          = sprintf($msg, 'liked', "comment $comment_substr");
+                    $this->title        = __('Comment Like');
+                    $this->msg          = $liker_name . ' ' . __('has liked') . ' ' . __('your comment') . ' ' . $comment_substr;
                 }else{
-                    $this->title        = 'Comment Dislike';
-                    $this->msg          = sprintf($msg, 'disliked', "comment $comment_substr");
+                    $this->title        = __('Comment Dislike');
+                    $this->msg          = $liker_name . ' ' . __('has disliked') . ' ' . __('your comment') . ' ' . $comment_substr;
                 }
             }
         }

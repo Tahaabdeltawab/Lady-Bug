@@ -1,4 +1,5 @@
 {
+    "group1": "general",
     "A fresh verification link has been sent to your email address.": "تم إرسال رابط تحقق جديد إلى عنوان بريدك الإلكتروني.",
     "All rights reserved.": "جميع الحقوق محفوظة.",
     "Before proceeding, please check your email for a verification link.": "قبل المتابعة، يرجى التحقق من بريدك الإلكتروني عن رابط التحقق.",
@@ -47,6 +48,8 @@
     "Whoops!": "عذراً!",
     "Whoops, something went wrong on our servers.": "عفوًا، حدث خطأ ما على خوادمنا.",
 
+
+    "group2": "compatibility",
     "incompatible": "غير ملائم",
     "compatible": "ملائم",
     "incompatible because of non suitable water salts concentration": "غير ملائم لأن تركيز أملاح الماء غير مناسب",
@@ -58,6 +61,30 @@
     "incompatible because of non suitable soil type": "غير ملائم لأن نوع التربة غير مناسبة",
     "incompatible because of non suitable humidity": "غير ملائم لأن درجة الرطوبة غير مناسبة",
     "Your verification code is ": "كود التحقيق الخاص بك ",
-    "Wrong verification code": "كود التحقيق غير صحيح "
+    "Wrong verification code": "كود التحقيق غير صحيح ",
 
+
+    "group3": "notifications",
+    "Post Comment": "تعليق على منشور",
+    "Post Like": "إعجاب بمنشور",
+    "Post Dislike": "عدم إعجاب بمنشور",
+    "Comment Like": "إعجاب بتعليق",
+    "Comment Dislike": "عدم إعجاب بتعليق",
+    "Farm Invitation": "دعوة للانضمام لمزرعة",
+    "Task Alarm": "تنبيه لمهمة",
+    "Follow": "متابعة",
+    "Hello": "مرحبا :name",
+    "Join Farm": "الانضمام للمزرعة",
+    "To decline the invitation, visit the link below": "لرفض الدعوة قم بزيارة الرابط أسفل",
+    "farm_invitation_msg": "قام :user بدعوتك للانضمام لمزرعته :farm بدور :role",
+    "post": "منشور",
+    "comment": "تعليق",
+    "has commented on": "قام بالتعليق على",
+    "has liked": "قام بالإعجاب ب",
+    "has disliked": "قام بعدم الإعجاب ب",
+    "your post": "منشورك",
+    "your comment": "تعليقك",
+    "You have a task": "لديك مهمة",
+    "on": "في",
+    "has followed you": "قام بمتابعتك"
 }

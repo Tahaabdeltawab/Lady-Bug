@@ -21,8 +21,8 @@ class TaskAlarm extends Notification
     {
         $this->task = $task;
         $this->type = 'task_alarm';
-        $this->title= 'Task Alarm';
-        $this->msg  = 'You have a task ' . $this->task->name . ' on ' . date('Y-m-d', strtotime($this->task->start_at));
+        $this->title= __('Task Alarm');
+        $this->msg  = __('You have a task') . ' ' . $this->task->name . ' ' . __('on') . ' ' . date('Y-m-d', strtotime($this->task->start_at));
     }
 
     /**

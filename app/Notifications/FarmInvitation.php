@@ -19,13 +19,13 @@ class FarmInvitation extends Notification
      */
     public function __construct($inviter, $role, $farm, $accept_url, $decline_url)
     {
-        $farm_name          = @$this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
-        $this->title        = 'Farm Invitation';// if changed, change in noti_resource as well.
-        $this->msg          = $this->inviter->name . " has invited you to join his $farm_name farm as a/an " . $this->role->name;
-        $this->type         = 'farm_invitation';
+        $this->farm         = $farm;
         $this->inviter      = $inviter;
         $this->role         = $role;
-        $this->farm         = $farm;
+        $this->type         = 'farm_invitation';
+        $this->title        = __('Farm Invitation');
+        $farm_name          = @$this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
+        $this->msg          = __('farm_invitation_msg', ['user' => $this->inviter->name, 'farm' => $farm_name, 'role' => $this->role->name]);
         $this->accept_url   = $accept_url;
         $this->decline_url  = $decline_url;
     }
@@ -53,11 +53,11 @@ class FarmInvitation extends Notification
         $decline_url = $this->decline_url;
 
         return (new MailMessage)
-                    ->greeting('Hello ' . $notifiable->name)
-                    ->subject('Farm Invitation')
+                    ->greeting(__('Hello', ['name' => $notifiable->name]))
+                    ->subject($this->title)
                     ->line($this->msg)
-                    ->action('Join Farm', $accept_url)
-                    ->line("To decline the invitation, visit the link below")
+                    ->action(__('Join Farm'), $accept_url)
+                    ->line(__('To decline the invitation, visit the link below'))
                     ->line($decline_url);
                     // ->line('Thanks!');
     }

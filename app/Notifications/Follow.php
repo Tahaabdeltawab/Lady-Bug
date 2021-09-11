@@ -21,8 +21,8 @@ class Follow extends Notification
     {
         $this->follower = $follower;
         $this->type = 'follow';
-        $this->title = 'Follow';
-        $this->msg = $this->follower->name . " has followed you";
+        $this->title = __('Follow');
+        $this->msg = $this->follower->name . ' ' . __('has followed you');
     }
 
     /**
