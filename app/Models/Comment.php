@@ -112,6 +112,13 @@ class Comment extends Model
         return $this->hasMany(Comment::class, 'parent_id');
     }
 
+    public function siblings()
+    {
+        return $this->hasMany(Comment::class, 'post_id', 'post_id')
+        ->where('comments.commenter_id', '!=', $this->commenter_id)
+        ->groupBy('comments.commenter_id');
+    }
+
     // public function assets()
     // {
     //     return $this->belongsToMany(Asset::class, 'asset_post');

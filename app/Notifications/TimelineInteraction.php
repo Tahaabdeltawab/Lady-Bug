@@ -16,7 +16,7 @@ class TimelineInteraction extends Notification
     private $comment;
     private $post;
     private $commenter;
-    private $reactor;// the liker or commenter
+    private $reactor;// the liker or commenter or poster (following_post)
     private $title;
     private $msg;
     private $like;
@@ -33,11 +33,20 @@ class TimelineInteraction extends Notification
      * like comment
      * do not notify if you commented or liked your post or comment
      */
-    public function __construct($obj)
+    public function __construct($obj, $type = '')
     {
         $like_model = config('like.like_model');
 
-        if($obj instanceOf \App\Models\Comment){
+        if($obj instanceOf \App\Models\Post)
+        {
+            $this->type         = 'following_post';
+            $this->post         = $obj;
+            $this->reactor      = $this->post->author;
+            $this->title        = __('Following Post');
+            $post_substr        = $this->post->content ? substr($this->post->content, 0, 20).'...' : '';
+            $this->msg = $this->reactor->name . ' ' . __('has posted a new post') . ' ' . $post_substr;
+        }
+        elseif($obj instanceOf \App\Models\Comment){
             $this->type         = 'comment';
             $this->comment      = $obj;
             $this->commenter    = $this->comment->commenter;
@@ -45,24 +54,33 @@ class TimelineInteraction extends Notification
             $this->post         = $this->comment->post;
             $this->title        = __('Post Comment');
             $post_substr        = $this->post->content ? substr($this->post->content, 0, 20).'...' : '';
-            $this->msg = $this->commenter->name . ' ' . __('has commented on') . ' ' . __('your post') . ' ' . $post_substr;
-        }elseif($obj instanceOf  $like_model){
+
+            $this->msg = $this->commenter->name . ' ' . __('has commented on') . ' ' . __($type == 'same_post_comment' ? 'a post you follow' : 'your post') . ' ' . $post_substr;
+            // $this->msg = 'timeline_interaction_msg';
+            // $data = __($this->msg, ['name' => $this->commenter->name, ''])
+        }
+        elseif($obj instanceOf  $like_model){
             $this->type         = 'like';
             $this->like         = $obj;
             $this->reactor      = $this->like->liker;
             $liker_name = $this->like->liker->name;
-            if($this->like->likeable_type == 'App\Models\Post'){
+            if($this->like->likeable_type == 'App\Models\Post')
+            {
                 $this->post         = $this->like->likeable;
                 $post_substr        = $this->post->content ? substr($this->post->content, 0, 20).'...' : '';
-                if($this->like->is_like){
+                if($this->like->is_like)
+                {
                     $this->title        = __('Post Like');
                     $this->msg          = $liker_name . ' ' . __('has liked') . ' ' . __('your post') . ' ' . $post_substr;
-                }else{
+                }
+                else
+                {
                     $this->title        = __('Post Dislike');
                     $this->msg          = $liker_name . ' ' . __('has disliked') . ' ' . __('your post') . ' ' . $post_substr;
                 }
             }
-            if($this->like->likeable_type == 'App\Models\Comment'){
+            if($this->like->likeable_type == 'App\Models\Comment')
+            {
                 $this->comment  = $this->like->likeable;
                 $this->post     = $this->comment->post;
                 $comment_substr        = $this->comment->content ? substr($this->comment->content, 0, 20).'...' : '';
@@ -115,6 +133,8 @@ class TimelineInteraction extends Notification
             $return['object_id'] = $this->comment->id;
         }elseif($this->type == 'like'){
             $return['object_id'] = $this->like->id;
+        }elseif($this->type == 'following_post'){
+            $return['object_id'] = $this->reactor->id;
         }
 
         if($notifiable->is_notifiable)

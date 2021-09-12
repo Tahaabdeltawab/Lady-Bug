@@ -343,29 +343,6 @@ class PostAPIController extends AppBaseController
 
             if($assets = $request->file('assets'))
             {
-                /* if(!is_array($assets))
-                {
-                    //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
-                    // dispatch(new \App\Jobs\Upload($request, $post));
-                    $currentDate = Carbon::now()->toDateString();
-                    $assetsname = 'post-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
-                    $assetssize = $assets->getSize(); //size in bytes 1k = 1000bytes
-                    $assetsmime = $assets->getClientMimeType();
-
-                    $path = $assets->storeAs('assets/posts', $assetsname, 's3');
-                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                    $url  = Storage::disk('s3')->url($path);
-
-                    $asset = $post->assets()->create([
-                        'asset_name'        => $assetsname,
-                        'asset_url'         => $url,
-                        'asset_size'        => $assetssize,
-                        'asset_mime'        => $assetsmime,
-                    ]);
-                }
-                else
-                { */
                     foreach($assets as $asset)
                     {
                         //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
@@ -387,7 +364,11 @@ class PostAPIController extends AppBaseController
                             'asset_mime'        => $assetmime,
                         ]);
                     }
-                // }
+            }
+
+            $post->loadMissing('author.followers');
+            foreach($post->author->followers as $follower){
+                $follower->notify(new \App\Notifications\TimelineInteraction($post));
             }
 
             return $this->sendResponse(new PostResource($post), __('Post saved successfully'));

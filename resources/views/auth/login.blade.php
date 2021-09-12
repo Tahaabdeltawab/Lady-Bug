@@ -29,6 +29,18 @@
                         <form method="post" action="{{ url('/login') }}">
                             @csrf
                             <h1>Login</h1>
+                            @php
+                                $siblings = \App\Models\Comment::find(4)->siblings;
+echo '<pre>';print_r($siblings->toArray());echo '</pre>';
+                            @endphp
+                            <pre class="">
+                                @foreach ($siblings as $comment)
+                            <p class="">{{$comment->id}}</p>
+                            <p class="">{{$comment->post_id}}</p>
+                            <p class="">{{$comment->commenter_id}}</p>
+                            <hr><br><br><br><hr>
+                                @endforeach
+                            </pre>
                             <p class="text-muted">Sign In to your account</p>
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -53,7 +65,7 @@
                                         <strong>{{ Session::get('fail_message') }}</strong>
                                     </span>
                                 @endif
-                           
+
                             </div>
                             <div class="input-group mb-4">
                                 <div class="input-group-prepend">

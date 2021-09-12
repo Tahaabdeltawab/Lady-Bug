@@ -188,6 +188,12 @@ class CommentAPIController extends AppBaseController
             }
             if($comment->commenter_id != $comment->post->author_id)
             $comment->post->author->notify(new \App\Notifications\TimelineInteraction($comment));
+
+            $comment->loadMissing(['siblings']);
+            foreach ($comment->siblings as $sibling) {
+                $sibling->commenter->notify(new \App\Notifications\TimelineInteraction($sibling, 'same_post_comment'));
+            }
+
             return $this->sendResponse(new CommentResource($comment), __('Comment saved successfully'));
         }
         catch(\Throwable $th)
