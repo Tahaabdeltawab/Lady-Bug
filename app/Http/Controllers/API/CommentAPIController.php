@@ -192,7 +192,7 @@ class CommentAPIController extends AppBaseController
             $comment->loadMissing(['siblings.commenter']);
             foreach ($comment->siblings()->get() as $sibling) {
                 if($sibling->commenter->is_notifiable)
-                $sibling->commenter->notify(new \App\Notifications\TimelineInteraction($sibling, 'same_post_comment'));
+                $sibling->commenter->notify(new \App\Notifications\TimelineInteraction($comment, 'same_post_comment'));
             }
 
             return $this->sendResponse(new CommentResource($comment), __('Comment saved successfully'));
