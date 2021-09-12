@@ -190,7 +190,7 @@ class CommentAPIController extends AppBaseController
             $comment->post->author->notify(new \App\Notifications\TimelineInteraction($comment));
 
             $comment->loadMissing(['siblings.commenter']);
-            foreach ($comment->siblings as $sibling) {
+            foreach ($comment->siblings()->get() as $sibling) {
                 if($sibling->commenter->is_notifiable)
                 $sibling->commenter->notify(new \App\Notifications\TimelineInteraction($sibling, 'same_post_comment'));
             }
