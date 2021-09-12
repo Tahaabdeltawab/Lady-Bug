@@ -75,6 +75,7 @@
     "Follow": "متابعة",
     "Hello": "مرحبا :name",
     "Join Farm": "الانضمام للمزرعة",
+    "Invitation could not be sent because the user notifications are off": "لا يمكن إرسال الدعوة لأن إشعارات المستخدم مغلقة",
     "To decline the invitation, visit the link below": "لرفض الدعوة قم بزيارة الرابط أسفل",
     "farm_invitation_msg": "قام :user بدعوتك للانضمام لمزرعته :farm بدور :role",
     "post": "منشور",

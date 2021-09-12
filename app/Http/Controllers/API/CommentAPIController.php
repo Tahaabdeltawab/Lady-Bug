@@ -189,8 +189,9 @@ class CommentAPIController extends AppBaseController
             if($comment->commenter_id != $comment->post->author_id)
             $comment->post->author->notify(new \App\Notifications\TimelineInteraction($comment));
 
-            $comment->loadMissing(['siblings']);
+            $comment->loadMissing(['siblings.commenter']);
             foreach ($comment->siblings as $sibling) {
+                if($sibling->commenter->is_notifiable)
                 $sibling->commenter->notify(new \App\Notifications\TimelineInteraction($sibling, 'same_post_comment'));
             }
 
@@ -223,7 +224,7 @@ class CommentAPIController extends AppBaseController
             if($like instanceOf  $like_model)
             {
                 $msg = 'Comment liked successfully';
-                if($like->user_id != $comment->commenter_id)
+                if($comment->commenter->is_notifiable && $like->user_id != $comment->commenter_id)
                 $comment->commenter->notify(new \App\Notifications\TimelineInteraction($like));
             }
             else
@@ -251,9 +252,20 @@ class CommentAPIController extends AppBaseController
             {
                 return $this->sendError('Comment not found');
             }
+            $dislike = auth()->user()->toggleDislike($comment);
+            $like_model = config('like.like_model');
+            if($dislike instanceOf  $like_model)
+            {
+                $msg = 'Comment disliked successfully';
+                if($comment->commenter->is_notifiable && $dislike->user_id != $comment->commenter_id)
+                $comment->commenter->notify(new \App\Notifications\TimelineInteraction($dislike));
+            }
+            else
+            {
+                $msg = 'Comment dislike removed successfully';
+            }
 
-            $msg = auth()->user()->toggleDislike($comment);
-            return $this->sendSuccess('Comment '.$msg);
+            return $this->sendSuccess($msg);
         }
         catch(\Throwable $th)
         {

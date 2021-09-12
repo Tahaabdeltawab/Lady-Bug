@@ -137,7 +137,6 @@ class TimelineInteraction extends Notification
             $return['object_id'] = $this->reactor->id;
         }
 
-        if($notifiable->is_notifiable)
         Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id'], 'type' => $return['type'], 'object_id' => $return['object_id']]);
 
 

@@ -373,6 +373,7 @@ class UserAPIController extends AppBaseController
             else
             {
                 auth()->user()->follow($user);
+                if($user->is_notifiable)
                 $user->notify(new \App\Notifications\Follow(auth()->user()));
                 return $this->sendSuccess("You have followed $user->name successfully");
             }

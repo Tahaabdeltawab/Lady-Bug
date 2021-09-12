@@ -590,6 +590,7 @@ class FarmAPIController extends AppBaseController
                 else            // first attach role
                 {
                     //send invitation to assignee user
+                    if($user->is_notifiable){
 
                     $user->notify(new \App\Notifications\FarmInvitation(
                         auth()->user(),
@@ -599,6 +600,9 @@ class FarmAPIController extends AppBaseController
                         URL::temporarySignedRoute('api.farms.roles.decline_farm_invitation', now()->addDays(10),['user' => $request->user,'farm' => $request->farm,'role' => $request->role,])
                         ));
                     return $this->sendSuccess(__('Invitation sent successfully'));
+                    }else{
+                        return $this->sendSuccess(__('Invitation could not be sent because the user notifications are off'));
+                    }
                 }
 
             }

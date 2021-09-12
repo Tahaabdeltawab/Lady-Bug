@@ -38,9 +38,10 @@ class NotifyTaskCommand extends Command
      */
     public function handle()
     {
-        $alarmed_tasks = ServiceTask::open()->where('notify_at', today())->get();
+        $alarmed_tasks = ServiceTask::with('farm.users')->open()->where('notify_at', today())->get();
         foreach($alarmed_tasks as $task){
             foreach($task->farm->users as $user){
+                if($user->is_notifiable)
                 $user->notify(new \App\Notifications\TaskAlarm($task));
             }
         }
