@@ -43,7 +43,7 @@ class PostResource extends JsonResource
             'created_at' => $post->created_at->diffForHumans(),
             'shared' => $notShared ? null : new UserResource($this->shared->author),
             'share_id' => $post->id, // used to share the post. if this is an original post its value will be $this->id, if it's a shared post , its value will be the original post id
-            'shared_content' => $notShared ? null : $this->content,
+            'shared_content' => $notShared ? null : $this->content, // content added from the sharer
             // 'reactions_count' => $post->reactions_count,
             // 'shared_created_at' => $notShared ? null : $this->created_at->diffForHumans(),
         ];

@@ -39,12 +39,21 @@ class TimelineInteraction extends Notification
 
         if($obj instanceOf \App\Models\Post)
         {
-            $this->type         = 'following_post';
-            $this->post         = $obj;
-            $this->reactor      = $this->post->author;
-            $this->title        = __('Following Post');
-            $post_substr        = $this->post->content ? substr($this->post->content, 0, 20).'...' : '';
-            $this->msg = $this->reactor->name . ' ' . __('has posted a new post') . ' ' . $post_substr;
+            if($type == 'post_share'){
+                $this->type         = $type;
+                $this->post         = $obj; // the new post
+                $this->reactor      = $this->post->author; // sharer, author of the new post
+                $this->title        = __('Post Share');
+                $post_substr        = $this->post->shared->content ? substr($this->post->shared->content, 0, 20).'...' : '';
+                $this->msg = $this->reactor->name . ' ' . __('has shared your post') . ' ' . $post_substr;
+            }else{
+                $this->type         = 'following_post';
+                $this->post         = $obj;
+                $this->reactor      = $this->post->author;
+                $this->title        = __('Following Post');
+                $post_substr        = $this->post->content ? substr($this->post->content, 0, 20).'...' : '';
+                $this->msg = $this->reactor->name . ' ' . __('has posted a new post') . ' ' . $post_substr;
+            }
         }
         elseif($obj instanceOf \App\Models\Comment){
             $this->type         = 'comment';

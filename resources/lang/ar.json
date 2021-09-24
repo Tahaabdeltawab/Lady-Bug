@@ -66,6 +66,7 @@
 
     "group3": "notifications",
     "Post Comment": "تعليق على منشور",
+    "Post Share": "مشاركة منشور",
     "Post Like": "إعجاب بمنشور",
     "Post Dislike": "عدم إعجاب بمنشور",
     "Comment Like": "إعجاب بتعليق",
@@ -80,6 +81,7 @@
     "farm_invitation_msg": "قام :user بدعوتك للانضمام لمزرعته :farm بدور :role",
     "post": "منشور",
     "comment": "تعليق",
+    "has shared your post": "قام بمشاركة منشورك",
     "has commented on": "قام بالتعليق على",
     "a post you follow": "منشور تتابعه",
     "Following Post": "منشور لشخص تتابعه",
