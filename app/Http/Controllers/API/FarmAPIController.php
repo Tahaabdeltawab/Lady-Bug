@@ -177,7 +177,7 @@ class FarmAPIController extends AppBaseController
             $farms = $this->farmRepository->all();
 
             return $this->sendResponse(['all' => FarmCollection::collection($farms)], 'Farms retrieved successfully');
-        }catch(\Throwable $th){throw $th;
+        }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
         }
     }

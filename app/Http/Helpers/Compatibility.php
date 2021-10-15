@@ -5,12 +5,13 @@ namespace App\Http\Helpers;
 use App\Models\Farm;
 
 class Compatibility{
-
+    // get the average ot two numbers in an array
     protected function avg($array)
     {
         return count($array) ? array_sum($array) / count($array) : 0;
     }
 
+    // sort an array of two items to make the first item the min one and the last item the max one
     protected function min_max($array)
     {
         if(count($array))
@@ -22,6 +23,7 @@ class Compatibility{
         return false;
     }
 
+    // checks if a number is in between two values in an array
     protected function in_range($num, $array)
     {
         if(count($array))
@@ -36,6 +38,14 @@ class Compatibility{
         }
     }
 
+    /**
+     * soil_type_id -> نوع التربة للمزرةعة التي سنحسب ملاءمتها
+     * suitable_soil_types -> أنواع التربة التي يمكن زراعة المحصول فيها ويتم ترتيبها في المصفوفة حسب ملاءمتها للتربة
+     * full_deg -> الدرجة الكلية لهذا المعيار معيار نوع التربة
+     * لو كان نوع تربة المزرعة ليس من ضمن أنواع التربة الملائمة للمزرعة تحسب الدرجة صفر
+     * لو كان هو أول نوع ملائم في المصفوفة يأخذ نصف الدرجة
+     * لو كان هو ثاني نوع ملائم في المصفوفة يأخذ ربع الدرجة
+     */
     protected function calc_soil_type($soil_type_id, $suitable_soil_types, $full_deg)
     {
         $deg = 0;
@@ -47,6 +57,16 @@ class Compatibility{
         return $deg = $deg * $full_deg;
     }
 
+    /**
+     * هذه الفنكشن خاصة بحساب الدرجة الخاصة بخصائص الملاءمة التي تكون الدرجة العظمى فيها هي القيمة المتوسطة 
+     * مثال
+     * قيمة الأس الهيدروجيني الملائم للمزرعة يكون ما بين 8 إلى 10
+     * تأخد المزرعة الدرجة النهائية إذا كانت قيمة أسها الهيدروجيني تساوي 9 لأنها القيمة المتوسطة 
+     * وتأخذ درجة أقل إذا زادت أو قلت عن المتوسط إلى أن تصل إلى درجة صفر عندما يكون قيمة الأس الهيدروجيني مساوية للقيمة العظمى 10 أو الصغري 8
+     * value -> قيمة الأس الهيدروجيني الفعلي للمزرعة
+     * model -> [8, 10] -> قيمة الأس الهيدروجيني الملائم للمزرعة
+     * full_deg -> الدرجة الكلية لهذا المعيار
+     */
     protected function calc_deg_avg($value, $model, $full_deg) // get degree in things whose best degree is the average value
     {
         $deg = 0;
@@ -64,6 +84,16 @@ class Compatibility{
         return $deg = $deg * $full_deg;
     }
 
+    /**
+     * هذه الفنكشن خاصة بحساب الدرجة الخاصة بخصائص الملاءمة التي تكون الدرجة العظمى فيها هي القيمة الدنيا أو أقل من القيمة الدنيا 
+     * مثال
+     * قيمة أملاح التربة الملائمة للمزرعة يكون ما بين 300 إلى 1200
+     * تأخد المزرعة الدرجة النهائية إذا كانت قيمة أسها الهيدروجيني تساوي 300 أو أقل    
+     * وتأخذ درجة أقل إذا زادت عن القيمة الدنيا إلى أن تصل إلى درجة صفر عندما يكون قيمة أملاح التربة مساوية للقيمة العظمى 12008
+     * value -> قيمة أملاح التربة الفعلية للمزرعة
+     * model -> [300, 1200] -> قيمة أملاح التربة الملائمة للمزرعة
+     * full_deg -> الدرجة الكلية لهذا المعيار
+     */
     protected function calc_deg_min($value, $model, $full_deg) // get degree in things whose best degree is the minimum value
     {
         $deg = 0;
@@ -109,14 +139,25 @@ class Compatibility{
 
         if(!$farm->farmed_type->flowering_time || !$farm->farmed_type->maturity_time)
         return Resp::makeError('crop flowering and maturity times cannot be null');
+
+        /**
+         * ظروف الطقس للعام الماضي لأنها تكون مشابهة للعام الجاري ولعدم عثورنا على 
+         * API 
+         * يقوم بجلب توقعات لفترات بعيدة مثل شهور
+         **/
+
         $year_before = $farm->farming_date . ' - 1 year';
+
         $farming_day    = date("Y-m-d", strtotime($year_before));
+
         $flowering_day1  = date("Y-m-d", strtotime($year_before . ' + ' . ($farm->farmed_type->flowering_time - 10) . ' days'));
         $flowering_day2  = date("Y-m-d", strtotime($year_before . ' + ' . ($farm->farmed_type->flowering_time - 05) . ' days'));
         $flowering_day3  = date("Y-m-d", strtotime($year_before . ' + ' . ($farm->farmed_type->flowering_time - 00) . ' days'));
         $flowering_day4  = date("Y-m-d", strtotime($year_before . ' + ' . ($farm->farmed_type->flowering_time + 05) . ' days'));
         $flowering_day5  = date("Y-m-d", strtotime($year_before . ' + ' . ($farm->farmed_type->flowering_time + 10) . ' days'));
+
         $maturity_day   = date("Y-m-d", strtotime($year_before . ' + ' . $farm->farmed_type->maturity_time . ' days'));
+
 
         $lat = $farm->location->latitude;
         $lon = $farm->location->longitude;
@@ -134,7 +175,7 @@ class Compatibility{
 
         // if the database has compatibility set
         if($compat = json_decode($farm->farming_compatibility)){
-            // check if the conditions, when the compat first set, are the same as now => so dont calculate compat again
+            // check if the conditions changed or not, if not changed so don't calculate it again else calculate it
             if(json_encode($compat->conditions) == json_encode($conditions)){
                 $messages = [];
                 foreach($compat->messages as $message){
@@ -146,8 +187,10 @@ class Compatibility{
         }
         // calculate compat if not set or set but conditions changed
 
+        // جلب معلومات الطقس عند الزراعة
         $farming_info   = WeatherApi::instance()->weather_history($lat, $lon, $farming_day);
         if(isset($farming_info['error'])){return Resp::makeError($farming_info['error']);}
+        // جلب معلومات الطقس عند الزراعة في أيام مختلقة ثم الحصول على متوسط هذه القيم
         $flowering_info1 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day1);
         if(isset($flowering_info1['error'])){return Resp::makeError($flowering_info1['error']);}
         $flowering_info2 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day2);
@@ -158,13 +201,18 @@ class Compatibility{
         if(isset($flowering_info4['error'])){return Resp::makeError($flowering_info4['error']);}
         $flowering_info5 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day5);
         if(isset($flowering_info5['error'])){return Resp::makeError($flowering_info5['error']);}
+        // جلب معلومات الطقس عند النضج
         $maturity_info  = WeatherApi::instance()->weather_history($lat, $lon, $maturity_day);
         if(isset($maturity_info['error'])){return Resp::makeError($maturity_info['error']);}
 
 
+        // الحرارة عند الزراعة
         $farming_temperature = $farming_info['temperature'];
+        // متوسط درجات الحرارة عند التزهير
         $flowering_temperature_average = ($flowering_info1['temperature'] + $flowering_info2['temperature'] + $flowering_info3['temperature'] + $flowering_info4['temperature'] + $flowering_info5['temperature']) / 5 ;
+        // الحرارة عند النضج
         $maturity_temperature = $maturity_info['temperature'];
+        // الرطوبة عند النضج
         $humidity = $maturity_info['humidity'];
         // $farming_temperature = 33;
         // $flowering_temperature_average = 35;
@@ -179,7 +227,7 @@ class Compatibility{
 
         $hmaturity_deg = $this->calc_deg_avg($humidity, $farm->farmed_type->humidity, 5);
 
-
+        // جمع الدرجة النهائية للملاءمة
         $total = $soil_type_deg + $soil_salt_deg + $water_salt_deg + $ph_deg + $tfarming_deg + $tflowering_deg + $tmaturity_deg + $hmaturity_deg;
         // $total = 'soil_type_deg = ' . $soil_type_deg . ' - ' . 'soil_salt_deg = ' . $soil_salt_deg . ' - ' . 'water_salt_deg = ' . $water_salt_deg . ' - ' . 'ph_deg = ' . $ph_deg . ' - ' . 'tfarming_deg = ' . $tfarming_deg . ' - ' . 'tflowering_deg = ' . $tflowering_deg . ' - ' . 'tmaturity_deg = ' . $tmaturity_deg . ' - ' . 'hmaturity_deg = ' . $hmaturity_deg;
 

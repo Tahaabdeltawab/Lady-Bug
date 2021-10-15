@@ -7,9 +7,8 @@ use Illuminate\Support\Facades\Http;
 class WeatherApi{
 
     public function weather_history($lat, $lon, $day)
-    {
-        $response = Http::get('https://api.worldweatheronline.com/premium/v1/past-weather.ashx',
-        [
+    {   
+        $body = [
             'key' => '868ee110086a45188c3140146211609',
             // 'key' => '874d43b2addd44c8b8e121336211107',
             // 'key' => 'c150bb44b59c4ac5be6204447193108',
@@ -18,11 +17,25 @@ class WeatherApi{
             'date' => $day,
             'format' => 'json',
             'tp' => 24,
-        ]
-    );
+        ];
+            
+        try
+        {
+            $response = Http::get('https://api.worldweatheronline.com/premium/v1/past-weather.ashx', $body);
+        }
+        catch(\Throwable $th)
+        {
+            // try http instead of https
+            $response = Http::get('http://api.worldweatheronline.com/premium/v1/past-weather.ashx', $body);
+        }
+        finally
+        {
+            return $response->ok() ? $this->handle_response($response) : ['status' => false, 'data' => $response->json()];
+        }
+    }
 
-    if($response->ok())
-    {
+    protected function handle_response($response){
+
         $data = $response->json()['data'];
         if(isset($data['error'])){
             $resp['error'] = $data['error'][0]['msg'];
@@ -34,12 +47,7 @@ class WeatherApi{
         return $resp;
         return $data['weather'][0];
     }
-    else
-    {
-        return ['status' => false, 'data' => $response->json()];
-        // return $this->sendError('Error fetching the weather data', $response->status(), $response->json());
-    }
-    }
+
     public function weather_api($request)
     {
 

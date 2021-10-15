@@ -215,10 +215,6 @@ class Farm extends Team
      */
     public static $rules = [];
 
-    public function workers()
-    {
-        return $this->morphToMany(User::class, 'workable', 'workables', 'workable_id', 'worker_id')->using(Workable::class)->withPivot('id', 'status')->withTimestamps();
-    }
 
     public function admin()
     {

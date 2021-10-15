@@ -161,7 +161,7 @@ abstract class BaseRepository
             return Str::endsWith($key, 'localized');
         })->keys()->map(function($value,$key){
             return  explode('_', $value);
-        }); //[['name', 'ar', 'localized' ],['name', 'en', 'localized']]
+        }); //output is => [['name', 'ar', 'localized' ],['name', 'en', 'localized']]
 
         foreach($exploded as $ex){
             if (count($ex) != 3){
@@ -169,6 +169,7 @@ abstract class BaseRepository
             }
         }
 
+        // if the $input has localized fields like 'name_ar_localized'
         if(count($exploded))
         {
             $localized_fields = $exploded->pluck(0)->mapWithKeys(function($value, $key){
@@ -185,6 +186,8 @@ abstract class BaseRepository
                     unset($input[$field.'_'.$lang.'_localized']);
                 }
             }
+            // output is data['ar']['name'] = 'المزرعة السعيدة'
+            //           data['en']['name'] = 'the happy farm'
 
             $tosave = array_merge($data, $input);
         }
