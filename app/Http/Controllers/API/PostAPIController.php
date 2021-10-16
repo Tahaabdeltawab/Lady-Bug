@@ -117,16 +117,20 @@ class PostAPIController extends AppBaseController
     public function timeline(Request $request)
     {
         $posts = Post::accepted()->orderByDesc('reactions_count')->get();
-        // Sorting
+        //  ترتيب المنشورات
+        // الأشخاص الذين يتابعهم المستخدم
         $followings_ids = auth()->user()->followings->pluck('id');
+        // المحاصيل الموجودة في مفضلة المستخدم
         $favorites_ids = auth()->user()->favorites->pluck('id');
-
+        // المنشورات التي تخص أشخاص يتابعهم المستخدم وتخص محاصيل في مفضلة المستخدم
         $favfollowings_posts = $posts->whereIn('author_id', $followings_ids)->whereIn('farmed_type_id', $favorites_ids);
         $remnant_posts = $posts->whereNotIn('id', $favfollowings_posts->pluck('id'));
-
+        
+        // المنشورات التي تخص أشخاص يتابعهم المستخدم
         $followings_posts = $remnant_posts->whereIn('author_id', $followings_ids);
         $remnant_posts = $remnant_posts->whereNotIn('id', $followings_posts->pluck('id'));
-
+        
+        // المنشورات التي تخص محاصيل في مفضلة المستخدم
         $favourites_posts = $remnant_posts->whereIn('farmed_type_id', $favorites_ids);
         $remnant_posts = $remnant_posts->whereNotIn('id', $favourites_posts->pluck('id'));
 

@@ -139,7 +139,7 @@ class AssetAPIController extends AppBaseController
                 return $this->sendResponse(new AssetResource($asset), 'Asset saved successfully');
 
             }else{
-                return $this->sendResponse('No assets found');
+                return $this->sendError('No assets found');
             }
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
