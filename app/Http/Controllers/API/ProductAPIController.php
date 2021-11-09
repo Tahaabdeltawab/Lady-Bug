@@ -564,6 +564,12 @@ class ProductAPIController extends AppBaseController
         }
 
         $product->delete();
+        foreach($product->assets as $asset){
+            $asset_url = $asset->asset_url;
+            $path = parse_url($asset_url, PHP_URL_PATH);
+            Storage::disk('s3')->delete($path);
+        }
+        $product->assets()->delete();
 
           return $this->sendSuccess('Model deleted successfully');
         }

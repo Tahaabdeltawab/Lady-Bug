@@ -431,6 +431,12 @@ class FarmedTypeGinfoAPIController extends AppBaseController
         }
 
         $farmedTypeGinfo->delete();
+        foreach($farmedTypeGinfo->assets as $asset){
+            $asset_url = $asset->asset_url;
+            $path = parse_url($asset_url, PHP_URL_PATH);
+            Storage::disk('s3')->delete($path);
+        }
+        $farmedTypeGinfo->assets()->delete();
 
           return $this->sendSuccess('Model deleted successfully');
         }

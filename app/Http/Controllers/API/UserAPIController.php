@@ -902,6 +902,9 @@ class UserAPIController extends AppBaseController
         }
 
         $user->delete();
+        $path = parse_url($user->asset->asset_url, PHP_URL_PATH);
+        Storage::disk('s3')->delete($path);
+        $user->asset()->delete();
 
           return $this->sendSuccess('Model deleted successfully');
         }

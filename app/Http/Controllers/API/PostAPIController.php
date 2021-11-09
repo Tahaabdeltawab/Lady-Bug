@@ -84,9 +84,15 @@ class PostAPIController extends AppBaseController
 
     public function index(Request $request)
     {
-        $posts = Post::get();
+        // $posts = Post::get();
+        $posts = Post::paginate($this->perPage);
 
-        return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
+        return $this->sendResponse([
+            'data' => PostResource::collection($posts->items()),
+            'meta' => $posts->toArrayWithoutData(),
+        ], 'Posts retrieved successfully');
+
+        // return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
     }
 
     private function paginate($data)
@@ -105,8 +111,9 @@ class PostAPIController extends AppBaseController
     }
     // post_timeline
     public function paginated_posts(Request $request){
-        $posts = $this->paginate(Post::accepted()->latest()->get()
-        ->skip($this->skip));
+        $posts = $this->paginate(
+            Post::accepted()->latest()->get()->skip($this->skip)
+        );
 
         return $this->sendResponse([
             'data' => PostResource::collection($posts->items()),
@@ -736,25 +743,34 @@ class PostAPIController extends AppBaseController
      * )
      */
     public function destroy($id)
-    {
+    {    
         try
         {
-        /** @var Post $post */
-        $post = Post::accepted()->find($id);
+            /** @var Post $post */
+            $post = Post::find($id);
 
-        if (empty($post)) {
-            return $this->sendError('Post not found');
-        }
+            if (empty($post)) {
+                return $this->sendError('Post not found');
+            }
 
-        $post->delete();
+            $post->delete();
 
-          return $this->sendSuccess('Model deleted successfully');
+            foreach($post->assets as $asset){
+                $asset_url = $asset->asset_url;
+                $path = parse_url($asset_url, PHP_URL_PATH);
+                Storage::disk('s3')->delete($path);
+            }
+
+            $post->assets()->delete();
+
+            return $this->sendSuccess('Model deleted successfully');
         }
         catch(\Throwable $th)
         {
             if ($th instanceof \Illuminate\Database\QueryException)
             return $this->sendError('Model cannot be deleted as it is associated with other models');
             else
+            throw $th;
             return $this->sendError('Error deleting the model');
         }
     }

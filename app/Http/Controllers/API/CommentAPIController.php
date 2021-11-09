@@ -507,6 +507,13 @@ class CommentAPIController extends AppBaseController
         }
         // $comment
         $comment->delete();
+        foreach($comment->assets as $asset){
+            $asset_url = $asset->asset_url;
+            $path = parse_url($asset_url, PHP_URL_PATH);
+            Storage::disk('s3')->delete($path);
+        }
+        $comment->assets()->delete();
+
         $comment->post->updateReactions();
 
           return $this->sendSuccess('Model deleted successfully');
