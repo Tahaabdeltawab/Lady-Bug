@@ -29,6 +29,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'mobile',
         'status',
+        'block_duration',
         'is_notifiable',
         'activity_points',
         'email_verified',
@@ -93,6 +94,16 @@ class User extends Authenticatable implements JWTSubject
         return $q->where('type', 'app_user');
     }
 
+    public function scopeAccepted($q)
+    {
+        return $q->where('status', 'accepted');
+    }
+
+    public function scopeBlocked($q)
+    {
+        return $q->where('status', 'blocked');
+    }
+
     public function asset()
     {
         return $this->morphOne(Asset::class, 'assetable');
@@ -111,6 +122,21 @@ class User extends Authenticatable implements JWTSubject
     public function posts()
     {
         return $this->hasMany(Post::class, 'author_id');
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'seller_id');
+    }
+
+    public function reports()
+    {
+        return $this->hasMany(Report::class, 'reporter_id');
+    }
+
+    public function farms()
+    {
+        return $this->hasMany(Farm::class, 'admin_id');
     }
 
     public static function generate_code($length = 6)

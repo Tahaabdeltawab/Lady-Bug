@@ -36,16 +36,16 @@ Route::group([
 
 
 // Route::group(['middleware' => 'auth:api'], function(){
-    Route::group(['middleware' => 'jwt.verify'], function(){
+// Route::group(['middleware' => 'jwt.verify'], function(){
 
-        Route::resource('assets', App\Http\Controllers\API\AssetAPIController::class);
+//     Route::resource('assets', App\Http\Controllers\API\AssetAPIController::class);
 
-    });
+// });
 
 
 //farm routes
 
-Route::group(['middleware'=>['auth:api']], function()
+Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 {
 
     // // // // //  USER AREA  // // // // //

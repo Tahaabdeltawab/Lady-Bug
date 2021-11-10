@@ -21,10 +21,10 @@ class CreateUsersTable extends Migration
             $table->string('mobile')->unique();
             $table->bigInteger('activity_points')->default(0);
             $table->foreignId('human_job_id')->nullable()->constrained();
-            // $table->foreignId('photo_id')->nullable()->constrained('assets');
             $table->boolean('email_verified')->default(0);
             $table->boolean('mobile_verified')->default(0);
             $table->enum('status',['pending','accepted','blocked','deleted'])->default('accepted');
+            $table->timestamp('blocked_until')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

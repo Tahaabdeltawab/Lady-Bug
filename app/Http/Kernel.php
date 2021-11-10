@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'jwt.verify' => \App\Http\Middleware\JWTMiddleware::class,
         'jwt.guest' => \App\Http\Middleware\JWTGuestMiddleware::class,
         'check_farm_role' => \App\Http\Middleware\FarmRole::class,
+        'checkBlocked' => \App\Http\Middleware\BlockedUser::class,
     ];
 }

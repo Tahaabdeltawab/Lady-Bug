@@ -624,7 +624,20 @@ class UserAPIController extends AppBaseController
 
             if($user->status == 'accepted')
             {
+                $validator = Validator::make(request()->all(), [ 'blocked_until' => 'nullable|date_format:Y-m-d', 'block_days' => 'nullable|integer']);
+                if($validator->fails())
+                    return $this->sendError(json_encode($validator->errors()), 757);
+    
+                if($block_days = request()->block_days)
+                    $blocked_until = today()->addDays($block_days);
+
+                if(request()->blocked_until)
+                    $blocked_until = request()->blocked_until;
+                    
                 $user->status = 'blocked';
+                $user->blocked_until = $blocked_until;
+                // return $blocked_until;
+
                 $user->save();
                 $msg = 'User blocked successfully';
                 return $this->sendSuccess($msg);
@@ -632,6 +645,7 @@ class UserAPIController extends AppBaseController
             elseif($user->status == 'blocked')
             {
                 $user->status = 'accepted';
+                $user->blocked_until = null;
                 $user->save();
                 $msg = 'User activated successfully';
                 return $this->sendSuccess($msg);
@@ -900,6 +914,19 @@ class UserAPIController extends AppBaseController
         if (empty($user)) {
             return $this->sendError('User not found');
         }
+        $return = [
+            'posts' => $user->posts,
+            'products' => $user->products,
+            'reports' => $user->reports,
+            'farms' => $user->farms,
+        ];
+        // return $return;    
+
+        $user->posts()->delete();// comments/likes
+        $user->products()->delete();
+        $user->reports()->delete();
+        $user->favorites()->delete();
+        $user->farms()->update(['admin_id' => auth()->id()]);
 
         $user->delete();
         $path = parse_url($user->asset->asset_url, PHP_URL_PATH);

@@ -25,7 +25,7 @@ class CreateFarmsTable extends Migration
             $table->bigInteger('farmed_number')->nullable();
             $table->foreignId('admin_id')->constrained('users');
             $table->foreignId('area_unit_id')->nullable()->constrained('measuring_units');
-            $table->foreignId('location_id')->constrained();
+            $table->foreignId('location_id')->constrained()->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreignId('farm_activity_type_id')->constrained();
             $table->foreignId('farmed_type_id')->constrained();
             $table->foreignId('farmed_type_class_id')->nullable()->constrained();
@@ -35,9 +35,9 @@ class CreateFarmsTable extends Migration
             $table->foreignId('farming_way_id')->nullable()->constrained();
             $table->foreignId('irrigation_way_id')->nullable()->constrained();
             $table->foreignId('soil_type_id')->nullable()->constrained();
-            $table->foreignId('soil_detail_id')->nullable()->constrained('chemical_details');
-            $table->foreignId('irrigation_water_detail_id')->nullable()->constrained('chemical_details');
-            $table->foreignId('animal_drink_water_salt_detail_id')->nullable()->constrained('salt_details');
+            $table->foreignId('soil_detail_id')->nullable()->constrained('chemical_details')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreignId('irrigation_water_detail_id')->nullable()->constrained('chemical_details')->onDelete('CASCADE')->onUpdate('CASCADE');
+            $table->foreignId('animal_drink_water_salt_detail_id')->nullable()->constrained('salt_details')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->timestamps();
             $table->softDeletes();
             // $table->foreign('farm_activity_type_id')->references('id')->on('farm_activity_types')->onDelete('CASCADE');

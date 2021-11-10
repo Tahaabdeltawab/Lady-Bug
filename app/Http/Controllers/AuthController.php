@@ -71,6 +71,11 @@ class AuthController extends AppBaseController
         if ($request->type == 'social') {
             $user = User::where("email", $request->email)->first();
             if ($user) {
+                
+                if ($user->status != 'accepted') {
+                    return $this->sendError(__('trans.your_account_is_not_accepted'), 5010);
+                }
+
                 $code = 1111;
                 $msg = 'User Exists';
                 if (!$request->provider == $user->provider) {

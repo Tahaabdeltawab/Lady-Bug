@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('alarm:task')->dailyAt('10:00');
         // $schedule->command('alarm:task')->everyMinute(); // for testing
+
+        $schedule->command('checkBlocked')->dailyAt('10:00');
     }
 
     /**
