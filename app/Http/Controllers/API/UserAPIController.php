@@ -72,6 +72,17 @@ class UserAPIController extends AppBaseController
         $this->serviceTaskRepository = $serviceTaskRepo;
         $this->productRepository = $productRepo;
         $this->farmedTypeGinfoRepository = $farmedTypeGinfoRepo;
+
+        $this->middleware('permission:users.index')->only(['index']);
+        $this->middleware('permission:users.show')->only(['show']);
+        $this->middleware('permission:users.admin_show')->only(['admin_show']);
+        $this->middleware('permission:users.admin_index')->only(['admin_index']);
+        $this->middleware('permission:users.store')->only(['store']);
+        $this->middleware('permission:users.update')->only(['update_user_roles', 'toggle_activate_user']);
+        // this is made in the api.php file because the user and admin both can use update method, 
+        //if you did it here, the request will be required for the user and admin and this is incorrect because it should be only for the admin
+        // $this->middleware('permission:users.update')->only(['update']); 
+        $this->middleware('permission:users.destroy')->only(['destroy']);
     }
 
     /**
@@ -922,7 +933,7 @@ class UserAPIController extends AppBaseController
         ];
         // return $return;    
 
-        $user->posts()->delete();// comments/likes
+        $user->posts()->delete();// comments/likes/ chemical/location/saltdetails
         $user->products()->delete();
         $user->reports()->delete();
         $user->favorites()->delete();

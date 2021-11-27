@@ -155,6 +155,9 @@ class FarmAPIController extends AppBaseController
         $this->soilTypeRepository = $soilTypeRepo;
 
         $this->locationRepository = $locationRepo;
+
+        $this->middleware('permission:farms.index')->only(['index']);
+        $this->middleware('permission:farms.destroy')->only(['destroy']);
     }
 
 
@@ -857,6 +860,13 @@ class FarmAPIController extends AppBaseController
             return $this->sendError('Farm not found');
         }
 
+        $farm->location()->delete();
+        $farm->soil_detail()->delete();
+        $farm->irrigation_water_detail()->delete();
+        $farm->animal_drink_water_salt_detail()->delete();
+        $farm->posts()->delete();
+        $farm->service_tables()->delete();
+        $farm->service_tasks()->delete();
         $farm->delete();
 
           return $this->sendSuccess('Model deleted successfully');

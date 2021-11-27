@@ -35,6 +35,10 @@ class FarmedTypeGinfoAPIController extends AppBaseController
         $this->farmedTypeGinfoRepository = $farmedTypeGinfoRepo;
         $this->farmedTypeRepository = $farmedTypeRepo;
         $this->farmedTypeStageRepository = $farmedTypeStageRepo;
+
+        $this->middleware('permission:farmed_type_ginfos.store')->only(['store']);
+        $this->middleware('permission:farmed_type_ginfos.update')->only(['update']);
+        $this->middleware('permission:farmed_type_ginfos.destroy')->only(['destroy']);
     }
 
     /**

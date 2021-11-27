@@ -24,6 +24,10 @@ class AnimalBreedingPurposeAPIController extends AppBaseController
     public function __construct(AnimalBreedingPurposeRepository $animalBreedingPurposeRepo)
     {
         $this->animalBreedingPurposeRepository = $animalBreedingPurposeRepo;
+
+        $this->middleware('permission:animal_breeding_purposes.store')->only(['store']);
+        $this->middleware('permission:animal_breeding_purposes.update')->only(['update']);
+        $this->middleware('permission:animal_breeding_purposes.destroy')->only(['destroy']);
     }
 
     /**

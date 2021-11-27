@@ -24,6 +24,10 @@ class PostTypeAPIController extends AppBaseController
     public function __construct(PostTypeRepository $postTypeRepo)
     {
         $this->postTypeRepository = $postTypeRepo;
+
+        $this->middleware('permission:post_types.store')->only(['store']);
+        $this->middleware('permission:post_types.update')->only(['update']);
+        $this->middleware('permission:post_types.destroy')->only(['destroy']);
     }
 
     /**

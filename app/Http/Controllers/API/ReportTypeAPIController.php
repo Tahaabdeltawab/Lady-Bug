@@ -24,6 +24,10 @@ class ReportTypeAPIController extends AppBaseController
     public function __construct(ReportTypeRepository $reportTypeRepo)
     {
         $this->reportTypeRepository = $reportTypeRepo;
+
+        $this->middleware('permission:report_types.store')->only(['store']);
+        $this->middleware('permission:report_types.update')->only(['update']);
+        $this->middleware('permission:report_types.destroy')->only(['destroy']);
     }
 
     /**

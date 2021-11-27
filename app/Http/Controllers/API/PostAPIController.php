@@ -47,6 +47,9 @@ class PostAPIController extends AppBaseController
         $this->farmedTypeRepository = $farmedTypeRepo;
         $this->farmedTypeGinfoRepository = $farmedTypeGinfoRepo;
         $this->postTypeRepository = $postTypeRepo;
+
+        $this->middleware('permission:posts.index')->only(['index']);
+        $this->middleware('permission:posts.update')->only(['toggle_activate']);
     }
 
     /**
@@ -82,6 +85,7 @@ class PostAPIController extends AppBaseController
      * )
      */
 
+    // admin
     public function index(Request $request)
     {
         // $posts = Post::get();

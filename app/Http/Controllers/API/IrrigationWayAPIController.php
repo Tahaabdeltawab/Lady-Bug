@@ -24,6 +24,10 @@ class IrrigationWayAPIController extends AppBaseController
     public function __construct(IrrigationWayRepository $irrigationWayRepo)
     {
         $this->irrigationWayRepository = $irrigationWayRepo;
+
+        $this->middleware('permission:irrigation_ways.store')->only(['store']);
+        $this->middleware('permission:irrigation_ways.update')->only(['update']);
+        $this->middleware('permission:irrigation_ways.destroy')->only(['destroy']);
     }
 
     /**

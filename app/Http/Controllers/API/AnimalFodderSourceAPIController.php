@@ -24,6 +24,10 @@ class AnimalFodderSourceAPIController extends AppBaseController
     public function __construct(AnimalFodderSourceRepository $animalFodderSourceRepo)
     {
         $this->animalFodderSourceRepository = $animalFodderSourceRepo;
+
+        $this->middleware('permission:animal_fodder_sources.store')->only(['store']);
+        $this->middleware('permission:animal_fodder_sources.update')->only(['update']);
+        $this->middleware('permission:animal_fodder_sources.destroy')->only(['destroy']);
     }
 
     /**

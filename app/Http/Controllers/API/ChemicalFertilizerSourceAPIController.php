@@ -24,6 +24,10 @@ class ChemicalFertilizerSourceAPIController extends AppBaseController
     public function __construct(ChemicalFertilizerSourceRepository $chemicalFertilizerSourceRepo)
     {
         $this->chemicalFertilizerSourceRepository = $chemicalFertilizerSourceRepo;
+
+        $this->middleware('permission:chemical_fertilizer_sources.store')->only(['store']);
+        $this->middleware('permission:chemical_fertilizer_sources.update')->only(['update']);
+        $this->middleware('permission:chemical_fertilizer_sources.destroy')->only(['destroy']);
     }
 
     /**

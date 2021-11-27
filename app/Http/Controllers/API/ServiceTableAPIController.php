@@ -297,6 +297,7 @@ class ServiceTableAPIController extends AppBaseController
             return $this->sendError('Service Table not found');
         }
 
+        $serviceTable->tasks()->delete();
         $serviceTable->delete();
 
           return $this->sendSuccess('Model deleted successfully');

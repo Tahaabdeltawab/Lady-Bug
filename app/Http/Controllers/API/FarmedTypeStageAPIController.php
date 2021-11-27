@@ -24,6 +24,10 @@ class FarmedTypeStageAPIController extends AppBaseController
     public function __construct(FarmedTypeStageRepository $farmedTypeStageRepo)
     {
         $this->farmedTypeStageRepository = $farmedTypeStageRepo;
+
+        $this->middleware('permission:farmed_type_stages.store')->only(['store']);
+        $this->middleware('permission:farmed_type_stages.update')->only(['update']);
+        $this->middleware('permission:farmed_type_stages.destroy')->only(['destroy']);
     }
 
     /**

@@ -24,6 +24,10 @@ class SaltTypeAPIController extends AppBaseController
     public function __construct(SaltTypeRepository $saltTypeRepo)
     {
         $this->saltTypeRepository = $saltTypeRepo;
+
+        $this->middleware('permission:salt_types.store')->only(['store']);
+        $this->middleware('permission:salt_types.update')->only(['update']);
+        $this->middleware('permission:salt_types.destroy')->only(['destroy']);
     }
 
     /**

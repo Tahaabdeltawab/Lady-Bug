@@ -24,6 +24,10 @@ class DistrictAPIController extends AppBaseController
     public function __construct(DistrictRepository $districtRepo)
     {
         $this->districtRepository = $districtRepo;
+
+        $this->middleware('permission:districts.store')->only(['store']);
+        $this->middleware('permission:districts.update')->only(['update']);
+        $this->middleware('permission:districts.destroy')->only(['destroy']);
     }
 
     /**

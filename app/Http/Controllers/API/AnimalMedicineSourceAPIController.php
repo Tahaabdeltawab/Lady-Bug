@@ -24,6 +24,10 @@ class AnimalMedicineSourceAPIController extends AppBaseController
     public function __construct(AnimalMedicineSourceRepository $animalMedicineSourceRepo)
     {
         $this->animalMedicineSourceRepository = $animalMedicineSourceRepo;
+
+        $this->middleware('permission:animal_medicine_sources.store')->only(['store']);
+        $this->middleware('permission:animal_medicine_sources.update')->only(['update']);
+        $this->middleware('permission:animal_medicine_sources.destroy')->only(['destroy']);
     }
 
     /**

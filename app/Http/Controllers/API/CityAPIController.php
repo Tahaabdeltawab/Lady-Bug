@@ -24,6 +24,10 @@ class CityAPIController extends AppBaseController
     public function __construct(CityRepository $cityRepo)
     {
         $this->cityRepository = $cityRepo;
+
+        $this->middleware('permission:cities.store')->only(['store']);
+        $this->middleware('permission:cities.update')->only(['update']);
+        $this->middleware('permission:cities.destroy')->only(['destroy']);
     }
 
     /**

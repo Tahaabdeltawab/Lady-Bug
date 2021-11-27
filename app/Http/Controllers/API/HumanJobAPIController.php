@@ -20,6 +20,10 @@ class HumanJobAPIController extends AppBaseController
     public function __construct(HumanJobRepository $humanJobRepo)
     {
         $this->humanJobRepository = $humanJobRepo;
+
+        $this->middleware('permission:human_jobs.store')->only(['store']);
+        $this->middleware('permission:human_jobs.update')->only(['update']);
+        $this->middleware('permission:human_jobs.destroy')->only(['destroy']);
     }
 
     /**

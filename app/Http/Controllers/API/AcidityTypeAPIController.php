@@ -24,6 +24,10 @@ class AcidityTypeAPIController extends AppBaseController
     public function __construct(AcidityTypeRepository $acidityTypeRepo)
     {
         $this->acidityTypeRepository = $acidityTypeRepo;
+
+        $this->middleware('permission:acidity_types.store')->only(['store']);
+        $this->middleware('permission:acidity_types.update')->only(['update']);
+        $this->middleware('permission:acidity_types.destroy')->only(['destroy']);
     }
 
     /**

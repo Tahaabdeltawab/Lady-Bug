@@ -30,6 +30,10 @@ class FarmedTypeAPIController extends AppBaseController
     {
         $this->farmedTypeRepository = $farmedTypeRepo;
         $this->assetRepository = $assetRepo;
+
+        $this->middleware('permission:farmed_types.store')->only(['store']);
+        $this->middleware('permission:farmed_types.update')->only(['update']);
+        $this->middleware('permission:farmed_types.destroy')->only(['destroy']);
     }
 
     /**

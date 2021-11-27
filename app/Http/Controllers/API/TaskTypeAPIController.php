@@ -24,6 +24,10 @@ class TaskTypeAPIController extends AppBaseController
     public function __construct(TaskTypeRepository $taskTypeRepo)
     {
         $this->taskTypeRepository = $taskTypeRepo;
+
+        $this->middleware('permission:task_types.store')->only(['store']);
+        $this->middleware('permission:task_types.update')->only(['update']);
+        $this->middleware('permission:task_types.destroy')->only(['destroy']);
     }
 
     /**

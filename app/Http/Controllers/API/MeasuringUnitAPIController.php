@@ -24,6 +24,10 @@ class MeasuringUnitAPIController extends AppBaseController
     public function __construct(MeasuringUnitRepository $measuringUnitRepo)
     {
         $this->measuringUnitRepository = $measuringUnitRepo;
+
+        $this->middleware('permission:measuring_units.store')->only(['store']);
+        $this->middleware('permission:measuring_units.update')->only(['update']);
+        $this->middleware('permission:measuring_units.destroy')->only(['destroy']);
     }
 
     /**

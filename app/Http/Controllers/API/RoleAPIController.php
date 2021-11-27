@@ -4,8 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\API\Admin\CreateRoleAPIRequest;
-use App\Http\Requests\API\Admin\UpdateRoleAPIRequest;
+use App\Http\Requests\API\UpdateRoleAPIRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
@@ -15,6 +14,9 @@ class RoleAPIController extends AppBaseController
 
     public function __construct()
     {
+        $this->middleware('permission:roles.store')->only(['store']);
+        $this->middleware('permission:roles.update')->only(['update', 'update_role_permissions']);
+        $this->middleware('permission:roles.destroy')->only(['destroy']);
     }
 
     public function index()
@@ -26,7 +28,7 @@ class RoleAPIController extends AppBaseController
         }
     }
 
-    public function store(CreateRoleAPIRequest $request)
+    public function store(UpdateRoleAPIRequest $request)
     {
         try
         {

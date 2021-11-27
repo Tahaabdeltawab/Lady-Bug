@@ -35,14 +35,6 @@ Route::group([
 });
 
 
-// Route::group(['middleware' => 'auth:api'], function(){
-// Route::group(['middleware' => 'jwt.verify'], function(){
-
-//     Route::resource('assets', App\Http\Controllers\API\AssetAPIController::class);
-
-// });
-
-
 //farm routes
 
 Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
@@ -144,19 +136,9 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         Route::get('comments/toggle_like/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_like']);
         Route::get('comments/toggle_dislike/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_dislike']);
 
-        Route::resource('reports', App\Http\Controllers\API\ReportAPIController::class)->except(['index', 'show', 'update']);
+        Route::resource('reports', App\Http\Controllers\API\ReportAPIController::class)->except(['index', 'show', 'update', 'destroy']);
 
     });
-
-
-        // Route::resource('chemical_details', App\Http\Controllers\API\ChemicalDetailAPIController::class);
-        // Route::resource('salt_details', App\Http\Controllers\API\SaltDetailAPIController::class);
-
-
-
-
-            // });
-
 
 
     // // // // // //  ADMIN AREA  // // // // // //
@@ -164,13 +146,15 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::group([
         'prefix'        => 'admin/',
         'as'            => 'admin.',
-        'middleware'=>['role:'.config('myconfig.admin_role') ]
+        // 'middleware'=>['role:'.config('myconfig.admin_role') ]
     ], function()
     {
 
         Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
         Route::get('reports', [App\Http\Controllers\API\ReportAPIController::class, 'index'])->name('reports.index');
         Route::get('reports/{report}', [App\Http\Controllers\API\ReportAPIController::class, 'show'])->name('reports.show');
+        Route::match(['put', 'patch','post'], 'reports/{report}', [App\Http\Controllers\API\ReportAPIController::class, 'update'])->name('reports.update');
+        Route::delete('reports/{report}', [App\Http\Controllers\API\ReportAPIController::class, 'destroy'])->name('reports.destroy');
 
 
         Route::get('users', [App\Http\Controllers\API\UserAPIController::class, 'admin_index']);
@@ -185,7 +169,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         Route::post('users', [App\Http\Controllers\API\UserAPIController::class, 'store']);
 
         //with put and patch, laravel cannot read the request
-        Route::match(['put', 'patch','post'], 'users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'update'])->name('users.update');
+        Route::match(['put', 'patch','post'], 'users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'update'])->name('users.update')->middleware('permission:users.update');
 
         Route::Resource('roles', App\Http\Controllers\API\RoleAPIController::class);
         Route::Resource('permissions', App\Http\Controllers\API\PermissionAPIController::class);
@@ -257,8 +241,6 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         Route::resource('task_types', App\Http\Controllers\API\TaskTypeAPIController::class)->except(['index']);
 
         Route::resource('salt_types', App\Http\Controllers\API\SaltTypeAPIController::class)->except(['index']);
-
-        Route::resource('locations', App\Http\Controllers\API\LocationAPIController::class)->except(['index']);
 
         Route::resource('acidity_types', App\Http\Controllers\API\AcidityTypeAPIController::class)->except(['index']);
 

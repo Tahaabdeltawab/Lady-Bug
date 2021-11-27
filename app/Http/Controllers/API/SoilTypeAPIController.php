@@ -24,6 +24,10 @@ class SoilTypeAPIController extends AppBaseController
     public function __construct(SoilTypeRepository $soilTypeRepo)
     {
         $this->soilTypeRepository = $soilTypeRepo;
+
+        $this->middleware('permission:soil_types.store')->only(['store']);
+        $this->middleware('permission:soil_types.update')->only(['update']);
+        $this->middleware('permission:soil_types.destroy')->only(['destroy']);
     }
 
     /**

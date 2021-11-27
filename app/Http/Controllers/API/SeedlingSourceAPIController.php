@@ -24,6 +24,10 @@ class SeedlingSourceAPIController extends AppBaseController
     public function __construct(SeedlingSourceRepository $seedlingSourceRepo)
     {
         $this->seedlingSourceRepository = $seedlingSourceRepo;
+
+        $this->middleware('permission:seedling_sources.store')->only(['store']);
+        $this->middleware('permission:seedling_sources.update')->only(['update']);
+        $this->middleware('permission:seedling_sources.destroy')->only(['destroy']);
     }
 
     /**

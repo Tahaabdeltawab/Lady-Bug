@@ -24,6 +24,10 @@ class HomePlantPotSizeAPIController extends AppBaseController
     public function __construct(HomePlantPotSizeRepository $homePlantPotSizeRepo)
     {
         $this->homePlantPotSizeRepository = $homePlantPotSizeRepo;
+
+        $this->middleware('permission:home_plant_pot_sizes.store')->only(['store']);
+        $this->middleware('permission:home_plant_pot_sizes.update')->only(['update']);
+        $this->middleware('permission:home_plant_pot_sizes.destroy')->only(['destroy']);
     }
 
     /**

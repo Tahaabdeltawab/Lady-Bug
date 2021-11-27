@@ -27,6 +27,11 @@ class ReportAPIController extends AppBaseController
     public function __construct(ReportRepository $reportRepo)
     {
         $this->reportRepository = $reportRepo;
+
+        $this->middleware('permission:reports.index')->only(['index']);
+        $this->middleware('permission:reports.show')->only(['show']);
+        $this->middleware('permission:reports.update')->only(['update']);
+        $this->middleware('permission:reports.destroy')->only(['destroy']);
     }
 
     /**

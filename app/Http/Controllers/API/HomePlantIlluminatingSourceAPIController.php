@@ -24,6 +24,10 @@ class HomePlantIlluminatingSourceAPIController extends AppBaseController
     public function __construct(HomePlantIlluminatingSourceRepository $homePlantIlluminatingSourceRepo)
     {
         $this->homePlantIlluminatingSourceRepository = $homePlantIlluminatingSourceRepo;
+
+        $this->middleware('permission:home_plant_illuminating_sources.store')->only(['store']);
+        $this->middleware('permission:home_plant_illuminating_sources.update')->only(['update']);
+        $this->middleware('permission:home_plant_illuminating_sources.destroy')->only(['destroy']);
     }
 
     /**

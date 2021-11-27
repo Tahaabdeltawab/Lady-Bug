@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Requests\API\Admin\CreatePermissionAPIRequest;
-use App\Http\Requests\API\Admin\UpdatePermissionAPIRequest;
+use App\Http\Requests\API\UpdatePermissionAPIRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\PermissionResource;
 use App\Models\Permission;
-
+use App\Models\Role;
 
 class PermissionAPIController extends AppBaseController
 {
@@ -17,6 +15,9 @@ class PermissionAPIController extends AppBaseController
 
     public function __construct()
     {
+        $this->middleware('permission:permissions.store')->only(['store']);
+        $this->middleware('permission:permissions.update')->only(['update']);
+        $this->middleware('permission:permissions.destroy')->only(['destroy']);
     }
 
     public function index(Request $request)
@@ -30,7 +31,7 @@ class PermissionAPIController extends AppBaseController
     }
 
 
-    public function store(CreatePermissionAPIRequest $request)
+    public function store(UpdatePermissionAPIRequest $request)
     {
         try{
             $permission = Permission::create([

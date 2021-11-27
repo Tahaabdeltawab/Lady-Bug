@@ -24,6 +24,10 @@ class WeatherNoteAPIController extends AppBaseController
     public function __construct(WeatherNoteRepository $weatherNoteRepo)
     {
         $this->weatherNoteRepository = $weatherNoteRepo;
+
+        $this->middleware('permission:weather_notes.store')->only(['store']);
+        $this->middleware('permission:weather_notes.update')->only(['update']);
+        $this->middleware('permission:weather_notes.destroy')->only(['destroy']);
     }
 
     /**

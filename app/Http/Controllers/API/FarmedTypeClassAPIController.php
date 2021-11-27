@@ -24,6 +24,10 @@ class FarmedTypeClassAPIController extends AppBaseController
     public function __construct(FarmedTypeClassRepository $farmedTypeClassRepo)
     {
         $this->farmedTypeClassRepository = $farmedTypeClassRepo;
+
+        $this->middleware('permission:farmed_type_classes.store')->only(['store']);
+        $this->middleware('permission:farmed_type_classes.update')->only(['update']);
+        $this->middleware('permission:farmed_type_classes.destroy')->only(['destroy']);
     }
 
     /**

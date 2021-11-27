@@ -24,6 +24,10 @@ class InformationAPIController extends AppBaseController
     public function __construct(InformationRepository $informationRepo)
     {
         $this->informationRepository = $informationRepo;
+
+        $this->middleware('permission:information.store')->only(['store']);
+        $this->middleware('permission:information.update')->only(['update']);
+        $this->middleware('permission:information.destroy')->only(['destroy']);
     }
 
     /**

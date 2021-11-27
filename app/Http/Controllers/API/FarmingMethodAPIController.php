@@ -24,6 +24,10 @@ class FarmingMethodAPIController extends AppBaseController
     public function __construct(FarmingMethodRepository $farmingMethodRepo)
     {
         $this->farmingMethodRepository = $farmingMethodRepo;
+
+        $this->middleware('permission:farming_methods.store')->only(['store']);
+        $this->middleware('permission:farming_methods.update')->only(['update']);
+        $this->middleware('permission:farming_methods.destroy')->only(['destroy']);
     }
 
     /**

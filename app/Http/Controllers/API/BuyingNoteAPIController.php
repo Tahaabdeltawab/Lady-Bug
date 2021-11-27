@@ -24,6 +24,10 @@ class BuyingNoteAPIController extends AppBaseController
     public function __construct(BuyingNoteRepository $buyingNoteRepo)
     {
         $this->buyingNoteRepository = $buyingNoteRepo;
+
+        $this->middleware('permission:buying_notes.store')->only(['store']);
+        $this->middleware('permission:buying_notes.update')->only(['update']);
+        $this->middleware('permission:buying_notes.destroy')->only(['destroy']);
     }
 
     /**
