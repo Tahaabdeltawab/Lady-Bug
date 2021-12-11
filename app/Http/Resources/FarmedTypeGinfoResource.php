@@ -18,6 +18,7 @@ class FarmedTypeGinfoResource extends JsonResource
             'id' => $this->id,
             'farmed_type_id' => $this->farmed_type_id,
             'farmed_type' => $this->farmed_type->name,
+            'farmed_type_stage_id' => $this->farmed_type_stage_id,
             'farmed_type_stage' => $this->farmed_type_stage->name,
             'assets' => collect($this->assets)->pluck('asset_url')->all()
         ];

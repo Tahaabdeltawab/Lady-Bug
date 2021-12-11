@@ -646,6 +646,7 @@ class UserAPIController extends AppBaseController
                     $blocked_until = request()->blocked_until;
                     
                 $user->status = 'blocked';
+                if(isset($blocked_until))
                 $user->blocked_until = $blocked_until;
                 // return $blocked_until;
 
