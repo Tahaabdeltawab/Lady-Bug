@@ -65,6 +65,12 @@ class Report extends Model
         return $this->morphTo();
     }
 
+ 
+    public function reporter()
+    {
+        return $this->belongsTo(User::class, 'reporter_id');
+    }
+
     public function assets()
     {
         return $this->morphMany(Asset::class, 'assetable');

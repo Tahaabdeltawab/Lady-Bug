@@ -22,6 +22,7 @@ class ReportResource extends JsonResource
             'post' => $this->reportable instanceof \App\Models\Post ? new SimplePostResource($this->reportable) : $this->reportable,
             // 'post' => $this->when($request->report, $this->reportable instanceof \App\Models\Post ? new PostResource($this->reportable) : $this->reportable),
             'reporter_id' => $this->reporter_id,
+            'reporter' => $this->reporter->name,
             'description' => $this->description,
             'status' => $this->status,
             'created_at' => $this->created_at,
