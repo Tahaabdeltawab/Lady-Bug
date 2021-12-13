@@ -174,14 +174,22 @@ class FarmedTypeAPIController extends AppBaseController
         $to_save['flowering_time'] = $request->flowering_time;
         $to_save['maturity_time'] = $request->maturity_time;
         
-        $to_save['farming_temperature'] = json_encode(is_array($request->farming_temperature) ? $request->farming_temperature : explode(',', $request->farming_temperature) );
-        $to_save['flowering_temperature'] = json_encode(is_array($request->flowering_temperature) ? $request->flowering_temperature : explode(',', $request->flowering_temperature));
-        $to_save['maturity_temperature'] = json_encode(is_array($request->maturity_temperature) ? $request->maturity_temperature : explode(',', $request->maturity_temperature));
-        $to_save['humidity'] = json_encode(is_array($request->humidity) ? $request->humidity : explode(',', $request->humidity));
-        $to_save['suitable_soil_salts_concentration'] = json_encode(is_array($request->suitable_soil_salts_concentration) ? $request->suitable_soil_salts_concentration : explode(',', $request->suitable_soil_salts_concentration));
-        $to_save['suitable_water_salts_concentration'] = json_encode(is_array($request->suitable_water_salts_concentration) ? $request->suitable_water_salts_concentration : explode(',', $request->suitable_water_salts_concentration));
-        $to_save['suitable_ph'] = json_encode(is_array($request->suitable_ph) ? $request->suitable_ph : explode(',', $request->suitable_ph));
-        $to_save['suitable_soil_types'] = json_encode(is_array($request->suitable_soil_types) ? $request->suitable_soil_types : explode(',', $request->suitable_soil_types));
+        $to_save['farming_temperature'] = is_array($request->farming_temperature) ? json_encode($request->farming_temperature) : $request->farming_temperature;
+        $to_save['flowering_temperature'] = is_array($request->flowering_temperature) ? json_encode($request->flowering_temperature) : $request->flowering_temperature;
+        $to_save['maturity_temperature'] = is_array($request->maturity_temperature) ? json_encode($request->maturity_temperature) : $request->maturity_temperature;
+        $to_save['humidity'] = is_array($request->humidity) ? json_encode($request->humidity) : $request->humidity;
+        $to_save['suitable_soil_salts_concentration'] = is_array($request->suitable_soil_salts_concentration) ? json_encode($request->suitable_soil_salts_concentration) : $request->suitable_soil_salts_concentration;
+        $to_save['suitable_water_salts_concentration'] = is_array($request->suitable_water_salts_concentration) ? json_encode($request->suitable_water_salts_concentration) : $request->suitable_water_salts_concentration;
+        $to_save['suitable_ph'] = is_array($request->suitable_ph) ? json_encode($request->suitable_ph) : $request->suitable_ph;
+        $to_save['suitable_soil_types'] = is_array($request->suitable_soil_types) ? json_encode($request->suitable_soil_types) : $request->suitable_soil_types;
+        // $to_save['farming_temperature'] = json_encode(is_array($request->farming_temperature) ? $request->farming_temperature : explode(',', $request->farming_temperature) );
+        // $to_save['flowering_temperature'] = json_encode(is_array($request->flowering_temperature) ? $request->flowering_temperature : explode(',', $request->flowering_temperature));
+        // $to_save['maturity_temperature'] = json_encode(is_array($request->maturity_temperature) ? $request->maturity_temperature : explode(',', $request->maturity_temperature));
+        // $to_save['humidity'] = json_encode(is_array($request->humidity) ? $request->humidity : explode(',', $request->humidity));
+        // $to_save['suitable_soil_salts_concentration'] = json_encode(is_array($request->suitable_soil_salts_concentration) ? $request->suitable_soil_salts_concentration : explode(',', $request->suitable_soil_salts_concentration));
+        // $to_save['suitable_water_salts_concentration'] = json_encode(is_array($request->suitable_water_salts_concentration) ? $request->suitable_water_salts_concentration : explode(',', $request->suitable_water_salts_concentration));
+        // $to_save['suitable_ph'] = json_encode(is_array($request->suitable_ph) ? $request->suitable_ph : explode(',', $request->suitable_ph));
+        // $to_save['suitable_soil_types'] = json_encode(is_array($request->suitable_soil_types) ? $request->suitable_soil_types : explode(',', $request->suitable_soil_types));
 
         $farmedType = $this->farmedTypeRepository->save_localized($to_save);
 
@@ -361,14 +369,22 @@ class FarmedTypeAPIController extends AppBaseController
         $to_save['flowering_time'] = $request->flowering_time;
         $to_save['maturity_time'] = $request->maturity_time;
 
-        $to_save['farming_temperature'] = json_encode(is_array($request->farming_temperature) ? $request->farming_temperature : explode(',', $request->farming_temperature) );
-        $to_save['flowering_temperature'] = json_encode(is_array($request->flowering_temperature) ? $request->flowering_temperature : explode(',', $request->flowering_temperature));
-        $to_save['maturity_temperature'] = json_encode(is_array($request->maturity_temperature) ? $request->maturity_temperature : explode(',', $request->maturity_temperature));
-        $to_save['humidity'] = json_encode(is_array($request->humidity) ? $request->humidity : explode(',', $request->humidity));
-        $to_save['suitable_soil_salts_concentration'] = json_encode(is_array($request->suitable_soil_salts_concentration) ? $request->suitable_soil_salts_concentration : explode(',', $request->suitable_soil_salts_concentration));
-        $to_save['suitable_water_salts_concentration'] = json_encode(is_array($request->suitable_water_salts_concentration) ? $request->suitable_water_salts_concentration : explode(',', $request->suitable_water_salts_concentration));
-        $to_save['suitable_ph'] = json_encode(is_array($request->suitable_ph) ? $request->suitable_ph : explode(',', $request->suitable_ph));
-        $to_save['suitable_soil_types'] = json_encode(is_array($request->suitable_soil_types) ? $request->suitable_soil_types : explode(',', $request->suitable_soil_types));
+        $to_save['farming_temperature'] = is_array($request->farming_temperature) ? json_encode($request->farming_temperature) : $request->farming_temperature;
+        $to_save['flowering_temperature'] = is_array($request->flowering_temperature) ? json_encode($request->flowering_temperature) : $request->flowering_temperature;
+        $to_save['maturity_temperature'] = is_array($request->maturity_temperature) ? json_encode($request->maturity_temperature) : $request->maturity_temperature;
+        $to_save['humidity'] = is_array($request->humidity) ? json_encode($request->humidity) : $request->humidity;
+        $to_save['suitable_soil_salts_concentration'] = is_array($request->suitable_soil_salts_concentration) ? json_encode($request->suitable_soil_salts_concentration) : $request->suitable_soil_salts_concentration;
+        $to_save['suitable_water_salts_concentration'] = is_array($request->suitable_water_salts_concentration) ? json_encode($request->suitable_water_salts_concentration) : $request->suitable_water_salts_concentration;
+        $to_save['suitable_ph'] = is_array($request->suitable_ph) ? json_encode($request->suitable_ph) : $request->suitable_ph;
+        $to_save['suitable_soil_types'] = is_array($request->suitable_soil_types) ? json_encode($request->suitable_soil_types) : $request->suitable_soil_types;
+        // $to_save['farming_temperature'] = json_encode(is_array($request->farming_temperature) ? $request->farming_temperature : explode(',', $request->farming_temperature) );
+        // $to_save['flowering_temperature'] = json_encode(is_array($request->flowering_temperature) ? $request->flowering_temperature : explode(',', $request->flowering_temperature));
+        // $to_save['maturity_temperature'] = json_encode(is_array($request->maturity_temperature) ? $request->maturity_temperature : explode(',', $request->maturity_temperature));
+        // $to_save['humidity'] = json_encode(is_array($request->humidity) ? $request->humidity : explode(',', $request->humidity));
+        // $to_save['suitable_soil_salts_concentration'] = json_encode(is_array($request->suitable_soil_salts_concentration) ? $request->suitable_soil_salts_concentration : explode(',', $request->suitable_soil_salts_concentration));
+        // $to_save['suitable_water_salts_concentration'] = json_encode(is_array($request->suitable_water_salts_concentration) ? $request->suitable_water_salts_concentration : explode(',', $request->suitable_water_salts_concentration));
+        // $to_save['suitable_ph'] = json_encode(is_array($request->suitable_ph) ? $request->suitable_ph : explode(',', $request->suitable_ph));
+        // $to_save['suitable_soil_types'] = json_encode(is_array($request->suitable_soil_types) ? $request->suitable_soil_types : explode(',', $request->suitable_soil_types));
 
         $farmedType = $this->farmedTypeRepository->save_localized($to_save, $id);
 
