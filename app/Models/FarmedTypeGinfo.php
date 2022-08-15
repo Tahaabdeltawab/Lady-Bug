@@ -6,52 +6,6 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-/**
- * @SWG\Definition(
- *      definition="FarmedTypeGinfo",
- *      required={"title", "content", "farmed_type_id", "farmed_type_stage_id"},
- *      @SWG\Property(
- *          property="id",
- *          description="id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="created_at",
- *          description="created_at",
- *          type="string",
- *          format="date-time"
- *      ),
- *      @SWG\Property(
- *          property="updated_at",
- *          description="updated_at",
- *          type="string",
- *          format="date-time"
- *      ),
- *      @SWG\Property(
- *          property="title",
- *          description="title",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="content",
- *          description="content",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="farmed_type_id",
- *          description="farmed_type_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="farmed_type_stage_id",
- *          description="farmed_type_stage_id",
- *          type="integer",
- *          format="int32"
- *      )
- * )
- */
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 

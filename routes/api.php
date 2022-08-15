@@ -364,3 +364,6 @@ Route::get('information/{information}', [App\Http\Controllers\API\InformationAPI
 // Route::post('reset_password', [App\Http\Controllers\API\UserAPIController::class, 'resetPassword'])->name('auth.resetPassword');
 Route::post('forget_password', [App\Http\Controllers\AuthController2::class, 'forgetPassword'])->name('auth.forgetPassword');
 Route::post('reset_password', [App\Http\Controllers\AuthController2::class, 'resetPassword'])->name('auth.resetPassword');
+
+
+Route::resource('rating_questions', App\Http\Controllers\API\RatingQuestionAPIController::class);

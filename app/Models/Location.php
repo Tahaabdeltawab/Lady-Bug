@@ -6,62 +6,6 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-/**
- * @SWG\Definition(
- *      definition="Location",
- *      required={""},
- *      @SWG\Property(
- *          property="id",
- *          description="id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="created_at",
- *          description="created_at",
- *          type="string",
- *          format="date-time"
- *      ),
- *      @SWG\Property(
- *          property="updated_at",
- *          description="updated_at",
- *          type="string",
- *          format="date-time"
- *      ),
- *      @SWG\Property(
- *          property="latitude",
- *          description="latitude",
- *          type="number",
- *          format="number"
- *      ),
- *      @SWG\Property(
- *          property="longitude",
- *          description="longitude",
- *          type="number",
- *          format="number"
- *      ),
- *      @SWG\Property(
- *          property="country",
- *          description="country",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="city",
- *          description="city",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="district",
- *          description="district",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="details",
- *          description="details",
- *          type="string"
- *      )
- * )
- */
 class Location extends Model
 {
   // use SoftDeletes;

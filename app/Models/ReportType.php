@@ -6,13 +6,6 @@ use Eloquent as Model;
 use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
 use Astrotomic\Translatable\Translatable;
 
-
-/**
- * Class ReportType
- * @package App\Models
- * @version August 20, 2021, 1:21 am EET
- *
- */
 class ReportType extends Model implements TranslatableContract
 {
     use Translatable;
