@@ -367,3 +367,9 @@ Route::post('reset_password', [App\Http\Controllers\AuthController2::class, 'res
 
 
 Route::resource('rating_questions', App\Http\Controllers\API\RatingQuestionAPIController::class);
+
+Route::resource('consultancy_profiles', App\Http\Controllers\API\ConsultancyProfileAPIController::class);
+
+Route::resource('offline_consultancy_plans', App\Http\Controllers\API\OfflineConsultancyPlanAPIController::class);
+
+Route::resource('work_fields', App\Http\Controllers\API\WorkFieldAPIController::class);
