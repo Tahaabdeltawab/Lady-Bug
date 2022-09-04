@@ -1,15 +1,4 @@
 <?php return array (
-  'aloha/twilio' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Aloha\\Twilio\\Support\\Laravel\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Twilio' => 'Aloha\\Twilio\\Support\\Laravel\\Facade',
-    ),
-  ),
   'appointer/swaggervel' => 
   array (
     'providers' => 
@@ -22,17 +11,6 @@
     'providers' => 
     array (
       0 => 'Astrotomic\\Translatable\\TranslatableServiceProvider',
-    ),
-  ),
-  'beyondcode/laravel-websockets' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'BeyondCode\\LaravelWebSockets\\WebSocketsServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'WebSocketRouter' => 'BeyondCode\\LaravelWebSockets\\Facades\\WebSocketRouter',
     ),
   ),
   'facade/ignition' => 
