@@ -17,6 +17,10 @@ class AddDataToUsersTable extends Migration
             $table->integer('income')->nullable();
             $table->date('dob')->nullable();
             $table->foreignId('city_id')->nullable()->constrained();
+            $table->string('provider')->nullable();
+            $table->string('fcm')->nullable();
+            $table->string('avatar')->nullable();
+            $table->string('code')->nullable();
         });
     }
 
@@ -28,12 +32,20 @@ class AddDataToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            if (Schema::hasColumn('users', 'income') && Schema::hasColumn('users', 'dob') && Schema::hasColumn('users', 'city_id'))
-            {
+            if (Schema::hasColumn('users', 'income'))
                 $table->dropColumn('income');
+            if (Schema::hasColumn('users', 'dob'))
                 $table->dropColumn('dob');
+            if (Schema::hasColumn('users', 'city_id'))
                 $table->dropColumn('city_id');
-            }
+            if (Schema::hasColumn('users', 'provider'))
+                $table->dropColumn('provider');
+            if (Schema::hasColumn('users', 'fcm'))
+                $table->dropColumn('fcm');
+            if (Schema::hasColumn('users', 'avatar'))
+                $table->dropColumn('avatar');
+            if (Schema::hasColumn('users', 'code'))
+                $table->dropColumn('code');
         });
     }
 }

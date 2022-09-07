@@ -19,7 +19,6 @@ class CreateServiceTablesTable extends Migration
             $table->string('name');
             $table->foreignId('farm_id')->constrained();
             $table->timestamps();
-            $table->softDeletes();
             // $table->foreign('farm_id')->references('id')->on('farms')->onDelete('CASCADE');
         });
     }

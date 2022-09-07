@@ -19,7 +19,6 @@ class CreateWeatherNotesTable extends Migration
             $table->text('content');
             $table->foreignId('user_id')->constrained();
             $table->timestamps();
-            $table->softDeletes();
             // $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
         });
     }

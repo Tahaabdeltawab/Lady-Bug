@@ -30,38 +30,6 @@ class HomePlantPotSizeAPIController extends AppBaseController
         $this->middleware('permission:home_plant_pot_sizes.destroy')->only(['destroy']);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/homePlantPotSizes",
-     *      summary="Get a listing of the HomePlantPotSizes.",
-     *      tags={"HomePlantPotSize"},
-     *      description="Get all HomePlantPotSizes",
-     *      produces={"application/json"},
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="array",
-     *                  @SWG\Items(ref="#/definitions/HomePlantPotSize")
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function index(Request $request)
     {
         $homePlantPotSizes = $this->homePlantPotSizeRepository->all(
@@ -73,44 +41,6 @@ class HomePlantPotSizeAPIController extends AppBaseController
         return $this->sendResponse(HomePlantPotSizeResource::collection($homePlantPotSizes), 'Home Plant Pot Sizes retrieved successfully');
     }
 
-    /**
-     * @param CreateHomePlantPotSizeAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Post(
-     *      path="/homePlantPotSizes",
-     *      summary="Store a newly created HomePlantPotSize in storage",
-     *      tags={"HomePlantPotSize"},
-     *      description="Store HomePlantPotSize",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="HomePlantPotSize that should be stored",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/HomePlantPotSize")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/HomePlantPotSize"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function store(CreateHomePlantPotSizeAPIRequest $request)
     {
         $input = $request->all();
@@ -120,44 +50,6 @@ class HomePlantPotSizeAPIController extends AppBaseController
         return $this->sendResponse(new HomePlantPotSizeResource($homePlantPotSize), 'Home Plant Pot Size saved successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/homePlantPotSizes/{id}",
-     *      summary="Display the specified HomePlantPotSize",
-     *      tags={"HomePlantPotSize"},
-     *      description="Get HomePlantPotSize",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of HomePlantPotSize",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/HomePlantPotSize"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function show($id)
     {
         /** @var HomePlantPotSize $homePlantPotSize */
@@ -170,52 +62,6 @@ class HomePlantPotSizeAPIController extends AppBaseController
         return $this->sendResponse(new HomePlantPotSizeResource($homePlantPotSize), 'Home Plant Pot Size retrieved successfully');
     }
 
-    /**
-     * @param int $id
-     * @param UpdateHomePlantPotSizeAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Put(
-     *      path="/homePlantPotSizes/{id}",
-     *      summary="Update the specified HomePlantPotSize in storage",
-     *      tags={"HomePlantPotSize"},
-     *      description="Update HomePlantPotSize",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of HomePlantPotSize",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="HomePlantPotSize that should be updated",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/HomePlantPotSize")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/HomePlantPotSize"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function update($id, UpdateHomePlantPotSizeAPIRequest $request)
     {
         $input = $request->all();
@@ -232,44 +78,6 @@ class HomePlantPotSizeAPIController extends AppBaseController
         return $this->sendResponse(new HomePlantPotSizeResource($homePlantPotSize), 'HomePlantPotSize updated successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Delete(
-     *      path="/homePlantPotSizes/{id}",
-     *      summary="Remove the specified HomePlantPotSize from storage",
-     *      tags={"HomePlantPotSize"},
-     *      description="Delete HomePlantPotSize",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of HomePlantPotSize",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="string"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function destroy($id)
     {
         try

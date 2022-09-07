@@ -21,7 +21,6 @@ class CreateCommentsTable extends Migration
             $table->foreignId('parent_id')->nullable()->constrained('comments')->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreignId('post_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->timestamps();
-            $table->softDeletes();
             // $table->foreign('commenter_id')->references('id')->on('users')->onDelete('CASCADE');
             // $table->foreign('post_id')->references('id')->on('posts')->onDelete('CASCADE');
         });

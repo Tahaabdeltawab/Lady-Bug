@@ -3,31 +3,25 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use willvincent\Rateable\Rateable;
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class Product extends Model implements TranslatableContract
+class Product extends Model
 {
-    use /*SoftDeletes,*/ Translatable, Rateable;
+    use \App\Traits\SpatieHasTranslations, Rateable;
 
-    public $translatedAttributes = ['name', 'description'];
+    public $translatable = ['name', 'description'];
 
     public $table = 'products';
-
-
-    protected $dates = ['deleted_at'];
 
 
 
     public $fillable = [
         'price',
         'seller_id',
-        // 'description',
-        // 'name',
+        'description',
+        'name',
         'farmed_type_id',
         'city_id',
         'district_id',

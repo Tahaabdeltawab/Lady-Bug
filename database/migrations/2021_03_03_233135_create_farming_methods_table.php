@@ -16,9 +16,7 @@ class CreateFarmingMethodsTable extends Migration
     {
         Schema::create('farming_methods', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->json('name');
         });
     }
 

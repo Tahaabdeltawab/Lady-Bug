@@ -27,8 +27,8 @@ class UpdateFarmingMethodAPIRequest extends APIRequest
         // $id = last(request()->segments());
         $id = $this->farming_method ?? null;
         return [
-            'name_ar_localized' => 'required|max:200|unique:farming_method_translations,name,'.$id.',farming_method_id,locale,ar',
-            'name_en_localized' => 'required|max:200|unique:farming_method_translations,name,'.$id.',farming_method_id,locale,en',
+            'name_ar_localized' => 'required|max:200',
+            'name_en_localized' => 'required|max:200',
         ];
     }
 }

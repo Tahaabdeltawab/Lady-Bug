@@ -17,13 +17,7 @@ class CreateAnimalFodderSourceFarmTable extends Migration
             $table->id();
             $table->foreignId('animal_fodder_source_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreignId('farm_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->timestamps();
-
-            /* $table->foreign('animal_fodder_source_id')->references('id')->on('animal_fodder_sources')
-                ->onDelete('cascade');
-            $table->foreign('farm_id')->references('id')->on('farms')
-                ->onDelete('cascade'); */
-
+          
             $table->unique(['animal_fodder_source_id', 'farm_id'],'afoddersrc_farm_unique');
 
         });

@@ -3,18 +3,12 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class HomePlantPotSize extends Model
 {
-  // use SoftDeletes;
-
 
     public $table = 'home_plant_pot_sizes';
-
-
-    protected $dates = ['deleted_at'];
 
 
 

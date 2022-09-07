@@ -28,7 +28,6 @@ class CreateSaltDetailsTable extends Migration
             $table->double('Na');
             $table->double('Na2CO3');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

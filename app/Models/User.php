@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,18 +11,12 @@ use Spatie\Permission\Traits\HasRoles;
 use Overtrue\LaravelFollow\Followable;
 use willvincent\Rateable\Rateable;
 use Overtrue\LaravelLike\Traits\Liker;
-use Overtrue\LaravelSubscribe\Traits\Subscriber;
 use Laratrust\Traits\LaratrustUserTrait;
 
 
 class User extends Authenticatable implements JWTSubject
 {
-    use LaratrustUserTrait, HasFactory, Notifiable, Followable, Rateable, Liker, Subscriber;
-    // use SoftDeletes;
-
-
-    protected $dates = ['deleted_at'];
-
+    use LaratrustUserTrait, HasFactory, Notifiable, Followable, Rateable, Liker;
     protected $fillable = [
         'name',
         'email',

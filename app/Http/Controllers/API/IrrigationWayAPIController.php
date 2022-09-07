@@ -30,38 +30,6 @@ class IrrigationWayAPIController extends AppBaseController
         $this->middleware('permission:irrigation_ways.destroy')->only(['destroy']);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/irrigationWays",
-     *      summary="Get a listing of the IrrigationWays.",
-     *      tags={"IrrigationWay"},
-     *      description="Get all IrrigationWays",
-     *      produces={"application/json"},
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="array",
-     *                  @SWG\Items(ref="#/definitions/IrrigationWay")
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function index(Request $request)
     {
         $irrigationWays = $this->irrigationWayRepository->all(
@@ -73,44 +41,6 @@ class IrrigationWayAPIController extends AppBaseController
         return $this->sendResponse(['all' => IrrigationWayResource::collection($irrigationWays)], 'Irrigation Ways retrieved successfully');
     }
 
-    /**
-     * @param CreateIrrigationWayAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Post(
-     *      path="/irrigationWays",
-     *      summary="Store a newly created IrrigationWay in storage",
-     *      tags={"IrrigationWay"},
-     *      description="Store IrrigationWay",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="IrrigationWay that should be stored",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/IrrigationWay")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/IrrigationWay"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function store(CreateIrrigationWayAPIRequest $request)
     {
         $input = $request->validated();
@@ -120,44 +50,6 @@ class IrrigationWayAPIController extends AppBaseController
         return $this->sendResponse(new IrrigationWayResource($irrigationWay), 'Irrigation Way saved successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/irrigationWays/{id}",
-     *      summary="Display the specified IrrigationWay",
-     *      tags={"IrrigationWay"},
-     *      description="Get IrrigationWay",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of IrrigationWay",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/IrrigationWay"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function show($id)
     {
         /** @var IrrigationWay $irrigationWay */
@@ -170,52 +62,6 @@ class IrrigationWayAPIController extends AppBaseController
         return $this->sendResponse(new IrrigationWayResource($irrigationWay), 'Irrigation Way retrieved successfully');
     }
 
-    /**
-     * @param int $id
-     * @param UpdateIrrigationWayAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Put(
-     *      path="/irrigationWays/{id}",
-     *      summary="Update the specified IrrigationWay in storage",
-     *      tags={"IrrigationWay"},
-     *      description="Update IrrigationWay",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of IrrigationWay",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="IrrigationWay that should be updated",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/IrrigationWay")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/IrrigationWay"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function update($id, CreateIrrigationWayAPIRequest $request)
     {
         $input = $request->validated();
@@ -232,44 +78,6 @@ class IrrigationWayAPIController extends AppBaseController
         return $this->sendResponse(new IrrigationWayResource($irrigationWay), 'IrrigationWay updated successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Delete(
-     *      path="/irrigationWays/{id}",
-     *      summary="Remove the specified IrrigationWay from storage",
-     *      tags={"IrrigationWay"},
-     *      description="Delete IrrigationWay",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of IrrigationWay",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="string"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function destroy($id)
     {
         try

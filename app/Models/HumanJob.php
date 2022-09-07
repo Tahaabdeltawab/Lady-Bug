@@ -4,28 +4,23 @@ namespace App\Models;
 
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class HumanJob extends Model implements TranslatableContract
+class HumanJob extends Model
 {
-    use /*SoftDeletes,*/ Translatable, HasFactory;
+    use \App\Traits\SpatieHasTranslations, HasFactory;
 
-    public $translatedAttributes = ['name'];
+    public $translatable = ['name'];
+	public $timestamps = false;
 
 
     public $table = 'human_jobs';
 
 
-    protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
-        // 'name'
+        'name'
     ];
 
     /**
@@ -35,7 +30,7 @@ class HumanJob extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'name' => 'string'
+        'name' => 'string'
     ];
 
     /**

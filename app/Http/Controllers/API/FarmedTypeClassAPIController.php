@@ -30,38 +30,6 @@ class FarmedTypeClassAPIController extends AppBaseController
         $this->middleware('permission:farmed_type_classes.destroy')->only(['destroy']);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/farmedTypeClasses",
-     *      summary="Get a listing of the FarmedTypeClasses.",
-     *      tags={"FarmedTypeClass"},
-     *      description="Get all FarmedTypeClasses",
-     *      produces={"application/json"},
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="array",
-     *                  @SWG\Items(ref="#/definitions/FarmedTypeClass")
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function index(Request $request)
     {
         $farmedTypeClasses = $this->farmedTypeClassRepository->all(
@@ -73,44 +41,6 @@ class FarmedTypeClassAPIController extends AppBaseController
         return $this->sendResponse(['all' => FarmedTypeClassResource::collection($farmedTypeClasses)], 'Farmed Type Classes retrieved successfully');
     }
 
-    /**
-     * @param CreateFarmedTypeClassAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Post(
-     *      path="/farmedTypeClasses",
-     *      summary="Store a newly created FarmedTypeClass in storage",
-     *      tags={"FarmedTypeClass"},
-     *      description="Store FarmedTypeClass",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="FarmedTypeClass that should be stored",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/FarmedTypeClass")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/FarmedTypeClass"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function store(CreateFarmedTypeClassAPIRequest $request)
     {
         $input = $request->validated();
@@ -120,44 +50,6 @@ class FarmedTypeClassAPIController extends AppBaseController
         return $this->sendResponse(new FarmedTypeClassResource($farmedTypeClass), 'Farmed Type Class saved successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/farmedTypeClasses/{id}",
-     *      summary="Display the specified FarmedTypeClass",
-     *      tags={"FarmedTypeClass"},
-     *      description="Get FarmedTypeClass",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of FarmedTypeClass",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/FarmedTypeClass"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function show($id)
     {
         /** @var FarmedTypeClass $farmedTypeClass */
@@ -170,52 +62,6 @@ class FarmedTypeClassAPIController extends AppBaseController
         return $this->sendResponse(new FarmedTypeClassResource($farmedTypeClass), 'Farmed Type Class retrieved successfully');
     }
 
-    /**
-     * @param int $id
-     * @param UpdateFarmedTypeClassAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Put(
-     *      path="/farmedTypeClasses/{id}",
-     *      summary="Update the specified FarmedTypeClass in storage",
-     *      tags={"FarmedTypeClass"},
-     *      description="Update FarmedTypeClass",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of FarmedTypeClass",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="FarmedTypeClass that should be updated",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/FarmedTypeClass")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/FarmedTypeClass"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function update($id, CreateFarmedTypeClassAPIRequest $request)
     {
         $input = $request->validated();
@@ -232,44 +78,6 @@ class FarmedTypeClassAPIController extends AppBaseController
         return $this->sendResponse(new FarmedTypeClassResource($farmedTypeClass), 'FarmedTypeClass updated successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Delete(
-     *      path="/farmedTypeClasses/{id}",
-     *      summary="Remove the specified FarmedTypeClass from storage",
-     *      tags={"FarmedTypeClass"},
-     *      description="Delete FarmedTypeClass",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of FarmedTypeClass",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="string"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function destroy($id)
     {
         try

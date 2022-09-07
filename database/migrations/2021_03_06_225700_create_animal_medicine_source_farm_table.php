@@ -17,12 +17,6 @@ class CreateAnimalMedicineSourceFarmTable extends Migration
             $table->id();
             $table->foreignId('animal_medicine_source_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreignId('farm_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
-            $table->timestamps();
-
-            /* $table->foreign('animal_medicine_source_id')->references('id')->on('animal_medicine_sources')
-                ->onDelete('cascade');
-            $table->foreign('farm_id')->references('id')->on('farms')
-                ->onDelete('cascade'); */
 
             $table->unique(['animal_medicine_source_id', 'farm_id'],'amdcnsrc_farm_unique');
 

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Validation\ValidationException;
-use Mekaeil\LaravelUserManagement\Repository\Eloquents\UserRepository;
 
 
 class LoginController extends Controller
@@ -58,8 +58,7 @@ class LoginController extends Controller
 
     protected function sendFailedLoginResponse()
     {
-        $user_repo = new UserRepository;
-        $user = $user_repo->findBy([$this->username() => request()->{$this->username()}]);
+        $user = User::where($this->username(), request()->{$this->username()})->first();
         if($user && $user->status != 'accepted')
         {
             return redirect()->back()->with('fail_message',trans('trans.your_account_is_not_accepted'));

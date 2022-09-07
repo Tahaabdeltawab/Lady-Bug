@@ -15,9 +15,10 @@ class CreateRatingQuestionsTable extends Migration
     public function up()
     {
         Schema::create('rating_questions', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
+            $table->json('name');
+            $table->json('description');
             $table->string('type');
-            $table->timestamps();
         });
     }
 

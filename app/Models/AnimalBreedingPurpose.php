@@ -3,19 +3,16 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class AnimalBreedingPurpose extends Model implements TranslatableContract
+class AnimalBreedingPurpose extends Model
 {
-    use /*SoftDeletes,*/ Translatable;
-
-    public $translatedAttributes = ['name'];
+    use \App\Traits\SpatieHasTranslations;
+    public $translatable = ['name'];
+	public $timestamps = false;
 
 
     public $table = 'animal_breeding_purposes';
@@ -23,7 +20,7 @@ class AnimalBreedingPurpose extends Model implements TranslatableContract
 
 
     public $fillable = [
-        // 'name'
+        'name'
     ];
 
     /**
@@ -33,7 +30,7 @@ class AnimalBreedingPurpose extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'name' => 'string'
+        'name' => 'string'
     ];
 
     /**

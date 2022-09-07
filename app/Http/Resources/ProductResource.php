@@ -33,8 +33,8 @@ class ProductResource extends JsonResource
         {
             foreach(config('translatable.locales') as $locale)
             {
-                $return["name_" . $locale . "_localized"] = $this->translate($locale)->name;
-                $return["description_" . $locale . "_localized"] = $this->translate($locale)->description;
+                $return["name_" . $locale . "_localized"] = $this->translate('name',$locale);
+                $return["description_" . $locale . "_localized"] = $this->translate('description',$locale);
             }
         }
         else

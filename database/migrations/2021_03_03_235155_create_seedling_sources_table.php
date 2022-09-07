@@ -16,9 +16,7 @@ class CreateSeedlingSourcesTable extends Migration
     {
         Schema::create('seedling_sources', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->json('name');
         });
     }
 

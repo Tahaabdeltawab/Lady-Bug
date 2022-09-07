@@ -3,28 +3,22 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class FarmingMethod extends Model implements TranslatableContract
+class FarmingMethod extends Model
 {
-    use /*SoftDeletes,*/ Translatable;
-
-    public $translatedAttributes = ['name'];
+    use \App\Traits\SpatieHasTranslations;
+    public $translatable = ['name'];
+	public $timestamps = false;
 
 
     public $table = 'farming_methods';
 
 
-    protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
-        // 'name'
+        'name'
     ];
 
     /**
@@ -34,7 +28,7 @@ class FarmingMethod extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'name' => 'string'
+        'name' => 'string'
     ];
 
     /**

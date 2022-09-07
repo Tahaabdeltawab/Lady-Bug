@@ -27,7 +27,6 @@ class CreateServiceTasksTable extends Migration
             $table->timestamp('due_at')->nullable();
             $table->boolean('done')->default(0);
             $table->timestamps();
-            $table->softDeletes();
             // $table->foreign('farm_id')->references('id')->on('farms')->onDelete('CASCADE');
             // $table->foreign('service_table_id')->references('id')->on('service_tables')->onDelete('CASCADE');
         });

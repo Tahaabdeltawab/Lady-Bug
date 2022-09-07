@@ -16,9 +16,7 @@ class CreateAnimalBreedingPurposesTable extends Migration
     {
         Schema::create('animal_breeding_purposes', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->json('name');
         });
     }
 

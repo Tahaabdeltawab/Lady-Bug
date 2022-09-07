@@ -30,38 +30,6 @@ class InformationAPIController extends AppBaseController
         $this->middleware('permission:information.destroy')->only(['destroy']);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/information",
-     *      summary="Get a listing of the Information.",
-     *      tags={"Information"},
-     *      description="Get all Information",
-     *      produces={"application/json"},
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="array",
-     *                  @SWG\Items(ref="#/definitions/Information")
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function index(Request $request)
     {
         $information = $this->informationRepository->all(
@@ -73,44 +41,6 @@ class InformationAPIController extends AppBaseController
         return $this->sendResponse(['all' => InformationResource::collection($information)], 'Information retrieved successfully');
     }
 
-    /**
-     * @param CreateInformationAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Post(
-     *      path="/information",
-     *      summary="Store a newly created Information in storage",
-     *      tags={"Information"},
-     *      description="Store Information",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="Information that should be stored",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/Information")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/Information"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function store(CreateInformationAPIRequest $request)
     {
         $input = $request->validated();
@@ -120,44 +50,6 @@ class InformationAPIController extends AppBaseController
         return $this->sendResponse(new InformationResource($information), 'Information saved successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/information/{id}",
-     *      summary="Display the specified Information",
-     *      tags={"Information"},
-     *      description="Get Information",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of Information",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/Information"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function show($id)
     {
         /** @var Information $information */
@@ -170,52 +62,6 @@ class InformationAPIController extends AppBaseController
         return $this->sendResponse(new InformationResource($information), 'Information retrieved successfully');
     }
 
-    /**
-     * @param int $id
-     * @param UpdateInformationAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Put(
-     *      path="/information/{id}",
-     *      summary="Update the specified Information in storage",
-     *      tags={"Information"},
-     *      description="Update Information",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of Information",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="Information that should be updated",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/Information")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/Information"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function update($id, CreateInformationAPIRequest $request)
     {
         $input = $request->validated();
@@ -232,44 +78,6 @@ class InformationAPIController extends AppBaseController
         return $this->sendResponse(new InformationResource($information), 'Information updated successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Delete(
-     *      path="/information/{id}",
-     *      summary="Remove the specified Information from storage",
-     *      tags={"Information"},
-     *      description="Delete Information",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of Information",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="string"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function destroy($id)
     {
         try

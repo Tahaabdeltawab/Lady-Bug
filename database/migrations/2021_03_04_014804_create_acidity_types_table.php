@@ -16,8 +16,7 @@ class CreateAcidityTypesTable extends Migration
     {
         Schema::create('acidity_types', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
-            $table->softDeletes();
+            $table->json('name');
         });
     }
 

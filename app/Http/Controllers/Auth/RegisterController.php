@@ -15,8 +15,6 @@ use App\Repositories\AssetRepository;
 use App\Http\Resources\AssetResource;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
-// use Mekaeil\LaravelUserManagement\Repository\Eloquents\RoleRepository;
-// use Mekaeil\LaravelUserManagement\Repository\Eloquents\UserRepository;
 use App\Repositories\HumanJobRepository;
 
 class RegisterController extends Controller

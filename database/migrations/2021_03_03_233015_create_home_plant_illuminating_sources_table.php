@@ -16,9 +16,7 @@ class CreateHomePlantIlluminatingSourcesTable extends Migration
     {
         Schema::create('home_plant_illuminating_sources', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->json('name');
         });
     }
 

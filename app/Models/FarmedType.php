@@ -3,26 +3,22 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 // use Overtrue\LaravelFavorite\Traits\Favoriteable;
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class FarmedType extends Model implements TranslatableContract
+class FarmedType extends Model
 {
-    use /*SoftDeletes,*/ Translatable/* , Favoriteable */;
+    use \App\Traits\SpatieHasTranslations/* , Favoriteable */;
 
-    public $translatedAttributes = ['name'];
+    public $translatable = ['name'];
+	public $timestamps = false;
 
     public $table = 'farmed_types';
 
 
-    protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
+        'name',
         'farm_activity_type_id',
         'farming_temperature',
         'flowering_temperature',
@@ -43,7 +39,7 @@ class FarmedType extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'name' => 'string',
+        'name' => 'string',
         'farm_activity_type_id' => 'integer'
     ];
 

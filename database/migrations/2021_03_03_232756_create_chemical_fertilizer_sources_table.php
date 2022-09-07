@@ -16,9 +16,7 @@ class CreateChemicalFertilizerSourcesTable extends Migration
     {
         Schema::create('chemical_fertilizer_sources', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->json('name');
         });
     }
 

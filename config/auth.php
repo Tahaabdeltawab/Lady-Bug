@@ -79,7 +79,6 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            // 'model' => App\Entities\User::class,
             'model' => App\Models\User::class,
         ],
 
@@ -107,7 +106,7 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table' => config('laravel_user_management.password_resets_table'),
+            'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
         ],

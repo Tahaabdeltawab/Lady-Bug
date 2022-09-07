@@ -1,18 +1,4 @@
 <?php return array (
-  'appointer/swaggervel' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Appointer\\Swaggervel\\SwaggervelServiceProvider',
-    ),
-  ),
-  'astrotomic/laravel-translatable' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Astrotomic\\Translatable\\TranslatableServiceProvider',
-    ),
-  ),
   'facade/ignition' => 
   array (
     'providers' => 
@@ -121,24 +107,6 @@
       'Html' => 'Collective\\Html\\HtmlFacade',
     ),
   ),
-  'maatwebsite/excel' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Maatwebsite\\Excel\\ExcelServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'Excel' => 'Maatwebsite\\Excel\\Facades\\Excel',
-    ),
-  ),
-  'mekaeil/laravel-user-management' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Mekaeil\\LaravelUserManagement\\LaravelUserManagementProvider',
-    ),
-  ),
   'nesbot/carbon' => 
   array (
     'providers' => 
@@ -174,13 +142,6 @@
       0 => 'Overtrue\\LaravelLike\\LikeServiceProvider',
     ),
   ),
-  'overtrue/laravel-subscribe' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Overtrue\\LaravelSubscribe\\SubscribeServiceProvider',
-    ),
-  ),
   'santigarcor/laratrust' => 
   array (
     'providers' => 
@@ -192,11 +153,11 @@
       'Laratrust' => 'Laratrust\\LaratrustFacade',
     ),
   ),
-  'spatie/laravel-permission' => 
+  'spatie/laravel-translatable' => 
   array (
     'providers' => 
     array (
-      0 => 'Spatie\\Permission\\PermissionServiceProvider',
+      0 => 'Spatie\\Translatable\\TranslatableServiceProvider',
     ),
   ),
   'tymon/jwt-auth' => 
@@ -216,45 +177,6 @@
     'providers' => 
     array (
       0 => 'willvincent\\Rateable\\RateableServiceProvider',
-    ),
-  ),
-  'yajra/laravel-datatables-buttons' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Yajra\\DataTables\\ButtonsServiceProvider',
-    ),
-  ),
-  'yajra/laravel-datatables-editor' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Yajra\\DataTables\\EditorServiceProvider',
-    ),
-  ),
-  'yajra/laravel-datatables-fractal' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Yajra\\DataTables\\FractalServiceProvider',
-    ),
-  ),
-  'yajra/laravel-datatables-html' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Yajra\\DataTables\\HtmlServiceProvider',
-    ),
-  ),
-  'yajra/laravel-datatables-oracle' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Yajra\\DataTables\\DataTablesServiceProvider',
-    ),
-    'aliases' => 
-    array (
-      'DataTables' => 'Yajra\\DataTables\\Facades\\DataTables',
     ),
   ),
 );

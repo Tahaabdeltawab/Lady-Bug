@@ -16,9 +16,8 @@ class CreateBuyingNotesTable extends Migration
     {
         Schema::create('buying_notes', function (Blueprint $table) {
             $table->id();
-            // $table->text('content');
+            $table->json('content');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

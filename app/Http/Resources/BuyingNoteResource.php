@@ -22,7 +22,7 @@ class BuyingNoteResource extends JsonResource
         {
             foreach(config('translatable.locales') as $locale)
             {
-                $return["content_" . $locale . "_localized"] = $this->translate($locale)->content;
+                $return["content_" . $locale . "_localized"] = $this->translate('content',$locale);
             }
         }
         else

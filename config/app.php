@@ -166,9 +166,7 @@ return [
         /*
          * Package Service Providers...
          */
-        Yajra\DataTables\DataTablesServiceProvider::class,
         InfyOm\GeneratorBuilder\GeneratorBuilderServiceProvider::class,
-        \Mekaeil\LaravelUserManagement\LaravelUserManagementProvider::class,
         /*
          * Application Service Providers...
          */

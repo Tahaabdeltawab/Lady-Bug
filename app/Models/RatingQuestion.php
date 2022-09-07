@@ -3,28 +3,20 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-
-/**
- * Class RatingQuestion
- * @package App\Models
- * @version August 15, 2022, 6:13 pm EET
- *
- * @property string $type
- */
-class RatingQuestion extends Model implements TranslatableContract
+class RatingQuestion extends Model
 {
-    use Translatable;
+    use \App\Traits\SpatieHasTranslations;
 
     public $table = 'rating_questions';
-    public $translatedAttributes = ['name', 'description'];
-
+    public $translatable = ['name', 'description'];
+    public $timestamps = false;
 
 
 
     public $fillable = [
+        'name',
+        'description',
         'type'
     ];
 
@@ -35,7 +27,9 @@ class RatingQuestion extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        'type' => 'string'
+        'type' => 'string',
+        'name' => 'string',
+        'description' => 'string',
     ];
 
     /**

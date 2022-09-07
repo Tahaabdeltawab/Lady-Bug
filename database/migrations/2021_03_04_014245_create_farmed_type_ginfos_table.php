@@ -16,12 +16,11 @@ class CreateFarmedTypeGinfosTable extends Migration
     {
         Schema::create('farmed_type_ginfos', function (Blueprint $table) {
             $table->id();
-            // $table->string('title');
-            // $table->text('content');
+            $table->json('title');
+            $table->json('content');
             $table->foreignId('farmed_type_id')->constrained();
             $table->foreignId('farmed_type_stage_id')->constrained();
             $table->timestamps();
-            $table->softDeletes();
             // $table->foreign('farmed_type_id')->references('id')->on('farmed_types')->onDelete('CASCADE');
             // $table->foreign('farmed_type_stage_id')->references('id')->on('farmed_type_stages')->onDelete('CASCADE');
         });

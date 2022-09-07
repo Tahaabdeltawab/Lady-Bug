@@ -3,28 +3,23 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class District extends Model implements TranslatableContract
+class District extends Model
 {
-    use /*SoftDeletes,*/ Translatable;
-
-    public $translatedAttributes = ['name'];
+    use \App\Traits\SpatieHasTranslations;
+    public $translatable = ['name'];
+	public $timestamps = false;
 
 
     public $table = 'districts';
 
 
-    protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
-        'city_id'
+        'city_id',
+        'name'
     ];
 
     /**

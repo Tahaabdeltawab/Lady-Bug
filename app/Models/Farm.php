@@ -3,18 +3,12 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Farm extends Team
 {
-  // use SoftDeletes;
-
 
     public $table = 'farms';
-
-
-    protected $dates = ['deleted_at'];
 
 
 

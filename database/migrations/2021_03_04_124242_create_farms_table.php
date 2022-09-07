@@ -39,7 +39,6 @@ class CreateFarmsTable extends Migration
             $table->foreignId('irrigation_water_detail_id')->nullable()->constrained('chemical_details')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->foreignId('animal_drink_water_salt_detail_id')->nullable()->constrained('salt_details')->onDelete('CASCADE')->onUpdate('CASCADE');
             $table->timestamps();
-            $table->softDeletes();
             // $table->foreign('farm_activity_type_id')->references('id')->on('farm_activity_types')->onDelete('CASCADE');
             // $table->foreign('farmed_type_id')->references('id')->on('farmed_types')->onDelete('CASCADE');
             // $table->foreign('farmed_type_class_id')->references('id')->on('farmed_type_classes')->onDelete('CASCADE');

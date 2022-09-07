@@ -16,9 +16,9 @@ class CreateSaltTypesTable extends Migration
     {
         Schema::create('salt_types', function (Blueprint $table) {
             $table->id();
+            $table->json('name');
             $table->string('type');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

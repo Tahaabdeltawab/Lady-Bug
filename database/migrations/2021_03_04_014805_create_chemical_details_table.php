@@ -25,7 +25,6 @@ class CreateChemicalDetailsTable extends Migration
             $table->foreignId('salt_concentration_unit_id')->nullable()->constrained('measuring_units');
             $table->foreignId('salt_detail_id')->constrained();
             $table->timestamps();
-            $table->softDeletes();
             // $table->foreign('salt_detail_id')->references('id')->on('salt_details')->onDelete('CASCADE');
         });
     }

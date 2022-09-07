@@ -4,21 +4,6 @@ namespace App\Models;
 
 use Eloquent as Model;
 
-
-
-/**
- * Class OfflineConsultancyPlan
- * @package App\Models
- * @version August 28, 2022, 5:55 pm EET
- *
- * @property \App\Models\ConsultancyProfile $consultancyProfile
- * @property integer $consultancy_profile_id
- * @property string $address
- * @property string $date
- * @property number $visit_price
- * @property number $year_price
- * @property number $two_year_price
- */
 class OfflineConsultancyPlan extends Model
 {
 

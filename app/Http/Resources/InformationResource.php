@@ -22,8 +22,8 @@ class InformationResource extends JsonResource
         {
             foreach(config('translatable.locales') as $locale)
             {
-                $return["title_" . $locale . "_localized"] = $this->translate($locale)->title;
-                $return["content_" . $locale . "_localized"] = $this->translate($locale)->content;
+                $return["title_" . $locale . "_localized"] = $this->translate('title',$locale);
+                $return["content_" . $locale . "_localized"] = $this->translate('content',$locale);
             }
         }
         else

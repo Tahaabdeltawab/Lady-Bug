@@ -16,9 +16,7 @@ class CreateIrrigationWaysTable extends Migration
     {
         Schema::create('irrigation_ways', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->json('name');
         });
     }
 

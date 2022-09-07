@@ -3,27 +3,21 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class PostType extends Model implements TranslatableContract
+class PostType extends Model
 {
-    use /*SoftDeletes,*/ Translatable;
-
-    public $translatedAttributes = ['name'];
+    use \App\Traits\SpatieHasTranslations;
+    public $translatable = ['name'];
+	public $timestamps = false;
 
     public $table = 'post_types';
 
 
-    protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
-        // 'name'
+        'name'
     ];
 
     /**
@@ -33,7 +27,7 @@ class PostType extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'name' => 'string'
+        'name' => 'string'
     ];
 
     /**

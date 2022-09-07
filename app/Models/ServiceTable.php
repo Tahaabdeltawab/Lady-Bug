@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 
 class ServiceTable extends Model
 {
-    // use SoftDeletes;
 
     public $table = 'service_tables';
 

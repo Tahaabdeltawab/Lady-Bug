@@ -13,8 +13,6 @@ class CreatePasswordResetTable extends Migration
      */
     public function up()
     {
-        // $table = config("laravel_user_management.password_resets_table");
-
         Schema::create('password_resets', function (Blueprint $table) {
             $table->string('email')->index();
             $table->string('token');
@@ -29,8 +27,6 @@ class CreatePasswordResetTable extends Migration
      */
     public function down()
     {
-        // $table = config("laravel_user_management.password_resets_table");
-
         Schema::dropIfExists('password_resets');
     }
 

@@ -28,7 +28,7 @@ class FarmedTypeResource extends JsonResource
         {
             foreach(config('translatable.locales') as $locale)
             {
-                $return["name_" . $locale . "_localized"] = $this->translate($locale)->name;
+                $return["name_" . $locale . "_localized"] = $this->translate('name',$locale);
             }
         }
         else

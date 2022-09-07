@@ -4,27 +4,11 @@ namespace App\Models;
 
 use Eloquent as Model;
 
-
-
-/**
- * Class Report
- * @package App\Models
- * @version August 20, 2021, 1:27 am EET
- *
- * @property integer $report_type_id
- * @property string $reportable_type
- * @property integer $reportable_id
- * @property string $description
- * @property string $image
- * @property boolean $status
- */
 class Report extends Model
 {
 
 
     public $table = 'reports';
-
-
 
 
     public $fillable = [

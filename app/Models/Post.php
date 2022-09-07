@@ -3,18 +3,14 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Overtrue\LaravelLike\Traits\Likeable;
 
 class Post extends Model
 {
-    use /*SoftDeletes,*/ Likeable;
+    use Likeable;
 
 
     public $table = 'posts';
-
-
-    protected $dates = ['deleted_at'];
 
 
 

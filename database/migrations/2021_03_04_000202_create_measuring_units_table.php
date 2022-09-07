@@ -16,11 +16,10 @@ class CreateMeasuringUnitsTable extends Migration
     {
         Schema::create('measuring_units', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
+            $table->json('name');
             $table->string('code');
             $table->string('measurable');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

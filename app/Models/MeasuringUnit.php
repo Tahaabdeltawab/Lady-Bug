@@ -3,28 +3,22 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class MeasuringUnit extends Model implements TranslatableContract
+class MeasuringUnit extends Model
 {
-    use /*SoftDeletes,*/ Translatable;
-
-    public $translatedAttributes = ['name'];
+    use \App\Traits\SpatieHasTranslations;
+    public $translatable = ['name'];
+	public $timestamps = false;
 
 
     public $table = 'measuring_units';
 
 
-    protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
-        // 'name',
+        'name',
         'code',
         'measurable'
     ];
@@ -36,7 +30,7 @@ class MeasuringUnit extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'name' => 'string',
+        'name' => 'string',
         'code' => 'string',
         'measurable' => 'string'
     ];

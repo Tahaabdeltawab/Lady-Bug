@@ -23,7 +23,6 @@ class CreateLocationsTable extends Migration
             $table->string('district')->nullable();
             $table->string('details')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

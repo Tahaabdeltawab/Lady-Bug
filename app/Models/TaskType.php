@@ -3,27 +3,21 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class TaskType extends Model implements TranslatableContract
+class TaskType extends Model
 {
-    use /*SoftDeletes,*/ Translatable;
-
+    use \App\Traits\SpatieHasTranslations;
 
     public $table = 'task_types';
 
-    public $translatedAttributes = ['name'];
-
-    protected $dates = ['deleted_at'];
-
+    public $translatable = ['name'];
+	public $timestamps = false;
 
 
     public $fillable = [
-
+        'name'
     ];
 
     /**

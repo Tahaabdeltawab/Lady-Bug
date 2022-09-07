@@ -30,38 +30,6 @@ class AnimalFodderTypeAPIController extends AppBaseController
         $this->middleware('permission:animal_fodder_types.destroy')->only(['destroy']);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/animalFodderTypes",
-     *      summary="Get a listing of the AnimalFodderTypes.",
-     *      tags={"AnimalFodderType"},
-     *      description="Get all AnimalFodderTypes",
-     *      produces={"application/json"},
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="array",
-     *                  @SWG\Items(ref="#/definitions/AnimalFodderType")
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function index(Request $request)
     {
         $animalFodderTypes = $this->animalFodderTypeRepository->all(
@@ -73,44 +41,6 @@ class AnimalFodderTypeAPIController extends AppBaseController
         return $this->sendResponse(['all' => AnimalFodderTypeResource::collection($animalFodderTypes)], 'Animal Fodder Types retrieved successfully');
     }
 
-    /**
-     * @param CreateAnimalFodderTypeAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Post(
-     *      path="/animalFodderTypes",
-     *      summary="Store a newly created AnimalFodderType in storage",
-     *      tags={"AnimalFodderType"},
-     *      description="Store AnimalFodderType",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="AnimalFodderType that should be stored",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/AnimalFodderType")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/AnimalFodderType"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function store(CreateAnimalFodderTypeAPIRequest $request)
     {
         $input = $request->validated();
@@ -120,44 +50,6 @@ class AnimalFodderTypeAPIController extends AppBaseController
         return $this->sendResponse(new AnimalFodderTypeResource($animalFodderType), 'Animal Fodder Type saved successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/animalFodderTypes/{id}",
-     *      summary="Display the specified AnimalFodderType",
-     *      tags={"AnimalFodderType"},
-     *      description="Get AnimalFodderType",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of AnimalFodderType",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/AnimalFodderType"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function show($id)
     {
         /** @var AnimalFodderType $animalFodderType */
@@ -170,52 +62,6 @@ class AnimalFodderTypeAPIController extends AppBaseController
         return $this->sendResponse(new AnimalFodderTypeResource($animalFodderType), 'Animal Fodder Type retrieved successfully');
     }
 
-    /**
-     * @param int $id
-     * @param UpdateAnimalFodderTypeAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Put(
-     *      path="/animalFodderTypes/{id}",
-     *      summary="Update the specified AnimalFodderType in storage",
-     *      tags={"AnimalFodderType"},
-     *      description="Update AnimalFodderType",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of AnimalFodderType",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="AnimalFodderType that should be updated",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/AnimalFodderType")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/AnimalFodderType"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function update($id, CreateAnimalFodderTypeAPIRequest $request)
     {
         $input = $request->validated();
@@ -232,44 +78,6 @@ class AnimalFodderTypeAPIController extends AppBaseController
         return $this->sendResponse(new AnimalFodderTypeResource($animalFodderType), 'AnimalFodderType updated successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Delete(
-     *      path="/animalFodderTypes/{id}",
-     *      summary="Remove the specified AnimalFodderType from storage",
-     *      tags={"AnimalFodderType"},
-     *      description="Delete AnimalFodderType",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of AnimalFodderType",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="string"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function destroy($id)
     {
         try

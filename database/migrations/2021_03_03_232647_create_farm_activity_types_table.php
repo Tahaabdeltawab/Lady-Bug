@@ -16,9 +16,7 @@ class CreateFarmActivityTypesTable extends Migration
     {
         Schema::create('farm_activity_types', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->json('name');
         });
     }
 

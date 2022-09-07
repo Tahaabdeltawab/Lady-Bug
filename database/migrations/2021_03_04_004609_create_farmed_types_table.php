@@ -16,6 +16,7 @@ class CreateFarmedTypesTable extends Migration
     {
         Schema::create('farmed_types', function (Blueprint $table) {
             $table->id();
+            $table->json('name');
             $table->foreignId('farm_activity_type_id')->constrained();
             $table->string('farming_temperature')->nullable();
             $table->string('flowering_temperature')->nullable();
@@ -24,7 +25,6 @@ class CreateFarmedTypesTable extends Migration
             $table->integer('flowering_time')->nullable();
             $table->integer('maturity_time')->nullable();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

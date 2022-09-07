@@ -3,28 +3,21 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class BuyingNote extends Model implements TranslatableContract
+class BuyingNote extends Model
 {
-    use /*SoftDeletes,*/ Translatable;
-
-    public $translatedAttributes = ['content'];
+    use \App\Traits\SpatieHasTranslations;
+    public $translatable = ['content'];
 
 
     public $table = 'buying_notes';
 
 
-    protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
-        // 'content'
+        'content'
     ];
 
     /**
@@ -34,7 +27,7 @@ class BuyingNote extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'content' => 'string'
+        'content' => 'string'
     ];
 
     /**

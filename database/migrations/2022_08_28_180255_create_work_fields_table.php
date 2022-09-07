@@ -16,6 +16,7 @@ class CreateWorkFieldsTable extends Migration
     {
         Schema::create('work_fields', function (Blueprint $table) {
             $table->id();
+            $table->json('name');
         });
     }
 

@@ -16,9 +16,7 @@ class CreateAnimalMedicineSourcesTable extends Migration
     {
         Schema::create('animal_medicine_sources', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->json('name');
         });
     }
 

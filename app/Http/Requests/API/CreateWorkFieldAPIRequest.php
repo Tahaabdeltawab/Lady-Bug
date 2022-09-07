@@ -26,8 +26,8 @@ class CreateWorkFieldAPIRequest extends APIRequest
     {
         $id = $this->work_field ?? null;
         return [
-            'name_ar_localized' => 'required|max:200|unique:work_field_translations,name,'.$id.',work_field_id,locale,ar',
-            'name_en_localized' => 'required|max:200|unique:work_field_translations,name,'.$id.',work_field_id,locale,en',
+            'name_ar_localized' => 'required|max:200',
+            'name_en_localized' => 'required|max:200',
         ];
     }
 }

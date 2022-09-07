@@ -3,23 +3,20 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
 
-class WorkField extends Model implements TranslatableContract
+class WorkField extends Model
 {
-    use Translatable;
+    use \App\Traits\SpatieHasTranslations;
 
     public $table = 'work_fields';
-    public $translatedAttributes = ['name'];
-
-    public $timestamps = false;
-    
+    public $translatable = ['name'];
+	public $timestamps = false;    
 
 
 
     public $fillable = [
+        'name'
     ];
 
     /**
@@ -29,6 +26,7 @@ class WorkField extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
+        'name' => 'string',
     ];
 
     /**

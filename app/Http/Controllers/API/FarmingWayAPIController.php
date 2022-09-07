@@ -30,38 +30,6 @@ class FarmingWayAPIController extends AppBaseController
         $this->middleware('permission:farming_ways.destroy')->only(['destroy']);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/farmingWays",
-     *      summary="Get a listing of the FarmingWays.",
-     *      tags={"FarmingWay"},
-     *      description="Get all FarmingWays",
-     *      produces={"application/json"},
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="array",
-     *                  @SWG\Items(ref="#/definitions/FarmingWay")
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function index(Request $request)
     {
         $farmingWays = $this->farmingWayRepository->all(
@@ -73,44 +41,6 @@ class FarmingWayAPIController extends AppBaseController
         return $this->sendResponse(['all' => FarmingWayResource::collection($farmingWays)], 'Farming Ways retrieved successfully');
     }
 
-    /**
-     * @param CreateFarmingWayAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Post(
-     *      path="/farmingWays",
-     *      summary="Store a newly created FarmingWay in storage",
-     *      tags={"FarmingWay"},
-     *      description="Store FarmingWay",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="FarmingWay that should be stored",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/FarmingWay")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/FarmingWay"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function store(CreateFarmingWayAPIRequest $request)
     {
         $input = $request->validated();
@@ -120,44 +50,6 @@ class FarmingWayAPIController extends AppBaseController
         return $this->sendResponse(new FarmingWayResource($farmingWay), 'Farming Way saved successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/farmingWays/{id}",
-     *      summary="Display the specified FarmingWay",
-     *      tags={"FarmingWay"},
-     *      description="Get FarmingWay",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of FarmingWay",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/FarmingWay"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function show($id)
     {
         /** @var FarmingWay $farmingWay */
@@ -170,52 +62,6 @@ class FarmingWayAPIController extends AppBaseController
         return $this->sendResponse(new FarmingWayResource($farmingWay), 'Farming Way retrieved successfully');
     }
 
-    /**
-     * @param int $id
-     * @param UpdateFarmingWayAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Put(
-     *      path="/farmingWays/{id}",
-     *      summary="Update the specified FarmingWay in storage",
-     *      tags={"FarmingWay"},
-     *      description="Update FarmingWay",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of FarmingWay",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="FarmingWay that should be updated",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/FarmingWay")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/FarmingWay"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function update($id, CreateFarmingWayAPIRequest $request)
     {
         $input = $request->validated();
@@ -232,44 +78,6 @@ class FarmingWayAPIController extends AppBaseController
         return $this->sendResponse(new FarmingWayResource($farmingWay), 'FarmingWay updated successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Delete(
-     *      path="/farmingWays/{id}",
-     *      summary="Remove the specified FarmingWay from storage",
-     *      tags={"FarmingWay"},
-     *      description="Delete FarmingWay",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of FarmingWay",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="string"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function destroy($id)
     {
         try

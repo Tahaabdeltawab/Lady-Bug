@@ -3,27 +3,21 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class AcidityType extends Model implements TranslatableContract
+class AcidityType extends Model
 {
-    use /*SoftDeletes,*/ Translatable;
-
-    public $translatedAttributes = ['name'];
+    use \App\Traits\SpatieHasTranslations;
+    public $translatable = ['name'];
+	public $timestamps = false;
 
     public $table = 'acidity_types';
 
 
-    protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
-
+        'name'
     ];
 
     /**

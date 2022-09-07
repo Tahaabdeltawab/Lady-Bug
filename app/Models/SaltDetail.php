@@ -3,18 +3,12 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class SaltDetail extends Model
 {
-  // use SoftDeletes;
-
 
     public $table = 'salt_details';
-
-
-    protected $dates = ['deleted_at'];
 
 
 

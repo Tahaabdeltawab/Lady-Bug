@@ -3,29 +3,22 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class FarmedTypeGinfo extends Model implements TranslatableContract
+class FarmedTypeGinfo extends Model
 {
-    use /*SoftDeletes,*/ Translatable;
-
-    public $translatedAttributes = ['title', 'content'];
+    use \App\Traits\SpatieHasTranslations;
+    public $translatable = ['title', 'content'];
 
 
     public $table = 'farmed_type_ginfos';
 
 
-    protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
-        // 'title',
-        // 'content',
+        'title',
+        'content',
         'farmed_type_id',
         'farmed_type_stage_id'
     ];
@@ -37,8 +30,8 @@ class FarmedTypeGinfo extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'title' => 'string',
-        // 'content' => 'string',
+        'title' => 'string',
+        'content' => 'string',
         'farmed_type_id' => 'integer',
         'farmed_type_stage_id' => 'integer'
     ];

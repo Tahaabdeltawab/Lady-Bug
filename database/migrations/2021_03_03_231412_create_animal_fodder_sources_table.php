@@ -16,9 +16,7 @@ class CreateAnimalFodderSourcesTable extends Migration
     {
         Schema::create('animal_fodder_sources', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->json('name');
         });
     }
 

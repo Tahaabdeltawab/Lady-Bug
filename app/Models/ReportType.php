@@ -3,19 +3,18 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class ReportType extends Model implements TranslatableContract
+class ReportType extends Model
 {
-    use Translatable;
+    use \App\Traits\SpatieHasTranslations;
 
-    public $translatedAttributes = ['name'];
+    public $translatable = ['name'];
+	public $timestamps = false;
 
     public $table = 'report_types';
 
     public $fillable = [
-        // 'name'
+        'name'
     ];
 
     /**
@@ -25,7 +24,7 @@ class ReportType extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'name' => 'string'
+        'name' => 'string'
     ];
 
     /**

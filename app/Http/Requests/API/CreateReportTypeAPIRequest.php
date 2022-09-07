@@ -26,8 +26,8 @@ class CreateReportTypeAPIRequest extends APIRequest
     {
         $id = $this->report_type ?? null;
         return [
-            'name_ar_localized' => 'required|max:200|unique:report_type_translations,name,'.$id.',report_type_id,locale,ar',
-            'name_en_localized' => 'required|max:200|unique:report_type_translations,name,'.$id.',report_type_id,locale,en',
+            'name_ar_localized' => 'required|max:200',
+            'name_en_localized' => 'required|max:200',
         ];
     }
 }

@@ -30,38 +30,6 @@ class MeasuringUnitAPIController extends AppBaseController
         $this->middleware('permission:measuring_units.destroy')->only(['destroy']);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/measuringUnits",
-     *      summary="Get a listing of the MeasuringUnits.",
-     *      tags={"MeasuringUnit"},
-     *      description="Get all MeasuringUnits",
-     *      produces={"application/json"},
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="array",
-     *                  @SWG\Items(ref="#/definitions/MeasuringUnit")
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function index(Request $request)
     {
         $measuringUnits = $this->measuringUnitRepository->all(
@@ -73,44 +41,6 @@ class MeasuringUnitAPIController extends AppBaseController
         return $this->sendResponse(['all' => MeasuringUnitResource::collection($measuringUnits)], 'Measuring Units retrieved successfully');
     }
 
-    /**
-     * @param CreateMeasuringUnitAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Post(
-     *      path="/measuringUnits",
-     *      summary="Store a newly created MeasuringUnit in storage",
-     *      tags={"MeasuringUnit"},
-     *      description="Store MeasuringUnit",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="MeasuringUnit that should be stored",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/MeasuringUnit")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/MeasuringUnit"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function store(CreateMeasuringUnitAPIRequest $request)
     {
         $input = $request->validated();
@@ -120,44 +50,6 @@ class MeasuringUnitAPIController extends AppBaseController
         return $this->sendResponse(new MeasuringUnitResource($measuringUnit), 'Measuring Unit saved successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/measuringUnits/{id}",
-     *      summary="Display the specified MeasuringUnit",
-     *      tags={"MeasuringUnit"},
-     *      description="Get MeasuringUnit",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of MeasuringUnit",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/MeasuringUnit"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function show($id)
     {
         /** @var MeasuringUnit $measuringUnit */
@@ -170,52 +62,6 @@ class MeasuringUnitAPIController extends AppBaseController
         return $this->sendResponse(new MeasuringUnitResource($measuringUnit), 'Measuring Unit retrieved successfully');
     }
 
-    /**
-     * @param int $id
-     * @param UpdateMeasuringUnitAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Put(
-     *      path="/measuringUnits/{id}",
-     *      summary="Update the specified MeasuringUnit in storage",
-     *      tags={"MeasuringUnit"},
-     *      description="Update MeasuringUnit",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of MeasuringUnit",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="MeasuringUnit that should be updated",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/MeasuringUnit")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/MeasuringUnit"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function update($id, CreateMeasuringUnitAPIRequest $request)
     {
         $input = $request->validated();
@@ -232,44 +78,6 @@ class MeasuringUnitAPIController extends AppBaseController
         return $this->sendResponse(new MeasuringUnitResource($measuringUnit), 'MeasuringUnit updated successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Delete(
-     *      path="/measuringUnits/{id}",
-     *      summary="Remove the specified MeasuringUnit from storage",
-     *      tags={"MeasuringUnit"},
-     *      description="Delete MeasuringUnit",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of MeasuringUnit",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="string"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function destroy($id)
     {
         try

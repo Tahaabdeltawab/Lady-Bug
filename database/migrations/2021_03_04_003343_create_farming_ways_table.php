@@ -16,10 +16,9 @@ class CreateFarmingWaysTable extends Migration
     {
         Schema::create('farming_ways', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
+            $table->json('name');
             $table->string('type');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

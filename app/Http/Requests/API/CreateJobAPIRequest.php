@@ -26,8 +26,8 @@ class CreateJobAPIRequest extends APIRequest
     {
         $id = $this->job ?? null;
         return [
-            'name_ar_localized' => 'required|max:200|unique:human_job_translations,name,'.$id.',human_job_id,locale,ar',
-            'name_en_localized' => 'required|max:200|unique:human_job_translations,name,'.$id.',human_job_id,locale,en',
+            'name_ar_localized' => 'required|max:200',
+            'name_en_localized' => 'required|max:200',
         ];
     }
 }

@@ -15,11 +15,8 @@ class CreateChemicalFertilizerSourceFarmTable extends Migration
     {
         Schema::create('chemical_fertilizer_source_farm', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('chemical_fertilizer_source_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
-            // $table->foreignId('farm_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->unsignedBigInteger('chemical_fertilizer_source_id');
             $table->unsignedBigInteger('farm_id');
-            $table->timestamps();
 
             $table->foreign('chemical_fertilizer_source_id', 'chfsrc_chfarm_foreign')->references('id')->on('chemical_fertilizer_sources')
                 ->onDelete('CASCADE');

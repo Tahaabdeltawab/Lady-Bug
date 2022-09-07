@@ -16,9 +16,9 @@ class CreateDistrictsTable extends Migration
     {
         Schema::create('districts', function (Blueprint $table) {
             $table->id();
+            $table->json('name');
             $table->foreignId('city_id')->constrained()->onDelete('CASCADE');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

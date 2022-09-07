@@ -3,27 +3,21 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-use Astrotomic\Translatable\Contracts\Translatable as TranslatableContract;
-use Astrotomic\Translatable\Translatable;
 
-class SoilType extends Model implements TranslatableContract
+class SoilType extends Model
 {
-    use /*SoftDeletes,*/ Translatable;
-
+    use \App\Traits\SpatieHasTranslations;
 
     public $table = 'soil_types';
 
-    public $translatedAttributes = ['name'];
-
-    protected $dates = ['deleted_at'];
-
+    public $translatable = ['name'];
+	public $timestamps = false;
 
 
     public $fillable = [
-        // 'name'
+        'name'
     ];
 
     /**
@@ -33,7 +27,7 @@ class SoilType extends Model implements TranslatableContract
      */
     protected $casts = [
         'id' => 'integer',
-        // 'name' => 'string'
+        'name' => 'string'
     ];
 
     /**

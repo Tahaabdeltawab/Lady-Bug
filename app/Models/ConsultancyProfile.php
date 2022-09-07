@@ -4,25 +4,6 @@ namespace App\Models;
 
 use Eloquent as Model;
 
-
-
-/**
- * Class ConsultancyProfile
- * @package App\Models
- * @version August 28, 2022, 5:38 pm EET
- *
- * @property \App\Models\User $user
- * @property \Illuminate\Database\Eloquent\Collection $workFields
- * @property \Illuminate\Database\Eloquent\Collection $offlineConsultancyPlans
- * @property integer $user_id
- * @property integer $experience
- * @property boolean $ar
- * @property boolean $en
- * @property number $consultancy_price
- * @property number $month_consultancy_price
- * @property number $year_consultancy_price
- * @property boolean $free_consultancy_price
- */
 class ConsultancyProfile extends Model
 {
 

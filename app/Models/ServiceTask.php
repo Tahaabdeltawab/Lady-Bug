@@ -3,18 +3,12 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 
 class ServiceTask extends Model
 {
-    // use SoftDeletes;
-
     public $table = 'service_tasks';
-
-
-    protected $dates = ['deleted_at'];
 
 
 

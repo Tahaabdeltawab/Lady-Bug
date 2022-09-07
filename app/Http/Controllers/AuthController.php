@@ -23,8 +23,6 @@ use Illuminate\Support\Facades\Validator;
 use JWTAuth;
 use Twilio;
 
-// use Mekaeil\LaravelUserManagement\Repository\Eloquents\UserRepository;
-// use Mekaeil\LaravelUserManagement\Repository\Eloquents\RoleRepository;
 
 class AuthController extends AppBaseController
 {

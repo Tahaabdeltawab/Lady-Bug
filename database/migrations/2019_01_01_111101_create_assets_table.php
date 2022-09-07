@@ -22,7 +22,6 @@ class CreateAssetsTable extends Migration
             $table->string('asset_mime');
             $table->morphs('assetable');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

@@ -17,10 +17,9 @@ class CreateFarmedTypeClassesTable extends Migration
     {
         Schema::create('farmed_type_classes', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
+            $table->json('name');
             $table->foreignId('farmed_type_id')->constrained();
             $table->timestamps();
-            $table->softDeletes();
             // $table->foreign('farmed_type_id')->references('id')->on('farmed_types')->onDelete('CASCADE');
         });
     }

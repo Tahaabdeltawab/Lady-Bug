@@ -182,7 +182,7 @@ abstract class BaseRepository
 
             foreach($localized_fields as $field){
                 foreach($langs as $lang){
-                    $data[$lang][$field] = $input[$field.'_'.$lang.'_localized'];
+                    $data[$field][$lang] = $input[$field.'_'.$lang.'_localized'];
                     unset($input[$field.'_'.$lang.'_localized']);
                 }
             }

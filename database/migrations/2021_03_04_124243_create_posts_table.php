@@ -25,7 +25,6 @@ class CreatePostsTable extends Migration
             $table->boolean('solved')->nullable();
             $table->bigInteger('reactions_count')->nullable()->default(0);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

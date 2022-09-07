@@ -26,8 +26,8 @@ class CreateIrrigationWayAPIRequest extends APIRequest
     {
         $id = $this->irrigation_way ?? null;
         return [
-            'name_ar_localized' => 'required|max:200|unique:irrigation_way_translations,name,'.$id.',irrigation_way_id,locale,ar',
-            'name_en_localized' => 'required|max:200|unique:irrigation_way_translations,name,'.$id.',irrigation_way_id,locale,en',
+            'name_ar_localized' => 'required|max:200',
+            'name_en_localized' => 'required|max:200',
         ];
     }
 }

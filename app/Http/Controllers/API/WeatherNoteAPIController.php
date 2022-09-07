@@ -30,38 +30,6 @@ class WeatherNoteAPIController extends AppBaseController
         $this->middleware('permission:weather_notes.destroy')->only(['destroy']);
     }
 
-    /**
-     * @param Request $request
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/weatherNotes",
-     *      summary="Get a listing of the WeatherNotes.",
-     *      tags={"WeatherNote"},
-     *      description="Get all WeatherNotes",
-     *      produces={"application/json"},
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="array",
-     *                  @SWG\Items(ref="#/definitions/WeatherNote")
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function index(Request $request)
     {
         $weatherNotes = $this->weatherNoteRepository->all(
@@ -73,44 +41,6 @@ class WeatherNoteAPIController extends AppBaseController
         return $this->sendResponse(['all' => WeatherNoteResource::collection($weatherNotes)], 'Weather Notes retrieved successfully');
     }
 
-    /**
-     * @param CreateWeatherNoteAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Post(
-     *      path="/weatherNotes",
-     *      summary="Store a newly created WeatherNote in storage",
-     *      tags={"WeatherNote"},
-     *      description="Store WeatherNote",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="WeatherNote that should be stored",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/WeatherNote")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/WeatherNote"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function store(CreateWeatherNoteAPIRequest $request)
     {
         $input = $request->validated();
@@ -120,44 +50,6 @@ class WeatherNoteAPIController extends AppBaseController
         return $this->sendResponse(new WeatherNoteResource($weatherNote), 'Weather Note saved successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Get(
-     *      path="/weatherNotes/{id}",
-     *      summary="Display the specified WeatherNote",
-     *      tags={"WeatherNote"},
-     *      description="Get WeatherNote",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of WeatherNote",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/WeatherNote"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function show($id)
     {
         /** @var WeatherNote $weatherNote */
@@ -170,52 +62,6 @@ class WeatherNoteAPIController extends AppBaseController
         return $this->sendResponse(new WeatherNoteResource($weatherNote), 'Weather Note retrieved successfully');
     }
 
-    /**
-     * @param int $id
-     * @param UpdateWeatherNoteAPIRequest $request
-     * @return Response
-     *
-     * @SWG\Put(
-     *      path="/weatherNotes/{id}",
-     *      summary="Update the specified WeatherNote in storage",
-     *      tags={"WeatherNote"},
-     *      description="Update WeatherNote",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of WeatherNote",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Parameter(
-     *          name="body",
-     *          in="body",
-     *          description="WeatherNote that should be updated",
-     *          required=false,
-     *          @SWG\Schema(ref="#/definitions/WeatherNote")
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  ref="#/definitions/WeatherNote"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function update($id, CreateWeatherNoteAPIRequest $request)
     {
         $input = $request->validated();
@@ -232,44 +78,6 @@ class WeatherNoteAPIController extends AppBaseController
         return $this->sendResponse(new WeatherNoteResource($weatherNote), 'WeatherNote updated successfully');
     }
 
-    /**
-     * @param int $id
-     * @return Response
-     *
-     * @SWG\Delete(
-     *      path="/weatherNotes/{id}",
-     *      summary="Remove the specified WeatherNote from storage",
-     *      tags={"WeatherNote"},
-     *      description="Delete WeatherNote",
-     *      produces={"application/json"},
-     *      @SWG\Parameter(
-     *          name="id",
-     *          description="id of WeatherNote",
-     *          type="integer",
-     *          required=true,
-     *          in="path"
-     *      ),
-     *      @SWG\Response(
-     *          response=200,
-     *          description="successful operation",
-     *          @SWG\Schema(
-     *              type="object",
-     *              @SWG\Property(
-     *                  property="success",
-     *                  type="boolean"
-     *              ),
-     *              @SWG\Property(
-     *                  property="data",
-     *                  type="string"
-     *              ),
-     *              @SWG\Property(
-     *                  property="message",
-     *                  type="string"
-     *              )
-     *          )
-     *      )
-     * )
-     */
     public function destroy($id)
     {
         try

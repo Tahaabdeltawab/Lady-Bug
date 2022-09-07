@@ -18,7 +18,6 @@ class CreateHomePlantPotSizesTable extends Migration
             $table->id();
             $table->integer('size');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

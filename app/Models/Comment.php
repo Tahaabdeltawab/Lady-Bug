@@ -3,19 +3,15 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Overtrue\LaravelLike\Traits\Likeable;
 
 
 class Comment extends Model
 {
-    use /*SoftDeletes,*/ Likeable;
+    use Likeable;
 
 
     public $table = 'comments';
-
-
-    protected $dates = ['deleted_at'];
 
 
 

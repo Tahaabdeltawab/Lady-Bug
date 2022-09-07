@@ -3,18 +3,11 @@
 namespace App\Models;
 
 use Eloquent as Model;
-// use Illuminate\Database\Eloquent\SoftDeletes;
-
 
 class Asset extends Model
 {
-    // use SoftDeletes;
-
 
     public $table = 'assets';
-
-
-    protected $dates = ['deleted_at'];
 
 
 

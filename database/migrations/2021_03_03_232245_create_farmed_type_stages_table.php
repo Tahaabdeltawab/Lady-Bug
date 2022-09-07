@@ -16,9 +16,7 @@ class CreateFarmedTypeStagesTable extends Migration
     {
         Schema::create('farmed_type_stages', function (Blueprint $table) {
             $table->id();
-            // $table->string('name');
-            $table->timestamps();
-            $table->softDeletes();
+            $table->json('name');
         });
     }
 

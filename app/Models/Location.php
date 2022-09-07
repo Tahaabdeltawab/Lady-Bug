@@ -3,18 +3,12 @@
 namespace App\Models;
 
 use Eloquent as Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 
 class Location extends Model
 {
-  // use SoftDeletes;
-
 
     public $table = 'locations';
-
-
-    protected $dates = ['deleted_at'];
 
 
 
