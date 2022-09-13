@@ -27,39 +27,17 @@ use Twilio;
 class AuthController extends AppBaseController
 {
     private $userRepository;
-    private $humanJobRepository;
-    private $assetRepository;
-
-    private $animalMedicineSourceRepository;
-    private $animalFodderSourceRepository;
-    private $chemicalFertilizerSourceRepository;
-    private $seedlingSourceRepository;
-
-    // private $roleRepository;
-    // private $userRepository;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
     public function __construct(
-        HumanJobRepository $humanJobRepo,
-        AssetRepository $assetRepo,
-        UserRepository $userRepo,
-        SeedlingSourceRepository $seedlingSourceRepo,
-        ChemicalFertilizerSourceRepository $chemicalFertilizerSourceRepo,
-        AnimalFodderSourceRepository $animalFodderSourceRepo,
-        AnimalMedicineSourceRepository $animalMedicineSourceRepo
+        UserRepository $userRepo
     ) {
 
         $this->ttl = 1440000; // 1000 days
         $this->userRepository = $userRepo;
-        $this->humanJobRepository = $humanJobRepo;
-        $this->assetRepository = $assetRepo;
-        $this->seedlingSourceRepository = $seedlingSourceRepo;
-        $this->chemicalFertilizerSourceRepository = $chemicalFertilizerSourceRepo;
-        $this->animalFodderSourceRepository = $animalFodderSourceRepo;
-        $this->animalMedicineSourceRepository = $animalMedicineSourceRepo;
         // $this->middleware('auth:api', ['except' => ['login', 'register']]);
         $this->middleware('jwt.verify', ['except' => ['login', 'register']]);
     }
@@ -199,32 +177,6 @@ class AuthController extends AppBaseController
             ]);
 
             $user->attachRole(config('myconfig.user_default_role'));
-
-            // when a user registers
-            // if he selected his job, for example, plant nursery, a new record should be added to the seedlings_sources table,
-            $companiesJobs = config('myconfig.companies_jobs');
-            $userJob = $user->job;
-            $userJobEName = $userJob->translate('en')->name;
-            if (in_array($userJobEName, array_values($companiesJobs))) {
-                if ($userJobEName == $companiesJobs['pharma']) {
-                    $this->animalMedicineSourceRepository->save_localized([
-                        'name_ar_localized' => $user->name,
-                        'name_en_localized' => $user->name,
-                    ]);
-                } elseif ($userJobEName == $companiesJobs['chem']) {
-                    $this->chemicalFertilizerSourceRepository->save_localized([
-                        'name_ar_localized' => $user->name,
-                        'name_en_localized' => $user->name,
-                    ]);} elseif ($userJobEName == $companiesJobs['feed']) {
-                    $this->animalFodderSourceRepository->save_localized([
-                        'name_ar_localized' => $user->name,
-                        'name_en_localized' => $user->name,
-                    ]);} elseif ($userJobEName == $companiesJobs['seed']) {
-                    $this->seedlingSourceRepository->save_localized([
-                        'name_ar_localized' => $user->name,
-                        'name_en_localized' => $user->name,
-                    ]);}
-            }
 
             if ($photo = $request->file('photo')) {
                 $currentDate = Carbon::now()->toDateString();

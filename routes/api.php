@@ -373,3 +373,57 @@ Route::resource('consultancy_profiles', App\Http\Controllers\API\ConsultancyProf
 Route::resource('offline_consultancy_plans', App\Http\Controllers\API\OfflineConsultancyPlanAPIController::class);
 
 Route::resource('work_fields', App\Http\Controllers\API\WorkFieldAPIController::class);
+
+Route::resource('transactions', App\Http\Controllers\API\TransactionAPIController::class);
+
+Route::resource('education', App\Http\Controllers\API\EducationAPIController::class);
+
+Route::resource('careers', App\Http\Controllers\API\CareerAPIController::class);
+
+Route::resource('residences', App\Http\Controllers\API\ResidenceAPIController::class);
+
+Route::resource('visiteds', App\Http\Controllers\API\VisitedAPIController::class);
+
+
+
+Route::resource('irrigation_rates', App\Http\Controllers\API\IrrigationRateAPIController::class);
+
+Route::resource('infection_rates', App\Http\Controllers\API\InfectionRateAPIController::class);
+
+Route::resource('infection_spread_stages', App\Http\Controllers\API\InfectionSpreadStageAPIController::class);
+
+Route::resource('pathogen_growth_stages', App\Http\Controllers\API\PathogenGrowthStageAPIController::class);
+
+Route::resource('pathogen_types', App\Http\Controllers\API\PathogenTypeAPIController::class);
+
+Route::resource('countries', App\Http\Controllers\API\CountryAPIController::class);
+
+Route::resource('nut_elem_values', App\Http\Controllers\API\NutElemValueAPIController::class);
+
+Route::resource('farmed_type_nut_vals', App\Http\Controllers\API\FarmedTypeNutValAPIController::class);
+
+Route::resource('farmed_type_fertilization_needs', App\Http\Controllers\API\FarmedTypeFertilizationNeedAPIController::class);
+
+Route::resource('business_fields', App\Http\Controllers\API\BusinessFieldAPIController::class);
+
+Route::resource('businesses', App\Http\Controllers\API\BusinessAPIController::class);
+
+Route::resource('business_branches', App\Http\Controllers\API\BusinessBranchAPIController::class);
+
+Route::resource('farmed_type_extras', App\Http\Controllers\API\FarmedTypeExtrasAPIController::class);
+
+Route::resource('marketing_datas', App\Http\Controllers\API\MarketingDataAPIController::class);
+
+Route::resource('taxonomies', App\Http\Controllers\API\TaxonomyAPIController::class);
+
+Route::resource('acs', App\Http\Controllers\API\AcAPIController::class);
+
+Route::resource('diseases', App\Http\Controllers\API\DiseaseAPIController::class);
+
+Route::resource('disease_causatives', App\Http\Controllers\API\DiseaseCausativeAPIController::class);
+
+Route::resource('pathogens', App\Http\Controllers\API\PathogenAPIController::class);
+
+Route::resource('insecticides', App\Http\Controllers\API\InsecticideAPIController::class);
+
+Route::resource('fertilizers', App\Http\Controllers\API\FertilizerAPIController::class);

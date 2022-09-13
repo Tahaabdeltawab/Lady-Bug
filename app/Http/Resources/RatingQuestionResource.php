@@ -14,10 +14,10 @@ class RatingQuestionResource extends JsonResource
      */
     public function toArray($request)
     {
-        // name
-        // description
         return [
             'id' => $this->id,
+            'name' => $this->name,
+            'description' => $this->description,
             'type' => $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
