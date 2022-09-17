@@ -125,4 +125,24 @@ class FarmedType extends Model
         return $this->hasMany(FarmedTypeClass::class);
     }
 
+    public function popular_countries()
+    {
+        return $this->belongsToMany(Country::class)->wherePivot('popular', 1);
+    }
+
+    public function names_countries()
+    {
+        return $this->belongsToMany(Country::class)->withPivot('common_name')->wherePivotNotNull('common_name');
+    }
+
+    public function sensitive_diseases()
+    {
+        return $this->belongsToMany(Disease::class)->using(DiseaseFarmedType::class)->wherePivot('sensitive', 1);
+    }
+
+    public function resistant_diseases()
+    {
+        return $this->belongsToMany(Disease::class)->using(DiseaseFarmedType::class)->wherePivot('sensitive', 0);
+    }
+
 }

@@ -427,3 +427,11 @@ Route::resource('pathogens', App\Http\Controllers\API\PathogenAPIController::cla
 Route::resource('insecticides', App\Http\Controllers\API\InsecticideAPIController::class);
 
 Route::resource('fertilizers', App\Http\Controllers\API\FertilizerAPIController::class);
+
+Route::resource('farm_reports', App\Http\Controllers\API\FarmReportAPIController::class);
+
+Route::resource('business_parts', App\Http\Controllers\API\BusinessPartAPIController::class);
+
+Route::resource('tasks', App\Http\Controllers\API\TaskAPIController::class);
+
+Route::resource('disease_registrations', App\Http\Controllers\API\DiseaseRegistrationAPIController::class);

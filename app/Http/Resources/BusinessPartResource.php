@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FarmedTypeFertilizationNeedResource extends JsonResource
+class BusinessPartResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,10 +16,12 @@ class FarmedTypeFertilizationNeedResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'farmed_type_id' => $this->farmed_type_id,
-            'farmed_type_stage_id' => $this->farmed_type_stage_id,
-            'per' => $this->per,
-            'nut_elem_value_id' => $this->nut_elem_value_id
+            'business_id' => $this->business_id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'date' => $this->date,
+            'done' => $this->done,
+            'type' => $this->type
         ];
     }
 }

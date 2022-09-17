@@ -60,7 +60,7 @@ class Disease extends Model
      **/
     public function farmedTypes()
     {
-        return $this->belongsToMany(\App\Models\FarmedType::class, '');
+        return $this->belongsToMany(\App\Models\FarmedType::class);
     }
 
     /**
@@ -68,7 +68,7 @@ class Disease extends Model
      **/
     public function farms()
     {
-        return $this->belongsToMany(\App\Models\Farm::class, '');
+        return $this->belongsToMany(\App\Models\Farm::class);
     }
 
     /**
@@ -76,7 +76,7 @@ class Disease extends Model
      **/
     public function pathogens()
     {
-        return $this->belongsToMany(\App\Models\Pathogen::class, '');
+        return $this->belongsToMany(\App\Models\Pathogen::class);
     }
 
     /**
@@ -84,6 +84,6 @@ class Disease extends Model
      **/
     public function countries()
     {
-        return $this->belongsToMany(\App\Models\Country::class, '');
+        return $this->belongsToMany(\App\Models\Country::class);
     }
 }

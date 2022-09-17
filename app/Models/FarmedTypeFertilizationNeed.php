@@ -29,7 +29,7 @@ class FarmedTypeFertilizationNeed extends Model
 
     public $fillable = [
         'farmed_type_id',
-        'stage',
+        'farmed_type_stage_id',
         'per',
         'nut_elem_value_id'
     ];
@@ -42,7 +42,7 @@ class FarmedTypeFertilizationNeed extends Model
     protected $casts = [
         'id' => 'integer',
         'farmed_type_id' => 'integer',
-        'stage' => 'string',
+        'farmed_type_stage_id' => 'integer',
         'per' => 'string',
         'nut_elem_value_id' => 'integer'
     ];
@@ -54,7 +54,7 @@ class FarmedTypeFertilizationNeed extends Model
      */
     public static $rules = [
         'farmed_type_id' => 'required',
-        'stage' => 'nullable',
+        'farmed_type_stage_id' => 'nullable',
         'per' => 'nullable',
         'nut_elem_value_id' => 'required'
     ];
@@ -65,6 +65,14 @@ class FarmedTypeFertilizationNeed extends Model
     public function farmedType()
     {
         return $this->belongsTo(\App\Models\FarmedType::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function farmedTypeStage()
+    {
+        return $this->belongsTo(\App\Models\FarmedTypeStage::class);
     }
 
     /**

@@ -2,25 +2,32 @@
 
 namespace App\Repositories;
 
-use App\Models\FarmedTypeFertilizationNeed;
+use App\Models\Task;
 use App\Repositories\BaseRepository;
 
 /**
- * Class FarmedTypeFertilizationNeedRepository
+ * Class TaskRepository
  * @package App\Repositories
- * @version September 10, 2022, 2:09 pm EET
+ * @version September 16, 2022, 2:43 pm EET
 */
 
-class FarmedTypeFertilizationNeedRepository extends BaseRepository
+class TaskRepository extends BaseRepository
 {
     /**
      * @var array
      */
     protected $fieldSearchable = [
-        'farmed_type_id',
-        'farmed_type_stage_id',
-        'per',
-        'nut_elem_value_id'
+        'farm_report_id',
+        'farm_id',
+        'business_id',
+        'date',
+        'week',
+        'task_type_id',
+        'insecticide_id',
+        'fertilizer_id',
+        'quantity',
+        'quantity_unit',
+        'done'
     ];
 
     /**
@@ -38,6 +45,6 @@ class FarmedTypeFertilizationNeedRepository extends BaseRepository
      **/
     public function model()
     {
-        return FarmedTypeFertilizationNeed::class;
+        return Task::class;
     }
 }

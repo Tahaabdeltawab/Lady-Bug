@@ -2,25 +2,27 @@
 
 namespace App\Repositories;
 
-use App\Models\FarmedTypeFertilizationNeed;
+use App\Models\BusinessPart;
 use App\Repositories\BaseRepository;
 
 /**
- * Class FarmedTypeFertilizationNeedRepository
+ * Class BusinessPartRepository
  * @package App\Repositories
- * @version September 10, 2022, 2:09 pm EET
+ * @version September 14, 2022, 2:26 pm EET
 */
 
-class FarmedTypeFertilizationNeedRepository extends BaseRepository
+class BusinessPartRepository extends BaseRepository
 {
     /**
      * @var array
      */
     protected $fieldSearchable = [
-        'farmed_type_id',
-        'farmed_type_stage_id',
-        'per',
-        'nut_elem_value_id'
+        'business_id',
+        'title',
+        'description',
+        'date',
+        'done',
+        'type'
     ];
 
     /**
@@ -38,6 +40,6 @@ class FarmedTypeFertilizationNeedRepository extends BaseRepository
      **/
     public function model()
     {
-        return FarmedTypeFertilizationNeed::class;
+        return BusinessPart::class;
     }
 }

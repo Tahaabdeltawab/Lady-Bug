@@ -127,4 +127,20 @@ class Business extends Model
     {
         return $this->belongsTo(\App\Models\Country::class);
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function agents()
+    {
+        return $this->belongsToMany(self::class, 'business_dealer', 'business_id', 'dealer_id')->where('type', 'agent');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function distributors()
+    {
+        return $this->belongsToMany(self::class, 'business_dealer', 'business_id', 'dealer_id')->where('type', 'distributor');
+    }
 }

@@ -66,7 +66,7 @@ class Ac extends Model
      **/
     public function insecticides()
     {
-        return $this->belongsToMany(\App\Models\Insecticide::class, '');
+        return $this->belongsToMany(\App\Models\Insecticide::class);
     }
 
     /**
@@ -74,6 +74,6 @@ class Ac extends Model
      **/
     public function pathogens()
     {
-        return $this->belongsToMany(\App\Models\Pathogen::class, '');
+        return $this->belongsToMany(\App\Models\Pathogen::class);
     }
 }

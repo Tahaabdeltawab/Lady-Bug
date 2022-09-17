@@ -67,7 +67,7 @@ class Pathogen extends Model
      **/
     public function acs()
     {
-        return $this->belongsToMany(\App\Models\Ac::class, '');
+        return $this->belongsToMany(\App\Models\Ac::class);
     }
 
     /**
@@ -75,7 +75,7 @@ class Pathogen extends Model
      **/
     public function diseases()
     {
-        return $this->belongsToMany(\App\Models\Disease::class, '');
+        return $this->belongsToMany(\App\Models\Disease::class);
     }
 
     /**
@@ -83,6 +83,6 @@ class Pathogen extends Model
      **/
     public function pathogenGrowthStages()
     {
-        return $this->belongsToMany(\App\Models\PathogenGrowthStage::class, '');
+        return $this->belongsToMany(\App\Models\PathogenGrowthStage::class, 'pa_pa_growth_stage', 'pathogen_id', 'pathogen_growth_stage_id')->using(PaPaGrowthStage::class);
     }
 }

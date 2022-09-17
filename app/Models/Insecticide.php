@@ -106,6 +106,6 @@ class Insecticide extends Model
      **/
     public function acs()
     {
-        return $this->belongsToMany(\App\Models\Ac::class, '');
+        return $this->belongsToMany(\App\Models\Ac::class);
     }
 }
