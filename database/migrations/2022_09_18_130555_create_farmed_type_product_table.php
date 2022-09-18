@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAcPathogenTable extends Migration
+class CreateFarmedTypeProductTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateAcPathogenTable extends Migration
      */
     public function up()
     {
-        Schema::create('ac_pathogen', function (Blueprint $table) {
+        Schema::create('farmed_type_product', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('ac_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('pathogen_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('product_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('farmed_type_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 
@@ -27,6 +27,6 @@ class CreateAcPathogenTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ac_pathogen');
+        Schema::dropIfExists('farmed_type_product');
     }
 }

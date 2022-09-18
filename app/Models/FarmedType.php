@@ -145,4 +145,9 @@ class FarmedType extends Model
         return $this->belongsToMany(Disease::class)->using(DiseaseFarmedType::class)->wherePivot('sensitive', 0);
     }
 
+    public function products()
+    {
+        return $this->belongsToMany(Product::class);
+    }
+
 }

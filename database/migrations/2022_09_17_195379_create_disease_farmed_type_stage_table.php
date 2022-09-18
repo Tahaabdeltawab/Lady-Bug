@@ -13,9 +13,9 @@ class CreateDiseaseFarmedTypeStageTable extends Migration
      */
     public function up()
     {
-        Schema::create('disease_farmed_type_stage ', function (Blueprint $table) {
+        Schema::create('disease_farmed_type_stage', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('disease_farmed_type_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('disease_farmed_type_id')->constrained('disease_farmed_type')->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('farmed_type_stage_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
         });
     }

@@ -19,7 +19,7 @@ class CreatePostsTable extends Migration
             $table->string('title')->nullable();
             $table->text('content')->nullable();
             $table->foreignId('author_id')->constrained('users');
-            $table->foreignId('farm_id')->nullable()->constrained();
+            $table->foreignId('farm_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('farmed_type_id')->nullable()->constrained();
             $table->foreignId('post_type_id')->nullable()->constrained();
             $table->boolean('solved')->nullable();

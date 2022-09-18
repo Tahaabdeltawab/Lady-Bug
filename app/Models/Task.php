@@ -94,7 +94,7 @@ class Task extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function farmReport()
+    public function farm_report()
     {
         return $this->belongsTo(\App\Models\FarmReport::class);
     }
@@ -118,7 +118,7 @@ class Task extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function taskType()
+    public function task_type()
     {
         return $this->belongsTo(\App\Models\TaskType::class);
     }

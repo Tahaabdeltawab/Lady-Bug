@@ -13,7 +13,7 @@ class CreateAcInsecticideTable extends Migration
      */
     public function up()
     {
-        Schema::create('ac_insecticide ', function (Blueprint $table) {
+        Schema::create('ac_insecticide', function (Blueprint $table) {
             $table->id();
             $table->foreignId('insecticide_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('ac_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();

@@ -5,7 +5,7 @@ namespace App\Models;
 use Eloquent as Model;
 
 
-class Farm extends Team
+class Farm extends Model
 {
 
     public $table = 'farms';
@@ -156,10 +156,14 @@ class Farm extends Team
     }
 
 
-    // needs relationships tables
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(\App\Models\Task::class);
     }
 
     public function service_tables()
@@ -196,13 +200,5 @@ class Farm extends Team
     {
         return $this->belongsToMany(ChemicalFertilizerSource::class);
     }
-
-
-
-
-
-
-
-
 
 }

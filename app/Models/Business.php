@@ -18,8 +18,6 @@ use Eloquent as Model;
  * @property integer $user_id
  * @property integer $business_field_id
  * @property string $description
- * @property string $main_img
- * @property string $cover_img
  * @property string $com_name
  * @property string $status
  * @property string $mobile
@@ -29,7 +27,7 @@ use Eloquent as Model;
  * @property integer $country_id
  * @property boolean $privacy
  */
-class Business extends Model
+class Business extends Team
 {
 
 
@@ -42,8 +40,6 @@ class Business extends Model
         'user_id',
         'business_field_id',
         'description',
-        'main_img',
-        'cover_img',
         'com_name',
         'status',
         'mobile',
@@ -64,8 +60,6 @@ class Business extends Model
         'user_id' => 'integer',
         'business_field_id' => 'integer',
         'description' => 'string',
-        'main_img' => 'string',
-        'cover_img' => 'string',
         'com_name' => 'string',
         'status' => 'string',
         'mobile' => 'string',
@@ -84,8 +78,8 @@ class Business extends Model
     public static $rules = [
         'business_field_id' => 'required',
         'description' => 'nullable',
-        'main_img' => 'nullable',
-        'cover_img' => 'nullable',
+        'main_asset' => 'nullable',
+        'cover_asset' => 'nullable',
         'com_name' => 'required',
         'status' => 'required',
         'mobile' => 'nullable',
@@ -102,6 +96,16 @@ class Business extends Model
     public function farms()
     {
         return $this->hasMany(\App\Models\Farm::class);
+    }
+
+    public function products()
+    {
+        return $this->hasMany(\App\Models\Product::class);
+    }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
     }
 
     /**
@@ -142,5 +146,25 @@ class Business extends Model
     public function distributors()
     {
         return $this->belongsToMany(self::class, 'business_dealer', 'business_id', 'dealer_id')->where('type', 'distributor');
+    }
+
+    public function assets()
+    {
+        return $this->morphMany(Asset::class, 'assetable');
+    }
+
+    public function main_asset()
+    {
+        return $this->assets()->where('asset_name', 'like', 'business-main%')->first();
+    }
+
+    public function cover_asset()
+    {
+        return $this->assets()->where('asset_name', 'like', 'business-cover%')->first();
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(\App\Models\Task::class);
     }
 }

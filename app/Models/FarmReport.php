@@ -82,8 +82,14 @@ class FarmReport extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function farmedTypeStage()
+    public function farmed_type_stage()
     {
         return $this->belongsTo(\App\Models\FarmedTypeStage::class);
+    }
+
+
+    public function tasks()
+    {
+        return $this->hasMany(\App\Models\Task::class);
     }
 }

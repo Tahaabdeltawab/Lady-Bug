@@ -16,17 +16,16 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->double('price');
-            $table->json('description');
-            $table->foreignId('seller_id')->constrained('users');
             $table->json('name');
+            $table->json('description');
+            $table->double('price');
+            $table->foreignId('seller_id')->constrained('users');
             $table->foreignId('city_id')->constrained();
             $table->foreignId('district_id')->constrained();
             $table->string('seller_mobile');
             $table->boolean('sold');
             $table->string('other_links')->nullable();
             $table->timestamps();
-            // $table->foreign('seller_id')->references('id')->on('users')->onDelete('CASCADE');
         });
     }
 

@@ -58,6 +58,48 @@ class BusinessAPIController extends AppBaseController
 
         $business = $this->businessRepository->create($input);
 
+        if($main_asset = $request->file('main_asset'))
+        {
+            $currentDate = Carbon::now()->toDateString();
+            $assetname = 'business-main-'.$currentDate.'-'.uniqid().'.'.$main_asset->getClientOriginalExtension();
+            $assetsize = $main_asset->getSize(); //size in bytes 1k = 1000bytes
+            $assetmime = $main_asset->getClientMimeType();
+
+            $path = $main_asset->storeAs('assets/businesses', $assetname, 's3');
+            // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+
+            $url  = Storage::disk('s3')->url($path);
+
+            $business->assets()->create([
+                'asset_name'        => $assetname,
+                'asset_url'         => $url,
+                'asset_path'        => $path,
+                'asset_size'        => $assetsize,
+                'asset_mime'        => $assetmime,
+            ]);
+        }
+
+        if($cover_asset = $request->file('cover_asset'))
+        {
+            $currentDate = Carbon::now()->toDateString();
+            $assetname = 'business-cover-'.$currentDate.'-'.uniqid().'.'.$cover_asset->getClientOriginalExtension();
+            $assetsize = $cover_asset->getSize(); //size in bytes 1k = 1000bytes
+            $assetmime = $cover_asset->getClientMimeType();
+
+            $path = $cover_asset->storeAs('assets/businesses', $assetname, 's3');
+            // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+
+            $url  = Storage::disk('s3')->url($path);
+
+            $product->assets()->create([
+                'asset_name'        => $assetname,
+                'asset_url'         => $url,
+                'asset_path'        => $path,
+                'asset_size'        => $assetsize,
+                'asset_mime'        => $assetmime,
+            ]);
+        }
+
         return $this->sendResponse(new BusinessResource($business), 'Business saved successfully');
     }
 
@@ -102,6 +144,50 @@ class BusinessAPIController extends AppBaseController
         }
 
         $business = $this->businessRepository->update($input, $id);
+
+        if($main_asset = $request->file('main_asset'))
+        {
+            $business->main_asset()->delete();
+            $currentDate = Carbon::now()->toDateString();
+            $assetname = 'business-main-'.$currentDate.'-'.uniqid().'.'.$main_asset->getClientOriginalExtension();
+            $assetsize = $main_asset->getSize(); //size in bytes 1k = 1000bytes
+            $assetmime = $main_asset->getClientMimeType();
+
+            $path = $main_asset->storeAs('assets/businesses', $assetname, 's3');
+            // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+
+            $url  = Storage::disk('s3')->url($path);
+
+            $business->assets()->create([
+                'asset_name'        => $assetname,
+                'asset_url'         => $url,
+                'asset_path'        => $path,
+                'asset_size'        => $assetsize,
+                'asset_mime'        => $assetmime,
+            ]);
+        }
+
+        if($cover_asset = $request->file('cover_asset'))
+        {
+            $business->cover_asset()->delete();
+            $currentDate = Carbon::now()->toDateString();
+            $assetname = 'business-cover-'.$currentDate.'-'.uniqid().'.'.$cover_asset->getClientOriginalExtension();
+            $assetsize = $cover_asset->getSize(); //size in bytes 1k = 1000bytes
+            $assetmime = $cover_asset->getClientMimeType();
+
+            $path = $cover_asset->storeAs('assets/businesses', $assetname, 's3');
+            // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
+
+            $url  = Storage::disk('s3')->url($path);
+
+            $product->assets()->create([
+                'asset_name'        => $assetname,
+                'asset_url'         => $url,
+                'asset_path'        => $path,
+                'asset_size'        => $assetsize,
+                'asset_mime'        => $assetmime,
+            ]);
+        }
 
         return $this->sendResponse(new BusinessResource($business), 'Business updated successfully');
     }

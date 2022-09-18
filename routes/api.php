@@ -435,3 +435,7 @@ Route::resource('business_parts', App\Http\Controllers\API\BusinessPartAPIContro
 Route::resource('tasks', App\Http\Controllers\API\TaskAPIController::class);
 
 Route::resource('disease_registrations', App\Http\Controllers\API\DiseaseRegistrationAPIController::class);
+
+Route::resource('product_types', App\Http\Controllers\API\ProductTypeAPIController::class);
+
+Route::resource('product_ads', App\Http\Controllers\API\ProductAdAPIController::class);

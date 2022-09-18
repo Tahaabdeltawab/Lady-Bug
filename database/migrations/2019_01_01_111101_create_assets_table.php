@@ -16,10 +16,11 @@ class CreateAssetsTable extends Migration
     {
         Schema::create('assets', function (Blueprint $table) {
             $table->id();
-            $table->string('asset_name');
-            $table->string('asset_url');
-            $table->string('asset_size');
-            $table->string('asset_mime');
+            $table->string('asset_name')->nullable();
+            $table->string('asset_url')->nullable();
+            $table->string('asset_path')->nullable();
+            $table->string('asset_size')->nullable();
+            $table->string('asset_mime')->nullable();
             $table->morphs('assetable');
             $table->timestamps();
         });

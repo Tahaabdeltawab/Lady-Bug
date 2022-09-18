@@ -97,7 +97,7 @@ return [
          * Will be used only if the teams functionality is enabled.
          */
         // 'team' => \App\Models\Team::class,
-        'team' => \App\Models\Farm::class,
+        'team' => \App\Models\Business::class,
     ],
 
     /*
@@ -117,7 +117,7 @@ return [
         /**
          * Will be used only if the teams functionality is enabled.
          */
-        'teams' => 'farms',
+        'teams' => 'businesses',
 
         'role_user' => 'role_user',
 
@@ -153,7 +153,7 @@ return [
         /**
          * Role foreign key on Laratrust's role_user and permission_user tables.
          */
-        'team' => 'farm_id',
+        'team' => 'business_id',
     ],
 
     /*

@@ -22,7 +22,6 @@ class Product extends Model
         'seller_id',
         'description',
         'name',
-        'farmed_type_id',
         'city_id',
         'district_id',
         'seller_mobile',
@@ -41,7 +40,6 @@ class Product extends Model
         'description' => 'string',
         'seller_id' => 'integer',
         'name' => 'string',
-        'farmed_type_id' => 'integer',
         'city_id' => 'integer',
         'district_id' => 'integer',
         'seller_mobile' => 'string',
@@ -77,7 +75,7 @@ class Product extends Model
 
     public function farmed_type()
     {
-        return $this->belongsTo(FarmedType::class);
+        return $this->belongsToMany(FarmedType::class);
     }
 
 
@@ -94,5 +92,15 @@ class Product extends Model
     public function external_assets()
     {
         return $this->assets()->where('asset_name', 'like', 'product-external%');
+    }
+
+    public function shipping_cities()
+    {
+        return $this->belongsToMany(City::class, 'product_shipping_cities')->withPivot('shipping_days', 'shipping_fees');
+    }
+
+    public function ads()
+    {
+        return $this->hasMany(ProductAd::class);
     }
 }

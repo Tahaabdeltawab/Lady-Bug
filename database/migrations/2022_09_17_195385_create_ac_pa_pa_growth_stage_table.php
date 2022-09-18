@@ -16,7 +16,7 @@ class CreateAcPaPaGrowthStageTable extends Migration
         Schema::create('ac_pa_pa_growth_stage', function (Blueprint $table) {
             $table->id();
             $table->foreignId('ac_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('pa_pa_growth_stage_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('pa_pa_growth_stage_id')->constrained('pa_pa_growth_stage')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('effect')->nullable();
         });
     }

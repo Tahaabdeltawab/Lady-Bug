@@ -13,7 +13,7 @@ class CreateCountryDiseaseTable extends Migration
      */
     public function up()
     {
-        Schema::create('country_disease ', function (Blueprint $table) {
+        Schema::create('country_disease', function (Blueprint $table) {
             $table->id();
             $table->foreignId('country_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('disease_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();

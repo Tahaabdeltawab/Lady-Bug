@@ -97,6 +97,11 @@ class Post extends Model
         return $this->belongsTo(Farm::class);
     }
 
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
+
     public function farmed_type()
     {
         return $this->belongsTo(FarmedType::class);
@@ -106,11 +111,6 @@ class Post extends Model
     {
         return $this->belongsTo(PostType::class);
     }
-
-    // public function assets()
-    // {
-    //     return $this->belongsToMany(Asset::class, 'asset_post');
-    // }
 
     public function assets()
     {
