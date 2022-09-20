@@ -49,6 +49,6 @@
 
 
     "Hello": "Hello :name",
-    "farm_invitation_msg": ":inviter has invited you to join his :farm farm as a/an :role"
+    "business_invitation_msg": ":inviter has invited you to join his :business business as a/an :role"
 
 }

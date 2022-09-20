@@ -52,31 +52,37 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         Route::get('farms/relations/index', [App\Http\Controllers\API\FarmAPIController::class, 'relations_index'])->name('farms.relations.index');
         Route::post('farms/', [App\Http\Controllers\API\FarmAPIController::class, 'store'])->name('farms.store');
 
-        // Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy')->middleware('check_farm_role');
-        Route::group(['middleware'=>['check_farm_role']], function()
+        // Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy')->middleware('check_business_role');
+        Route::group(['middleware'=>[/* 'check_business_role' */]], function()
         {
+            Route::get('businesses/users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_users'])->name('businesses.users.index');
+            Route::get('businesses/app_users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'app_users']);
+            Route::get('businesses/app_roles/index', [App\Http\Controllers\API\BusinessAPIController::class, 'app_roles']);
+            Route::get('businesses/posts/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_posts'])->name('businesses.posts.index');
+
             Route::match(['put', 'patch', 'post'], 'farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('farms.update');
-            Route::get('farms/users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_users'])->name('farms.users.index');
-            Route::get('farms/app_users/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'app_users']);
-            Route::get('farms/posts/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'get_farm_posts'])->name('farms.posts.index');
             Route::get('farms/toggle_archive/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'toggleArchive'])->name('farms.toggle_archive');
-            Route::get('farms/app_roles/index', [App\Http\Controllers\API\FarmAPIController::class, 'app_roles']);
 
             Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['index', 'update', 'show', 'destroy']);
             Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
-            Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
             Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
             Route::get('service_tasks/toggle_finish/{service_task}', [App\Http\Controllers\API\ServiceTaskAPIController::class, 'toggle_finish']);
-            Route::get('service_tables/duplicate/{service_table}', [App\Http\Controllers\API\ServiceTableAPIController::class, 'duplicate']);
+            // Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
+            // Route::get('service_tables/duplicate/{service_table}', [App\Http\Controllers\API\ServiceTableAPIController::class, 'duplicate']);
             Route::get('posts/toggle_solve/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_solve_post']);
         });
 
-        // // // LIKES // // //
+        // LIKES
         Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
         Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
-        Route::post('farms/roles/store', [App\Http\Controllers\API\FarmAPIController::class, 'update_farm_role'])->name('farms.roles.store');
-        Route::get('farms/roles/store/{user}/{role}/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'first_attach_farm_role'])->name('farms.roles.first_attach');
-        Route::get('farms/roles/decline/{user}/{role}/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'decline_farm_invitation'])->name('farms.roles.decline_farm_invitation');
+        
+        
+        // BUSIENSS ROLES
+        Route::post('businesses/roles/store', [App\Http\Controllers\API\BusinessAPIController::class, 'update_business_role'])->name('businesses.roles.store');
+        Route::get('businesses/roles/store/{user}/{role}/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'first_attach_business_role'])->name('businesses.roles.first_attach');
+        Route::get('businesses/roles/decline/{user}/{role}/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'decline_business_invitation'])->name('businesses.roles.decline_business_invitation');
+        
+        
         Route::post('farms/user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('farms.users.weather.index');
         Route::get('farms/archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('farms.get_archived');
 
@@ -259,7 +265,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     Route::get('products', [App\Http\Controllers\API\ProductAPIController::class, 'index']);
 
-    Route::group(['middleware'=>['check_farm_role']], function()
+    Route::group(['middleware'=>[/* 'check_business_role' */]], function()
     {
         Route::delete('posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'destroy'])->name('posts.destroy');
     });
@@ -269,7 +275,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('farms.show');
 
     Route::get('farm_activity_types', [App\Http\Controllers\API\FarmActivityTypeAPIController::class, 'index']);
-    Route::get('farm_activity_types/{farm_activity_type}', [App\Http\Controllers\API\FarmActivityTypeAPIController::class, 'show'])->name('farm_activity_types.show');
+    // Route::get('farm_activity_types/{farm_activity_type}', [App\Http\Controllers\API\FarmActivityTypeAPIController::class, 'show'])->name('farm_activity_types.show');
 
     Route::get('animal_fodder_sources', [App\Http\Controllers\API\AnimalFodderSourceAPIController::class, 'index']);
     Route::get('animal_fodder_sources/{animal_fodder_source}', [App\Http\Controllers\API\AnimalFodderSourceAPIController::class, 'show'])->name('animal_fodder_sources.show');

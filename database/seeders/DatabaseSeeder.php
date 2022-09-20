@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(RoleSeeder::class);
+        $this->call(RoleSeeder::class, FarmActivityTypeSeeder::class);
         \App\Models\HumanJob::factory()->count(10)->create(); 
 
   }

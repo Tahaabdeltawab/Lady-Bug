@@ -84,8 +84,8 @@ class FarmResource extends JsonResource
             $farm_detail['seedling_sources'] =  SeedlingSourceResource::collection($this->seedling_sources);
         //  }
 
-         // pass the farm to the usercollection to add the farm_roles to the collection
-         // if you pass a farm in the collection() you will get farm_roles property in the users collection and vice versa
+         // pass the farm to the usercollection to add the business_roles to the collection
+         // if you pass a farm in the collection() you will get business_roles property in the users collection and vice versa
          //  $farm_detail['users'] = UserResource::collection($this->users);
          $farm_detail['users'] = (new UserResource($this->users))->collection($this->users)->farm($this);
          $farm_detail['posts'] = PostResource::collection($this->posts);

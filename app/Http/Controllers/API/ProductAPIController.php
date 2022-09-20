@@ -192,22 +192,8 @@ class ProductAPIController extends AppBaseController
                 {
                     foreach($internal_assets as $asset)
                     {
-                        $currentDate = Carbon::now()->toDateString();
-                        $assetname = 'product-internal-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
-                        $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                        $assetmime = $asset->getClientMimeType();
-
-                        $path = $asset->storeAs('assets/posts', $assetname, 's3');
-                        // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                        $url  = Storage::disk('s3')->url($path);
-
-                        $asset = $product->assets()->create([
-                            'asset_name'        => $assetname,
-                            'asset_url'         => $url,
-                            'asset_size'        => $assetsize,
-                            'asset_mime'        => $assetmime,
-                        ]);
+                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product-internal');
+                        $product->assets()->create($oneasset);
                     }
                 }
 
@@ -215,22 +201,8 @@ class ProductAPIController extends AppBaseController
                 {
                     foreach($external_assets as $asset)
                     {
-                        $currentDate = Carbon::now()->toDateString();
-                        $assetname = 'product-external-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
-                        $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                        $assetmime = $asset->getClientMimeType();
-
-                        $path = $asset->storeAs('assets/posts', $assetname, 's3');
-                        // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                        $url  = Storage::disk('s3')->url($path);
-
-                        $asset = $product->assets()->create([
-                            'asset_name'        => $assetname,
-                            'asset_url'         => $url,
-                            'asset_size'        => $assetsize,
-                            'asset_mime'        => $assetmime,
-                        ]);
+                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product-external');
+                        $product->assets()->create($oneasset);
                     }
                 }
 
@@ -309,22 +281,8 @@ class ProductAPIController extends AppBaseController
                 $product->internal_assets()->delete();
                 foreach($internal_assets as $asset)
                 {
-                    $currentDate = Carbon::now()->toDateString();
-                    $assetname = 'product-internal-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
-                    $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                    $assetmime = $asset->getClientMimeType();
-
-                    $path = $asset->storeAs('assets/posts', $assetname, 's3');
-                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                    $url  = Storage::disk('s3')->url($path);
-
-                    $asset = $product->assets()->create([
-                        'asset_name'        => $assetname,
-                        'asset_url'         => $url,
-                        'asset_size'        => $assetsize,
-                        'asset_mime'        => $assetmime,
-                    ]);
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product-internal');
+                    $product->assets()->create($oneasset);
                 }
             }
 
@@ -333,22 +291,8 @@ class ProductAPIController extends AppBaseController
                 $product->external_assets()->delete();
                 foreach($external_assets as $asset)
                 {
-                    $currentDate = Carbon::now()->toDateString();
-                    $assetname = 'product-external-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
-                    $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                    $assetmime = $asset->getClientMimeType();
-
-                    $path = $asset->storeAs('assets/posts', $assetname, 's3');
-                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                    $url  = Storage::disk('s3')->url($path);
-
-                    $asset = $product->assets()->create([
-                        'asset_name'        => $assetname,
-                        'asset_url'         => $url,
-                        'asset_size'        => $assetsize,
-                        'asset_mime'        => $assetmime,
-                    ]);
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product-external');
+                    $product->assets()->create($oneasset);
                 }
             }
 

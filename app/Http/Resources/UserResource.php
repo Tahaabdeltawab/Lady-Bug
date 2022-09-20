@@ -3,8 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\RoleResource;
-use App\Repositories\FarmRepository;
+use App\Models\Business;
 
 class UserResource extends JsonResource
 {
@@ -32,7 +31,7 @@ class UserResource extends JsonResource
     {
         // $request->route()->action['as'] is equal to $request->routeIs($route_name)
         // $is_this_timeline = in_array($request->route()->action['as'], ['api.timeline', 'api.posts.show', 'api.farms.posts.index']);
-        $farm = (new FarmRepository(app()))->find($request->farm ?? $request->farm_id);
+        $business = Business::find($request->business ?? $request->business_id);
         $return = [
             'id'                => $this->id,
             'name'              => $this->name,
@@ -58,8 +57,8 @@ class UserResource extends JsonResource
             'is_following'      => $this->isFollowedBy(auth()->user()), // Am I following him?
             'is_rated'          => $this->isRatedBy(auth()->id()), // Did I rate him?
 
-            // 'farm_roles'        => $this->when($this->farm, $this->getRoles($this->farm)),
-            'farm_roles'        => $this->when($farm, $this->getRoles($farm)),
+            // 'business_roles'        => $this->when($this->business, $this->getRoles($this->business)),
+            'business_roles'        => $this->when($business, $this->getRoles($business)),
             // 'roles'             => RoleResource::collection($this->roles),
             // 'created_at'        => $this->created_at,
             // 'updated_at'        => $this->updated_at,

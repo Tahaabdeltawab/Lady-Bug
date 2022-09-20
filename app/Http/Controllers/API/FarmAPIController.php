@@ -2,17 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
-use Illuminate\Support\Facades\DB;
 use App\Http\Helpers\Compatibility;
-use App\Models\Role;
-use App\Models\User;
-use App\Models\FarmedType;
-use App\Models\FarmedTypeClass;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Validator;
 use App\Http\Requests\API\CreateFarmAPIRequest;
-use App\Http\Requests\API\UpdateFarmAPIRequest;
 use App\Repositories\FarmRepository;
 use App\Repositories\UserRepository;
 use App\Repositories\SaltDetailRepository;
@@ -43,7 +34,6 @@ use App\Http\Resources\AcidityTypeResource;
 use App\Http\Resources\SaltTypeResource;
 use App\Http\Resources\HomePlantPotSizeResource;
 use App\Http\Resources\FarmActivityTypeResource;
-use App\Http\Resources\FarmedTypeClassResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\MeasuringUnitResource;
 use App\Http\Resources\IrrigationWayResource;
@@ -58,15 +48,9 @@ use App\Http\Resources\AnimalFodderSourceResource;
 use App\Http\Resources\AnimalMedicineSourceResource;
 use App\Http\Resources\SoilTypeResource;
 
-use App\Http\Resources\RoleResource;
-use App\Http\Resources\UserResource;
-use App\Http\Resources\PostResource;
-
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmResource;
 use Illuminate\Http\Request;
-use Flash;
-use Response;
 
 use App\Http\Helpers\WeatherApi;
 use App\Http\Resources\FarmCollection;
@@ -75,16 +59,13 @@ class FarmAPIController extends AppBaseController
 {
 
     private $farmRepository;
-    private $userRepository;
     private $saltDetailRepository;
     private $chemicalDetailRepository;
-    private $postRepository;
 
     private $acidityTypeRepository;
     private $saltTypeRepository;
     private $homePlantPotSizeRepository;
     private $farmActivityTypeRepository;
-    private $farmedTypeClassRepository;
     private $farmedTypeRepository;
     private $measuringUnitRepository;
     private $irrigationWayRepository;
@@ -161,7 +142,7 @@ class FarmAPIController extends AppBaseController
     }
 
 
-    // // // // WEATHER // // // //
+    // WEATHER
 
     public function get_weather(Request $request)
     {
@@ -430,8 +411,6 @@ class FarmAPIController extends AppBaseController
                 $farm->animal_fodder_types()->sync($input["animal_fodder_types"]);
             }
 
-            auth()->user()->attachRole('farm-admin', $farm);
-
             return $this->sendResponse(new FarmResource($farm), 'Farm saved successfully');
 
         }catch(\Throwable $th){
@@ -443,232 +422,6 @@ class FarmAPIController extends AppBaseController
     {
         $data = (new Compatibility())->calculate_compatibility($id);
         return response()->json($data);
-    }
-    public function app_roles(Request $request)
-    {
-        $roles = Role::farmAllowedRoles()->get();
-        return $this->sendResponse(['all' =>  RoleResource::collection($roles)], 'Roles retrieved successfully');
-    }
-
-
-    public function app_users(Request $request)
-    {
-        $farm = $this->farmRepository->find($request->farm);
-        if (empty($farm))
-        {
-            return $this->sendError('Farm not found');
-        }
-
-        $farm_users = $farm->users->pluck('id');
-        $farm_users[] = auth()->id();
-        $users = User::whereNotIn('id', $farm_users)->whereHas('roles', function($q){
-            $q->where('name', config('myconfig.user_default_role'));
-        })->get();
-
-        return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
-    }
-
-    private function is_valid_invitation($request){
-        $invitation = DB::table('notifications')
-        ->where('type', 'App\Notifications\FarmInvitation')
-        ->where('notifiable_type', 'App\Models\User')
-        ->where('notifiable_id', $request->user)
-        ->where('data->invitee', $request->user)
-        ->where('data->farm', $request->farm)
-        ->where('data->role', $request->role)
-        ->select(['data'])
-        ->first();
-
-        if( ! $invitation )
-        return false;
-
-        $accepted = json_decode($invitation->data)->accepted;
-        if($accepted !== null ) // if the $accepted = null means that it was not accepted nor declined
-        {
-           return false;
-        }
-
-        return true;
-    }
-
-    // attach a farm role to a user who has an invitation link
-    public function first_attach_farm_role(Request $request)
-    {
-        try
-        {
-            if ( ! $request->hasValidSignature() || !$request->user || !$request->role || !$request->farm )
-            return $this->sendError('Wrong url', 401);
-
-            if( ! $this->is_valid_invitation($request) )
-            return $this->sendError('Wrong Invitation', 403);
-
-            if( auth()->id() != $request->user )
-            return $this->sendError('You are not the invited person', 403);
-
-            $user = $this->userRepository->find($request->user);
-            $farm = $this->farmRepository->find($request->farm);
-
-            $user->attachRole($request->role, $farm);
-
-            DB::table('notifications')
-            ->where('type', 'App\Notifications\FarmInvitation')
-            ->where('notifiable_type', 'App\Models\User')
-            ->where('notifiable_id', $request->user)
-            ->where('data->invitee', $request->user)
-            ->where('data->farm', $request->farm)
-            ->where('data->role', $request->role)
-            ->update(['data->accepted' => true]);
-
-            return $this->sendResponse(new UserResource($user), __('Member added to farm successfully'));
-        }
-        catch(\Throwable $th)
-        {
-            return $this->sendError($th->getMessage(), 500);
-        }
-    }
-
-    // decline farm invitation
-    public function decline_farm_invitation(Request $request)
-    {
-        try
-        {
-            if (! $request->hasValidSignature() || !$request->user || !$request->role || !$request->farm) {
-                return $this->sendError('Wrong url', 401);
-            }
-
-            if(!$this->is_valid_invitation($request))
-            return $this->sendError('Wrong Invitation', 403);
-
-            if( auth()->id() != $request->user )
-            return $this->sendError('You are not the invited person', 403);
-
-            DB::table('notifications')
-            ->where('type', 'App\Notifications\FarmInvitation')
-            ->where('notifiable_type', 'App\Models\User')
-            ->where('notifiable_id', $request->user)
-            ->where('data->invitee', $request->user)
-            ->where('data->farm', $request->farm)
-            ->where('data->role', $request->role)
-            ->update(['data->accepted' => false]);
-
-            return $this->sendSuccess(__('Invitation declined'));
-        }
-        catch(\Throwable $th)
-        {
-            return $this->sendError($th->getMessage(), 500);
-        }
-    }
-
-    //attach, edit or delete farm roles (send empty or no role_id when deleting a role)
-    public function update_farm_role(Request $request)
-    {
-        try
-        {
-            $validator = Validator::make($request->all(), [
-                'farm' => 'integer|required|exists:farms,id',
-                'user' => 'integer|required|exists:users,id',
-                'role' => 'nullable|integer|exists:roles,id',
-            ]);
-
-            if ($validator->fails()) {
-                return $this->sendError(json_encode($validator->errors()));
-            }
-
-            $user = $this->userRepository->find($request->user);
-            $farm = $this->farmRepository->find($request->farm);
-
-
-            if($request->role)   //first attach or edit roles
-            {
-                $role = Role::find($request->role);
-                if(!in_array($role->name, config('myconfig.farm_allowed_roles')))
-                {
-                    return $this->sendError('Invalid Role');
-                }
-
-                if($user->get_roles($request->farm)) //edit roles
-                {
-                    $user->syncRoles([$request->role], $farm);
-                }
-                else            // first attach role
-                {
-                    //send invitation to assignee user
-                    if($user->is_notifiable){
-
-                    $user->notify(new \App\Notifications\FarmInvitation(
-                        auth()->user(),
-                        $role,
-                        $farm,
-                        URL::temporarySignedRoute('api.farms.roles.first_attach', now()->addDays(10),['user' => $request->user,'farm' => $request->farm,'role' => $request->role,]),
-                        URL::temporarySignedRoute('api.farms.roles.decline_farm_invitation', now()->addDays(10),['user' => $request->user,'farm' => $request->farm,'role' => $request->role,])
-                        ));
-                    return $this->sendSuccess(__('Invitation sent successfully'));
-                    }else{
-                        return $this->sendSuccess(__('Invitation could not be sent because the user notifications are off'));
-                    }
-                }
-
-            }
-            else                    //delete roles
-            {
-                if($user->get_roles($request->farm)){
-                    $user->detachRoles([], $farm);
-                }else{
-                    return $this->sendError(__('This user is not a member in this farm'), 7000);
-                }
-            }
-
-            return $this->sendResponse(new UserResource($user), __('Farm roles saved successfully'));
-        }
-        catch(\Throwable $th)
-        {
-            return $this->sendError($th->getMessage(), 500);
-        }
-    }
-
-
-    public function get_farm_users($id)
-    {
-        try
-        {
-            /** @var Farm $farm */
-            $farm = $this->farmRepository->find($id);
-
-            if (empty($farm))
-            {
-                return $this->sendError('Farm not found');
-            }
-
-            $users = $farm->users;
-            return $this->sendResponse(['all' => UserResource::collection($users)], 'Farm users retrieved successfully');
-        }
-        catch(\Throwable $th)
-        {
-            return $this->sendError($th->getMessage(), 500);
-        }
-    }
-
-
-    public function get_farm_posts($id)
-    {
-        try
-        {
-            /** @var Farm $farm */
-            $farm = $this->farmRepository->find($id);
-
-            if (empty($farm))
-            {
-                return $this->sendError('Farm not found');
-            }
-
-            $posts = $farm->posts()->accepted()->get();
-            $postResource = new PostResource($posts);
-            return $this->sendResponse(['all' => $postResource->collection($posts)], 'Farm posts retrieved successfully');
-        }
-        catch(\Throwable $th)
-        {
-            return $this->sendError($th->getMessage(), 500);
-        }
     }
 
 

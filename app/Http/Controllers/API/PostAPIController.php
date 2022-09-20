@@ -290,24 +290,8 @@ class PostAPIController extends AppBaseController
             {
                     foreach($assets as $asset)
                     {
-                        //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
-                        // dispatch(new \App\Jobs\Upload($asset, $post));
-                        $currentDate = Carbon::now()->toDateString();
-                        $assetname = 'post-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
-                        $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                        $assetmime = $asset->getClientMimeType();
-
-                        $path = $asset->storeAs('assets/posts', $assetname, 's3');
-                        // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                        $url  = Storage::disk('s3')->url($path);
-
-                        $asset = $post->assets()->create([
-                            'asset_name'        => $assetname,
-                            'asset_url'         => $url,
-                            'asset_size'        => $assetsize,
-                            'asset_mime'        => $assetmime,
-                        ]);
+                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'post');
+                        $post->assets()->create($oneasset);
                     }
             }
 
@@ -470,11 +454,8 @@ class PostAPIController extends AppBaseController
 
             if($validator->fails()){
                 $errors = $validator->errors();
-
                 return $this->sendError(json_encode($errors), 777);
             }
-
-
 
             $data['title'] = $request->title;
             $data['content'] = $request->content;
@@ -486,64 +467,12 @@ class PostAPIController extends AppBaseController
 
             if($assets = $request->file('assets'))
             {
-              /*   if(!is_array($assets))
+                $post->assets()->delete();
+                foreach($assets as $asset)
                 {
-                    $currentDate = Carbon::now()->toDateString();
-                    $assetsname = 'post-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
-                    $assetssize = $assets->getSize(); //size in bytes 1k = 1000bytes
-                    $assetsmime = $assets->getClientMimeType();
-
-                    $path = $assets->storeAs('assets/posts', $assetsname, 's3');
-                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                    $url  = Storage::disk('s3')->url($path);
-
-                    $saved_asset = $this->assetRepository->create([
-                        'asset_name'        => $assetsname,
-                        'asset_url'         => $url,
-                        'asset_size'        => $assetssize,
-                        'asset_mime'        => $assetsmime,
-                    ]);
-
-                    $post->assets()->delete();
-                    $asset = $post->assets()->create([
-                        'asset_name'        => $assetsname,
-                        'asset_url'         => $url,
-                        'asset_size'        => $assetssize,
-                        'asset_mime'        => $assetsmime,
-                    ]);
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'post');
+                    $assets[] = $post->assets()->create($oneasset);
                 }
-                else
-                { */
-                    $post->assets()->delete();
-
-                    foreach($assets as $asset)
-                    {
-                        //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
-                        // dispatch(new \App\Jobs\Upload($asset, $post));
-                        $currentDate = Carbon::now()->toDateString();
-                        $assetname = 'post-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
-                        $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                        $assetmime = $asset->getClientMimeType();
-
-                        $path = $asset->storeAs('assets/posts', $assetname, 's3');
-                        // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                        $url  = Storage::disk('s3')->url($path);
-
-
-                        $assets[] = $post->assets()->create([
-                            'asset_name'        => $assetname,
-                            'asset_url'         => $url,
-                            'asset_size'        => $assetsize,
-                            'asset_mime'        => $assetmime,
-                        ]);
-                    }
-                // }
-            }
-            else
-            {
-                // $post->assets()->delete();
             }
 
             return $this->sendResponse(new PostResource($post), __('Post saved successfully'));

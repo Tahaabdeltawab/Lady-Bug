@@ -4,7 +4,7 @@ return [
 
     /**
      * 
-     * ? farmed_types should be of ids 1 for crops, 2 for trees, 3 for home_plants, 4 for animals
+     * ? farm_activity_types should be of ids 1 for crops, 2 for trees, 3 for home_plants, 4 for animals
      * 
      */
 
@@ -28,28 +28,28 @@ return [
     'admin_role' => 'app-admin',
 
     // used not to get with app Roles of the dashboard
-    'farm_roles' => [ 
-        'farm-admin',
-        'farm-editor',
-        'farm-supervisor'
+    'business_roles' => [ 
+        'business-admin',
+        'business-editor',
+        'business-supervisor'
     ],
 
-    // used in sending the app roles and users api for the farm owner to edit the roles
-    'farm_allowed_roles' => [ 
-        // 'farm-admin', // this role is only for the farm creator
-        'farm-editor',
-        'farm-supervisor'
+    // used in sending the app roles and users api for the business owner to edit the roles
+    'business_allowed_roles' => [ 
+        // 'business-admin', // this role is only for the business creator
+        'business-editor',
+        'business-supervisor'
     ],
 
-    'edit_farm_allowed_roles' => [
-        'farm-admin',
-        'farm-editor',
+    'edit_business_allowed_roles' => [
+        'business-admin',
+        'business-editor',
     ],
 
-    'show_farm_allowed_roles' => [
-        'farm-admin',
-        'farm-editor',
-        'farm-supervisor'
+    'show_business_allowed_roles' => [
+        'business-admin',
+        'business-editor',
+        'business-supervisor'
     ],
 
     /**

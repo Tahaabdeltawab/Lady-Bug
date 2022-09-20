@@ -88,22 +88,8 @@ class ReportAPIController extends AppBaseController
 
             if ($assets = $request->file('assets')) {
                 foreach ($assets as $asset) {
-                    $currentDate = Carbon::now()->toDateString();
-                    $assetname = 'report-' . $currentDate . '-' . uniqid() . '.' . $asset->getClientOriginalExtension();
-                    $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                    $assetmime = $asset->getClientMimeType();
-
-                    $path = $asset->storeAs('assets/reports', $assetname, 's3');
-                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                    $url  = Storage::disk('s3')->url($path);
-
-                    $asset = $report->assets()->create([
-                        'asset_name'        => $assetname,
-                        'asset_url'         => $url,
-                        'asset_size'        => $assetsize,
-                        'asset_mime'        => $assetmime,
-                    ]);
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'report');
+                    $report->assets()->create($oneasset);
                 }
             }
 
@@ -179,22 +165,8 @@ class ReportAPIController extends AppBaseController
 
             if ($assets = $request->file('assets')) {
                 foreach ($assets as $asset) {
-                    $currentDate = Carbon::now()->toDateString();
-                    $assetname = 'report-' . $currentDate . '-' . uniqid() . '.' . $asset->getClientOriginalExtension();
-                    $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                    $assetmime = $asset->getClientMimeType();
-
-                    $path = $asset->storeAs('assets/reports', $assetname, 's3');
-                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                    $url  = Storage::disk('s3')->url($path);
-
-                    $asset = $report->assets()->create([
-                        'asset_name'        => $assetname,
-                        'asset_url'         => $url,
-                        'asset_size'        => $assetsize,
-                        'asset_mime'        => $assetmime,
-                    ]);
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'report');
+                    $report->assets()->create($oneasset);
                 }
             }
 

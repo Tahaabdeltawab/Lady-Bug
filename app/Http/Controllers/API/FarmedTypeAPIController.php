@@ -117,22 +117,8 @@ class FarmedTypeAPIController extends AppBaseController
 
         if($photo = $request->file('photo'))
         {
-            $currentDate = Carbon::now()->toDateString();
-            $photoname = 'farmedType-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
-            $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
-            $photomime = $photo->getClientMimeType();
-
-            $path = $photo->storeAs('assets/images/farmedTypes', $photoname, 's3');
-            // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
-
-            $url  = Storage::disk('s3')->url($path);
-
-            $saved_photo = $farmedType->asset()->create([
-                'asset_name'        => $photoname,
-                'asset_url'         => $url,
-                'asset_size'        => $photosize,
-                'asset_mime'        => $photomime,
-            ]);
+            $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo, 'farmed-type');
+            $farmedType->asset()->create($oneasset);
 
         }
 
@@ -220,23 +206,8 @@ class FarmedTypeAPIController extends AppBaseController
 
         if($photo = $request->file('photo'))
         {
-            $currentDate = Carbon::now()->toDateString();
-            $photoname = 'farmedType-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
-            $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
-            $photomime = $photo->getClientMimeType();
-
-            $path = $photo->storeAs('assets/images/farmedTypes', $photoname, 's3');
-            // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
-
-            $url  = Storage::disk('s3')->url($path);
-
-            $farmedType->asset()->delete();
-            $saved_photo = $farmedType->asset()->create([
-                'asset_name'        => $photoname,
-                'asset_url'         => $url,
-                'asset_size'        => $photosize,
-                'asset_mime'        => $photomime,
-            ]);
+            $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo, 'farmed-type');
+            $farmedType->asset()->create($oneasset);
 
         }
 

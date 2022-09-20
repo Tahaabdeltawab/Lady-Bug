@@ -155,10 +155,14 @@ class Farm extends Model
         return $this->belongsTo(MeasuringUnit::class, 'area_unit_id');
     }
 
-
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    public function farm_reports()
+    {
+        return $this->hasMany(FarmReport::class);
     }
 
     public function tasks()
@@ -166,15 +170,15 @@ class Farm extends Model
         return $this->hasMany(\App\Models\Task::class);
     }
 
-    public function service_tables()
-    {
-        return $this->hasMany(ServiceTable::class);
-    }
+    // public function service_tables()
+    // {
+    //     return $this->hasMany(ServiceTable::class);
+    // }
 
-    public function service_tasks()
-    {
-        return $this->hasMany(ServiceTask::class);
-    }
+    // public function service_tasks()
+    // {
+    //     return $this->hasMany(ServiceTask::class);
+    // }
 
     public function animal_fodder_types()
     {

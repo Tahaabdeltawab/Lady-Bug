@@ -2,41 +2,41 @@
 
 namespace App\Http\Helpers;
 
-use App\Models\Farm;
+use App\Models\Business;
 
 class CheckPermission{
 
-    public function check_farm_permission($farm_id, $user)
+    public function check_business_permission($business_id, $user)
     {
 
-        $farm = Farm::where('id', $farm_id)->first();
+        $business = Business::find($business_id);
 
-        if (empty($farm))
+        if (empty($business))
         {
             return [
                 'success' => false,
                 'data' => (object)[],
                 'code' => 404,
-                'message' => 'Farm not found'
+                'message' => 'business not found'
             ];
         }
 
         if(!$user->hasRole(config('myconfig.admin_role')))
         {
-            $user_farm = $user->allTeams()->where('id', $farm_id)->first();
-            if(!$user_farm)
+            $user_business = $user->allTeams()->where('id', $business_id)->first();
+            if(!$user_business)
             {
                 return [
                     'success' => false,
                     'data' => (object)[],
                     'code' => 989,
-                    'message' => 'User is not a member in this farm'
+                    'message' => 'User is not a member in this business'
                 ];
             }
 
 
-            $allowed_roles = config('myconfig.edit_farm_allowed_roles');
-            if(!$user->hasRole($allowed_roles, $farm_id))
+            $allowed_roles = config('myconfig.edit_business_allowed_roles');
+            if(!$user->hasRole($allowed_roles, $business_id))
             {
                 return [
                     'success' => false,

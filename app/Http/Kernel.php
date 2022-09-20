@@ -66,7 +66,7 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'jwt.verify' => \App\Http\Middleware\JWTMiddleware::class,
         'jwt.guest' => \App\Http\Middleware\JWTGuestMiddleware::class,
-        'check_farm_role' => \App\Http\Middleware\FarmRole::class,
+        'check_business_role' => \App\Http\Middleware\BusinessRole::class,
         'checkBlocked' => \App\Http\Middleware\BlockedUser::class,
     ];
 }

@@ -108,6 +108,11 @@ class Business extends Team
         return $this->hasMany(Post::class);
     }
 
+    public function tasks()
+    {
+        return $this->hasMany(\App\Models\Task::class);
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
@@ -161,10 +166,5 @@ class Business extends Team
     public function cover_asset()
     {
         return $this->assets()->where('asset_name', 'like', 'business-cover%')->first();
-    }
-
-    public function tasks()
-    {
-        return $this->hasMany(\App\Models\Task::class);
     }
 }

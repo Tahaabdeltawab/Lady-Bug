@@ -72,49 +72,11 @@ class CommentAPIController extends AppBaseController
             $comment->post->updateReactions();
             if($assets = $request->file('assets'))
             {
-               /*  if(!is_array($assets))
+                foreach($assets as $asset)
                 {
-                    $currentDate = Carbon::now()->toDateString();
-                    $assetsname = 'comment-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
-                    $assetssize = $assets->getSize(); //size in bytes 1k = 1000bytes
-                    $assetsmime = $assets->getClientMimeType();
-
-                    $path = $assets->storeAs('assets/comments', $assetsname, 's3');
-                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                    $url  = Storage::disk('s3')->url($path);
-
-                    $saved_asset = $comment->assets()->create([
-                        'asset_name'        => $assetsname,
-                        'asset_url'         => $url,
-                        'asset_size'        => $assetssize,
-                        'asset_mime'        => $assetsmime,
-                    ]);
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'comment');
+                    $saved_asset[] = $comment->assets()->create($oneasset);
                 }
-                else
-                { */
-                    foreach($assets as $asset)
-                    {
-                        //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
-                        // dispatch(new \App\Jobs\Upload($asset, $comment));
-                        $currentDate = Carbon::now()->toDateString();
-                        $assetname = 'comment-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
-                        $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                        $assetmime = $asset->getClientMimeType();
-
-                        $path = $asset->storeAs('assets/comments', $assetname, 's3');
-                        // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                        $url  = Storage::disk('s3')->url($path);
-
-                        $saved_asset[] = $comment->assets()->create([
-                            'asset_name'        => $assetname,
-                            'asset_url'         => $url,
-                            'asset_size'        => $assetsize,
-                            'asset_mime'        => $assetmime,
-                        ]);
-                    }
-                // }
             }
             if($comment->commenter_id != $comment->post->author_id)
             $comment->post->author->notify(new \App\Notifications\TimelineInteraction($comment));
@@ -136,7 +98,7 @@ class CommentAPIController extends AppBaseController
 
 
 
-    //  //  //  //  //  L I K E S  &&  D I S L I K E S  //  //  //  //  //
+    // L I K E S  &&  D I S L I K E S
 
     public function toggle_like($id)
     {
@@ -243,56 +205,12 @@ class CommentAPIController extends AppBaseController
 
             if($assets = $request->file('assets'))
             {
-               /*  if(!is_array($assets))
+                $comment->assets()->delete();
+                foreach($assets as $asset)
                 {
-                    $currentDate = Carbon::now()->toDateString();
-                    $assetsname = 'comment-'.$currentDate.'-'.uniqid().'.'.$assets->getClientOriginalExtension();
-                    $assetssize = $assets->getSize(); //size in bytes 1k = 1000bytes
-                    $assetsmime = $assets->getClientMimeType();
-
-                    $path = $assets->storeAs('assets/comments', $assetsname, 's3');
-                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                    $url  = Storage::disk('s3')->url($path);
-
-                    $comment->assets()->delete();
-                    $saved_asset = $comment->assets()->create([
-                        'asset_name'        => $assetsname,
-                        'asset_url'         => $url,
-                        'asset_size'        => $assetssize,
-                        'asset_mime'        => $assetsmime,
-                    ]);
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'comment');
+                    $saved_asset[] = $comment->assets()->create($oneasset);
                 }
-                else
-                { */
-                    $comment->assets()->delete();
-
-                    foreach($assets as $asset)
-                    {
-                        //ERROR YOU CANNOT PASS UPLOADED FILE TO THE QUEUE
-                        // dispatch(new \App\Jobs\Upload($asset, $comment));
-                        $currentDate = Carbon::now()->toDateString();
-                        $assetname = 'comment-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
-                        $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                        $assetmime = $asset->getClientMimeType();
-
-                        $path = $asset->storeAs('assets/comments', $assetname, 's3');
-                        // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                        $url  = Storage::disk('s3')->url($path);
-
-                        $saved_asset[] = $comment->assets()->create([
-                            'asset_name'        => $assetname,
-                            'asset_url'         => $url,
-                            'asset_size'        => $assetsize,
-                            'asset_mime'        => $assetmime,
-                        ]);
-                    }
-                // }
-            }
-            else
-            {
-                // $comment->assets()->sync([]);
             }
 
             return $this->sendResponse(new CommentResource($comment), __('Comment saved successfully'));

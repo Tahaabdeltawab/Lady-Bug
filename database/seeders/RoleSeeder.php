@@ -16,18 +16,18 @@ class RoleSeeder extends Seeder
     {
         DB::table('roles')->insert([
             [
-                'name' => 'farm-admin',
-                'display_name' => 'Farm Admin',
+                'name' => 'business-admin',
+                'display_name' => 'Business Admin',
                 'description' =>'مدير مزرعة',
             ],
             [
-                'name' => 'farm-editor',
-                'display_name' => 'Farm Editor',
+                'name' => 'business-editor',
+                'display_name' => 'Business Editor',
                 'description' =>'محرر مزرعة',
             ],
             [
-                'name' => 'farm-supervisor',
-                'display_name' => 'Farm Supervisor',
+                'name' => 'business-supervisor',
+                'display_name' => 'Business Supervisor',
                 'description' =>'مشرف مزرعة',
             ],
             [

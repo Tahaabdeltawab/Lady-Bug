@@ -122,22 +122,8 @@ class FarmedTypeGinfoAPIController extends AppBaseController
                 {
                     foreach($assets as $asset)
                     {
-                        $currentDate = Carbon::now()->toDateString();
-                        $assetname = 'farmedtype-ginfo-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
-                        $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                        $assetmime = $asset->getClientMimeType();
-
-                        $path = $asset->storeAs('assets/posts', $assetname, 's3');
-                        // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                        $url  = Storage::disk('s3')->url($path);
-
-                        $asset = $farmedTypeGinfo->assets()->create([
-                            'asset_name'        => $assetname,
-                            'asset_url'         => $url,
-                            'asset_size'        => $assetsize,
-                            'asset_mime'        => $assetmime,
-                        ]);
+                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'farmed-type-ginfo');
+                        $farmedTypeGinfo->assets()->create($oneasset);
                     }
                 }
 
@@ -204,22 +190,8 @@ class FarmedTypeGinfoAPIController extends AppBaseController
                 $farmedTypeGinfo->assets()->delete();
                 foreach($assets as $asset)
                 {
-                    $currentDate = Carbon::now()->toDateString();
-                    $assetname = 'farmedtype-ginfo-'.$currentDate.'-'.uniqid().'.'.$asset->getClientOriginalExtension();
-                    $assetsize = $asset->getSize(); //size in bytes 1k = 1000bytes
-                    $assetmime = $asset->getClientMimeType();
-
-                    $path = $asset->storeAs('assets/posts', $assetname, 's3');
-                    // $path = Storage::disk('s3')->putFileAs('assets/images', $asset, $assetname);
-
-                    $url  = Storage::disk('s3')->url($path);
-
-                    $asset = $farmedTypeGinfo->assets()->create([
-                        'asset_name'        => $assetname,
-                        'asset_url'         => $url,
-                        'asset_size'        => $assetsize,
-                        'asset_mime'        => $assetmime,
-                    ]);
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'farmed-type-ginfo');
+                    $farmedTypeGinfo->assets()->create($oneasset);
                 }
             }
 

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class FarmInvitation extends Notification
+class BusinessInvitation extends Notification
 {
     use Queueable;
 
@@ -17,15 +17,15 @@ class FarmInvitation extends Notification
      *
      * @return void
      */
-    public function __construct($inviter, $role, $farm, $accept_url, $decline_url)
+    public function __construct($inviter, $role, $business, $accept_url, $decline_url)
     {
-        $this->farm         = $farm;
+        $this->business     = $business;
         $this->inviter      = $inviter;
         $this->role         = $role;
         $this->type         = 'farm_invitation';
-        $this->title        = __('Farm Invitation');
-        $farm_name          = @$this->farm->farmed_type_class->name.' '.$this->farm->farmed_type->name;
-        $this->msg          = __('farm_invitation_msg', ['user' => $this->inviter->name, 'farm' => $farm_name, 'role' => $this->role->name]);
+        $this->title        = __('Business Invitation');
+        $business_name      = @$this->business->com_name;
+        $this->msg          = __('business_invitation_msg', ['user' => $this->inviter->name, 'business' => $business_name, 'role' => $this->role->name]);
         $this->accept_url   = $accept_url;
         $this->decline_url  = $decline_url;
     }
@@ -57,7 +57,7 @@ class FarmInvitation extends Notification
                     ->greeting(__('Hello', ['name' => $notifiable->name]))
                     ->subject($this->title)
                     ->line($this->msg)
-                    ->action(__('Join Farm'), $accept_url)
+                    ->action(__('Join Business'), $accept_url)
                     ->line(__('To decline the invitation, visit the link below'))
                     ->line($decline_url);
                     // ->line('Thanks!');
@@ -78,7 +78,7 @@ class FarmInvitation extends Notification
 
         $inviter    = $this->inviter->id;
         $role       = $this->role->id;
-        $farm       = $this->farm->id;
+        $business       = $this->business->id;
 
         $return = [
             'title'             => $this->title,
@@ -86,7 +86,7 @@ class FarmInvitation extends Notification
             'inviter'           => $inviter,
             'invitee'           => $notifiable->id,
             'role'              => $role,
-            'farm'              => $farm,
+            'business'          => $business,
             'accepted'          => null,
             'type'              => $this->type,
             'accept_url'        => $accept_url,

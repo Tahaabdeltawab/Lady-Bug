@@ -90,28 +90,6 @@ class RegisterController extends Controller
     protected function create($data)
     {
 
-        $photo = $data->file('photo');
-
-        if(isset($photo)){
-            $currentDate = Carbon::now()->toDateString();
-            $photoname = 'profile-'.$currentDate.'-'.uniqid().'.'.$photo->getClientOriginalExtension();
-            $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
-            $photomime = $photo->getClientMimeType();
-                    
-            $path = $photo->storeAs('assets/images/profiles', $photoname, 's3');
-            // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
-            
-            $url  = Storage::disk('s3')->url($path);
-            
-            $saved_photo = $this->assetRepository->create([
-                'asset_name'        => $photoname,
-                'asset_url'         => $url,
-                'asset_size'        => $photosize,
-                'asset_mime'        => $photomime,
-                'assetable_type'    => 'profile'
-            ]);
-        }
-        
         $user = User::create([
             'name' => $data->name,
             'email' => $data->email,
@@ -121,6 +99,13 @@ class RegisterController extends Controller
             'password' => Hash::make($data->password),
         ]);
         
+
+        if($photo = $data->file('photo')){
+            $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo);
+            $user->asset()->create($oneasset);
+        }
+        
+      
 
         return $user;
     }

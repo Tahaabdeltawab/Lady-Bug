@@ -179,22 +179,8 @@ class AuthController extends AppBaseController
             $user->attachRole(config('myconfig.user_default_role'));
 
             if ($photo = $request->file('photo')) {
-                $currentDate = Carbon::now()->toDateString();
-                $photoname = 'profile-' . $currentDate . '-' . uniqid() . '.' . $photo->getClientOriginalExtension();
-                $photosize = $photo->getSize(); //size in bytes 1k = 1000bytes
-                $photomime = $photo->getClientMimeType();
-
-                $path = $photo->storeAs('assets/images/profiles', $photoname, 's3');
-                // $path = Storage::disk('s3')->putFileAs('photos/images', $photo, $photoname);
-
-                $url = Storage::disk('s3')->url($path);
-
-                $asset = $user->asset()->create([
-                    'asset_name' => $photoname,
-                    'asset_url' => $url,
-                    'asset_size' => $photosize,
-                    'asset_mime' => $photomime,
-                ]);
+                $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo);
+                $user->asset()->create($oneasset);
             }
 
             $credentials = $request->only('email', 'password');
