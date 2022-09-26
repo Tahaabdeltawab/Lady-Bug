@@ -456,7 +456,6 @@ class BusinessAPIController extends AppBaseController
         }
         $similar_dealers = Business::select('id', 'com_name')->where('business_field_id', $business_field_id)->get();
         return $this->sendResponse([
-            'business_fields' => BusinessField::all(),
             'agents' => $similar_dealers,
             'distributors' => $similar_dealers,
             'statuses' => [
