@@ -50,6 +50,7 @@ class Task extends Model
         'fertilizer_id',
         'quantity',
         'quantity_unit',
+        'notes',
         'done'
     ];
 
@@ -70,6 +71,7 @@ class Task extends Model
         'fertilizer_id' => 'integer',
         'quantity' => 'decimal:2',
         'quantity_unit' => 'string',
+        'notes' => 'string',
         'done' => 'boolean'
     ];
 
@@ -79,16 +81,17 @@ class Task extends Model
      * @var array
      */
     public static $rules = [
-        'farm_report_id' => 'nullable',
-        'farm_id' => 'nullable',
-        'business_id' => 'nullable',
-        'date' => 'nullable',
-        'week' => 'nullable',
-        'task_type_id' => 'required',
+        'farm_report_id' => 'nullable|exists:farm_reports,id',
+        'farm_id' => 'nullable|exists:farms,id',
+        'business_id' => 'nullable|exists:businesses,id',
+        'task_type_id' => 'required|exists:task_types,id',
         'insecticide_id' => 'nullable',
         'fertilizer_id' => 'nullable',
+        'date' => 'nullable|date_format:Y-m-d',
+        'week' => 'nullable|in:1,2,3,4',
         'quantity' => 'nullable',
         'quantity_unit' => 'nullable',
+        'notes' => 'nullable',
         'done' => 'nullable'
     ];
 

@@ -31,6 +31,8 @@ class FarmReport extends Model
 
 
     public $fillable = [
+        'business_id',
+        'user_id',
         'farm_id',
         'farmed_type_stage_id',
         'lat',
@@ -47,6 +49,8 @@ class FarmReport extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'business_id' => 'integer',
+        'user_id' => 'integer',
         'farm_id' => 'integer',
         'farmed_type_stage_id' => 'integer',
         'lat' => 'string',
@@ -63,6 +67,7 @@ class FarmReport extends Model
      */
     public static $rules = [
         'farm_id' => 'required|exists:farms,id',
+        'business_id' => 'nullable|exists:businesses,id',
         'farmed_type_stage_id' => 'nullable|exists:farmed_type_stages,id',
         'lat' => 'required',
         'lon' => 'required',
@@ -77,6 +82,16 @@ class FarmReport extends Model
     public function farm()
     {
         return $this->belongsTo(\App\Models\Farm::class);
+    }
+
+    public function business()
+    {
+        return $this->belongsTo(\App\Models\Business::class);
+    }
+   
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class);
     }
 
     /**

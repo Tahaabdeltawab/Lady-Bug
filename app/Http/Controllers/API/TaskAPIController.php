@@ -44,6 +44,21 @@ class TaskAPIController extends AppBaseController
         return $this->sendResponse(TaskResource::collection($tasks), 'Tasks retrieved successfully');
     }
 
+
+    public function toggle_finish($id)
+    {
+        $task = $this->taskRepository->find($id);
+
+        if (empty($task)) {
+            return $this->sendError('Service Task not found');
+        }
+
+        $msg = $task->done ? 'Task unfinished successfully' : 'Task finished successfully' ;
+        $this->taskRepository->save_localized(['done' => !$task->done], $id);
+
+        return $this->sendSuccess($msg);
+    }
+
     /**
      * Store a newly created Task in storage.
      * POST /tasks

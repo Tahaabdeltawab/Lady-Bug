@@ -26,6 +26,7 @@ class TaskResource extends JsonResource
             'fertilizer_id' => $this->fertilizer_id,
             'quantity' => $this->quantity,
             'quantity_unit' => $this->quantity_unit,
+            'notes' => $this->notes,
             'done' => $this->done
         ];
     }

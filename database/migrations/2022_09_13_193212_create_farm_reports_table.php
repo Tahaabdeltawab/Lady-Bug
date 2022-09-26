@@ -16,6 +16,8 @@ class CreateFarmReportsTable extends Migration
     {
         Schema::create('farm_reports', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('business_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('farm_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('farmed_type_stage_id')->nullable()->constrained();
             $table->string('lat')->nullable();

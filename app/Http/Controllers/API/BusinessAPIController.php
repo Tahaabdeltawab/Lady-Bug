@@ -11,6 +11,7 @@ use App\Http\Controllers\AppBaseController;
 use App\Http\Helpers\WeatherApi;
 use App\Http\Resources\BusinessResource;
 use App\Http\Resources\BusinessWithTasksResource;
+use App\Http\Resources\FarmResource;
 use App\Http\Resources\PostXsResource;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\UserResource;
@@ -364,6 +365,17 @@ class BusinessAPIController extends AppBaseController
         }
     }
 
+    public function get_business_farms($id)
+    {
+         /** @var Business $business */
+         $business = $this->businessRepository->find($id);
+
+         if (empty($business))
+             return $this->sendError('Business not found');
+ 
+         return $this->sendResponse(FarmResource::collection($business->farms), 'Business farms retrieved successfully');
+    }
+
 
     public function user_today_tasks(Request $request)
     {
@@ -433,13 +445,25 @@ class BusinessAPIController extends AppBaseController
         return $this->sendResponse(new BusinessResource($business), 'Business retrieved successfully');
     }
 
-    public function getRelations($business_field_id)
+    public function getRelations($business_field_id = null)
     {
+        if($business_field_id == null){
+            return $this->sendResponse([
+                'business_fields' => BusinessField::all()
+            ], 
+            'business fields retrieved successfully'
+            );
+        }
         $similar_dealers = Business::select('id', 'com_name')->where('business_field_id', $business_field_id)->get();
         return $this->sendResponse([
             'business_fields' => BusinessField::all(),
             'agents' => $similar_dealers,
             'distributors' => $similar_dealers,
+            'statuses' => [
+                ['id' => 0, 'name' => app()->getLocale()=='ar' ?  'لم يبدأ بعد' : 'have not started'],
+                ['id' => 1, 'name' => app()->getLocale()=='ar' ?  'تحت الإنشاء' : 'Under Construction'],
+                ['id' => 2, 'name' => app()->getLocale()=='ar' ?  'يمارس نشاطه' : 'Working']
+            ]
         ], 'business relations retrieved successfully');
     }
 

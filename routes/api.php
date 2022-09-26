@@ -61,8 +61,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
             Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['index', 'update', 'show', 'destroy']);
             Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
-            Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
-            Route::get('service_tasks/toggle_finish/{service_task}', [App\Http\Controllers\API\ServiceTaskAPIController::class, 'toggle_finish']);
+            // Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
             // Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
             // Route::get('service_tables/duplicate/{service_table}', [App\Http\Controllers\API\ServiceTableAPIController::class, 'duplicate']);
             Route::get('posts/toggle_solve/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_solve_post']);
@@ -349,7 +348,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     // * new
     // Business
     Route::resource('businesses', App\Http\Controllers\API\BusinessAPIController::class);
-    Route::get('businesses/relations/{business_field}', [App\Http\Controllers\API\BusinessAPIController::class, 'getRelations']);
+    Route::get('businesses/relations/index/{business_field?}', [App\Http\Controllers\API\BusinessAPIController::class, 'getRelations']);
     //get weather and auth farms
     Route::post('users/businesses/index', [App\Http\Controllers\API\BusinessAPIController::class, 'user_businesses']);
     Route::post('users/today_tasks/index', [App\Http\Controllers\API\BusinessAPIController::class, 'user_today_tasks']);
@@ -359,6 +358,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('businesses/roles/decline/{user}/{role}/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'decline_business_invitation'])->name('businesses.roles.decline_business_invitation');
     
     Route::get('businesses/users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_users'])->name('businesses.users.index');
+    Route::get('businesses/farms/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_farms'])->name('businesses.farms.index');
     Route::get('businesses/app_users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'app_users']);
     Route::get('businesses/app_roles/index', [App\Http\Controllers\API\BusinessAPIController::class, 'app_roles']);
 
@@ -372,7 +372,17 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     
     // REPORT
     Route::get('settings/report_price', [App\Http\Controllers\API\SettingAPIController::class, 'get_report_price'])->name('settings.get_report_price');
-
+    Route::resource('farm_reports', App\Http\Controllers\API\FarmReportAPIController::class)->except(['update']);
+    Route::match(['put', 'patch','post'], 'farm_reports/{farm_report}', [App\Http\Controllers\API\FarmReportAPIController::class, 'update'])->name('farm_reports.update');
+    
+    Route::get('tasks/toggle_finish/{task}', [App\Http\Controllers\API\TaskAPIController::class, 'toggle_finish']);
+    Route::resource('tasks', App\Http\Controllers\API\TaskAPIController::class);
+   
+    // Fertilizers & Insecticides (admin)
+    Route::resource('insecticides', App\Http\Controllers\API\InsecticideAPIController::class)->except('update');
+    Route::match(['put', 'patch','post'], 'insecticides/{insecticide}', [App\Http\Controllers\API\InsecticideAPIController::class, 'update'])->name('insecticides.update');
+    Route::resource('fertilizers', App\Http\Controllers\API\FertilizerAPIController::class)->except('update');
+    Route::match(['put', 'patch','post'], 'fertilizers/{fertilizer}', [App\Http\Controllers\API\FertilizerAPIController::class, 'update'])->name('fertilizers.update');
     
     Route::resource('business_fields', App\Http\Controllers\API\BusinessFieldAPIController::class);
     
@@ -429,15 +439,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     Route::resource('pathogens', App\Http\Controllers\API\PathogenAPIController::class);
 
-    Route::resource('insecticides', App\Http\Controllers\API\InsecticideAPIController::class);
-
-    Route::resource('fertilizers', App\Http\Controllers\API\FertilizerAPIController::class);
-
-    Route::resource('farm_reports', App\Http\Controllers\API\FarmReportAPIController::class);
-
     Route::resource('business_parts', App\Http\Controllers\API\BusinessPartAPIController::class);
-
-    Route::resource('tasks', App\Http\Controllers\API\TaskAPIController::class);
 
     Route::resource('disease_registrations', App\Http\Controllers\API\DiseaseRegistrationAPIController::class);
 

@@ -55,7 +55,7 @@ class FarmReportAPIController extends AppBaseController
     public function store(CreateFarmReportAPIRequest $request)
     {
         $input = $request->all();
-
+        $input['user_id'] = auth()->id();
         $farmReport = $this->farmReportRepository->create($input);
 
         return $this->sendResponse(new FarmReportResource($farmReport), 'Farm Report saved successfully');

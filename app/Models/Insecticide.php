@@ -80,7 +80,7 @@ class Insecticide extends Model
      */
     public static $rules = [
         'name' => 'required',
-        'dosage_form' => 'nullable',
+        'dosage_form' => 'nullable|in:powder,liquid',
         'producer' => 'nullable',
         'country_id' => 'nullable',
         'conc' => 'nullable',

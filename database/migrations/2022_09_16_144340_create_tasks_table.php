@@ -26,6 +26,7 @@ class CreateTasksTable extends Migration
             $table->foreignId('fertilizer_id')->nullable()->constrained();
             $table->decimal('quantity')->nullable();
             $table->string('quantity_unit')->nullable();
+            $table->string('notes')->nullable();
             $table->boolean('done')->default(0);
         });
     }

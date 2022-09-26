@@ -88,7 +88,7 @@ class Fertilizer extends Model
     public static $rules = [
         'name' => 'required',
         'nut_elem_value_id' => 'nullable',
-        'dosage_form' => 'nullable',
+        'dosage_form' => 'nullable|in:powder,liquid',
         'producer' => 'nullable',
         'country_id' => 'nullable',
         'addition_way' => 'nullable',
