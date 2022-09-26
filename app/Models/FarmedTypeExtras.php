@@ -30,6 +30,7 @@ class FarmedTypeExtras extends Model
 
 
     public $table = 'farmed_type_extras';
+	public $timestamps = false;
     
 
 

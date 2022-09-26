@@ -15,9 +15,11 @@ use Eloquent as Model;
  */
 class BusinessField extends Model
 {
-
+    use \App\Traits\SpatieHasTranslations;
+    public $translatable = ['name'];
 
     public $table = 'business_fields';
+	public $timestamps = false;
     
 
 

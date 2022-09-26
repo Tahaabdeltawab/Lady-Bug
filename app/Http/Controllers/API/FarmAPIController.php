@@ -54,6 +54,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Helpers\WeatherApi;
 use App\Http\Resources\FarmCollection;
+use App\Models\Business;
 
 class FarmAPIController extends AppBaseController
 {
@@ -200,10 +201,10 @@ class FarmAPIController extends AppBaseController
             $data['animal_fodder_types'] = AnimalFodderTypeResource::collection($this->animalFodderTypeRepository->all());
             $data['soil_types'] = SoilTypeResource::collection($this->soilTypeRepository->all());
 
-            $data['seedling_sources'] = SeedlingSourceResource::collection($this->seedlingSourceRepository->all());
-            $data['chemical_fertilizer_sources'] = ChemicalFertilizerSourceResource::collection($this->chemicalFertilizerSourceRepository->all());
-            $data['animal_fodder_sources'] = AnimalFodderSourceResource::collection($this->animalFodderSourceRepository->all());
-            $data['animal_medicine_sources'] = AnimalMedicineSourceResource::collection($this->animalMedicineSourceRepository->all());
+            $data['seedling_sources'] = Business::farm()->get(['id', 'com_name']);
+            $data['chemical_fertilizer_sources'] = Business::fertilizer()->get(['id', 'com_name']);
+            $data['animal_fodder_sources'] = Business::fodder()->get(['id', 'com_name']);
+            $data['animal_medicine_sources'] = Business::vetmed()->get(['id', 'com_name']);
 
             return $this->sendResponse(['all' => $data], 'Farms relations retrieved successfully');
 
@@ -244,7 +245,7 @@ class FarmAPIController extends AppBaseController
     {
         try
         {
-            $archived_farms = auth()->user()->allTeams()->where('archived', true);
+            $archived_farms = auth()->user()->farms()->where('archived', true);
             return $this->sendResponse(['all' => FarmResource::collection($archived_farms)], 'Archived farms retrieved successfully');
         }
         catch(\Throwable $th){
@@ -272,6 +273,7 @@ class FarmAPIController extends AppBaseController
             $fat_id = $input["farm_activity_type_id"];
 
             //all 1,2,3,4
+            $farm_detail['business_id'] = $input['business_id'];
             $farm_detail['admin_id'] = auth()->id();
             $farm_detail['real'] = $input["real"];
             $farm_detail['archived'] = $input["archived"];
@@ -437,6 +439,7 @@ class FarmAPIController extends AppBaseController
 
             return $this->sendResponse(new FarmResource($farm), 'Farm retrieved successfully');
         }catch(\Throwable $th){
+            throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -457,6 +460,7 @@ class FarmAPIController extends AppBaseController
             $fat_id = $input["farm_activity_type_id"];
 
             //all 1,2,3,4
+            $farm_detail['business_id'] = $input['business_id'];
             $farm_detail['real'] = $input["real"];
             $farm_detail['archived'] = $input["archived"];
             $farm_detail['farm_activity_type_id'] = $input["farm_activity_type_id"];

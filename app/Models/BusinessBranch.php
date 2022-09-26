@@ -20,11 +20,13 @@ class BusinessBranch extends Model
 
 
     public $table = 'business_branches';
+	public $timestamps = false;
     
 
 
 
     public $fillable = [
+        'business_id',
         'name',
         'address'
     ];
@@ -36,6 +38,7 @@ class BusinessBranch extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'business_id' => 'integer',
         'name' => 'string',
         'address' => 'string'
     ];
@@ -46,6 +49,7 @@ class BusinessBranch extends Model
      * @var array
      */
     public static $rules = [
+        'business_id' => 'required|exists:businesses,id',
         'name' => 'required',
         'address' => 'nullable'
     ];

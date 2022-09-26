@@ -21,6 +21,7 @@ class Education extends Model
 
 
     public $table = 'education';
+	public $timestamps = false;
     
 
 

@@ -21,6 +21,7 @@ class Career extends Model
 
 
     public $table = 'careers';
+	public $timestamps = false;
     
 
 

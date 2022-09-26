@@ -23,7 +23,7 @@ class CheckPermission{
 
         if(!$user->hasRole(config('myconfig.admin_role')))
         {
-            $user_business = $user->allTeams()->where('id', $business_id)->first();
+            $user_business = $user->allBusinesses()->where('id', $business_id)->first();
             if(!$user_business)
             {
                 return [

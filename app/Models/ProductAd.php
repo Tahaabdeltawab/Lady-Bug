@@ -22,6 +22,7 @@ class ProductAd extends Model
 
 
     public $table = 'product_ads';
+	public $timestamps = false;
     
 
 

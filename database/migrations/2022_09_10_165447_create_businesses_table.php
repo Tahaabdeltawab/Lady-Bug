@@ -19,8 +19,6 @@ class CreateBusinessesTable extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('business_field_id')->constrained();
             $table->string('description')->nullable();
-            $table->string('main_img')->nullable();
-            $table->string('cover_img')->nullable();
             $table->string('com_name')->nullable();
             $table->string('status')->nullable();
             $table->string('mobile')->nullable();

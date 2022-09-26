@@ -19,6 +19,7 @@ class FarmedType extends Model
 
     public $fillable = [
         'name',
+        'parent_id',
         'farm_activity_type_id',
         'farming_temperature',
         'flowering_temperature',
@@ -51,6 +52,7 @@ class FarmedType extends Model
     public static $rules = [
         'name_ar_localized' => 'required|max:200',
         'name_en_localized' => 'required|max:200',
+        'parent_id' => 'nullable|exists:farmed_types,id',
         'farm_activity_type_id' => 'required',
         'farming_temperature' => 'nullable|numeric',
         'flowering_temperature' => 'nullable|numeric',
@@ -62,7 +64,7 @@ class FarmedType extends Model
     ];
 
 
-    // // // // MUTATORS // // // //
+    // MUTATORS
     public function getFarmingTemperatureAttribute($attr)
     {
         return json_decode($attr) ?? [];
@@ -102,7 +104,7 @@ class FarmedType extends Model
     {
         return json_decode($attr) ?? [];
     }
-    // // // // END MUTATORS // // // //
+    // END MUTATORS
 
 
 
@@ -123,6 +125,16 @@ class FarmedType extends Model
     public function farmed_type_classes()
     {
         return $this->hasMany(FarmedTypeClass::class);
+    }
+    
+    public function parent()
+    {
+        return $this->belongsTo(self::class, 'parent_id');
+    }
+
+    public function children()
+    {
+        return $this->hasMany(self::class, 'parent_id');
     }
 
     public function popular_countries()

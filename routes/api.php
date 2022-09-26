@@ -40,7 +40,7 @@ Route::group([
 Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 {
 
-    // // // // //  USER AREA  // // // // //
+    //  USER AREA
 
     Route::group(
         ['middleware'=>[/* 'role:app-user' */]],
@@ -55,11 +55,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         // Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy')->middleware('check_business_role');
         Route::group(['middleware'=>[/* 'check_business_role' */]], function()
         {
-            Route::get('businesses/users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_users'])->name('businesses.users.index');
-            Route::get('businesses/app_users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'app_users']);
-            Route::get('businesses/app_roles/index', [App\Http\Controllers\API\BusinessAPIController::class, 'app_roles']);
-            Route::get('businesses/posts/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_posts'])->name('businesses.posts.index');
-
+           
             Route::match(['put', 'patch', 'post'], 'farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('farms.update');
             Route::get('farms/toggle_archive/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'toggleArchive'])->name('farms.toggle_archive');
 
@@ -77,35 +73,24 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
         
         
-        // BUSIENSS ROLES
-        Route::post('businesses/roles/store', [App\Http\Controllers\API\BusinessAPIController::class, 'update_business_role'])->name('businesses.roles.store');
-        Route::get('businesses/roles/store/{user}/{role}/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'first_attach_business_role'])->name('businesses.roles.first_attach');
-        Route::get('businesses/roles/decline/{user}/{role}/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'decline_business_invitation'])->name('businesses.roles.decline_business_invitation');
-        
-        
-        Route::post('farms/user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('farms.users.weather.index');
-        Route::get('farms/archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('farms.get_archived');
-
+     
         Route::post('users/update_password/{user}', [App\Http\Controllers\API\UserAPIController::class, 'update_password']);
 
         //get weather and auth interests
         Route::post('users/interests/index', [App\Http\Controllers\API\UserAPIController::class, 'user_interests']);
         //get auth products
         Route::get('users/products/index', [App\Http\Controllers\API\UserAPIController::class, 'user_products']);
-        //get weather and auth farms
-        Route::post('users/farms/index', [App\Http\Controllers\API\UserAPIController::class, 'user_farms']);
-        Route::post('users/today_tasks/index', [App\Http\Controllers\API\UserAPIController::class, 'user_today_tasks']);
-        // // // NOTIFICATIONS
+        // NOTIFICATIONS
         Route::get('users/notifications/index', [App\Http\Controllers\API\UserAPIController::class, 'get_notifications']);
         Route::get('users/notifications/read/{notification}', [App\Http\Controllers\API\UserAPIController::class, 'read_notification']);
         Route::get('users/notifications/unread/{notification}', [App\Http\Controllers\API\UserAPIController::class, 'unread_notification']);
-        // // // FOLLOW
+        // FOLLOW
         Route::get('users/followers/index', [App\Http\Controllers\API\UserAPIController::class, 'my_followers']);
         Route::get('users/followings/index', [App\Http\Controllers\API\UserAPIController::class, 'my_followings']);
-        Route::get('users/toggle_follow/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggleFollow']);
-        // // // RATE
+        Route::get('users/toggle_follow/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggle_follow']);
+        // RATE
         Route::post('users/rate', [App\Http\Controllers\API\UserAPIController::class, 'rate']);
-        // // // NOTIFIABLE
+        // NOTIFIABLE
         Route::get('users/toggle_notifiable', [App\Http\Controllers\API\UserAPIController::class, 'toggle_notifiable']);
 
         Route::get('users/search/{query}', [App\Http\Controllers\API\UserAPIController::class, 'search']);
@@ -138,7 +123,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
         Route::resource('comments', App\Http\Controllers\API\CommentAPIController::class);
         Route::match(['put', 'patch','post'], 'comments/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'update'])->name('comments.update');
-        // // // LIKES // // //
+        // LIKES //
         Route::get('comments/toggle_like/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_like']);
         Route::get('comments/toggle_dislike/{comment}', [App\Http\Controllers\API\CommentAPIController::class, 'toggle_dislike']);
 
@@ -147,7 +132,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     });
 
 
-    // // // // // //  ADMIN AREA  // // // // // //
+    // //  ADMIN AREA  // //
 
     Route::group([
         'prefix'        => 'admin/',
@@ -361,6 +346,104 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('report_types/{report_type}', [App\Http\Controllers\API\ReportTypeAPIController::class, 'show'])->name('report_types.show');
     // end routes for users and admins
 
+    // * new
+    // Business
+    Route::resource('businesses', App\Http\Controllers\API\BusinessAPIController::class);
+    Route::get('businesses/relations/{business_field}', [App\Http\Controllers\API\BusinessAPIController::class, 'getRelations']);
+    //get weather and auth farms
+    Route::post('users/businesses/index', [App\Http\Controllers\API\BusinessAPIController::class, 'user_businesses']);
+    Route::post('users/today_tasks/index', [App\Http\Controllers\API\BusinessAPIController::class, 'user_today_tasks']);
+    // BUSIENSS ROLES
+    Route::post('businesses/roles/store', [App\Http\Controllers\API\BusinessAPIController::class, 'update_business_role'])->name('businesses.roles.store');
+    Route::get('businesses/roles/store/{user}/{role}/{business}/{start_date?}/{end_date?}', [App\Http\Controllers\API\BusinessAPIController::class, 'first_attach_business_role'])->name('businesses.roles.first_attach');
+    Route::get('businesses/roles/decline/{user}/{role}/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'decline_business_invitation'])->name('businesses.roles.decline_business_invitation');
+    
+    Route::get('businesses/users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_users'])->name('businesses.users.index');
+    Route::get('businesses/app_users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'app_users']);
+    Route::get('businesses/app_roles/index', [App\Http\Controllers\API\BusinessAPIController::class, 'app_roles']);
+
+    Route::get('businesses/posts/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_posts'])->name('businesses.posts.index');
+
+    // FOLLOW
+    Route::get('businesses/toggle_follow/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'toggle_follow']);
+
+    Route::post('farms/user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('farms.users.weather.index');
+    Route::get('farms/archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('farms.get_archived');
+    
+    // REPORT
+    Route::get('settings/report_price', [App\Http\Controllers\API\SettingAPIController::class, 'get_report_price'])->name('settings.get_report_price');
+
+    
+    Route::resource('business_fields', App\Http\Controllers\API\BusinessFieldAPIController::class);
+    
+    Route::resource('business_branches', App\Http\Controllers\API\BusinessBranchAPIController::class);
+
+    Route::resource('rating_questions', App\Http\Controllers\API\RatingQuestionAPIController::class);
+
+    Route::resource('consultancy_profiles', App\Http\Controllers\API\ConsultancyProfileAPIController::class);
+
+    Route::resource('offline_consultancy_plans', App\Http\Controllers\API\OfflineConsultancyPlanAPIController::class);
+
+    Route::resource('work_fields', App\Http\Controllers\API\WorkFieldAPIController::class);
+
+    Route::resource('transactions', App\Http\Controllers\API\TransactionAPIController::class);
+
+    Route::resource('education', App\Http\Controllers\API\EducationAPIController::class);
+
+    Route::resource('careers', App\Http\Controllers\API\CareerAPIController::class);
+
+    Route::resource('residences', App\Http\Controllers\API\ResidenceAPIController::class);
+
+    Route::resource('visiteds', App\Http\Controllers\API\VisitedAPIController::class);
+
+    Route::resource('irrigation_rates', App\Http\Controllers\API\IrrigationRateAPIController::class);
+
+    Route::resource('infection_rates', App\Http\Controllers\API\InfectionRateAPIController::class);
+
+    Route::resource('infection_spread_stages', App\Http\Controllers\API\InfectionSpreadStageAPIController::class);
+
+    Route::resource('pathogen_growth_stages', App\Http\Controllers\API\PathogenGrowthStageAPIController::class);
+
+    Route::resource('pathogen_types', App\Http\Controllers\API\PathogenTypeAPIController::class);
+
+    Route::resource('countries', App\Http\Controllers\API\CountryAPIController::class);
+
+    Route::resource('nut_elem_values', App\Http\Controllers\API\NutElemValueAPIController::class);
+
+    Route::resource('farmed_type_nut_vals', App\Http\Controllers\API\FarmedTypeNutValAPIController::class);
+
+    Route::resource('farmed_type_fertilization_needs', App\Http\Controllers\API\FarmedTypeFertilizationNeedAPIController::class);
+
+
+    Route::resource('farmed_type_extras', App\Http\Controllers\API\FarmedTypeExtrasAPIController::class);
+
+    Route::resource('marketing_datas', App\Http\Controllers\API\MarketingDataAPIController::class);
+
+    Route::resource('taxonomies', App\Http\Controllers\API\TaxonomyAPIController::class);
+
+    Route::resource('acs', App\Http\Controllers\API\AcAPIController::class);
+
+    Route::resource('diseases', App\Http\Controllers\API\DiseaseAPIController::class);
+
+    Route::resource('disease_causatives', App\Http\Controllers\API\DiseaseCausativeAPIController::class);
+
+    Route::resource('pathogens', App\Http\Controllers\API\PathogenAPIController::class);
+
+    Route::resource('insecticides', App\Http\Controllers\API\InsecticideAPIController::class);
+
+    Route::resource('fertilizers', App\Http\Controllers\API\FertilizerAPIController::class);
+
+    Route::resource('farm_reports', App\Http\Controllers\API\FarmReportAPIController::class);
+
+    Route::resource('business_parts', App\Http\Controllers\API\BusinessPartAPIController::class);
+
+    Route::resource('tasks', App\Http\Controllers\API\TaskAPIController::class);
+
+    Route::resource('disease_registrations', App\Http\Controllers\API\DiseaseRegistrationAPIController::class);
+
+    Route::resource('product_types', App\Http\Controllers\API\ProductTypeAPIController::class);
+
+    Route::resource('product_ads', App\Http\Controllers\API\ProductAdAPIController::class);
 });
 
 // ROUTES DON'T NEED LOGIN AS THEY ARE USED IN REGISTRATION
@@ -372,76 +455,4 @@ Route::post('forget_password', [App\Http\Controllers\AuthController2::class, 'fo
 Route::post('reset_password', [App\Http\Controllers\AuthController2::class, 'resetPassword'])->name('auth.resetPassword');
 
 
-Route::resource('rating_questions', App\Http\Controllers\API\RatingQuestionAPIController::class);
-
-Route::resource('consultancy_profiles', App\Http\Controllers\API\ConsultancyProfileAPIController::class);
-
-Route::resource('offline_consultancy_plans', App\Http\Controllers\API\OfflineConsultancyPlanAPIController::class);
-
-Route::resource('work_fields', App\Http\Controllers\API\WorkFieldAPIController::class);
-
-Route::resource('transactions', App\Http\Controllers\API\TransactionAPIController::class);
-
-Route::resource('education', App\Http\Controllers\API\EducationAPIController::class);
-
-Route::resource('careers', App\Http\Controllers\API\CareerAPIController::class);
-
-Route::resource('residences', App\Http\Controllers\API\ResidenceAPIController::class);
-
-Route::resource('visiteds', App\Http\Controllers\API\VisitedAPIController::class);
-
-
-
-Route::resource('irrigation_rates', App\Http\Controllers\API\IrrigationRateAPIController::class);
-
-Route::resource('infection_rates', App\Http\Controllers\API\InfectionRateAPIController::class);
-
-Route::resource('infection_spread_stages', App\Http\Controllers\API\InfectionSpreadStageAPIController::class);
-
-Route::resource('pathogen_growth_stages', App\Http\Controllers\API\PathogenGrowthStageAPIController::class);
-
-Route::resource('pathogen_types', App\Http\Controllers\API\PathogenTypeAPIController::class);
-
-Route::resource('countries', App\Http\Controllers\API\CountryAPIController::class);
-
-Route::resource('nut_elem_values', App\Http\Controllers\API\NutElemValueAPIController::class);
-
-Route::resource('farmed_type_nut_vals', App\Http\Controllers\API\FarmedTypeNutValAPIController::class);
-
-Route::resource('farmed_type_fertilization_needs', App\Http\Controllers\API\FarmedTypeFertilizationNeedAPIController::class);
-
-Route::resource('business_fields', App\Http\Controllers\API\BusinessFieldAPIController::class);
-
-Route::resource('businesses', App\Http\Controllers\API\BusinessAPIController::class);
-
-Route::resource('business_branches', App\Http\Controllers\API\BusinessBranchAPIController::class);
-
-Route::resource('farmed_type_extras', App\Http\Controllers\API\FarmedTypeExtrasAPIController::class);
-
-Route::resource('marketing_datas', App\Http\Controllers\API\MarketingDataAPIController::class);
-
-Route::resource('taxonomies', App\Http\Controllers\API\TaxonomyAPIController::class);
-
-Route::resource('acs', App\Http\Controllers\API\AcAPIController::class);
-
-Route::resource('diseases', App\Http\Controllers\API\DiseaseAPIController::class);
-
-Route::resource('disease_causatives', App\Http\Controllers\API\DiseaseCausativeAPIController::class);
-
-Route::resource('pathogens', App\Http\Controllers\API\PathogenAPIController::class);
-
-Route::resource('insecticides', App\Http\Controllers\API\InsecticideAPIController::class);
-
-Route::resource('fertilizers', App\Http\Controllers\API\FertilizerAPIController::class);
-
-Route::resource('farm_reports', App\Http\Controllers\API\FarmReportAPIController::class);
-
-Route::resource('business_parts', App\Http\Controllers\API\BusinessPartAPIController::class);
-
-Route::resource('tasks', App\Http\Controllers\API\TaskAPIController::class);
-
-Route::resource('disease_registrations', App\Http\Controllers\API\DiseaseRegistrationAPIController::class);
-
-Route::resource('product_types', App\Http\Controllers\API\ProductTypeAPIController::class);
-
-Route::resource('product_ads', App\Http\Controllers\API\ProductAdAPIController::class);
+Route::resource('settings', App\Http\Controllers\API\SettingAPIController::class);

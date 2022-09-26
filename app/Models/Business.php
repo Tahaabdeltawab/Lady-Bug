@@ -2,34 +2,12 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
+use App\Traits\Followable;
+use App\Traits\Follower;
 
-
-
-/**
- * Class Business
- * @package App\Models
- * @version September 10, 2022, 5:36 pm EET
- *
- * @property \Illuminate\Database\Eloquent\Collection $farms
- * @property \App\Models\User $user
- * @property \App\Models\BusinessField $businessField
- * @property \App\Models\Country $country
- * @property integer $user_id
- * @property integer $business_field_id
- * @property string $description
- * @property string $com_name
- * @property string $status
- * @property string $mobile
- * @property string $whatsapp
- * @property number $lat
- * @property number $lon
- * @property integer $country_id
- * @property boolean $privacy
- */
 class Business extends Team
 {
-
+    use Follower, Followable;
 
     public $table = 'businesses';
     
@@ -87,7 +65,12 @@ class Business extends Team
         'lat' => 'nullable',
         'lon' => 'nullable',
         'country_id' => 'nullable',
-        'privacy' => 'nullable'
+        'privacy' => 'nullable',
+        'branches' => 'nullable|array',
+        'agents' => 'nullable|array',
+        'agents.*' => 'exists:businesses,id',
+        'distributors' => 'nullable|array',
+        'distributors.*' => 'exists:businesses,id',
     ];
 
     /**
@@ -138,19 +121,31 @@ class Business extends Team
     }
 
     /**
+     * * الفروع
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function branches()
+    {
+        return $this->hasMany(BusinessBranch::class);
+    }
+
+
+    /**
+     * * الوكلاء
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function agents()
     {
-        return $this->belongsToMany(self::class, 'business_dealer', 'business_id', 'dealer_id')->where('type', 'agent');
+        return $this->belongsToMany(self::class, 'business_dealer', 'business_id', 'dealer_id')->wherePivot('type', 'agent');
     }
 
     /**
+     * * الموزعين
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function distributors()
     {
-        return $this->belongsToMany(self::class, 'business_dealer', 'business_id', 'dealer_id')->where('type', 'distributor');
+        return $this->belongsToMany(self::class, 'business_dealer', 'business_id', 'dealer_id')->wherePivot('type', 'distributor');
     }
 
     public function assets()
@@ -160,11 +155,32 @@ class Business extends Team
 
     public function main_asset()
     {
-        return $this->assets()->where('asset_name', 'like', 'business-main%')->first();
+        return $this->assets()->where('asset_name', 'like', 'business-main%');
     }
 
     public function cover_asset()
     {
-        return $this->assets()->where('asset_name', 'like', 'business-cover%')->first();
+        return $this->assets()->where('asset_name', 'like', 'business-cover%');
+    }
+
+    public function scopeFarm($q)
+    {
+        return $q->where('business_field_id', 1);
+    }
+    public function scopeInsecticide($q)
+    {
+        return $q->where('business_field_id', 2);
+    }
+    public function scopeFertilizer($q)
+    {
+        return $q->where('business_field_id', 3);
+    }
+    public function scopeFodder($q)
+    {
+        return $q->where('business_field_id', 4);
+    }
+    public function scopeVetmed($q)
+    {
+        return $q->where('business_field_id', 5);
     }
 }

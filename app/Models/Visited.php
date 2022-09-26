@@ -21,6 +21,7 @@ class Visited extends Model
 
 
     public $table = 'visiteds';
+	public $timestamps = false;
     
 
 

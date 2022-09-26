@@ -15,7 +15,7 @@ class CreateFarmSeedlingSourceTable extends Migration
     {
         Schema::create('farm_seedling_source', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('seedling_source_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreignId('seedling_source_id')->constrained('businesses')->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreignId('farm_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
 
             $table->unique(['seedling_source_id', 'farm_id'],'sdlngsrc_farm_unique');

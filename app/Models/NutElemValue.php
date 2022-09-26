@@ -24,6 +24,7 @@ class NutElemValue extends Model
 
 
     public $table = 'nut_elem_values';
+	public $timestamps = false;
     
 
 

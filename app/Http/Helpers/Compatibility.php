@@ -175,7 +175,7 @@ class Compatibility{
 
         // if the database has compatibility set
         if($compat = json_decode($farm->farming_compatibility)){
-            // check if the conditions changed or not, if not changed so don't calculate it again else calculate it
+            // check if the conditions changed or not, if not changed so don't calculate it again. Else, calculate it.
             if(json_encode($compat->conditions) == json_encode($conditions)){
                 $messages = [];
                 foreach($compat->messages as $message){

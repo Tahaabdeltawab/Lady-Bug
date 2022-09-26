@@ -35,6 +35,7 @@ class FarmedTypeNutVal extends Model
 
 
     public $table = 'farmed_type_nut_vals';
+	public $timestamps = false;
     
 
 

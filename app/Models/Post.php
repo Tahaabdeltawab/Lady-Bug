@@ -59,7 +59,7 @@ class Post extends Model
     ];
 
     public function updateReactions(){
-        $this->reactions_count = $this->comments->count() + $this->likers->count() + $this->dislikers->count();
+        $this->reactions_count = $this->comments()->count() + $this->likers()->count() + $this->dislikers()->count();
         $this->save();
     }
     protected static function booted(){

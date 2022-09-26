@@ -29,6 +29,7 @@ class Taxonomy extends Model
 
 
     public $table = 'taxonomies';
+	public $timestamps = false;
     
 
 

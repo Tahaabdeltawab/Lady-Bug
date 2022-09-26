@@ -24,6 +24,7 @@ class BusinessPart extends Model
 
 
     public $table = 'business_parts';
+	public $timestamps = false;
     
 
 

@@ -34,6 +34,7 @@ class Task extends Model
 
 
     public $table = 'tasks';
+	public $timestamps = false;
     
 
 

@@ -15,9 +15,10 @@ use Eloquent as Model;
  */
 class ProductType extends Model
 {
-    use \App\Traits\SpatieHasTranslations, Rateable;
+    use \App\Traits\SpatieHasTranslations;
 
     public $translatable = ['name'];
+	public $timestamps = false;
 
     public $table = 'product_types';
     

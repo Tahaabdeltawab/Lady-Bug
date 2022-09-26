@@ -16,6 +16,7 @@ class BusinessBranchResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'business_id' => $this->business_id,
             'name' => $this->name,
             'address' => $this->address
         ];

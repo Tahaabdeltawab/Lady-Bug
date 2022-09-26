@@ -128,13 +128,6 @@
       0 => 'Overtrue\\LaravelFavorite\\FavoriteServiceProvider',
     ),
   ),
-  'overtrue/laravel-follow' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'Overtrue\\LaravelFollow\\FollowServiceProvider',
-    ),
-  ),
   'overtrue/laravel-like' => 
   array (
     'providers' => 

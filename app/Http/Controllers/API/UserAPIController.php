@@ -3,41 +3,27 @@
 namespace App\Http\Controllers\API;
 
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\API\CreateUserAPIRequest;
-use App\Http\Requests\API\UpdateUserAPIRequest;
 use App\Http\Requests\API\CreateUserFavoritesAPIRequest;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Post;
 use App\Models\Product;
-use App\Models\ServiceTask;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\PostResource;
-use App\Http\Resources\FarmResource;
-use App\Http\Resources\FarmWithServiceTasksReource;
 use App\Http\Resources\NotificationResource;
 use App\Http\Resources\FarmedTypeResource;
-use App\Http\Resources\ServiceTaskResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\FarmedTypeGinfoResource;
-use Response;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
-use App\Repositories\FarmedTypeRepository;
-use App\Repositories\HumanJobRepository;
-use App\Repositories\AssetRepository;
-use App\Repositories\ServiceTaskRepository;
 use App\Repositories\ProductRepository;
 use App\Repositories\FarmedTypeGinfoRepository;
 
 use App\Http\Helpers\WeatherApi;
-use App\Http\Resources\FarmCollection;
 
 /**
  * Class UserController
@@ -48,28 +34,16 @@ class UserAPIController extends AppBaseController
 {
     /** @var  UserRepository */
     private $userRepository;
-    private $humanJobRepository;
-    private $assetRepository;
-    private $farmedTypeRepository;
-    private $serviceTaskRepository;
     private $productRepository;
     private $farmedTypeGinfoRepository;
 
     public function __construct(
-        HumanJobRepository $humanJobRepo,
-        AssetRepository $assetRepo,
         UserRepository $userRepo,
-        FarmedTypeRepository $farmedTypeRepo,
-        ServiceTaskRepository $serviceTaskRepo,
         ProductRepository $productRepo,
         FarmedTypeGinfoRepository $farmedTypeGinfoRepo
         )
     {
         $this->userRepository = $userRepo;
-        $this->humanJobRepository = $humanJobRepo;
-        $this->assetRepository = $assetRepo;
-        $this->farmedTypeRepository = $farmedTypeRepo;
-        $this->serviceTaskRepository = $serviceTaskRepo;
         $this->productRepository = $productRepo;
         $this->farmedTypeGinfoRepository = $farmedTypeGinfoRepo;
 
@@ -109,45 +83,6 @@ class UserAPIController extends AppBaseController
         return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
     }
 
-
-    public function user_farms(Request $request)
-    {
-        try{
-            $weather_resp = WeatherApi::instance()->weather_api($request);
-            $weather_data = $weather_resp['data'];
-            $user = auth()->user();
-            $farms = $user->allTeams()->where('archived', false);
-            return $this->sendResponse([
-                'unread_notifications_count' => $user->unreadNotifications->count(),
-                'weather_data' => $weather_data,
-                'farms' => FarmResource::collection($farms)
-            ], 'Farms retrieved successfully');
-        }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500);
-        }
-    }
-
-
-    public function user_today_tasks(Request $request)
-    {
-        try{
-            $weather_resp = WeatherApi::instance()->weather_api($request);
-            $weather_data = $weather_resp['data'];
-
-            $farms = auth()->user()->rolesTeams()->with('service_tasks', function($query){
-                $query->where('start_at', date('Y-m-d'));
-            })->whereHas('service_tasks', function($q){
-                $q->where('start_at', date('Y-m-d'));
-            })->get();
-
-            return $this->sendResponse([
-                'weather_data' => $weather_data,
-                'tasks' => FarmWithServiceTasksReource::collection($farms)
-            ], 'Today\'s tasks retrieved successfully');
-        }catch(\Throwable $th){
-            return $this->sendError($th->getMessage(), 500);
-        }
-    }
 
 
     public function user_products(Request $request)
@@ -189,7 +124,7 @@ class UserAPIController extends AppBaseController
 
 
 
-// // // // // // NOTIFICATIONS // // // // // //
+    // NOTIFICATIONS 
 
     public function toggle_notifiable()
     {
@@ -254,7 +189,7 @@ class UserAPIController extends AppBaseController
 
 
 
-    // // // // // //  POSTS  // // // // // //
+    // POSTS
 
     public function user_posts()
     {
@@ -331,18 +266,16 @@ class UserAPIController extends AppBaseController
 
 
 
-    // // // // FOLLOW // // // //
+    // FOLLOW
 
-    public function toggleFollow($id)
+    public function toggle_follow($id)
     {
         try
         {
             $user = $this->userRepository->find($id);
 
             if (empty($user))
-            {
                 return $this->sendError('User not found');
-            }
 
             if(auth()->user()->isFollowing($user))
             {
@@ -371,15 +304,17 @@ class UserAPIController extends AppBaseController
 
     public function my_followings()
     {
-        $my_followings = auth()->user()->followings;
+        // $my_followings = auth()->user()->followings;
+        // $my_followings = auth()->user()->users_i_follow;
+        $my_followings = auth()->user()->businesses_i_follow;
 
-        return $this->sendResponse(['count' => $my_followings->count(), 'all' => UserResource::collection($my_followings)], 'User followings retrieved successfully');
+        return $this->sendResponse(['count' => $my_followings->count(), 'all' => ($my_followings)], 'User followings retrieved successfully');
     }
 
 
 
 
-    // // // // // RATE // // // //
+    // RATE
 
     public function rate(Request $request)
     {

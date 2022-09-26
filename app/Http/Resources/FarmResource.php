@@ -72,25 +72,25 @@ class FarmResource extends JsonResource
         //  {
              $farm_detail['animal_breeding_purpose'] = new AnimalBreedingPurposeResource($this->animal_breeding_purpose);
              $farm_detail['animal_drink_water_salt_detail'] = new SaltDetailResource($this->animal_drink_water_salt_detail);
-             $farm_detail['animal_medicine_sources'] =  AnimalMedicineSourceResource::collection($this->animal_medicine_sources);
-             $farm_detail['animal_fodder_sources'] =  AnimalFodderSourceResource::collection($this->animal_fodder_sources);
+             $farm_detail['animal_medicine_sources'] =  BusinessResource::collection($this->animal_medicine_sources);
+             $farm_detail['animal_fodder_sources'] =  BusinessResource::collection($this->animal_fodder_sources);
              $farm_detail['animal_fodder_types'] =  AnimalFodderTypeResource::collection($this->animal_fodder_types);
         //  }
 
          //crops, trees, homeplants 1,2,3
         //  if($fat_id == 1 || $fat_id == 2 || $fat_id == 3)
         //  {
-            $farm_detail['chemical_fertilizer_sources'] = ChemicalFertilizerSourceResource::collection($this->chemical_fertilizer_sources);
-            $farm_detail['seedling_sources'] =  SeedlingSourceResource::collection($this->seedling_sources);
+            $farm_detail['chemical_fertilizer_sources'] = BusinessResource::collection($this->chemical_fertilizer_sources);
+            $farm_detail['seedling_sources'] =  BusinessResource::collection($this->seedling_sources);
         //  }
 
          // pass the farm to the usercollection to add the business_roles to the collection
          // if you pass a farm in the collection() you will get business_roles property in the users collection and vice versa
          //  $farm_detail['users'] = UserResource::collection($this->users);
-         $farm_detail['users'] = (new UserResource($this->users))->collection($this->users)->farm($this);
+     //     $farm_detail['users'] = (new UserResource($this->users))->collection($this->users)->farm($this);
          $farm_detail['posts'] = PostResource::collection($this->posts);
-         $farm_detail['service_tables'] = ServiceTableResource::collection($this->service_tables);
-         $farm_detail['coming_task'] = $this->service_tasks()->orderBy('start_at', 'asc')->first() ?? (object) [] ;
+     //     $farm_detail['service_tables'] = ServiceTableResource::collection($this->service_tables);
+     //     $farm_detail['coming_task'] = $this->service_tasks()->orderBy('start_at', 'asc')->first() ?? (object) [] ;
 
          return $farm_detail;
 

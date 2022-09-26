@@ -23,6 +23,7 @@ class FarmedTypeFertilizationNeed extends Model
 
 
     public $table = 'farmed_type_fertilization_needs';
+	public $timestamps = false;
     
 
 

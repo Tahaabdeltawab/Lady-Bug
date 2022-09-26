@@ -62,12 +62,12 @@ class FarmReport extends Model
      * @var array
      */
     public static $rules = [
-        'farm_id' => 'required',
-        'farmed_type_stage_id' => 'nullable',
+        'farm_id' => 'required|exists:farms,id',
+        'farmed_type_stage_id' => 'nullable|exists:farmed_type_stages,id',
         'lat' => 'required',
         'lon' => 'required',
-        'fertilization_start_date' => 'nullable',
-        'fertilization_unit' => 'nullable',
+        'fertilization_start_date' => 'nullable|date_format:Y-m-d',
+        'fertilization_unit' => 'nullable|in:tree,acre',
         'notes' => 'nullable'
     ];
 

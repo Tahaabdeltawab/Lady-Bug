@@ -18,7 +18,7 @@ class CreateChemicalFertilizerSourceFarmTable extends Migration
             $table->unsignedBigInteger('chemical_fertilizer_source_id');
             $table->unsignedBigInteger('farm_id');
 
-            $table->foreign('chemical_fertilizer_source_id', 'chfsrc_chfarm_foreign')->references('id')->on('chemical_fertilizer_sources')
+            $table->foreign('chemical_fertilizer_source_id', 'chfsrc_chfarm_foreign')->references('id')->on('businesses')
                 ->onDelete('CASCADE');
             $table->foreign('farm_id','farm_chfarm_foreign')->references('id')->on('farms')
                 ->onDelete('CASCADE');

@@ -25,6 +25,7 @@ class CreateFarmAPIRequest extends APIRequest
     public function rules()
     {
         return [
+            'business_id'                           => 'required|exists:businesses,id',
             'real'                                  => 'required',
             'archived'                              => 'required',
             'location'                              => 'array|required',
@@ -91,9 +92,9 @@ class CreateFarmAPIRequest extends APIRequest
 
             //animals 4
             "animal_medicine_sources"               => "array|requiredIf:farm_activity_type_id,4",
-            "animal_medicine_sources.*"             => "requiredIf:farm_activity_type_id,4|exists:animal_medicine_sources,id",
+            "animal_medicine_sources.*"             => "requiredIf:farm_activity_type_id,4|exists:businesses,id",
             "animal_fodder_sources"                 => "array|requiredIf:farm_activity_type_id,4",
-            "animal_fodder_sources.*"               => "requiredIf:farm_activity_type_id,4|exists:animal_fodder_sources,id",
+            "animal_fodder_sources.*"               => "requiredIf:farm_activity_type_id,4|exists:businesses,id",
             "animal_fodder_types"                   => "array|requiredIf:farm_activity_type_id,4",
             "animal_fodder_types.*"                 => "requiredIf:farm_activity_type_id,4|exists:animal_fodder_types,id",
             'animal_breeding_purpose_id'            => 'requiredIf:farm_activity_type_id,4|exists:animal_breeding_purposes,id',
@@ -111,9 +112,9 @@ class CreateFarmAPIRequest extends APIRequest
 
             //crops, trees, homeplants 1,2,3
             "chemical_fertilizer_sources"           => "array|requiredIf:farm_activity_type_id,1,2,3",
-            "chemical_fertilizer_sources.*"         => "requiredIf:farm_activity_type_id,1,2,3|exists:chemical_fertilizer_sources,id",
+            "chemical_fertilizer_sources.*"         => "requiredIf:farm_activity_type_id,1,2,3|exists:businesses,id",
             "seedling_sources"                      => "array|requiredIf:farm_activity_type_id,1,2,3",
-            "seedling_sources.*"                    => "requiredIf:farm_activity_type_id,1,2,3|exists:seedling_sources,id",
+            "seedling_sources.*"                    => "requiredIf:farm_activity_type_id,1,2,3|exists:businesses,id",
             //homeplant, trees, animals 2,3,4
             "farmed_number"                         => "requiredIf:farm_activity_type_id,2,3,4|integer",
             //homeplants 3

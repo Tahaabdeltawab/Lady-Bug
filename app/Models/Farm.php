@@ -13,6 +13,7 @@ class Farm extends Model
 
 
     public $fillable = [
+        'business_id',
         'admin_id',
         'code',
         'real',
@@ -45,6 +46,7 @@ class Farm extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'business_id' => 'integer',
         'admin_id' => 'integer',
         'code' => 'string',
         'real' => 'boolean',
@@ -187,22 +189,22 @@ class Farm extends Model
 
     public function animal_fodder_sources()
     {
-        return $this->belongsToMany(AnimalFodderSource::class);
+        return $this->belongsToMany(Business::class, 'animal_fodder_source_farm', 'farm_id', 'animal_fodder_source_id');
     }
 
     public function animal_medicine_sources()
     {
-        return $this->belongsToMany(AnimalMedicineSource::class);
+        return $this->belongsToMany(Business::class, 'animal_medicine_source_farm', 'farm_id', 'animal_medicine_source_id');
     }
 
     public function seedling_sources()
     {
-        return $this->belongsToMany(SeedlingSource::class);
+        return $this->belongsToMany(Business::class, 'farm_seedling_source', 'farm_id', 'seedling_source_id');
     }
 
     public function chemical_fertilizer_sources()
     {
-        return $this->belongsToMany(ChemicalFertilizerSource::class);
+        return $this->belongsToMany(Business::class, 'chemical_fertilizer_source_farm', 'farm_id', 'chemical_fertilizer_source_id');
     }
 
 }

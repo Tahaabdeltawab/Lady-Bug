@@ -13,7 +13,6 @@ use App\Http\Resources\FarmedTypeResource;
 use Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
 
 /**
  * Class FarmedTypeController
@@ -24,7 +23,6 @@ class FarmedTypeAPIController extends AppBaseController
 {
     /** @var  FarmedTypeRepository */
     private $farmedTypeRepository;
-    private $assetRepository;
 
     public function __construct(FarmedTypeRepository $farmedTypeRepo, AssetRepository $assetRepo)
     {
@@ -63,34 +61,35 @@ class FarmedTypeAPIController extends AppBaseController
             'name_ar_localized'                     => 'required|max:200',
             'name_en_localized'                     => 'required|max:200',
             'farm_activity_type_id'                 => 'required',
+            'parent_id'                             => 'nullable',
             'photo'                                 => 'nullable|max:2000|mimes:jpeg,jpg,png',
-            'flowering_time'                        => 'required|integer', // number of days till flowering
-            'maturity_time'                         => 'required|integer',  // number of days till maturity
+            'flowering_time'                        => 'nullable|integer', // number of days till flowering
+            'maturity_time'                         => 'nullable|integer',  // number of days till maturity
             
-            // 'farming_temperature'                   => 'required|array|size:2',
-            // 'farming_temperature.*'                 => 'required|numeric',
-            'farming_temperature'                   => 'required',
-            // 'flowering_temperature'                 => 'required|array|size:2',
-            // 'flowering_temperature.*'               => 'required|numeric',
-            'flowering_temperature'                 => 'required',
-            // 'maturity_temperature'                  => 'required|array|size:2',
-            // 'maturity_temperature.*'                => 'required|numeric',
-            'maturity_temperature'                  => 'required',
-            // 'humidity'                              => 'required|array|size:2', // in the time of maturity
-            // 'humidity.*'                            => 'required|numeric', // in the time of maturity
-            'humidity'                              => 'required', // in the time of maturity
-            // 'suitable_soil_salts_concentration'     => 'required|array|size:2',
-            // 'suitable_soil_salts_concentration.*'   => 'required|numeric',
-            'suitable_soil_salts_concentration'     => 'required',
-            // 'suitable_water_salts_concentration'    => 'required|array|size:2',
-            // 'suitable_water_salts_concentration.*'  => 'required|numeric',
-            'suitable_water_salts_concentration'    => 'required',
-            // 'suitable_ph'                           => 'required|array|size:2',
-            // 'suitable_ph.*'                         => 'required|numeric',
-            'suitable_ph'                           => 'required',
-            // 'suitable_soil_types'                   => 'required|array|size:2',
-            // 'suitable_soil_types.*'                 => 'required|integer|exists:soil_types,id',
-            'suitable_soil_types'                   => 'required',
+            // 'farming_temperature'                   => 'nullable|array|size:2',
+            // 'farming_temperature.*'                 => 'nullable|numeric',
+            'farming_temperature'                   => 'nullable',
+            // 'flowering_temperature'                 => 'nullable|array|size:2',
+            // 'flowering_temperature.*'               => 'nullable|numeric',
+            'flowering_temperature'                 => 'nullable',
+            // 'maturity_temperature'                  => 'nullable|array|size:2',
+            // 'maturity_temperature.*'                => 'nullable|numeric',
+            'maturity_temperature'                  => 'nullable',
+            // 'humidity'                              => 'nullable|array|size:2', // in the time of maturity
+            // 'humidity.*'                            => 'nullable|numeric', // in the time of maturity
+            'humidity'                              => 'nullable', // in the time of maturity
+            // 'suitable_soil_salts_concentration'     => 'nullable|array|size:2',
+            // 'suitable_soil_salts_concentration.*'   => 'nullable|numeric',
+            'suitable_soil_salts_concentration'     => 'nullable',
+            // 'suitable_water_salts_concentration'    => 'nullable|array|size:2',
+            // 'suitable_water_salts_concentration.*'  => 'nullable|numeric',
+            'suitable_water_salts_concentration'    => 'nullable',
+            // 'suitable_ph'                           => 'nullable|array|size:2',
+            // 'suitable_ph.*'                         => 'nullable|numeric',
+            'suitable_ph'                           => 'nullable',
+            // 'suitable_soil_types'                   => 'nullable|array|size:2',
+            // 'suitable_soil_types.*'                 => 'nullable|integer|exists:soil_types,id',
+            'suitable_soil_types'                   => 'nullable',
         ]);
 
         if($validator->fails())
@@ -100,7 +99,9 @@ class FarmedTypeAPIController extends AppBaseController
 
         $to_save['name_ar_localized'] = $request->name_ar_localized;
         $to_save['name_en_localized'] = $request->name_en_localized;
+        $to_save['parent_id'] = $request->parent_id;
         $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
+
         $to_save['flowering_time'] = $request->flowering_time;
         $to_save['maturity_time'] = $request->maturity_time;
         
@@ -152,34 +153,35 @@ class FarmedTypeAPIController extends AppBaseController
             'name_ar_localized'                     => 'required|max:200',
             'name_en_localized'                     => 'required|max:200',
             'farm_activity_type_id'                 => 'required',
+            'parent_id'                             => 'nullable',
             'photo'                                 => 'nullable|max:2000|mimes:jpeg,jpg,png', // nullable only for update
-            'flowering_time'                        => 'required|integer', // number of days till flowering
-            'maturity_time'                         => 'required|integer',  // number of days till maturity
+            'flowering_time'                        => 'nullable|integer', // number of days till flowering
+            'maturity_time'                         => 'nullable|integer',  // number of days till maturity
             
-            // 'farming_temperature'                   => 'required|array|size:2',
-            // 'farming_temperature.*'                 => 'required|numeric',
-            'farming_temperature'                   => 'required',
-            // 'flowering_temperature'                 => 'required|array|size:2',
-            // 'flowering_temperature.*'               => 'required|numeric',
-            'flowering_temperature'                 => 'required',
-            // 'maturity_temperature'                  => 'required|array|size:2',
-            // 'maturity_temperature.*'                => 'required|numeric',
-            'maturity_temperature'                  => 'required',
-            // 'humidity'                              => 'required|array|size:2', // in the time of maturity
-            // 'humidity.*'                            => 'required|numeric', // in the time of maturity
-            'humidity'                              => 'required', // in the time of maturity
-            // 'suitable_soil_salts_concentration'     => 'required|array|size:2',
-            // 'suitable_soil_salts_concentration.*'   => 'required|numeric',
-            'suitable_soil_salts_concentration'     => 'required',
-            // 'suitable_water_salts_concentration'    => 'required|array|size:2',
-            // 'suitable_water_salts_concentration.*'  => 'required|numeric',
-            'suitable_water_salts_concentration'    => 'required',
-            // 'suitable_ph'                           => 'required|array|size:2',
-            // 'suitable_ph.*'                         => 'required|numeric',
-            'suitable_ph'                           => 'required',
-            // 'suitable_soil_types'                   => 'required|array|size:2',
-            // 'suitable_soil_types.*'                 => 'required|integer|exists:soil_types,id',
-            'suitable_soil_types'                   => 'required',
+            // 'farming_temperature'                   => 'nullable|array|size:2',
+            // 'farming_temperature.*'                 => 'nullable|numeric',
+            'farming_temperature'                   => 'nullable',
+            // 'flowering_temperature'                 => 'nullable|array|size:2',
+            // 'flowering_temperature.*'               => 'nullable|numeric',
+            'flowering_temperature'                 => 'nullable',
+            // 'maturity_temperature'                  => 'nullable|array|size:2',
+            // 'maturity_temperature.*'                => 'nullable|numeric',
+            'maturity_temperature'                  => 'nullable',
+            // 'humidity'                              => 'nullable|array|size:2', // in the time of maturity
+            // 'humidity.*'                            => 'nullable|numeric', // in the time of maturity
+            'humidity'                              => 'nullable', // in the time of maturity
+            // 'suitable_soil_salts_concentration'     => 'nullable|array|size:2',
+            // 'suitable_soil_salts_concentration.*'   => 'nullable|numeric',
+            'suitable_soil_salts_concentration'     => 'nullable',
+            // 'suitable_water_salts_concentration'    => 'nullable|array|size:2',
+            // 'suitable_water_salts_concentration.*'  => 'nullable|numeric',
+            'suitable_water_salts_concentration'    => 'nullable',
+            // 'suitable_ph'                           => 'nullable|array|size:2',
+            // 'suitable_ph.*'                         => 'nullable|numeric',
+            'suitable_ph'                           => 'nullable',
+            // 'suitable_soil_types'                   => 'nullable|array|size:2',
+            // 'suitable_soil_types.*'                 => 'nullable|integer|exists:soil_types,id',
+            'suitable_soil_types'                   => 'nullable',
         ]);
 
         if($validator->fails())
@@ -189,7 +191,9 @@ class FarmedTypeAPIController extends AppBaseController
 
         $to_save['name_ar_localized'] = $request->name_ar_localized;
         $to_save['name_en_localized'] = $request->name_en_localized;
+        $to_save['parent_id'] = $request->parent_id;
         $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
+        
         $to_save['flowering_time'] = $request->flowering_time;
         $to_save['maturity_time'] = $request->maturity_time;
 

@@ -15,7 +15,7 @@ class CreateAnimalMedicineSourceFarmTable extends Migration
     {
         Schema::create('animal_medicine_source_farm', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('animal_medicine_source_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreignId('animal_medicine_source_id')->constrained('businesses')->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreignId('farm_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
 
             $table->unique(['animal_medicine_source_id', 'farm_id'],'amdcnsrc_farm_unique');

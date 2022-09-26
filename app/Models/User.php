@@ -2,13 +2,13 @@
 //overridden by Entities\User
 namespace App\Models;
 
+use App\Traits\Followable;
+use App\Traits\Follower;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Spatie\Permission\Traits\HasRoles;
-use Overtrue\LaravelFollow\Followable;
 use willvincent\Rateable\Rateable;
 use Overtrue\LaravelLike\Traits\Liker;
 use Laratrust\Traits\LaratrustUserTrait;
@@ -16,7 +16,7 @@ use Laratrust\Traits\LaratrustUserTrait;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use LaratrustUserTrait, HasFactory, Notifiable, Followable, Rateable, Liker;
+    use LaratrustUserTrait, HasFactory, Notifiable, Follower, Followable, Rateable, Liker;
     protected $fillable = [
         'name',
         'email',
@@ -131,6 +131,46 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Farm::class, 'admin_id');
     }
+
+    public function allBusinesses()
+    {
+        return $this->rolesTeams()->where(function($q){
+            $q->where([['role_user.start_date', '<=', today()],['role_user.end_date', '>', today()]])
+            ->orWhere([['role_user.start_date','=', null], ['role_user.end_date','=', null]]);
+            /** 
+             * * DB Note 
+             * ->orWhere(['role_user.start_date' => null, 'role_user.end_date' => null]);
+             * will produce 
+             * or (`role_user`.`start_dates` is null or `role_user`.`end_dates` is null)"
+             * while the first will produce 
+             * or (`role_user`.`start_dates` is null and `role_user`.`end_dates` is null)"
+            **/ 
+
+        });
+    }
+    
+    public function ownBusinesses()
+    {
+        return $this->hasMany(Business::class);
+    }
+
+    public function sharedBusinesses($ownids = null)
+    {
+        $own_ids = $ownids ?? $this->ownBusinesses()->pluck('id');
+        return $this->allBusinesses()->whereNotIn('businesses.id', $own_ids);
+    }
+    
+    public function followedBusinesses()
+    {
+        return $this->morphedByMany(Business::class, 'followable');
+    }
+
+    public function followedUsers()
+    {
+        return $this->morphedByMany(self::class, 'followable');
+    }
+
+  
 
     public static function generate_code($length = 6)
     {

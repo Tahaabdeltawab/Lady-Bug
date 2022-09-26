@@ -17,6 +17,8 @@ use App\Http\Resources\PostResource;
 use App\Http\Resources\PostTypeResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\FarmedTypeGinfoResource;
+use App\Http\Resources\FarmedTypeXsResource;
+use App\Http\Resources\PostXsResource;
 use Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -60,7 +62,7 @@ class PostAPIController extends AppBaseController
         $posts = Post::paginate($this->perPage);
 
         return $this->sendResponse([
-            'data' => PostResource::collection($posts->items()),
+            'data' => PostXsResource::collection($posts->items()),
             'meta' => $posts->toArrayWithoutData(),
         ], 'Posts retrieved successfully');
 
@@ -88,7 +90,7 @@ class PostAPIController extends AppBaseController
         );
 
         return $this->sendResponse([
-            'data' => PostResource::collection($posts->items()),
+            'data' => PostXsResource::collection($posts->items()),
             'meta' => $posts->toArrayWithoutData(),
         ], '');
 
@@ -124,7 +126,7 @@ class PostAPIController extends AppBaseController
                 'news_count' => null,
                 'posts1' => null,
                 'posts2' => [
-                    'data' => PostResource::collection($posts2->items()),
+                    'data' => PostXsResource::collection($posts2->items()),
                     'meta' => $posts2->toArrayWithoutData(),
                 ],
                 'news' => null,
@@ -132,7 +134,7 @@ class PostAPIController extends AppBaseController
                 'favorites' => null,
             ];
             $data['posts2'] = [
-                'data' => PostResource::collection($posts2->items()),
+                'data' => PostXsResource::collection($posts2->items()),
                 'meta' => $posts2->toArrayWithoutData(),
             ];
         }
@@ -145,14 +147,14 @@ class PostAPIController extends AppBaseController
             $data =  [
                 'posts1_count' => $posts1->count(),
                 'news_count' => $fav_farmed_type_ginfos->count(),
-                'posts1' => PostResource::collection($posts1),
+                'posts1' => PostXsResource::collection($posts1),
                 'posts2' => [
-                    'data' => PostResource::collection($posts2->items()),
+                    'data' => PostXsResource::collection($posts2->items()),
                     'meta' => $posts2->toArrayWithoutData(),
                 ],
                 'news' => FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
-                'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
-                'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),
+                'unread_notifications_count' => auth()->user()->unreadNotifications()->count(),
+                'favorites' => FarmedTypeXsResource::collection(auth()->user()->favorites),
             ];
         }
 
@@ -161,6 +163,22 @@ class PostAPIController extends AppBaseController
             'Timeline retrieved successfully');
     }
 
+     // video_timeline
+     public function video_timeline(Request $request)
+     {
+         $posts = Post::accepted()->whereHas('assets', function ($q)
+         {
+             $q->whereIn('asset_mime', config('myconfig.video_mimes'));
+         })->orderByDesc('reactions_count')->get();
+ 
+         return $this->sendResponse(
+             [
+                 'posts' => PostXsResource::collection($posts),
+                 'unread_notifications_count' => auth()->user()->unreadNotifications()->count(),
+             ],
+             'Timeline retrieved successfully');
+     }
+     
     public function search($query, Request $request)
     {
         $posts = Post::accepted()->where('content','like', '%'.$query.'%' )
@@ -171,36 +189,19 @@ class PostAPIController extends AppBaseController
             });
         })
         ->get();
-        return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
+        return $this->sendResponse(['all' => PostXsResource::collection($posts)], 'Posts retrieved successfully');
     }
 
     public function get_posts_by_farmed_type_id($farmed_type_id)
     {
         $posts = Post::accepted()->where('farmed_type_id', $farmed_type_id)->get();
-        return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
+        return $this->sendResponse(['all' => PostXsResource::collection($posts)], 'Posts retrieved successfully');
     }
 
     public function get_posts_by_post_type_id($post_type_id)
     {
         $posts = Post::accepted()->where('post_type_id', $post_type_id)->get();
-        return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
-    }
-
-    // video_timeline
-    public function video_timeline(Request $request)
-    {
-        $posts = Post::accepted()->whereHas('assets', function ($q)
-        {
-            $q->whereIn('asset_mime', config('myconfig.video_mimes'));
-        })->orderByDesc('reactions_count')->get();
-
-        return $this->sendResponse(
-            [
-                'posts' => PostResource::collection($posts),
-                'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
-                // 'favorites' => FarmedTypeResource::collection(auth()->user()->favorites),
-            ],
-            'Timeline retrieved successfully');
+        return $this->sendResponse(['all' => PostXsResource::collection($posts)], 'Posts retrieved successfully');
     }
 
     //  solve post
@@ -259,7 +260,7 @@ class PostAPIController extends AppBaseController
             $validator = Validator::make($request->all(), [
                 'title' => ['nullable', 'max:200'],
                 'content' => ['nullable'],
-                'farm_id' => ['nullable', 'exists:farms,id'],
+                'business_id' => ['nullable', 'exists:businesses,id'],
                 'farmed_type_id' => ['nullable'],
                 'post_type_id' => ['nullable', 'exists:post_types,id'],
                 'solved' => ['nullable'],
@@ -278,7 +279,7 @@ class PostAPIController extends AppBaseController
             $data['shared_id'] = $request->shared_id;
             $data['title'] = $request->title;
             $data['content'] = $request->content;
-            $data['farm_id'] = $request->farm_id;
+            $data['business_id'] = $request->business_id;
             $data['farmed_type_id'] = $request->farmed_type_id;
             $data['post_type_id'] = $request->post_type_id;
             $data['solved'] = $request->solved;
@@ -308,7 +309,7 @@ class PostAPIController extends AppBaseController
                 $follower->notify(new \App\Notifications\TimelineInteraction($post));
             }
 
-            return $this->sendResponse(new PostResource($post), __('Post saved successfully'));
+            return $this->sendResponse(new PostXsResource($post), __('Post saved successfully'));
         }
         catch(\Throwable $th)
         {
@@ -318,7 +319,7 @@ class PostAPIController extends AppBaseController
 
 
 
-    //  //  //  //  //  L I K E S  &&  D I S L I K E S  //  //  //  //  //
+    // LIKES && DISLIKES
 
     public function toggle_like($id)
     {
@@ -327,9 +328,7 @@ class PostAPIController extends AppBaseController
             $post = Post::accepted()->find($id);
 
             if (empty($post))
-            {
                 return $this->sendError('post not found');
-            }
             $like = auth()->user()->toggleLike($post); // $like may be Like obj (in case of creating) or 1 (in case of deleting)
             $post->updateReactions();
             $like_model = config('like.like_model');
@@ -344,10 +343,17 @@ class PostAPIController extends AppBaseController
                 $msg = 'Post like removed successfully';
             }
 
-            return $this->sendSuccess($msg);
+            return $this->sendResponse([ 
+                'likers_count' => $post->likers()->count(),
+                'dislikers_count' => $post->dislikers()->count(),
+                'comments_count' => $post->comments()->count(),
+                'liked_by_me' => $post->likers()->where('users.id', auth()->id())->count() ? true : false,
+                'disliked_by_me' => $post->dislikers()->where('users.id', auth()->id())->count() ? true : false
+            ], $msg);
         }
         catch(\Throwable $th)
         {
+            throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -379,7 +385,13 @@ class PostAPIController extends AppBaseController
                 $msg = 'Post dislike removed successfully';
             }
 
-            return $this->sendSuccess($msg);
+            return $this->sendResponse([ 
+                'likers_count' => $post->likers()->count(),
+                'dislikers_count' => $post->dislikers()->count(),
+                'comments_count' => $post->comments()->count(),
+                'liked_by_me' => $post->likers()->where('users.id', auth()->id())->count() ? true : false,
+                'disliked_by_me' => $post->dislikers()->where('users.id', auth()->id())->count() ? true : false
+            ], $msg);
         }
         catch(\Throwable $th)
         {
@@ -428,7 +440,7 @@ class PostAPIController extends AppBaseController
             return $this->sendError('Post not found');
         }
 
-        return $this->sendResponse(new PostResource($post), 'Post retrieved successfully');
+        return $this->sendResponse(new PostXsResource($post), 'Post retrieved successfully');
     }
 
     public function update($id, /* CreatePostAPI */Request $request)
@@ -475,7 +487,7 @@ class PostAPIController extends AppBaseController
                 }
             }
 
-            return $this->sendResponse(new PostResource($post), __('Post saved successfully'));
+            return $this->sendResponse(new PostXsResource($post), __('Post saved successfully'));
         }
         catch(\Throwable $th)
         {

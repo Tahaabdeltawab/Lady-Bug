@@ -21,6 +21,7 @@ class Residence extends Model
 
 
     public $table = 'residences';
+	public $timestamps = false;
     
 
 

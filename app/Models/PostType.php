@@ -41,7 +41,7 @@ class PostType extends Model
     ];
 
 
-    // don't return the 'farm' post_type because it is not an actual post type, it just indicates the post in farmy
+    // don't return the 'farm' post_type because it is not an actual post type, it just indicates the post in a farm
     protected static function booted()
     {
         static::addGlobalScope('all_except_farm', function ($builder) {

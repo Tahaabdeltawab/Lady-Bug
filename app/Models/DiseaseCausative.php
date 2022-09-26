@@ -29,6 +29,7 @@ class DiseaseCausative extends Model
 
 
     public $table = 'disease_causatives';
+	public $timestamps = false;
     
 
 

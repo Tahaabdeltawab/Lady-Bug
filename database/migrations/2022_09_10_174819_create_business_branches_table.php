@@ -16,6 +16,7 @@ class CreateBusinessBranchesTable extends Migration
     {
         Schema::create('business_branches', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('business_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('name');
             $table->string('address');
         });

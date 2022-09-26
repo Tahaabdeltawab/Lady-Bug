@@ -26,6 +26,7 @@ class MarketingData extends Model
 
 
     public $table = 'marketing_datas';
+	public $timestamps = false;
     
 
 
