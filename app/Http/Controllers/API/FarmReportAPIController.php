@@ -9,6 +9,8 @@ use App\Repositories\FarmReportRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmReportResource;
+use App\Models\Setting;
+use App\Models\Transaction;
 use Response;
 
 /**
@@ -57,6 +59,17 @@ class FarmReportAPIController extends AppBaseController
         $input = $request->all();
         $input['user_id'] = auth()->id();
         $farmReport = $this->farmReportRepository->create($input);
+
+        $create_report_price = Setting::where('name', 'report_price')->value('value');
+        Transaction::create([
+            'type' => 'out',
+            'user_id' => auth()->id(),
+            'gateway' => '',
+            'total' => $create_report_price,
+            'description' => 'Create report'
+        ]);
+        auth()->user()->balance -= $create_report_price;
+        auth()->user()->save();
 
         return $this->sendResponse(new FarmReportResource($farmReport), 'Farm Report saved successfully');
     }

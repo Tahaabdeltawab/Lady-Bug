@@ -174,6 +174,7 @@ class AuthController extends AppBaseController
                 'fcm' => $request->fcm,
                 'provider' => $request->provider,
                 'avatar' => $request->avatar,
+                'balance' => 1000,
             ]);
 
             $user->attachRole(config('myconfig.user_default_role'));

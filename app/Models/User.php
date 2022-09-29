@@ -32,6 +32,10 @@ class User extends Authenticatable implements JWTSubject
         'income',
         'city_id',
         'dob',
+        'bio',
+        'balance',
+        'marital_status',
+        'is_consultant',
     ];
 
 
@@ -136,7 +140,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(FarmReport::class);
     }
-    
+
     public function tasks()
     {
         return $this->hasManyThrough(Task::class, FarmReport::class);

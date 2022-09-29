@@ -63,8 +63,10 @@ class SettingAPIController extends AppBaseController
 
     public function get_report_price()
     {
-        $setting = Setting::where('name', 'report_price')->first(['name','value']);
-        return $this->sendResponse($setting, 'report price retrieved successfully!'); 
+        $data['create_report_price'] = Setting::where('name', 'report_price')->value('value');
+        $data['user_balance'] = auth()->user()->balance;
+
+        return $this->sendResponse($data, 'report price retrieved successfully!'); 
     }
 
     /**
