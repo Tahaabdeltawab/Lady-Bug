@@ -232,8 +232,6 @@ class FarmedTypeAPIController extends AppBaseController
         }
 
         $farmedType->delete();
-        $path = parse_url($farmedType->asset->asset_url, PHP_URL_PATH);
-        Storage::disk('s3')->delete($path);
         $farmedType->asset()->delete();
 
         return $this->sendSuccess('Farmed Type deleted successfully');

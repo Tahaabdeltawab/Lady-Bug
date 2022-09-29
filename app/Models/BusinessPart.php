@@ -61,7 +61,7 @@ class BusinessPart extends Model
     public static $rules = [
         'business_id' => 'required',
         'title' => 'required',
-        'description' => 'nullable,max:255',
+        'description' => 'nullable|max:255',
         'date' => 'nullable',
         'done' => 'nullable',
         'type' => 'nullable'

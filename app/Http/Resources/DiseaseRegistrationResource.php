@@ -16,6 +16,7 @@ class DiseaseRegistrationResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'assets' => $this->assets()->pluck('asset_url'),
             'disease_id' => $this->disease_id,
             'expected_name' => $this->expected_name,
             'status' => $this->status,

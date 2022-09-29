@@ -16,9 +16,9 @@ class BusinessResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            // 'agents' => $this->agents,
-            // 'distributors' => $this->distributors,
-            // 'branches' => $this->branches,
+            'agents' => $this->agents,
+            'distributors' => $this->distributors,
+            'branches' => $this->branches,
             'user_id' => $this->user_id,
             'business_field_id' => $this->business_field_id,
             'description' => $this->description,

@@ -90,7 +90,7 @@ class Task extends Model
         'date' => 'nullable|date_format:Y-m-d',
         'week' => 'nullable|in:1,2,3,4',
         'quantity' => 'nullable',
-        'quantity_unit' => 'nullable',
+        'quantity_unit' => 'nullable|in:kilo,gram',
         'notes' => 'nullable',
         'done' => 'nullable'
     ];

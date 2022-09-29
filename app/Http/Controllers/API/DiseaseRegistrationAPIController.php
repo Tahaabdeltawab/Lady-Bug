@@ -9,6 +9,9 @@ use App\Repositories\DiseaseRegistrationRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\DiseaseRegistrationResource;
+use App\Http\Resources\DiseaseXsResource;
+use App\Models\Disease;
+use App\Models\InfectionRate;
 use Response;
 
 /**
@@ -55,10 +58,38 @@ class DiseaseRegistrationAPIController extends AppBaseController
     public function store(CreateDiseaseRegistrationAPIRequest $request)
     {
         $input = $request->all();
-
+        $input['user_id'] = auth()->id();
         $diseaseRegistration = $this->diseaseRegistrationRepository->create($input);
-
+        if($assets = $request->file('assets'))
+        {
+            foreach($assets as $asset)
+            {
+                $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'disease-reg');
+                $diseaseRegistration->assets()->create($oneasset);
+            }
+        }
         return $this->sendResponse(new DiseaseRegistrationResource($diseaseRegistration), 'Disease Registration saved successfully');
+    }
+
+    public function getRelations()
+    {
+        $data['diseases'] = DiseaseXsResource::collection(Disease::get(['id', 'name']));
+        $data['infection_rates'] = InfectionRate::all();
+        return $this->sendResponse($data, 'disease registration relations retrieved successfully');
+
+    }
+
+    public function toggle_confirm($id)
+    {
+        $diseaseRegistration = DiseaseRegistration::find($id);
+        if (empty($diseaseRegistration))
+            return $this->sendError('Disease Registration not found');
+
+        $msg = $diseaseRegistration->status ? 'Disease Registration confirmation deleted' : 'Disease Registration has been confirmed';
+        $diseaseRegistration->status = !$diseaseRegistration->status;
+        $diseaseRegistration->save();
+
+        return $this->sendSuccess($msg);
     }
 
     /**
@@ -102,7 +133,17 @@ class DiseaseRegistrationAPIController extends AppBaseController
         }
 
         $diseaseRegistration = $this->diseaseRegistrationRepository->update($input, $id);
-
+        if($assets = $request->file('assets'))
+        {
+            foreach ($diseaseRegistration->assets as $ass) {
+                $ass->delete();
+            }
+            foreach($assets as $asset)
+            {
+                $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'disease-reg');
+                $diseaseRegistration->assets()->create($oneasset);
+            }
+        }
         return $this->sendResponse(new DiseaseRegistrationResource($diseaseRegistration), 'DiseaseRegistration updated successfully');
     }
 

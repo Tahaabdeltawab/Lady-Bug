@@ -187,7 +187,9 @@ class FarmedTypeGinfoAPIController extends AppBaseController
 
             if($assets = $request->file('assets'))
             {
-                $farmedTypeGinfo->assets()->delete();
+                foreach ($farmedTypeGinfo->assets as $ass) {
+                    $ass->delete();
+                }
                 foreach($assets as $asset)
                 {
                     $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'farmed-type-ginfo');
@@ -215,12 +217,9 @@ class FarmedTypeGinfoAPIController extends AppBaseController
         }
 
         $farmedTypeGinfo->delete();
-        foreach($farmedTypeGinfo->assets as $asset){
-            $asset_url = $asset->asset_url;
-            $path = parse_url($asset_url, PHP_URL_PATH);
-            Storage::disk('s3')->delete($path);
+        foreach($farmedTypeGinfo->assets as $ass){
+            $ass->delete();
         }
-        $farmedTypeGinfo->assets()->delete();
 
           return $this->sendSuccess('Model deleted successfully');
         }

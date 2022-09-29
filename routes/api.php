@@ -375,15 +375,33 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::resource('farm_reports', App\Http\Controllers\API\FarmReportAPIController::class)->except(['update']);
     Route::match(['put', 'patch','post'], 'farm_reports/{farm_report}', [App\Http\Controllers\API\FarmReportAPIController::class, 'update'])->name('farm_reports.update');
     
+    // TASKS
     Route::get('tasks/toggle_finish/{task}', [App\Http\Controllers\API\TaskAPIController::class, 'toggle_finish']);
     Route::resource('tasks', App\Http\Controllers\API\TaskAPIController::class);
+    Route::get('tasks/relations/index/{task_type?}', [App\Http\Controllers\API\TaskAPIController::class, 'getRelations']);
+    
+    // Disease Registration
+    Route::resource('disease_registrations', App\Http\Controllers\API\DiseaseRegistrationAPIController::class);
+    Route::get('disease_registrations/relations/index', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'getRelations']);
+        // admin
+        Route::get('disease_registrations/toggle_confirm/{disease_registration}', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'toggle_confirm']);
+
    
     // Fertilizers & Insecticides (admin)
     Route::resource('insecticides', App\Http\Controllers\API\InsecticideAPIController::class)->except('update');
     Route::match(['put', 'patch','post'], 'insecticides/{insecticide}', [App\Http\Controllers\API\InsecticideAPIController::class, 'update'])->name('insecticides.update');
     Route::resource('fertilizers', App\Http\Controllers\API\FertilizerAPIController::class)->except('update');
     Route::match(['put', 'patch','post'], 'fertilizers/{fertilizer}', [App\Http\Controllers\API\FertilizerAPIController::class, 'update'])->name('fertilizers.update');
+    Route::get('insecticides/relations/index', [App\Http\Controllers\API\InsecticideAPIController::class, 'getRelations']);
+    Route::get('fertilizers/relations/index', [App\Http\Controllers\API\FertilizerAPIController::class, 'getRelations']);
     
+    // GOALS & STEPS
+    Route::resource('business_parts', App\Http\Controllers\API\BusinessPartAPIController::class);
+    Route::get('business_parts_by_business_id/{type}/{business}', [App\Http\Controllers\API\BusinessPartAPIController::class, 'business_parts_by_business_id']);
+    Route::get('business_parts/toggle_finish/{business_part}', [App\Http\Controllers\API\BusinessPartAPIController::class, 'toggle_finish']);
+
+
+
     Route::resource('business_fields', App\Http\Controllers\API\BusinessFieldAPIController::class);
     
     Route::resource('business_branches', App\Http\Controllers\API\BusinessBranchAPIController::class);
@@ -410,8 +428,6 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     Route::resource('infection_rates', App\Http\Controllers\API\InfectionRateAPIController::class);
 
-    Route::resource('infection_spread_stages', App\Http\Controllers\API\InfectionSpreadStageAPIController::class);
-
     Route::resource('pathogen_growth_stages', App\Http\Controllers\API\PathogenGrowthStageAPIController::class);
 
     Route::resource('pathogen_types', App\Http\Controllers\API\PathogenTypeAPIController::class);
@@ -423,7 +439,6 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::resource('farmed_type_nut_vals', App\Http\Controllers\API\FarmedTypeNutValAPIController::class);
 
     Route::resource('farmed_type_fertilization_needs', App\Http\Controllers\API\FarmedTypeFertilizationNeedAPIController::class);
-
 
     Route::resource('farmed_type_extras', App\Http\Controllers\API\FarmedTypeExtrasAPIController::class);
 
@@ -438,10 +453,6 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::resource('disease_causatives', App\Http\Controllers\API\DiseaseCausativeAPIController::class);
 
     Route::resource('pathogens', App\Http\Controllers\API\PathogenAPIController::class);
-
-    Route::resource('business_parts', App\Http\Controllers\API\BusinessPartAPIController::class);
-
-    Route::resource('disease_registrations', App\Http\Controllers\API\DiseaseRegistrationAPIController::class);
 
     Route::resource('product_types', App\Http\Controllers\API\ProductTypeAPIController::class);
 

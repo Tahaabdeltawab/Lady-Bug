@@ -196,12 +196,9 @@ class ReportAPIController extends AppBaseController
         }
 
         $report->delete();
-        foreach($report->assets as $asset){
-            $asset_url = $asset->asset_url;
-            $path = parse_url($asset_url, PHP_URL_PATH);
-            Storage::disk('s3')->delete($path);
+        foreach($report->assets as $ass){
+          $ass->delete();
         }
-        $report->assets()->delete();
 
         return $this->sendSuccess('Report deleted successfully');
     }

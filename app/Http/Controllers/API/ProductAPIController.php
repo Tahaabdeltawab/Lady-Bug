@@ -278,7 +278,9 @@ class ProductAPIController extends AppBaseController
 
             if($internal_assets = $request->file('internal_assets'))
             {
-                $product->internal_assets()->delete();
+                foreach ($product->internal_assets as $ass) {
+                    $ass->delete();
+                }
                 foreach($internal_assets as $asset)
                 {
                     $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product-internal');
@@ -288,7 +290,9 @@ class ProductAPIController extends AppBaseController
 
             if($external_assets = $request->file('external_assets'))
             {
-                $product->external_assets()->delete();
+                foreach ($product->external_assets as $ass) {
+                    $ass->delete();
+                }
                 foreach($external_assets as $asset)
                 {
                     $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product-external');
@@ -316,12 +320,9 @@ class ProductAPIController extends AppBaseController
         }
 
         $product->delete();
-        foreach($product->assets as $asset){
-            $asset_url = $asset->asset_url;
-            $path = parse_url($asset_url, PHP_URL_PATH);
-            Storage::disk('s3')->delete($path);
+        foreach($product->assets as $ass){
+          $ass->delete();
         }
-        $product->assets()->delete();
 
           return $this->sendSuccess('Model deleted successfully');
         }

@@ -21,7 +21,7 @@ class CreateBusinessPartsTable extends Migration
             $table->string('description')->nullable();
             $table->date('date')->nullable();
             $table->boolean('done')->default(0);
-            $table->enum('type', ['step', 'part']);
+            $table->enum('type', ['step', 'goal']);
         });
     }
 

@@ -44,6 +44,27 @@ class BusinessPartAPIController extends AppBaseController
         return $this->sendResponse(BusinessPartResource::collection($businessParts), 'Business Parts retrieved successfully');
     }
 
+
+    public function business_parts_by_business_id(Request $request)
+    {
+        $businessParts = BusinessPart::where('type', $request->type)->where('business_id', $request->business)->get();
+
+        return $this->sendResponse(BusinessPartResource::collection($businessParts), 'Business Parts retrieved successfully');
+    }
+
+    public function toggle_finish($id)
+    {
+        $businessPart = BusinessPart::find($id);
+        if (empty($businessPart))
+            return $this->sendError('Business part not found');
+
+        $msg = $businessPart->done ? 'Business part became not completed' : 'Business part has been completed';
+        $businessPart->done = !$businessPart->done;
+        $businessPart->save();
+
+        return $this->sendSuccess($msg);
+    }
+
     /**
      * Store a newly created BusinessPart in storage.
      * POST /businessParts

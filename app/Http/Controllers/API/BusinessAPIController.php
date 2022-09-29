@@ -14,6 +14,7 @@ use App\Http\Resources\BusinessWithTasksResource;
 use App\Http\Resources\FarmResource;
 use App\Http\Resources\PostXsResource;
 use App\Http\Resources\RoleResource;
+use App\Http\Resources\TaskResource;
 use App\Http\Resources\UserResource;
 use App\Models\BusinessField;
 use App\Models\Role;
@@ -165,7 +166,7 @@ class BusinessAPIController extends AppBaseController
             return $this->sendError('business not found');
         }
 
-        $business_users = $business->users->pluck('id');
+        $business_users = $business->users()->pluck('id');
         $business_users[] = auth()->id();
         $users = User::whereNotIn('id', $business_users)->whereHas('roles', function($q){
             $q->where('name', config('myconfig.user_default_role'));
@@ -380,19 +381,25 @@ class BusinessAPIController extends AppBaseController
     public function user_today_tasks(Request $request)
     {
         try{
+            $date = $request->date ?? date('Y-m-d');
+
+            if($request->tasks_only){
+                $tasks = auth()->user()->tasks()->where('date', $date)->get();
+                return $this->sendResponse(TaskResource::collection($tasks), 'tasks retrived successfully');
+            }
             $weather_resp = WeatherApi::instance()->weather_api($request);
             $weather_data = $weather_resp['data'];
 
-            $businesses = auth()->user()->allBusinesses()->with('tasks', function($query){
-                $query->where('date', date('Y-m-d'));
-            })->whereHas('tasks', function($q){
-                $q->where('date', date('Y-m-d'));
+            $businesses = auth()->user()->allBusinesses()->with('tasks', function($query) use($date){
+                $query->where('date', $date);
+            })->whereHas('tasks', function($q) use($date){
+                $q->where('date', $date);
             })->get();
 
             return $this->sendResponse([
                 'weather_data' => $weather_data,
                 'tasks' => BusinessWithTasksResource::collection($businesses)
-            ], 'Today\'s tasks retrieved successfully');
+            ], 'tasks retrieved successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
         }
@@ -496,14 +503,18 @@ class BusinessAPIController extends AppBaseController
 
             if($main_asset = $request->file('main_asset'))
             {
-                $business->main_asset()->delete();
+                foreach ($business->main_asset as $ass) {
+                    $ass->delete();
+                }
                 $asset = $this->store_file($main_asset, 'business-main');
                 $business->assets()->create($asset);
             }
 
             if($cover_asset = $request->file('cover_asset'))
             {
-                $business->cover_asset()->delete();
+                foreach ($business->cover_asset as $ass) {
+                    $ass->delete();
+                }
                 $asset = $this->store_file($cover_asset, 'business-cover');
                 $business->assets()->create($asset);
             }

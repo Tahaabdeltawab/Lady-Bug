@@ -9,6 +9,8 @@ use App\Repositories\FertilizerRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FertilizerResource;
+use App\Models\NutElemValue;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 /**
@@ -44,6 +46,18 @@ class FertilizerAPIController extends AppBaseController
         return $this->sendResponse(FertilizerResource::collection($fertilizers), 'Fertilizers retrieved successfully');
     }
 
+
+    public function getRelations()
+    {
+        return $this->sendResponse([
+            'dosage_forms' => [
+                ['value' => 'liquid', 'name' => app()->getLocale()=='ar' ?  'سائل' : 'liquid'],
+                ['value' => 'powder', 'name' => app()->getLocale()=='ar' ?  'بودرة' : 'powder'],
+            ]
+        ], 'fertilizer relations retrieved successfully');
+    }
+
+
     /**
      * Store a newly created Fertilizer in storage.
      * POST /fertilizers
@@ -54,11 +68,29 @@ class FertilizerAPIController extends AppBaseController
      */
     public function store(CreateFertilizerAPIRequest $request)
     {
-        $input = $request->all();
+        try{
+            DB::beginTransaction();
+            $input = $request->validated();
 
-        $fertilizer = $this->fertilizerRepository->create($input);
+            $nev = NutElemValue::create($input['nut_elem_value']);
+            $input['nut_elem_value_id'] = $nev->id;
+            $fertilizer = Fertilizer::create($input);
 
-        return $this->sendResponse(new FertilizerResource($fertilizer), 'Fertilizer saved successfully');
+            if($assets = $request->file('assets'))
+            {
+                foreach($assets as $asset)
+                {
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'fertilizer');
+                    $fertilizer->assets()->create($oneasset);
+                }
+            }
+
+            DB::commit();
+            return $this->sendResponse(new FertilizerResource($fertilizer), 'Fertilizer saved successfully');
+        } catch(\Throwable $th){
+            DB::rollBack();
+            return $this->sendError($th->getMessage());
+        }
     }
 
     /**
@@ -92,18 +124,38 @@ class FertilizerAPIController extends AppBaseController
      */
     public function update($id, UpdateFertilizerAPIRequest $request)
     {
-        $input = $request->all();
+        try{
+            DB::beginTransaction();
+            $input = $request->all();
 
-        /** @var Fertilizer $fertilizer */
-        $fertilizer = $this->fertilizerRepository->find($id);
+            /** @var Fertilizer $fertilizer */
+            $fertilizer = $this->fertilizerRepository->find($id);
 
-        if (empty($fertilizer)) {
-            return $this->sendError('Fertilizer not found');
+            if (empty($fertilizer)) {
+                return $this->sendError('Fertilizer not found');
+            }
+
+            $fertilizer = $this->fertilizerRepository->update($input, $id);
+            $fertilizer->nutElemValue()->update($input['nut_elem_value']);
+
+            if($assets = $request->file('assets'))
+            {
+                foreach ($fertilizer->assets as $ass) {
+                    $ass->delete();
+                }
+                foreach($assets as $asset)
+                {
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'fertilizer');
+                    $fertilizer->assets()->create($oneasset);
+                }
+            }
+
+            DB::commit();
+            return $this->sendResponse(new FertilizerResource($fertilizer), 'Fertilizer updated successfully');
+        } catch(\Throwable $th){
+            DB::rollBack();
+            return $this->sendError($th->getMessage());
         }
-
-        $fertilizer = $this->fertilizerRepository->update($input, $id);
-
-        return $this->sendResponse(new FertilizerResource($fertilizer), 'Fertilizer updated successfully');
     }
 
     /**
@@ -126,6 +178,7 @@ class FertilizerAPIController extends AppBaseController
         }
 
         $fertilizer->delete();
+        $fertilizer->nutElemValue()->delete();
 
         return $this->sendSuccess('Fertilizer deleted successfully');
     }

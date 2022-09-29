@@ -132,6 +132,16 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(Farm::class, 'admin_id');
     }
 
+    public function farmReports()
+    {
+        return $this->hasMany(FarmReport::class);
+    }
+    
+    public function tasks()
+    {
+        return $this->hasManyThrough(Task::class, FarmReport::class);
+    }
+
     public function allBusinesses()
     {
         return $this->rolesTeams()->where(function($q){

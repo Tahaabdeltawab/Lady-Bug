@@ -479,7 +479,9 @@ class PostAPIController extends AppBaseController
 
             if($assets = $request->file('assets'))
             {
-                $post->assets()->delete();
+                foreach ($post->assets as $ass) {
+                    $ass->delete();
+                }
                 foreach($assets as $asset)
                 {
                     $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'post');
@@ -508,13 +510,10 @@ class PostAPIController extends AppBaseController
 
             $post->delete();
 
-            foreach($post->assets as $asset){
-                $asset_url = $asset->asset_url;
-                $path = parse_url($asset_url, PHP_URL_PATH);
-                Storage::disk('s3')->delete($path);
+            foreach($post->assets as $ass){
+               $ass->delete();
             }
 
-            $post->assets()->delete();
 
             return $this->sendSuccess('Model deleted successfully');
         }

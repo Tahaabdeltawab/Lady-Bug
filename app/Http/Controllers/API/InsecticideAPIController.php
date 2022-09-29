@@ -8,7 +8,9 @@ use App\Models\Insecticide;
 use App\Repositories\InsecticideRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use App\Http\Resources\AcXsResource;
 use App\Http\Resources\InsecticideResource;
+use App\Models\Ac;
 use Response;
 
 /**
@@ -44,6 +46,18 @@ class InsecticideAPIController extends AppBaseController
         return $this->sendResponse(InsecticideResource::collection($insecticides), 'Insecticides retrieved successfully');
     }
 
+    public function getRelations()
+    {
+        return $this->sendResponse([
+            'acs' => AcXsResource::collection(Ac::get(['id','name'])),
+            'dosage_forms' => [
+                ['value' => 'liquid', 'name' => app()->getLocale()=='ar' ?  'سائل' : 'liquid'],
+                ['value' => 'powder', 'name' => app()->getLocale()=='ar' ?  'بودرة' : 'powder'],
+            ]
+        ], 'insecticide relations retrieved successfully');
+    }
+
+
     /**
      * Store a newly created Insecticide in storage.
      * POST /insecticides
@@ -54,9 +68,19 @@ class InsecticideAPIController extends AppBaseController
      */
     public function store(CreateInsecticideAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $insecticide = $this->insecticideRepository->create($input);
+        $insecticide->acs()->attach($input['acs']);
+
+        if($assets = $request->file('assets'))
+        {
+            foreach($assets as $asset)
+            {
+                $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'insecticide');
+                $insecticide->assets()->create($oneasset);
+            }
+        }
 
         return $this->sendResponse(new InsecticideResource($insecticide), 'Insecticide saved successfully');
     }
@@ -102,6 +126,19 @@ class InsecticideAPIController extends AppBaseController
         }
 
         $insecticide = $this->insecticideRepository->update($input, $id);
+        $insecticide->acs()->sync($input['acs']);
+
+        if($assets = $request->file('assets'))
+        {
+            foreach ($insecticide->assets as $ass) {
+                $ass->delete();
+            }
+            foreach($assets as $asset)
+            {
+                $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'insecticide');
+                $insecticide->assets()->create($oneasset);
+            }
+        }
 
         return $this->sendResponse(new InsecticideResource($insecticide), 'Insecticide updated successfully');
     }

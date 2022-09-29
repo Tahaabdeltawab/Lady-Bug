@@ -56,7 +56,7 @@ class Ac extends Model
      */
     public static $rules = [
         'name' => 'required',
-        'who_class' => 'nullable',
+        'who_class' => 'nullable|in:organic,inorganic,rejected',
         'withdrawal_days' => 'nullable',
         'precautions' => 'nullable'
     ];

@@ -10,10 +10,19 @@ class Asset extends Model
     public $table = 'assets';
 
 
+    protected static function boot()
+    {
+        parent::boot();
+        self::deleting(function ($asset) {
+            app('\App\Http\Controllers\API\BusinessAPIController')->delete_files($asset->asset_path ?? parse_url($asset->asset_url, PHP_URL_PATH));
+        });
+    }
+
 
     public $fillable = [
         'asset_name',
         'asset_url',
+        'asset_path',
         'asset_size',
         'asset_mime',
         'assetable_type',
@@ -29,6 +38,7 @@ class Asset extends Model
         'id' => 'integer',
         'asset_name' => 'string',
         'asset_url'  => 'string',
+        'asset_path'  => 'string',
         'asset_size' => 'string',
         'asset_mime' => 'string',
         'assetable_type' => 'string',

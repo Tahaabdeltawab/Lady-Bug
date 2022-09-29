@@ -87,7 +87,7 @@ class Fertilizer extends Model
      */
     public static $rules = [
         'name' => 'required',
-        'nut_elem_value_id' => 'nullable',
+        'nut_elem_value' => 'nullable',
         'dosage_form' => 'nullable|in:powder,liquid',
         'producer' => 'nullable',
         'country_id' => 'nullable',
@@ -124,5 +124,10 @@ class Fertilizer extends Model
     public function product()
     {
         return $this->hasOne(\App\Models\Product::class);
+    }
+
+    public function assets()
+    {
+        return $this->morphMany(Asset::class, 'assetable');
     }
 }

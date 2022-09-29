@@ -21,7 +21,7 @@ class CommentResource extends JsonResource
             'commenter' => new UserResource($this->commenter),
             'parent_id' => $this->when($this->parent_id, $this->parent_id),
             'post_id' => $this->post_id,
-            'assets' => collect($this->assets)->pluck('asset_url')->all(),
+            'assets' => $this->assets()->pluck('asset_url'),
             'replies_count' => $this->when(!$this->parent_id, $this->replies->count()),
             'likers_count' => $this->likers->count(),
             'dislikers_count' => $this->dislikers->count(),

@@ -8,7 +8,12 @@ use App\Models\Task;
 use App\Repositories\TaskRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use App\Http\Resources\AcWithInsecticideResource;
+use App\Http\Resources\FertilizerXsResource;
 use App\Http\Resources\TaskResource;
+use App\Models\Ac;
+use App\Models\Fertilizer;
+use App\Models\TaskType;
 use Response;
 
 /**
@@ -59,18 +64,63 @@ class TaskAPIController extends AppBaseController
         return $this->sendSuccess($msg);
     }
 
+
+    public function getRelations($task_type_id = null)
+    {
+        if($task_type_id == null){
+            return $this->sendResponse([
+                'task_types' => TaskType::all()
+            ], 
+            'task types retrieved successfully'
+            );
+        }
+        // مكافحة
+        if($task_type_id == 1){
+            $acs = Ac::with(['insecticides' => function($q){
+                $q->select('insecticides.id', 'insecticides.name', 'insecticides.producer', 'insecticides.mix_rate');
+            }])->whereHas('insecticides')->get(['acs.id', 'acs.name']);
+            return $this->sendResponse([
+                'acs' => AcWithInsecticideResource::collection($acs),
+                'units' => [
+                    ['value' => 'kilo', 'name' => app()->getLocale()=='ar' ?  'كيلو' : 'Kilo'],
+                    ['value' => 'gram', 'name' => app()->getLocale()=='ar' ?  'جرام' : 'Gram'],
+                ]
+            ], '');
+        }
+        // تسميد
+        elseif($task_type_id == 3){
+            $ferts = Fertilizer::get(['id', 'name', 'producer', 'usage_rate']);
+            return $this->sendResponse([
+                'fertilizers' => FertilizerXsResource::collection($ferts),
+                'units' => [
+                    ['value' => 'kilo', 'name' => app()->getLocale()=='ar' ?  'كيلو' : 'Kilo'],
+                    ['value' => 'gram', 'name' => app()->getLocale()=='ar' ?  'جرام' : 'Gram'],
+                ]
+            ], '');
+        }
+        // ري أو عمليات حقلية 2و4
+        else{
+            return $this->getRelations();
+        }
+    }
+
+
     /**
      * Store a newly created Task in storage.
      * POST /tasks
      *
-     * @param CreateTaskAPIRequest $request
-     *
      * @return Response
      */
-    public function store(CreateTaskAPIRequest $request)
+    public function store(Request $request)
     {
+        if($tasks = $request->tasks){
+            foreach ($tasks as $t) {
+                $this->taskRepository->create($t);
+            }
+            return $this->sendSuccess('tasks created successfully');
+        }
         $input = $request->all();
-
+        
         $task = $this->taskRepository->create($input);
 
         return $this->sendResponse(new TaskResource($task), 'Task saved successfully');

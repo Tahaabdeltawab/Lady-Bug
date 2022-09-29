@@ -81,6 +81,8 @@ class Insecticide extends Model
     public static $rules = [
         'name' => 'required',
         'dosage_form' => 'nullable|in:powder,liquid',
+        'acs' => 'nullable|array',
+        'acs.*' => 'exists:acs,id',
         'producer' => 'nullable',
         'country_id' => 'nullable',
         'conc' => 'nullable',
@@ -92,6 +94,13 @@ class Insecticide extends Model
         'precautions' => 'nullable',
         'notes' => 'nullable'
     ];
+
+    protected $appends = ['withdrawal_days'];
+    
+    public function getWithdrawalDaysAttribute()
+    {
+        return $this->acs()->max('withdrawal_days');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -107,5 +116,10 @@ class Insecticide extends Model
     public function acs()
     {
         return $this->belongsToMany(\App\Models\Ac::class);
+    }
+
+    public function assets()
+    {
+        return $this->morphMany(Asset::class, 'assetable');
     }
 }

@@ -13,16 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(RoleSeeder::class);
-        $this->call(FarmActivityTypeSeeder::class);
-        $this->call(HumanJobSeeder::class);
-        $this->call(UserSeeder::class);
-        $this->call(PostTypeSeeder::class);
-        $this->call(BusinessFieldSeeder::class);
-        $this->call(WorkFieldSeeder::class);
-        $this->call(SettingSeeder::class);
-        $this->call(FarmedTypeStageSeeder::class);
-        $this->call(FarmRelationsSeeder::class);
-        $this->call(TaskTypeSeeder::class);
+        // $this->call(RoleSeeder::class);
+        // $this->call(FarmActivityTypeSeeder::class);
+        // $this->call(HumanJobSeeder::class);
+        // $this->call(UserSeeder::class);
+        // $this->call(PostTypeSeeder::class);
+        // $this->call(BusinessFieldSeeder::class);
+        // $this->call(WorkFieldSeeder::class);
+        // $this->call(SettingSeeder::class);
+        // $this->call(FarmedTypeStageSeeder::class);
+        // $this->call(FarmRelationsSeeder::class);
+        // $this->call(TaskTypeSeeder::class);
+        $this->call(InfectionRateSeeder::class);
+        $this->call(DiseaseSeeder::class);
   }
 }
