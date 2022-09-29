@@ -9,6 +9,7 @@ use App\Repositories\SettingRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\SettingResource;
+use App\Models\FarmedTypeStage;
 use Response;
 
 /**
@@ -59,14 +60,6 @@ class SettingAPIController extends AppBaseController
         $setting = $this->settingRepository->create($input);
 
         return $this->sendResponse(new SettingResource($setting), 'Setting saved successfully');
-    }
-
-    public function get_report_price()
-    {
-        $data['create_report_price'] = Setting::where('name', 'report_price')->value('value');
-        $data['user_balance'] = auth()->user()->balance;
-
-        return $this->sendResponse($data, 'report price retrieved successfully!'); 
     }
 
     /**

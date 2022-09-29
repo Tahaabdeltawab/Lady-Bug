@@ -9,6 +9,7 @@ use App\Repositories\FarmReportRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmReportResource;
+use App\Models\FarmedTypeStage;
 use App\Models\Setting;
 use App\Models\Transaction;
 use Response;
@@ -45,6 +46,21 @@ class FarmReportAPIController extends AppBaseController
 
         return $this->sendResponse(FarmReportResource::collection($farmReports), 'Farm Reports retrieved successfully');
     }
+
+
+    public function getRelations()
+    {
+        $data['create_report_price'] = Setting::where('name', 'report_price')->value('value');
+        $data['user_balance'] = auth()->user()->balance;
+        $data['farmed_type_stages'] = FarmedTypeStage::all();
+        $data['fertilization_unit'] = [
+            ['value' => 'tree', 'name' => app()->getLocale()=='ar' ?  'لكل شجرة' : 'Per Tree'],
+            ['value' => 'acre', 'name' => app()->getLocale()=='ar' ?  'لكل فدان' : 'Per Acre'],
+        ];
+
+        return $this->sendResponse($data, 'farm report relations retrieved successfully!'); 
+    }
+
 
     /**
      * Store a newly created FarmReport in storage.

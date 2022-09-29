@@ -24,8 +24,6 @@ class CreateDiseaseRegistrationsTable extends Migration
             $table->foreignId('farm_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('farm_report_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('infection_rate_id')->nullable()->constrained();
-            $table->string('lat')->nullable();
-            $table->string('lon')->nullable();
             $table->foreignId('country_id')->nullable()->constrained();
             $table->timestamps();
         });

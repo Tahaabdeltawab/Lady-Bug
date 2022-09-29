@@ -47,8 +47,6 @@ class DiseaseRegistration extends Model
         'farm_id',
         'farm_report_id',
         'infection_rate_id',
-        'lat',
-        'lon',
         'country_id'
     ];
 
@@ -67,8 +65,6 @@ class DiseaseRegistration extends Model
         'farm_id' => 'integer',
         'farm_report_id' => 'integer',
         'infection_rate_id' => 'integer',
-        'lat' => 'string',
-        'lon' => 'string',
         'country_id' => 'integer'
     ];
 
@@ -86,8 +82,6 @@ class DiseaseRegistration extends Model
         'farm_id' => 'nullable',
         'farm_report_id' => 'nullable',
         'infection_rate_id' => 'nullable',
-        'lat' => 'nullable',
-        'lon' => 'nullable',
         'country_id' => 'nullable'
     ];
 

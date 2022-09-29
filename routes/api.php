@@ -371,7 +371,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('farms/archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('farms.get_archived');
     
     // REPORT
-    Route::get('settings/report_price', [App\Http\Controllers\API\SettingAPIController::class, 'get_report_price'])->name('settings.get_report_price');
+    Route::get('farm_reports/relations/index', [App\Http\Controllers\API\FarmReportAPIController::class, 'getRelations'])->name('farm_reports.getRelations');
     Route::resource('farm_reports', App\Http\Controllers\API\FarmReportAPIController::class)->except(['update']);
     Route::match(['put', 'patch','post'], 'farm_reports/{farm_report}', [App\Http\Controllers\API\FarmReportAPIController::class, 'update'])->name('farm_reports.update');
     

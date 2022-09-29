@@ -25,8 +25,6 @@ class DiseaseRegistrationResource extends JsonResource
             'farm_id' => $this->farm_id,
             'farm_report_id' => $this->farm_report_id,
             'infection_rate_id' => $this->infection_rate_id,
-            'lat' => $this->lat,
-            'lon' => $this->lon,
             'country_id' => $this->country_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
