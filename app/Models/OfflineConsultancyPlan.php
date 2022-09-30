@@ -7,11 +7,7 @@ use Eloquent as Model;
 class OfflineConsultancyPlan extends Model
 {
 
-
     public $table = 'offline_consultancy_plans';
-    
-
-
 
     public $fillable = [
         'consultancy_profile_id',
@@ -43,7 +39,7 @@ class OfflineConsultancyPlan extends Model
      * @var array
      */
     public static $rules = [
-        'consultancy_profile_id' => 'required',
+        'consultancy_profile_id' => 'required|exists:consultancy_profiles,id',
         'address' => 'required',
         'date' => 'required',
         'visit_price' => 'required',

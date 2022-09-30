@@ -55,7 +55,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         // Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy')->middleware('check_business_role');
         Route::group(['middleware'=>[/* 'check_business_role' */]], function()
         {
-           
+
             Route::match(['put', 'patch', 'post'], 'farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('farms.update');
             Route::get('farms/toggle_archive/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'toggleArchive'])->name('farms.toggle_archive');
 
@@ -70,9 +70,10 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         // LIKES
         Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
         Route::get('posts/toggle_dislike/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_dislike']);
-        
-        
-     
+
+
+        // UPDATE PROFILE
+        Route::post('update_profile', [App\Http\Controllers\API\UserAPIController::class, 'update_profile']);
         Route::post('users/update_password/{user}', [App\Http\Controllers\API\UserAPIController::class, 'update_password']);
 
         //get weather and auth interests
@@ -356,7 +357,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::post('businesses/roles/store', [App\Http\Controllers\API\BusinessAPIController::class, 'update_business_role'])->name('businesses.roles.store');
     Route::get('businesses/roles/store/{user}/{role}/{business}/{start_date?}/{end_date?}', [App\Http\Controllers\API\BusinessAPIController::class, 'first_attach_business_role'])->name('businesses.roles.first_attach');
     Route::get('businesses/roles/decline/{user}/{role}/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'decline_business_invitation'])->name('businesses.roles.decline_business_invitation');
-    
+
     Route::get('businesses/users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_users'])->name('businesses.users.index');
     Route::get('businesses/farms/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_farms'])->name('businesses.farms.index');
     Route::get('businesses/app_users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'app_users']);
@@ -369,24 +370,24 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     Route::post('farms/user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('farms.users.weather.index');
     Route::get('farms/archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('farms.get_archived');
-    
+
     // REPORT
     Route::get('farm_reports/relations/index', [App\Http\Controllers\API\FarmReportAPIController::class, 'getRelations'])->name('farm_reports.getRelations');
     Route::resource('farm_reports', App\Http\Controllers\API\FarmReportAPIController::class)->except(['update']);
     Route::match(['put', 'patch','post'], 'farm_reports/{farm_report}', [App\Http\Controllers\API\FarmReportAPIController::class, 'update'])->name('farm_reports.update');
-    
+
     // TASKS
     Route::get('tasks/toggle_finish/{task}', [App\Http\Controllers\API\TaskAPIController::class, 'toggle_finish']);
     Route::resource('tasks', App\Http\Controllers\API\TaskAPIController::class);
     Route::get('tasks/relations/index/{task_type?}', [App\Http\Controllers\API\TaskAPIController::class, 'getRelations']);
-    
+
     // Disease Registration
     Route::resource('disease_registrations', App\Http\Controllers\API\DiseaseRegistrationAPIController::class);
     Route::get('disease_registrations/relations/index', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'getRelations']);
         // admin
         Route::get('disease_registrations/toggle_confirm/{disease_registration}', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'toggle_confirm']);
 
-   
+
     // Fertilizers & Insecticides (admin)
     Route::resource('insecticides', App\Http\Controllers\API\InsecticideAPIController::class)->except('update');
     Route::match(['put', 'patch','post'], 'insecticides/{insecticide}', [App\Http\Controllers\API\InsecticideAPIController::class, 'update'])->name('insecticides.update');
@@ -394,21 +395,25 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::match(['put', 'patch','post'], 'fertilizers/{fertilizer}', [App\Http\Controllers\API\FertilizerAPIController::class, 'update'])->name('fertilizers.update');
     Route::get('insecticides/relations/index', [App\Http\Controllers\API\InsecticideAPIController::class, 'getRelations']);
     Route::get('fertilizers/relations/index', [App\Http\Controllers\API\FertilizerAPIController::class, 'getRelations']);
-    
+
     // GOALS & STEPS
     Route::resource('business_parts', App\Http\Controllers\API\BusinessPartAPIController::class);
     Route::get('business_parts_by_business_id/{type}/{business}', [App\Http\Controllers\API\BusinessPartAPIController::class, 'business_parts_by_business_id']);
     Route::get('business_parts/toggle_finish/{business_part}', [App\Http\Controllers\API\BusinessPartAPIController::class, 'toggle_finish']);
 
+    // CONSULTANCY
+    Route::resource('consultancy_profiles', App\Http\Controllers\API\ConsultancyProfileAPIController::class);
+    Route::get('my_consultancy_profile', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'mine']);
+    Route::delete('my_consultancy_profile', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'delete_mine']);
+    Route::match(['put', 'patch','post'], 'update_my_consultancy_profile', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'update_my_consultancy_profile']);
+    Route::get('consultancy_profiles/relations/index', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'getRelations']);
 
 
     Route::resource('business_fields', App\Http\Controllers\API\BusinessFieldAPIController::class);
-    
+
     Route::resource('business_branches', App\Http\Controllers\API\BusinessBranchAPIController::class);
 
     Route::resource('rating_questions', App\Http\Controllers\API\RatingQuestionAPIController::class);
-
-    Route::resource('consultancy_profiles', App\Http\Controllers\API\ConsultancyProfileAPIController::class);
 
     Route::resource('offline_consultancy_plans', App\Http\Controllers\API\OfflineConsultancyPlanAPIController::class);
 

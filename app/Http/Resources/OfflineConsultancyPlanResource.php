@@ -22,8 +22,8 @@ class OfflineConsultancyPlanResource extends JsonResource
             'visit_price' => $this->visit_price,
             'year_price' => $this->year_price,
             'two_year_price' => $this->two_year_price,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            // 'created_at' => $this->created_at,
+            // 'updated_at' => $this->updated_at
         ];
     }
 }

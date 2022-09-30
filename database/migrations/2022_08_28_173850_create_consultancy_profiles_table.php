@@ -20,7 +20,7 @@ class CreateConsultancyProfilesTable extends Migration
             $table->integer('experience');
             $table->boolean('ar');
             $table->boolean('en');
-            $table->boolean('free_consultancy_price');
+            $table->boolean('free_consultancy');
             $table->decimal('consultancy_price');
             $table->decimal('month_consultancy_price');
             $table->decimal('year_consultancy_price');

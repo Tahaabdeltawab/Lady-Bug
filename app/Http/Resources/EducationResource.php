@@ -16,7 +16,7 @@ class EducationResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
+            // 'user_id' => $this->user_id,
             'title' => $this->title,
             'date' => $this->date
         ];

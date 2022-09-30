@@ -116,6 +116,28 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(City::class, 'city_id');
     }
 
+    public function consultancyProfile()
+    {
+        return $this->hasOne(ConsultancyProfile::class);
+    }
+
+    public function educations()
+    {
+        return $this->hasMany(Education::class);
+    }
+    public function careers()
+    {
+        return $this->hasMany(Career::class);
+    }
+    public function residences()
+    {
+        return $this->hasMany(Residence::class);
+    }
+    public function visiteds()
+    {
+        return $this->hasMany(Visited::class);
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class, 'author_id');
@@ -151,21 +173,26 @@ class User extends Authenticatable implements JWTSubject
         return $this->rolesTeams()->where(function($q){
             $q->where([['role_user.start_date', '<=', today()],['role_user.end_date', '>', today()]])
             ->orWhere([['role_user.start_date','=', null], ['role_user.end_date','=', null]]);
-            /** 
-             * * DB Note 
+            /**
+             * * DB Note
              * ->orWhere(['role_user.start_date' => null, 'role_user.end_date' => null]);
-             * will produce 
+             * will produce
              * or (`role_user`.`start_dates` is null or `role_user`.`end_dates` is null)"
-             * while the first will produce 
+             * while the first will produce
              * or (`role_user`.`start_dates` is null and `role_user`.`end_dates` is null)"
-            **/ 
+            **/
 
         });
     }
-    
+
     public function ownBusinesses()
     {
         return $this->hasMany(Business::class);
+    }
+
+    public function hasBusiness($id)
+    {
+        return $this->hasMany(Business::class)->where('businesses.id', $id)->exists();
     }
 
     public function sharedBusinesses($ownids = null)
@@ -173,7 +200,7 @@ class User extends Authenticatable implements JWTSubject
         $own_ids = $ownids ?? $this->ownBusinesses()->pluck('id');
         return $this->allBusinesses()->whereNotIn('businesses.id', $own_ids);
     }
-    
+
     public function followedBusinesses()
     {
         return $this->morphedByMany(Business::class, 'followable');
@@ -184,7 +211,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->morphedByMany(self::class, 'followable');
     }
 
-  
+
 
     public static function generate_code($length = 6)
     {

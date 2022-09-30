@@ -14,10 +14,10 @@ class WorkFieldSeeder extends Seeder
      */
     public function run()
     {
-        WorkField::create(['name' => ['ar' => 'نخيل', 'en' => 'Palm Trees']]);
-        WorkField::create(['name' => ['ar' => 'الطماطم', 'en' => 'Tomatoes']]);
-        WorkField::create(['name' => ['ar' => 'المانجو', 'en' => 'Mango']]);
-        WorkField::create(['name' => ['ar' => 'أشجار الزيتون', 'en' => 'Olive Trees']]);
-        WorkField::create(['name' => ['ar' => 'شبكات الري', 'en' => 'Irrigation Networks']]);
+        WorkField::create(['id' => 1, 'name' => ['ar' => 'نخيل', 'en' => 'Palm Trees']]);
+        WorkField::create(['id' => 2, 'name' => ['ar' => 'الطماطم', 'en' => 'Tomatoes']]);
+        WorkField::create(['id' => 3, 'name' => ['ar' => 'المانجو', 'en' => 'Mango']]);
+        WorkField::create(['id' => 4, 'name' => ['ar' => 'أشجار الزيتون', 'en' => 'Olive Trees']]);
+        WorkField::create(['id' => 5, 'name' => ['ar' => 'شبكات الري', 'en' => 'Irrigation Networks']]);
     }
 }

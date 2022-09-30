@@ -54,7 +54,7 @@ class PostAPIController extends AppBaseController
         $this->middleware('permission:posts.update')->only(['toggle_activate']);
     }
 
-    
+
     // admin
     public function index(Request $request)
     {
@@ -106,11 +106,11 @@ class PostAPIController extends AppBaseController
         // المنشورات التي تخص أشخاص يتابعهم المستخدم وتخص محاصيل في مفضلة المستخدم
         $favfollowings_posts = $posts->whereIn('author_id', $followings_ids)->whereIn('farmed_type_id', $favorites_ids);
         $remnant_posts = $posts->whereNotIn('id', $favfollowings_posts->pluck('id'));
-        
+
         // المنشورات التي تخص أشخاص يتابعهم المستخدم
         $followings_posts = $remnant_posts->whereIn('author_id', $followings_ids);
         $remnant_posts = $remnant_posts->whereNotIn('id', $followings_posts->pluck('id'));
-        
+
         // المنشورات التي تخص محاصيل في مفضلة المستخدم
         $favourites_posts = $remnant_posts->whereIn('farmed_type_id', $favorites_ids);
         $remnant_posts = $remnant_posts->whereNotIn('id', $favourites_posts->pluck('id'));
@@ -170,7 +170,7 @@ class PostAPIController extends AppBaseController
          {
              $q->whereIn('asset_mime', config('myconfig.video_mimes'));
          })->orderByDesc('reactions_count')->get();
- 
+
          return $this->sendResponse(
              [
                  'posts' => PostXsResource::collection($posts),
@@ -178,7 +178,7 @@ class PostAPIController extends AppBaseController
              ],
              'Timeline retrieved successfully');
      }
-     
+
     public function search($query, Request $request)
     {
         $posts = Post::accepted()->where('content','like', '%'.$query.'%' )
@@ -276,12 +276,19 @@ class PostAPIController extends AppBaseController
                 return $this->sendError(json_encode($errors), 777);
             }
 
+            $post_type_id = $request->post_type_id;
+            if($business_id = $request->business_id){
+                if(! auth()->user()->hasBusiness($business_id)){
+                    return $this->sendError('It\'s not your business.');
+                }
+                $post_type_id = 4;
+            }
             $data['shared_id'] = $request->shared_id;
             $data['title'] = $request->title;
             $data['content'] = $request->content;
             $data['business_id'] = $request->business_id;
             $data['farmed_type_id'] = $request->farmed_type_id;
-            $data['post_type_id'] = $request->post_type_id;
+            $data['post_type_id'] = $post_type_id;
             $data['solved'] = $request->solved;
             $data['author_id'] = auth()->id();
 
@@ -343,7 +350,7 @@ class PostAPIController extends AppBaseController
                 $msg = 'Post like removed successfully';
             }
 
-            return $this->sendResponse([ 
+            return $this->sendResponse([
                 'likers_count' => $post->likers()->count(),
                 'dislikers_count' => $post->dislikers()->count(),
                 'comments_count' => $post->comments()->count(),
@@ -385,7 +392,7 @@ class PostAPIController extends AppBaseController
                 $msg = 'Post dislike removed successfully';
             }
 
-            return $this->sendResponse([ 
+            return $this->sendResponse([
                 'likers_count' => $post->likers()->count(),
                 'dislikers_count' => $post->dislikers()->count(),
                 'comments_count' => $post->comments()->count(),
@@ -498,7 +505,7 @@ class PostAPIController extends AppBaseController
     }
 
     public function destroy($id)
-    {    
+    {
         try
         {
             /** @var Post $post */

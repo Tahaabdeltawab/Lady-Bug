@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\AppBaseController;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
@@ -47,7 +48,7 @@ class AuthController extends AppBaseController
         if ($request->type == 'social') {
             $user = User::where("email", $request->email)->first();
             if ($user) {
-                
+
                 if ($user->status != 'accepted') {
                     return $this->sendError(__('trans.your_account_is_not_accepted'), 5010);
                 }
@@ -290,7 +291,7 @@ class AuthController extends AppBaseController
     {
         $user = JWTAuth::parseToken()->toUser();
         // $user = auth('api')->user();
-        return $this->sendResponse(new UserResource($user), __('user retrieved successfully'));
+        return $this->sendResponse(new UserProfileResource($user), __('user retrieved successfully'));
     }
 
     public function logout()

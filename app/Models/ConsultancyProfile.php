@@ -9,7 +9,7 @@ class ConsultancyProfile extends Model
 
 
     public $table = 'consultancy_profiles';
-    
+
 
 
 
@@ -21,7 +21,7 @@ class ConsultancyProfile extends Model
         'consultancy_price',
         'month_consultancy_price',
         'year_consultancy_price',
-        'free_consultancy_price'
+        'free_consultancy'
     ];
 
     /**
@@ -38,7 +38,7 @@ class ConsultancyProfile extends Model
         'consultancy_price' => 'decimal:2',
         'month_consultancy_price' => 'decimal:2',
         'year_consultancy_price' => 'decimal:2',
-        'free_consultancy_price' => 'boolean'
+        'free_consultancy' => 'boolean'
     ];
 
     /**
@@ -48,12 +48,14 @@ class ConsultancyProfile extends Model
      */
     public static $rules = [
         'experience' => 'required',
+        'work_fields' => 'nullable|array',
+        'work_fields.*' => 'exists:work_fields,id',
         'ar' => 'required',
         'en' => 'required',
         'consultancy_price' => 'required',
         'month_consultancy_price' => 'required',
         'year_consultancy_price' => 'required',
-        'free_consultancy_price' => 'required'
+        'free_consultancy' => 'required'
     ];
 
     /**

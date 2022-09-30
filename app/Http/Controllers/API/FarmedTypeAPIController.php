@@ -65,7 +65,7 @@ class FarmedTypeAPIController extends AppBaseController
             'photo'                                 => 'nullable|max:2000|mimes:jpeg,jpg,png',
             'flowering_time'                        => 'nullable|integer', // number of days till flowering
             'maturity_time'                         => 'nullable|integer',  // number of days till maturity
-            
+
             // 'farming_temperature'                   => 'nullable|array|size:2',
             // 'farming_temperature.*'                 => 'nullable|numeric',
             'farming_temperature'                   => 'nullable',
@@ -104,7 +104,7 @@ class FarmedTypeAPIController extends AppBaseController
 
         $to_save['flowering_time'] = $request->flowering_time;
         $to_save['maturity_time'] = $request->maturity_time;
-        
+
         $to_save['farming_temperature'] = is_array($request->farming_temperature) ? json_encode($request->farming_temperature) : $request->farming_temperature;
         $to_save['flowering_temperature'] = is_array($request->flowering_temperature) ? json_encode($request->flowering_temperature) : $request->flowering_temperature;
         $to_save['maturity_temperature'] = is_array($request->maturity_temperature) ? json_encode($request->maturity_temperature) : $request->maturity_temperature;
@@ -113,7 +113,7 @@ class FarmedTypeAPIController extends AppBaseController
         $to_save['suitable_water_salts_concentration'] = is_array($request->suitable_water_salts_concentration) ? json_encode($request->suitable_water_salts_concentration) : $request->suitable_water_salts_concentration;
         $to_save['suitable_ph'] = is_array($request->suitable_ph) ? json_encode($request->suitable_ph) : $request->suitable_ph;
         $to_save['suitable_soil_types'] = is_array($request->suitable_soil_types) ? json_encode($request->suitable_soil_types) : $request->suitable_soil_types;
-       
+
         $farmedType = $this->farmedTypeRepository->save_localized($to_save);
 
         if($photo = $request->file('photo'))
@@ -157,7 +157,7 @@ class FarmedTypeAPIController extends AppBaseController
             'photo'                                 => 'nullable|max:2000|mimes:jpeg,jpg,png', // nullable only for update
             'flowering_time'                        => 'nullable|integer', // number of days till flowering
             'maturity_time'                         => 'nullable|integer',  // number of days till maturity
-            
+
             // 'farming_temperature'                   => 'nullable|array|size:2',
             // 'farming_temperature.*'                 => 'nullable|numeric',
             'farming_temperature'                   => 'nullable',
@@ -193,7 +193,7 @@ class FarmedTypeAPIController extends AppBaseController
         $to_save['name_en_localized'] = $request->name_en_localized;
         $to_save['parent_id'] = $request->parent_id;
         $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
-        
+
         $to_save['flowering_time'] = $request->flowering_time;
         $to_save['maturity_time'] = $request->maturity_time;
 
@@ -205,7 +205,7 @@ class FarmedTypeAPIController extends AppBaseController
         $to_save['suitable_water_salts_concentration'] = is_array($request->suitable_water_salts_concentration) ? json_encode($request->suitable_water_salts_concentration) : $request->suitable_water_salts_concentration;
         $to_save['suitable_ph'] = is_array($request->suitable_ph) ? json_encode($request->suitable_ph) : $request->suitable_ph;
         $to_save['suitable_soil_types'] = is_array($request->suitable_soil_types) ? json_encode($request->suitable_soil_types) : $request->suitable_soil_types;
-       
+
         $farmedType = $this->farmedTypeRepository->save_localized($to_save, $id);
 
         if($photo = $request->file('photo'))
@@ -232,7 +232,7 @@ class FarmedTypeAPIController extends AppBaseController
         }
 
         $farmedType->delete();
-        $farmedType->asset()->delete();
+        $farmedType->asset->delete();
 
         return $this->sendSuccess('Farmed Type deleted successfully');
         }

@@ -24,6 +24,9 @@ use App\Repositories\ProductRepository;
 use App\Repositories\FarmedTypeGinfoRepository;
 
 use App\Http\Helpers\WeatherApi;
+use App\Http\Requests\API\CreateUserAPIRequest;
+use App\Http\Requests\API\UpdateProfileAPIRequest;
+use App\Http\Resources\UserProfileResource;
 
 /**
  * Class UserController
@@ -53,13 +56,13 @@ class UserAPIController extends AppBaseController
         $this->middleware('permission:users.admin_index')->only(['admin_index']);
         $this->middleware('permission:users.store')->only(['store']);
         $this->middleware('permission:users.update')->only(['update_user_roles', 'toggle_activate_user']);
-        // this is made in the api.php file because the user and admin both can use update method, 
+        // this is made in the api.php file because the user and admin both can use update method,
         //if you did it here, the request will be required for the user and admin and this is incorrect because it should be only for the admin
-        // $this->middleware('permission:users.update')->only(['update']); 
+        // $this->middleware('permission:users.update')->only(['update']);
         $this->middleware('permission:users.destroy')->only(['destroy']);
     }
 
-    
+
     // app users
     public function index(Request $request)
     {
@@ -124,7 +127,7 @@ class UserAPIController extends AppBaseController
 
 
 
-    // NOTIFICATIONS 
+    // NOTIFICATIONS
 
     public function toggle_notifiable()
     {
@@ -449,7 +452,7 @@ class UserAPIController extends AppBaseController
     }
 
 
-    
+
     // users
     public function show($id)
     {
@@ -489,13 +492,13 @@ class UserAPIController extends AppBaseController
                 $validator = Validator::make(request()->all(), [ 'blocked_until' => 'nullable|date_format:Y-m-d', 'block_days' => 'nullable|integer']);
                 if($validator->fails())
                     return $this->sendError(json_encode($validator->errors()), 757);
-    
+
                 if($block_days = request()->block_days)
                     $blocked_until = today()->addDays($block_days);
 
                 if(request()->blocked_until)
                     $blocked_until = request()->blocked_until;
-                    
+
                 $user->status = 'blocked';
                 if(isset($blocked_until))
                 $user->blocked_until = $blocked_until;
@@ -520,7 +523,7 @@ class UserAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
-    
+
     // users and admins
     public function update($id, /* CreateUserAPI */Request $request)
     {
@@ -608,7 +611,7 @@ class UserAPIController extends AppBaseController
 
             if($photo = $request->file('photo'))
             {
-                $user->asset()->delete();
+                $user->asset->delete();
                 $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo);
                 $user->asset()->create($oneasset);
             }
@@ -618,6 +621,38 @@ class UserAPIController extends AppBaseController
 
 
             return $this->sendResponse(new UserResource($user), __('Success'));
+        }
+        catch(\Throwable $th)
+        {
+            DB::rollback();
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    public function update_profile(UpdateProfileAPIRequest $request)
+    {
+        try
+        {
+            $user = auth()->user();
+            $input = $request->validated();
+            DB::beginTransaction();
+            $user = $this->userRepository->save_localized($input, $user->id);
+            $arrays = ['educations', 'careers', 'residences', 'visiteds'];
+            foreach($arrays as $prop){
+                $user->$prop()->delete();
+                foreach($request->$prop as $one){
+                    $user->$prop()->create($one);
+                }
+            }
+
+            if($photo = $request->file('photo'))
+            {
+                $user->asset->delete();
+                $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo);
+                $user->asset()->create($oneasset);
+            }
+            DB::commit();
+            return $this->sendResponse(new UserProfileResource(User::find($user->id)), __('Success'));
         }
         catch(\Throwable $th)
         {
@@ -685,7 +720,7 @@ class UserAPIController extends AppBaseController
             'reports' => $user->reports,
             'farms' => $user->farms,
         ];
-        // return $return;    
+        // return $return;
 
         $user->posts()->delete();// comments/likes/ chemical/location/saltdetails
         $user->products()->delete();
@@ -694,7 +729,7 @@ class UserAPIController extends AppBaseController
         $user->farms()->update(['admin_id' => auth()->id()]);
 
         $user->delete();
-        $user->asset()->delete();
+        $user->asset->delete();
 
           return $this->sendSuccess('Model deleted successfully');
         }

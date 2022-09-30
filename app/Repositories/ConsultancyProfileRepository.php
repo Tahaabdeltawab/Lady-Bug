@@ -24,7 +24,7 @@ class ConsultancyProfileRepository extends BaseRepository
         'consultancy_price',
         'month_consultancy_price',
         'year_consultancy_price',
-        'free_consultancy_price'
+        'free_consultancy'
     ];
 
     /**

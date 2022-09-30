@@ -9,6 +9,8 @@ use App\Repositories\ConsultancyProfileRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\ConsultancyProfileResource;
+use App\Models\WorkField;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 /**
@@ -44,6 +46,11 @@ class ConsultancyProfileAPIController extends AppBaseController
         return $this->sendResponse(ConsultancyProfileResource::collection($consultancyProfiles), 'Consultancy Profiles retrieved successfully');
     }
 
+    public function getRelations()
+    {
+        $data['work_fields'] = WorkField::all();
+        return $this->sendResponse($data, 'data retrieved');
+    }
     /**
      * Store a newly created ConsultancyProfile in storage.
      * POST /consultancyProfiles
@@ -54,11 +61,31 @@ class ConsultancyProfileAPIController extends AppBaseController
      */
     public function store(CreateConsultancyProfileAPIRequest $request)
     {
-        $input = $request->all();
+        try {
+            DB::beginTransaction();
 
-        $consultancyProfile = $this->consultancyProfileRepository->create($input);
+            if(auth()->user()->consultancyProfile()->exists())
+                return $this->sendError('Already registerd before');
 
-        return $this->sendResponse(new ConsultancyProfileResource($consultancyProfile), 'Consultancy Profile saved successfully');
+            $input = $request->all();
+            $input['user_id'] = auth()->id();
+            $consultancyProfile = $this->consultancyProfileRepository->create($input);
+
+            auth()->user()->is_consultant = true;
+            auth()->user()->save();
+
+            $consultancyProfile->workFields()->attach($request->work_fields);
+            if($ocps = $request->offline_consultancy_plans){
+                foreach ($ocps as $ocp) {
+                    $consultancyProfile->offlineConsultancyPlans()->create($ocp);
+                }
+            }
+            DB::commit();
+            return $this->sendResponse(new ConsultancyProfileResource($consultancyProfile), 'Consultancy Profile saved successfully');
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return $this->sendError($th->getMessage());
+        }
     }
 
     /**
@@ -73,6 +100,17 @@ class ConsultancyProfileAPIController extends AppBaseController
     {
         /** @var ConsultancyProfile $consultancyProfile */
         $consultancyProfile = $this->consultancyProfileRepository->find($id);
+
+        if (empty($consultancyProfile)) {
+            return $this->sendError('Consultancy Profile not found');
+        }
+
+        return $this->sendResponse(new ConsultancyProfileResource($consultancyProfile), 'Consultancy Profile retrieved successfully');
+    }
+
+    public function mine()
+    {
+        $consultancyProfile = auth()->user()->consultancyProfile;
 
         if (empty($consultancyProfile)) {
             return $this->sendError('Consultancy Profile not found');
@@ -102,6 +140,37 @@ class ConsultancyProfileAPIController extends AppBaseController
         }
 
         $consultancyProfile = $this->consultancyProfileRepository->update($input, $id);
+        $consultancyProfile->workFields()->sync($request->work_fields);
+
+        if($ocps = $request->offline_consultancy_plans){
+            $consultancyProfile->offlineConsultancyPlans()->delete();
+            foreach ($ocps as $ocp) {
+                $consultancyProfile->offlineConsultancyPlans()->create($ocp);
+            }
+        }
+
+        return $this->sendResponse(new ConsultancyProfileResource($consultancyProfile), 'ConsultancyProfile updated successfully');
+    }
+
+    public function update_my_consultancy_profile(UpdateConsultancyProfileAPIRequest $request)
+    {
+        $input = $request->all();
+
+        $consultancyProfile = auth()->user()->consultancyProfile;
+
+        if (empty($consultancyProfile)) {
+            return $this->sendError('Consultancy Profile not found');
+        }
+
+        $consultancyProfile = $this->consultancyProfileRepository->update($input, $consultancyProfile->id);
+        $consultancyProfile->workFields()->sync($request->work_fields);
+
+        if($ocps = $request->offline_consultancy_plans){
+            $consultancyProfile->offlineConsultancyPlans()->delete();
+            foreach ($ocps as $ocp) {
+                $consultancyProfile->offlineConsultancyPlans()->create($ocp);
+            }
+        }
 
         return $this->sendResponse(new ConsultancyProfileResource($consultancyProfile), 'ConsultancyProfile updated successfully');
     }
@@ -125,8 +194,28 @@ class ConsultancyProfileAPIController extends AppBaseController
             return $this->sendError('Consultancy Profile not found');
         }
 
+        $consultancyProfile->workFields()->detach();
+        $consultancyProfile->offlineConsultancyPlans()->delete();
         $consultancyProfile->delete();
+        auth()->user()->is_consultant = false;
+        auth()->user()->save();
+        return $this->sendSuccess('Consultancy Profile deleted successfully');
+    }
 
+    public function delete_mine()
+    {
+        /** @var ConsultancyProfile $consultancyProfile */
+        $consultancyProfile = auth()->user()->consultancyProfile;
+
+        if (empty($consultancyProfile)) {
+            return $this->sendError('Consultancy Profile not found');
+        }
+
+        $consultancyProfile->workFields()->detach();
+        $consultancyProfile->offlineConsultancyPlans()->delete();
+        $consultancyProfile->delete();
+        auth()->user()->is_consultant = false;
+        auth()->user()->save();
         return $this->sendSuccess('Consultancy Profile deleted successfully');
     }
 }
