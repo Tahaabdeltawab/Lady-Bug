@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Http;
 class WeatherApi{
 
     public function weather_history($lat, $lon, $day)
-    {   
+    {
         $body = [
             'key' => 'e7f89b42c8114af0a5c171526222509',
             // 'key' => '868ee110086a45188c3140146211609',
@@ -19,7 +19,7 @@ class WeatherApi{
             'format' => 'json',
             'tp' => 24,
         ];
-            
+
         try
         {
             $response = Http::get('https://api.worldweatheronline.com/premium/v1/past-weather.ashx', $body);
@@ -90,10 +90,12 @@ class WeatherApi{
             }
             else
             {
-                return ['status' => false, 'data' => $response->json()];
+                // return ['status' => false, 'data' => $response->json()];
+                return ['status' => false, 'data' => null];
             }
         }catch(\Throwable $th){
-            return ['status' => false, 'data' => ['cod' => 500, 'message' => 'Error fetching weather data.']];
+            // return ['status' => false, 'data' => ['cod' => 500, 'message' => 'Error fetching weather data.']];
+            return ['status' => false, 'data' => null];
         }
     }
 

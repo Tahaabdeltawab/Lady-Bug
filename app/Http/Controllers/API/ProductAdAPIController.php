@@ -48,12 +48,18 @@ class ProductAdAPIController extends AppBaseController
      * Store a newly created ProductAd in storage.
      * POST /productAds
      *
-     * @param CreateProductAdAPIRequest $request
      *
      * @return Response
      */
-    public function store(CreateProductAdAPIRequest $request)
+    public function store(Request $request)
     {
+        if($ads = $request->ads){
+            foreach ($ads as $t) {
+                $this->productAdRepository->create($t);
+            }
+            return $this->sendSuccess('ads created successfully');
+        }
+
         $input = $request->all();
 
         $productAd = $this->productAdRepository->create($input);

@@ -19,8 +19,12 @@ class Product extends Model
 
     public $fillable = [
         'price',
-        'seller_id',
         'description',
+        'seller_id',
+        'business_id',
+        'product_type_id',
+        'insecticide_id',
+        'fertilizer_id',
         'name',
         'city_id',
         'district_id',
@@ -39,6 +43,10 @@ class Product extends Model
         'price' => 'double',
         'description' => 'string',
         'seller_id' => 'integer',
+        'business_id' => 'integer',
+        'product_type_id' => 'integer',
+        'insecticide_id' => 'integer',
+        'fertilizer_id' => 'integer',
         'name' => 'string',
         'city_id' => 'integer',
         'district_id' => 'integer',
@@ -52,7 +60,22 @@ class Product extends Model
      *
      * @var array
      */
-    public static $rules = [];
+    public static $rules = [
+        'product_type_id'               => 'required|exists:product_types,id',
+        'price'                         => 'required',
+        'name'                          => 'required|max:200',
+        'description'                   => 'required',
+        'farmed_types'                  => 'nullable|array',
+        'farmed_types.*'                => 'required|exists:farmed_types,id',
+        'city_id'                       => 'required|exists:cities,id',
+        'district_id'                   => 'required|exists:districts,id',
+        'seller_mobile'                 => 'required|max:20',
+        'other_links'                   => 'nullable',
+        'internal_assets'               => ['nullable','array'],
+        'external_assets'               => ['nullable','array'],
+        'internal_assets.*'             => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg'],
+        'external_assets.*'             => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
+    ];
 
     protected static function booted()
     {
@@ -65,6 +88,22 @@ class Product extends Model
     {
         return $this->belongsTo(City::class);
     }
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
+    public function productType()
+    {
+        return $this->belongsTo(productType::class);
+    }
+    public function insecticide()
+    {
+        return $this->belongsTo(Insecticide::class);
+    }
+    public function fertilizer()
+    {
+        return $this->belongsTo(Fertilizer::class);
+    }
 
 
     public function district()
@@ -73,7 +112,7 @@ class Product extends Model
     }
 
 
-    public function farmed_type()
+    public function farmedTypes()
     {
         return $this->belongsToMany(FarmedType::class);
     }
@@ -94,7 +133,7 @@ class Product extends Model
         return $this->assets()->where('asset_name', 'like', 'product-external%');
     }
 
-    public function shipping_cities()
+    public function shippingCities()
     {
         return $this->belongsToMany(City::class, 'product_shipping_cities')->withPivot('shipping_days', 'shipping_fees');
     }
