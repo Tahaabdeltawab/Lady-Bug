@@ -23,7 +23,7 @@ class ProductAd extends Model
 
     public $table = 'product_ads';
 	public $timestamps = false;
-    
+
 
 
 
@@ -66,5 +66,10 @@ class ProductAd extends Model
     public function product()
     {
         return $this->belongsTo(\App\Models\Product::class);
+    }
+
+    public function asset()
+    {
+        return $this->morphOne(Asset::class, 'assetable');
     }
 }

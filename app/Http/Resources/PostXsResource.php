@@ -24,7 +24,7 @@ class PostXsResource extends JsonResource
         $return = [
             'id' => $this->id,
             'content' => $post->content,
-            'author' => new UserXsResource($this->author),
+            'author' => new UserSmResource($this->author),
             'solved' => $post->solved,
             'image_assets' => collect($post->assets)->whereIn('asset_mime', config('myconfig.image_mimes'))->pluck('asset_url')->all(),
             'video_assets' => collect($post->assets)->whereIn('asset_mime', config('myconfig.video_mimes'))->pluck('asset_url')->all(),

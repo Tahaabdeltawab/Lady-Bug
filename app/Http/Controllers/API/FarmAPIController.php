@@ -54,6 +54,7 @@ use Illuminate\Http\Request;
 
 use App\Http\Helpers\WeatherApi;
 use App\Http\Resources\FarmCollection;
+use App\Http\Resources\FarmWithReportsResource;
 use App\Models\Business;
 
 class FarmAPIController extends AppBaseController
@@ -438,6 +439,19 @@ class FarmAPIController extends AppBaseController
             }
 
             return $this->sendResponse(new FarmResource($farm), 'Farm retrieved successfully');
+        }catch(\Throwable $th){
+            throw $th;
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    public function farm_with_reports($id)
+    {
+        try{
+            $farm = $this->farmRepository->find($id);
+            if (empty($farm))
+                return $this->sendError('Farm not found');
+            return $this->sendResponse(new FarmWithReportsResource($farm), 'Farm with reports retrieved successfully');
         }catch(\Throwable $th){
             throw $th;
             return $this->sendError($th->getMessage(), 500);

@@ -10,7 +10,7 @@ class Business extends Team
     use Follower, Followable;
 
     public $table = 'businesses';
-    
+
 
 
 
@@ -182,5 +182,14 @@ class Business extends Team
     public function scopeVetmed($q)
     {
         return $q->where('business_field_id', 5);
+    }
+
+    public function scopePublic($q)
+    {
+        return $q->where('privacy', 1);
+    }
+    public function scopePrivate($q)
+    {
+        return $q->where('privacy', 0);
     }
 }

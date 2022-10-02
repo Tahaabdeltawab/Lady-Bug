@@ -10,9 +10,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Helpers\WeatherApi;
 use App\Http\Resources\BusinessResource;
+use App\Http\Resources\BusinessWithPostsResource;
 use App\Http\Resources\BusinessWithTasksResource;
 use App\Http\Resources\FarmResource;
+use App\Http\Resources\FarmXsResource;
 use App\Http\Resources\PostXsResource;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductXsResource;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\UserResource;
@@ -60,27 +64,81 @@ class BusinessAPIController extends AppBaseController
     }
 
 
-       
 
-    public function get_business_posts($id)
+
+    public function get_business_with_posts($id)
     {
         try
         {
             $business = Business::find($id);
-
             if (empty($business))
-            {
                 return $this->sendError('business not found');
-            }
-
-            $posts = $business->posts()->accepted()->get();
-            return $this->sendResponse(['all' => PostXsResource::collection($posts)], 'business posts retrieved successfully');
+            return $this->sendResponse(new BusinessWithPostsResource($business), 'business with posts retrieved successfully');
         }
         catch(\Throwable $th)
         {
             return $this->sendError($th->getMessage(), 500);
         }
     }
+
+    public function get_business_videos($id)
+    {
+        try
+        {
+            $business = Business::find($id);
+            if (empty($business))
+                return $this->sendError('business not found');
+            $videos = $business->posts()->accepted()->video()->get();
+            return $this->sendResponse(PostXsResource::collection($videos), 'business videos retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    public function get_business_stories($id)
+    {
+        try
+        {
+            $business = Business::find($id);
+            if (empty($business))
+                return $this->sendError('business not found');
+            $videos = $business->posts()->accepted()->video()->get();
+            return $this->sendResponse(PostXsResource::collection($videos), 'business stories retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+    public function get_business_products($id)
+    {
+        try
+        {
+            $business = Business::find($id);
+            if (empty($business))
+                return $this->sendError('business not found');
+            $products = $business->products;
+            return $this->sendResponse(ProductXsResource::collection($products), 'business products retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    public function get_business_farms($id)
+    {
+         /** @var Business $business */
+         $business = $this->businessRepository->find($id);
+
+         if (empty($business))
+             return $this->sendError('Business not found');
+        $farms = $business->farms;
+         return $this->sendResponse(FarmXsResource::collection($farms), 'Business farms retrieved successfully');
+    }
+
 
     /**
      * Store a newly created Business in storage.
@@ -289,7 +347,7 @@ class BusinessAPIController extends AppBaseController
 
             $user = User::find($request->user);
             $business = Business::find($request->business);
-           
+
             if(auth()->id() != $business->user_id)
             abort(503, __('Unauthorized, you are not the business owner!'));
 
@@ -365,18 +423,6 @@ class BusinessAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
-
-    public function get_business_farms($id)
-    {
-         /** @var Business $business */
-         $business = $this->businessRepository->find($id);
-
-         if (empty($business))
-             return $this->sendError('Business not found');
- 
-         return $this->sendResponse(FarmResource::collection($business->farms), 'Business farms retrieved successfully');
-    }
-
 
     public function user_today_tasks(Request $request)
     {
@@ -457,7 +503,7 @@ class BusinessAPIController extends AppBaseController
         if($business_field_id == null){
             return $this->sendResponse([
                 'business_fields' => BusinessField::all()
-            ], 
+            ],
             'business fields retrieved successfully'
             );
         }
@@ -495,7 +541,7 @@ class BusinessAPIController extends AppBaseController
 
             $business->distributors()->detach();
             $business->distributors()->attach($request->distributors, ['type' => 'distributor']);
-            
+
             $business->branches()->delete();
             foreach ($request->branches ?? [] as $branch) {
                 $business->branches()->create($branch);
@@ -518,7 +564,7 @@ class BusinessAPIController extends AppBaseController
                 $asset = $this->store_file($cover_asset, 'business-cover');
                 $business->assets()->create($asset);
             }
-            
+
             DB::commit();
             return $this->sendResponse(new BusinessResource($business), 'Business updated successfully');
         } catch(\Throwable $th){

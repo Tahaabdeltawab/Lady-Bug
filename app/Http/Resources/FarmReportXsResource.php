@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductAdResource extends JsonResource
+class FarmReportXsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,7 @@ class ProductAdResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'product_id' => $this->product_id,
-            'asset' => @$this->asset->asset_url,
-            'name' => $this->name,
-            'description' => $this->description,
-            'stacked' => $this->stacked
+            'user' => new UserXsResource($this->user()->select('id', 'name', 'human_job_id')->first()),
         ];
     }
 }

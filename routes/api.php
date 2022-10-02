@@ -359,11 +359,14 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('businesses/roles/decline/{user}/{role}/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'decline_business_invitation'])->name('businesses.roles.decline_business_invitation');
 
     Route::get('businesses/users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_users'])->name('businesses.users.index');
-    Route::get('businesses/farms/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_farms'])->name('businesses.farms.index');
     Route::get('businesses/app_users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'app_users']);
     Route::get('businesses/app_roles/index', [App\Http\Controllers\API\BusinessAPIController::class, 'app_roles']);
 
-    Route::get('businesses/posts/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_posts'])->name('businesses.posts.index');
+    Route::get('businesses/farms/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_farms'])->name('businesses.farms.index');
+    Route::get('businesses/products/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_products'])->name('businesses.products.index');
+    Route::get('business_with_posts/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_with_posts'])->name('businesses.posts.index');
+    Route::get('businesses/videos/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_videos'])->name('businesses.videos.index');
+    Route::get('businesses/stories/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_stories'])->name('businesses.stories.index');
 
     // FOLLOW
     Route::get('businesses/toggle_follow/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'toggle_follow']);
@@ -375,6 +378,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('farm_reports/relations/index', [App\Http\Controllers\API\FarmReportAPIController::class, 'getRelations'])->name('farm_reports.getRelations');
     Route::resource('farm_reports', App\Http\Controllers\API\FarmReportAPIController::class)->except(['update']);
     Route::match(['put', 'patch','post'], 'farm_reports/{farm_report}', [App\Http\Controllers\API\FarmReportAPIController::class, 'update'])->name('farm_reports.update');
+    Route::get('farms/reports/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'farm_with_reports'])->name('farm_with_reports');
 
     // TASKS
     Route::get('tasks/toggle_finish/{task}', [App\Http\Controllers\API\TaskAPIController::class, 'toggle_finish']);

@@ -14,6 +14,9 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\CityResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\ProductTypeResource;
+use App\Models\Fertilizer;
+use App\Models\Insecticide;
+use App\Models\NutElemValue;
 use App\Models\ProductType;
 use Response;
 use Illuminate\Support\Facades\Validator;
@@ -154,6 +157,39 @@ class ProductAPIController extends AppBaseController
                 $input = $request->all();
                 $input['seller_id'] = auth()->id();
                 $input['sold'] = 0;
+                // if insecticide
+                if($request->product_type_id == 1 && $insecticideData = $request->insecticide){
+                    $insecticideData['name'] = $request->name;
+                    $insecticide = Insecticide::create($insecticideData);
+                    $insecticide->acs()->attach($request->insecticide_acs);
+                    $input['insecticide_id'] = $insecticide->id;
+
+                    if($assets = $request->file('insecticide_assets'))
+                    {
+                        foreach($assets as $asset)
+                        {
+                            $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'insecticide');
+                            $insecticide->assets()->create($oneasset);
+                        }
+                    }
+                }
+                // if fertilizer
+                else if($request->product_type_id == 3 && $fertilizerData = $request->fertilizer){
+                    $fertilizerData['name'] = $request->name;
+                    $nev = NutElemValue::create($request->fertilizer_nut_elem_value);
+                    $fertilizerData['nut_elem_value_id'] = $nev->id;
+                    $fertilizer = Fertilizer::create($fertilizerData);
+                    $input['fertilizer_id'] = $fertilizer->id;
+
+                    if($assets = $request->file('fertilizer_assets'))
+                    {
+                        foreach($assets as $asset)
+                        {
+                            $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'fertilizer');
+                            $fertilizer->assets()->create($oneasset);
+                        }
+                    }
+                }
 
                 $product = Product::create($input);
 
@@ -161,6 +197,18 @@ class ProductAPIController extends AppBaseController
                 foreach($request->shipping_cities as $sh){
                     $product->shippingCities()->attach($sh['city_id'], ['shipping_days' => $sh['shipping_days'], 'shipping_fees' => $sh['shipping_fees']]);
                 }
+
+                if($request->ads){
+                    foreach($request->ads as $anad){
+                        $ad = $product->ads()->create($anad);
+                        if(isset($anad['asset'])){
+                            $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($anad['asset'], 'product-ad');
+                            $ad->asset()->create($oneasset);
+                        }else
+                            return $this->sendError('The ad should have a photo');
+                    }
+                }
+
 
                 if($internal_assets = $request->file('internal_assets'))
                 {
@@ -185,7 +233,6 @@ class ProductAPIController extends AppBaseController
             catch(\Throwable $th)
             {
                 DB::rollBack();
-                throw $th;
                 return $this->sendError($th->getMessage(), 500);
             }
         }
@@ -202,10 +249,11 @@ class ProductAPIController extends AppBaseController
         return $this->sendResponse(new ProductResource($product), 'Product retrieved successfully');
     }
 
-    public function update($id, Request $request)
+    public function update($id, CreateProductAPIRequest $request)
     {
         try
         {
+            DB::beginTransaction();
             /** @var Product $product */
             $product = $this->productRepository->find($id);
 
@@ -213,44 +261,82 @@ class ProductAPIController extends AppBaseController
                 return $this->sendError('Product not found');
             }
 
-            $validator = Validator::make($request->all(), [
-                'price'                         => 'required',
-                'description_ar_localized'      => 'required',
-                'description_en_localized'      => 'required',
-                'name_ar_localized'             => 'required|max:200',
-                'name_en_localized'             => 'required|max:200',
-                'farmed_type_id'                => 'required|exists:farmed_types,id',
-                'city_id'                       => 'required|exists:cities,id',
-                'district_id'                   => 'required|exists:districts,id',
-                'seller_mobile'                 => 'required|max:20',
-                'other_links'                   => 'nullable',
-                'internal_assets'               => ['nullable','array'],
-                'external_assets'               => ['nullable','array'],
-                'internal_assets.*'             => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg'],
-                'external_assets.*'             => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
-            ]);
+            $input = $request->all();
 
-            // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);
-            if($validator->fails()){
-                $errors = $validator->errors();
+             // if insecticide
+             if($request->product_type_id == 1 && $insecticideData = $request->insecticide){
+                unset($insecticideData['precautions']);
+                unset($insecticideData['notes']);
+                $product->insecticide()->update($insecticideData);
+                $insecticide = $product->insecticide;
+                // were not put in mass update because constraint issue due to translatable
+                $insecticide->name = $request->name;
+                $insecticide->precautions = $request->insecticide['precautions'];
+                $insecticide->notes = $request->insecticide['notes'];
+                $insecticide->save();
+                $insecticide->acs()->sync($request->insecticide_acs);
 
-                return $this->sendError(json_encode($errors), 888);
+                if($assets = $request->file('insecticide_assets'))
+                {
+                    foreach ($insecticide->assets as $ass) {
+                        $ass->delete();
+                    }
+                    foreach($assets as $asset)
+                    {
+                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'insecticide');
+                        $insecticide->assets()->create($oneasset);
+                    }
+                }
+            }
+            // if fertilizer
+            else if($request->product_type_id == 3 && $fertilizerData = $request->fertilizer){
+                unset($fertilizerData['precautions']);
+                unset($fertilizerData['notes']);
+                $product->fertilizer()->update($fertilizerData);
+                $fertilizer = $product->fertilizer;
+                // were not put in mass update because constraint issue due to translatable
+                $fertilizer->name = $request->name;
+                $fertilizer->precautions = $request->fertilizer['precautions'];
+                $fertilizer->notes = $request->fertilizer['notes'];
+                $fertilizer->save();
+                $fertilizer->nutElemValue()->update($request->fertilizer_nut_elem_value);
+
+                if($assets = $request->file('fertilizer_assets'))
+                {
+                    foreach ($fertilizer->assets as $ass) {
+                        $ass->delete();
+                    }
+                    foreach($assets as $asset)
+                    {
+                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'fertilizer');
+                        $fertilizer->assets()->create($oneasset);
+                    }
+                }
             }
 
-            $data['price'] = $request->price;
-            // $data['seller_id'] = auth()->id();
-            $data['description_ar_localized'] = $request->description_ar_localized;
-            $data['description_en_localized'] = $request->description_en_localized;
-            $data['name_ar_localized'] = $request->name_ar_localized;
-            $data['name_en_localized'] = $request->name_en_localized;
-            $data['farmed_type_id'] = $request->farmed_type_id;
-            $data['city_id'] = $request->city_id;
-            $data['district_id'] = $request->district_id;
-            $data['seller_mobile'] = $request->seller_mobile;
-            $data['other_links'] = $request->other_links;
-            $data['sold'] = 0;
+            $product = $this->productRepository->save_localized($input, $id);
 
-            $product = $this->productRepository->save_localized($data, $id);
+            $product->farmedTypes()->sync($request->farmed_types);
+            $product->shippingCities()->detach();
+            foreach($request->shipping_cities as $sh){
+                $product->shippingCities()->attach($sh['city_id'], ['shipping_days' => $sh['shipping_days'], 'shipping_fees' => $sh['shipping_fees']]);
+            }
+
+            if($request->ads){
+                foreach ($product->ads as $delad) {
+                    $delad->asset->delete();
+                    $delad->delete();
+                }
+
+                foreach($request->ads as $anad){
+                    $ad = $product->ads()->create($anad);
+                    if(isset($anad['asset'])){
+                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($anad['asset'], 'product-ad');
+                        $ad->asset()->create($oneasset);
+                    }else
+                    return $this->sendError('The ad should have a photo');
+                }
+            }
 
             if($internal_assets = $request->file('internal_assets'))
             {
@@ -275,11 +361,13 @@ class ProductAPIController extends AppBaseController
                     $product->assets()->create($oneasset);
                 }
             }
-
-            return $this->sendResponse(new ProductResource($product), __('Product saved successfully'));
+            DB::commit();
+            return $this->sendResponse(new ProductResource(Product::find($product->id)), __('Product saved successfully'));
         }
         catch(\Throwable $th)
         {
+            DB::rollBack();
+            throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -295,10 +383,15 @@ class ProductAPIController extends AppBaseController
             return $this->sendError('Product not found');
         }
 
-        $product->delete();
-        foreach($product->assets as $ass){
-          $ass->delete();
+        foreach ($product->ads as $delad) {
+            $delad->asset->delete();
+            $delad->delete();
         }
+
+        foreach($product->assets as $ass){
+            $ass->delete();
+        }
+        $product->delete();
 
           return $this->sendSuccess('Model deleted successfully');
         }

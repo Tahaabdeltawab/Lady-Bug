@@ -97,7 +97,7 @@ class PostAPIController extends AppBaseController
     }
     public function timeline(Request $request)
     {
-        $posts = Post::accepted()->orderByDesc('reactions_count')->get();
+        $posts = Post::accepted()->notVideo()->orderByDesc('reactions_count')->get();
         //  ترتيب المنشورات
         // الأشخاص الذين يتابعهم المستخدم
         $followings_ids = auth()->user()->followings->pluck('id');
@@ -166,10 +166,7 @@ class PostAPIController extends AppBaseController
      // video_timeline
      public function video_timeline(Request $request)
      {
-         $posts = Post::accepted()->whereHas('assets', function ($q)
-         {
-             $q->whereIn('asset_mime', config('myconfig.video_mimes'));
-         })->orderByDesc('reactions_count')->get();
+         $posts = Post::accepted()->video()->orderByDesc('reactions_count')->get();
 
          return $this->sendResponse(
              [

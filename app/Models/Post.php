@@ -71,6 +71,21 @@ class Post extends Model
         });
     }
 
+    public function scopeVideo($query)
+    {
+        return $query->whereHas('assets', function ($q)
+        {
+            $q->whereIn('asset_mime', config('myconfig.video_mimes'));
+        });
+    }
+
+    public function scopeNotVideo($query)
+    {
+        return $query->whereHas('assets', function ($q)
+        {
+            $q->whereNotIn('asset_mime', config('myconfig.video_mimes'));
+        });
+    }
     public function scopeAccepted($query)
     {
         return $query->where('status', 'accepted');
