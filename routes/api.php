@@ -408,6 +408,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     // CONSULTANCY
     Route::resource('consultancy_profiles', App\Http\Controllers\API\ConsultancyProfileAPIController::class);
     Route::get('my_consultancy_profile', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'mine']);
+    Route::get('user_consultancy_profile/{user}', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'user_consultancy_profile']);
     Route::delete('my_consultancy_profile', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'delete_mine']);
     Route::match(['put', 'patch','post'], 'update_my_consultancy_profile', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'update_my_consultancy_profile']);
     Route::get('consultancy_profiles/relations/index', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'getRelations']);

@@ -101,6 +101,11 @@ class User extends Authenticatable implements JWTSubject
         return $q->where('status', 'blocked');
     }
 
+    public function scopeCons($q)
+    {
+        return $q->where('is_consultant', 1);
+    }
+
     public function asset()
     {
         return $this->morphOne(Asset::class, 'assetable');

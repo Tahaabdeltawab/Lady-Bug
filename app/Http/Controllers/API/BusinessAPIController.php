@@ -19,7 +19,9 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductXsResource;
 use App\Http\Resources\RoleResource;
 use App\Http\Resources\TaskResource;
+use App\Http\Resources\UserConsXsResource;
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UserXsResource;
 use App\Models\BusinessField;
 use App\Models\Role;
 use App\Models\User;
@@ -220,17 +222,17 @@ class BusinessAPIController extends AppBaseController
     {
         $business = Business::find($request->business);
         if (empty($business))
-        {
             return $this->sendError('business not found');
-        }
 
         $business_users = $business->users()->pluck('id');
         $business_users[] = auth()->id();
         $users = User::whereNotIn('id', $business_users)->whereHas('roles', function($q){
             $q->where('name', config('myconfig.user_default_role'));
-        })->get();
+        })
+        ->when($request->cons, fn ($q) => $q->cons())
+        ->get(['id', 'name', 'human_job_id', 'email', 'is_consultant']);
 
-        return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
+        return $this->sendResponse(['all' => $request->cons ? UserConsXsResource::collection($users) : UserXsResource::collection($users)], 'Users retrieved successfully');
     }
 
     private function is_valid_invitation($request){

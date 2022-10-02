@@ -9,6 +9,8 @@ use App\Repositories\ConsultancyProfileRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\ConsultancyProfileResource;
+use App\Http\Resources\UserConsResource;
+use App\Models\User;
 use App\Models\WorkField;
 use Illuminate\Support\Facades\DB;
 use Response;
@@ -117,6 +119,14 @@ class ConsultancyProfileAPIController extends AppBaseController
         }
 
         return $this->sendResponse(new ConsultancyProfileResource($consultancyProfile), 'Consultancy Profile retrieved successfully');
+    }
+
+    public function user_consultancy_profile($user_id)
+    {
+        $user = User::select('id', 'name', 'human_job_id')->find($user_id);
+        if(empty($user))
+            return $this->sendError('User not found');
+        return $this->sendResponse(new UserConsResource($user), 'Consultancy Profile retrieved successfully');
     }
 
     /**
