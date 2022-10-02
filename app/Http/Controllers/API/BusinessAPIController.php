@@ -430,7 +430,7 @@ class BusinessAPIController extends AppBaseController
             $date = $request->date ?? date('Y-m-d');
 
             if($request->tasks_only){
-                $tasks = auth()->user()->tasks()->where('date', $date)->get();
+                $tasks = auth()->user()->tasks()->where('farm_report_id', $request->report_id)->where('date', $date)->get();
                 return $this->sendResponse(TaskResource::collection($tasks), 'tasks retrived successfully');
             }
             $weather_resp = WeatherApi::instance()->weather_api($request);
