@@ -22,8 +22,11 @@ use App\Http\Resources\TaskResource;
 use App\Http\Resources\UserConsXsResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserXsResource;
+use App\Models\BusinessConsultant;
 use App\Models\BusinessField;
 use App\Models\Role;
+use App\Models\RoleUser;
+use App\Models\Task;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -277,9 +280,21 @@ class BusinessAPIController extends AppBaseController
             $user = User::find($request->user);
             $business = Business::find($request->business);
 
+            if($request->role == 6 && !$request->period)
+                return $this->sendError('Consultancy Period is required');
             $user->attachRole($request->role, $business);
-            DB::table('role_user')->where(['user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])
-            ->update(['start_date' => $request->start_date, 'end_date' => $request->end_date]);
+            $role_user = RoleUser::where(['user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])->first();
+            $role_user->start_date = $request->start_date;
+            $role_user->end_date = $request->end_date;
+            $role_user->save();
+            // إضافة استشاري
+            if($request->role == 6)
+                BusinessConsultant::create([
+                    'role_user_id' => $role_user->id,
+                    'plan_id' => $request->plan_id,
+                    'period' => $request->period,
+                ]);
+
 
             DB::table('notifications')
             ->where('type', 'App\Notifications\BusinessInvitation')
@@ -363,9 +378,20 @@ class BusinessAPIController extends AppBaseController
 
                 if($user->get_roles($request->business)) //edit roles
                 {
+                    if($request->role == 6 && !$request->period)
+                        return $this->sendError('Consultancy Period is required');
                     $user->syncRoles([$request->role], $business);
-                    DB::table('role_user')->where(['user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])
-                    ->update(['start_date' => $request->start_date, 'end_date' => $request->end_date]);
+                    $role_user = RoleUser::where(['user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])->first();
+                    $role_user->start_date = $request->start_date;
+                    $role_user->end_date = $request->end_date;
+                    $role_user->save();
+                    // إضافة استشاري
+                    if($request->role == 6 && $request->period)
+                        BusinessConsultant::create([
+                            'role_user_id' => $role_user->id,
+                            'plan_id' => $request->plan_id,
+                            'period' => $request->period,
+                        ]);
                 }
                 else            // first attach role
                 {
@@ -376,7 +402,7 @@ class BusinessAPIController extends AppBaseController
                         auth()->user(),
                         $role,
                         $business,
-                        URL::temporarySignedRoute('api.businesses.roles.first_attach', now()->addDays(30),['user' => $request->user,'business' => $request->business,'role' => $request->role,'start_date' => $request->start_date, 'end_date' => $request->end_date]),
+                        URL::temporarySignedRoute('api.businesses.roles.first_attach', now()->addDays(30),['user' => $request->user,'business' => $request->business,'role' => $request->role,'start_date' => $request->start_date, 'end_date' => $request->end_date, 'period' => $request->period, 'plan_id' => $request->plan_id]),
                         URL::temporarySignedRoute('api.businesses.roles.decline_business_invitation', now()->addDays(30),['user' => $request->user,'business' => $request->business,'role' => $request->role,])
                         ));
                     return $this->sendSuccess(__('Invitation sent successfully'));
@@ -424,6 +450,12 @@ class BusinessAPIController extends AppBaseController
             throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
+    }
+
+    public function report_tasks($id)
+    {
+        $tasks = Task::where('farm_report_id', $id)->get();
+        return $this->sendResponse(TaskResource::collection($tasks), 'tasks retrived successfully');
     }
 
     public function user_today_tasks(Request $request)
@@ -535,8 +567,6 @@ class BusinessAPIController extends AppBaseController
             }
 
             $business = $this->businessRepository->update($input, $id);
-
-            auth()->user()->attachRole('business-admin', $business);
 
             $business->agents()->detach();
             $business->agents()->attach($request->agents, ['type' => 'agent']);

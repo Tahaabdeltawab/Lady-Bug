@@ -28,5 +28,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(DiseaseSeeder::class);
         $this->call(ProductTypeSeeder::class);
         $this->call(CityDistrictSeeder::class);
+        $this->call(AdditionalRolesSeeder::class);
   }
 }

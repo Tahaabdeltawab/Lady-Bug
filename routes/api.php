@@ -379,6 +379,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::resource('farm_reports', App\Http\Controllers\API\FarmReportAPIController::class)->except(['update']);
     Route::match(['put', 'patch','post'], 'farm_reports/{farm_report}', [App\Http\Controllers\API\FarmReportAPIController::class, 'update'])->name('farm_reports.update');
     Route::get('farms/reports/index/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'farm_with_reports'])->name('farm_with_reports');
+    Route::get('report_tasks/{farm_report}', [App\Http\Controllers\API\BusinessAPIController::class, 'report_tasks']);
 
     // TASKS
     Route::get('tasks/toggle_finish/{task}', [App\Http\Controllers\API\TaskAPIController::class, 'toggle_finish']);

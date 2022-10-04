@@ -17,7 +17,7 @@ class AcWithInsecticideResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'insecticides' => InsecticideXsResource::collection($this->insecticides),
+            'insecticides' => InsecticideSmResource::collection($this->insecticides),
         ];
     }
 }

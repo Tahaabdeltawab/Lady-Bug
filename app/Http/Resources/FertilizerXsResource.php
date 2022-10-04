@@ -17,8 +17,6 @@ class FertilizerXsResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'producer' => $this->producer,
-            'usage_rate' => $this->usage_rate,
         ];
     }
 }

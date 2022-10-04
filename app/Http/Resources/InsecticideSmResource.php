@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class InsecticideXsResource extends JsonResource
+class InsecticideSmResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,6 +17,9 @@ class InsecticideXsResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'producer' => $this->producer,
+            'mix_rate' => $this->mix_rate,
+            'withdrawal_days' => $this->withdrawal_days,
         ];
     }
 }

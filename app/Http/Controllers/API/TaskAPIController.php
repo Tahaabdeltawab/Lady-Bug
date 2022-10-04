@@ -9,7 +9,7 @@ use App\Repositories\TaskRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\AcWithInsecticideResource;
-use App\Http\Resources\FertilizerXsResource;
+use App\Http\Resources\FertilizerSmResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Ac;
 use App\Models\Fertilizer;
@@ -70,7 +70,7 @@ class TaskAPIController extends AppBaseController
         if($task_type_id == null){
             return $this->sendResponse([
                 'task_types' => TaskType::all()
-            ], 
+            ],
             'task types retrieved successfully'
             );
         }
@@ -91,7 +91,7 @@ class TaskAPIController extends AppBaseController
         elseif($task_type_id == 3){
             $ferts = Fertilizer::get(['id', 'name', 'producer', 'usage_rate']);
             return $this->sendResponse([
-                'fertilizers' => FertilizerXsResource::collection($ferts),
+                'fertilizers' => FertilizerSmResource::collection($ferts),
                 'units' => [
                     ['value' => 'kilo', 'name' => app()->getLocale()=='ar' ?  'كيلو' : 'Kilo'],
                     ['value' => 'gram', 'name' => app()->getLocale()=='ar' ?  'جرام' : 'Gram'],
@@ -120,7 +120,7 @@ class TaskAPIController extends AppBaseController
             return $this->sendSuccess('tasks created successfully');
         }
         $input = $request->all();
-        
+
         $task = $this->taskRepository->create($input);
 
         return $this->sendResponse(new TaskResource($task), 'Task saved successfully');
