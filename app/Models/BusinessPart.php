@@ -25,7 +25,7 @@ class BusinessPart extends Model
 
     public $table = 'business_parts';
 	public $timestamps = false;
-    
+
 
 
 
@@ -64,7 +64,7 @@ class BusinessPart extends Model
         'description' => 'nullable|max:255',
         'date' => 'nullable',
         'done' => 'nullable',
-        'type' => 'nullable'
+        'type' => 'required'
     ];
 
     /**

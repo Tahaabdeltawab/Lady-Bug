@@ -37,28 +37,21 @@ return [
         'business-company',
     ],
 
-    // used in sending the app roles and users api for the business owner to edit the roles
-    'business_allowed_roles' => [
-        'business-admin',
-        'business-editor',
-        'business-supervisor',
-        'business-consultant',
-        'business-worker',
-        'business-company',
-    ],
-
-    'edit_business_allowed_roles' => [
-        'business-admin',
-        'business-editor',
-    ],
-
-    'show_business_allowed_roles' => [
-        'business-admin',
-        'business-editor',
-        'business-supervisor',
-        'business-consultant',
-        'business-worker',
-        'business-company',
+    'business_permissions' => [
+        'create-activity',
+        'edit-activity',
+        'create-post',
+        'edit-post',
+        'create-product',
+        'edit-product',
+        'create-step',
+        'edit-step',
+        'create-goal',
+        'edit-goal',
+        'create-report',
+        'edit-report',
+        'edit-role',
+        'edit-business',
     ],
 
     /**

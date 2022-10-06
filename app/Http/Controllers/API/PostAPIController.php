@@ -19,6 +19,7 @@ use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\FarmedTypeGinfoResource;
 use App\Http\Resources\FarmedTypeXsResource;
 use App\Http\Resources\PostXsResource;
+use App\Models\Business;
 use Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -274,10 +275,11 @@ class PostAPIController extends AppBaseController
             }
 
             $post_type_id = $request->post_type_id;
-            if($business_id = $request->business_id){
-                if(! auth()->user()->hasBusiness($business_id)){
-                    return $this->sendError('It\'s not your business.');
-                }
+            if($request->business_id){
+                $business = Business::find($request->business_id);
+                if(!auth()->user()->hasPermission("create-post", $business))
+                    abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+
                 $post_type_id = 4;
             }
             $data['shared_id'] = $request->shared_id;
@@ -454,8 +456,13 @@ class PostAPIController extends AppBaseController
             /** @var Post $post */
             $post = Post::accepted()->find($id);
 
-            if (empty($post)) {
+            if (empty($post))
                 return $this->sendError('Post not found');
+
+            if($post->business_id){
+                $business = Business::find($post->business_id);
+                if(!auth()->user()->hasPermission("edit-post", $business))
+                    abort(503, __('Unauthorized, you don\'t have the required permissions!'));
             }
 
             $validator = Validator::make($request->all(), [

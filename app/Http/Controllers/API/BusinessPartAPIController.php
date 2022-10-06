@@ -9,6 +9,7 @@ use App\Repositories\BusinessPartRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\BusinessPartResource;
+use App\Models\Business;
 use Response;
 
 /**
@@ -75,6 +76,10 @@ class BusinessPartAPIController extends AppBaseController
      */
     public function store(CreateBusinessPartAPIRequest $request)
     {
+        $business = Business::find($request->business_id);
+        if(!auth()->user()->hasPermission("create-$request->type", $business))
+            abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+
         $input = $request->all();
 
         $businessPart = $this->businessPartRepository->create($input);
@@ -118,9 +123,12 @@ class BusinessPartAPIController extends AppBaseController
         /** @var BusinessPart $businessPart */
         $businessPart = $this->businessPartRepository->find($id);
 
-        if (empty($businessPart)) {
+        if (empty($businessPart))
             return $this->sendError('Business Part not found');
-        }
+
+        $business = Business::find($businessPart->business_id);
+        if(!auth()->user()->hasPermission("edit-$request->type", $business))
+            abort(503, __('Unauthorized, you don\'t have the required permissions!'));
 
         $businessPart = $this->businessPartRepository->update($input, $id);
 

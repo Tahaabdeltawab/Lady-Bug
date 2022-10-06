@@ -9,9 +9,11 @@ use App\Repositories\FarmReportRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmReportResource;
+use App\Models\Business;
 use App\Models\FarmedTypeStage;
 use App\Models\Setting;
 use App\Models\Transaction;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 /**
@@ -58,7 +60,7 @@ class FarmReportAPIController extends AppBaseController
             ['value' => 'acre', 'name' => app()->getLocale()=='ar' ?  'لكل فدان' : 'Per Acre'],
         ];
 
-        return $this->sendResponse($data, 'farm report relations retrieved successfully!'); 
+        return $this->sendResponse($data, 'farm report relations retrieved successfully!');
     }
 
 
@@ -72,22 +74,37 @@ class FarmReportAPIController extends AppBaseController
      */
     public function store(CreateFarmReportAPIRequest $request)
     {
-        $input = $request->all();
-        $input['user_id'] = auth()->id();
-        $farmReport = $this->farmReportRepository->create($input);
+        try
+        {
+            DB::beginTransaction();
 
-        $create_report_price = Setting::where('name', 'report_price')->value('value');
-        Transaction::create([
-            'type' => 'out',
-            'user_id' => auth()->id(),
-            'gateway' => '',
-            'total' => $create_report_price,
-            'description' => 'Create report'
-        ]);
-        auth()->user()->balance -= $create_report_price;
-        auth()->user()->save();
+            $business = Business::find($request->business_id);
+            if(!auth()->user()->hasPermission("create-report", $business))
+                abort(503, __('Unauthorized, you don\'t have the required permissions!'));
 
-        return $this->sendResponse(new FarmReportResource($farmReport), 'Farm Report saved successfully');
+            $input = $request->all();
+            $input['user_id'] = auth()->id();
+            $farmReport = $this->farmReportRepository->create($input);
+
+            $create_report_price = Setting::where('name', 'report_price')->value('value');
+            Transaction::create([
+                'type' => 'out',
+                'user_id' => auth()->id(),
+                'gateway' => '',
+                'total' => $create_report_price,
+                'description' => 'Create report'
+            ]);
+            auth()->user()->balance -= $create_report_price;
+            auth()->user()->save();
+
+            DB::commit();
+            return $this->sendResponse(new FarmReportResource($farmReport), 'Farm Report saved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            DB::rollBack();
+            return $this->sendError($th->getMessage(), 500);
+        }
     }
 
     /**
@@ -126,9 +143,12 @@ class FarmReportAPIController extends AppBaseController
         /** @var FarmReport $farmReport */
         $farmReport = $this->farmReportRepository->find($id);
 
-        if (empty($farmReport)) {
+        if (empty($farmReport))
             return $this->sendError('Farm Report not found');
-        }
+
+        $business = Business::find($farmReport->business_id);
+        if(!auth()->user()->hasPermission("edit-report", $business))
+            abort(503, __('Unauthorized, you don\'t have the required permissions!'));
 
         $farmReport = $this->farmReportRepository->update($input, $id);
 

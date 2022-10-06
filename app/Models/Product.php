@@ -61,6 +61,7 @@ class Product extends Model
      * @var array
      */
     public static $rules = [
+        'business_id'                   => 'nullable|exists:businesses,id',
         'product_type_id'               => 'required|exists:product_types,id',
         'price'                         => 'required',
         'name'                          => 'required|max:200',

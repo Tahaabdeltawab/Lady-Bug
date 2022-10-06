@@ -16,6 +16,7 @@ class FarmReportResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'business_id' => $this->business_id,
             'farm_id' => $this->farm_id,
             'farmed_type_stage_id' => $this->farmed_type_stage_id,
             'lat' => $this->lat,

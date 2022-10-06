@@ -14,16 +14,19 @@ use App\Http\Resources\BusinessWithPostsResource;
 use App\Http\Resources\BusinessWithTasksResource;
 use App\Http\Resources\FarmResource;
 use App\Http\Resources\FarmXsResource;
+use App\Http\Resources\PermissionResource;
 use App\Http\Resources\PostXsResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductXsResource;
 use App\Http\Resources\RoleResource;
+use App\Http\Resources\RoleSmResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\UserConsXsResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserXsResource;
 use App\Models\BusinessConsultant;
 use App\Models\BusinessField;
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\Task;
@@ -163,6 +166,7 @@ class BusinessAPIController extends AppBaseController
             $business = $this->businessRepository->create($input);
 
             auth()->user()->attachRole('business-admin', $business);
+            auth()->user()->attachPermissions(Permission::businessAllowed()->pluck('id'), $business);
             $business->agents()->attach($request->agents, ['type' => 'agent']);
             $business->distributors()->attach($request->distributors, ['type' => 'distributor']);
             foreach ($request->branches ?? [] as $branch) {
@@ -211,10 +215,16 @@ class BusinessAPIController extends AppBaseController
         }
     }
 
-    public function app_roles(Request $request)
+    public function business_roles()
     {
         $roles = Role::businessAllowedRoles()->get();
-        return $this->sendResponse(['all' =>  RoleResource::collection($roles)], 'Roles retrieved successfully');
+        return $this->sendResponse(['all' =>  RoleSmResource::collection($roles)], 'Roles retrieved successfully');
+    }
+
+    public function business_permissions()
+    {
+        $permissions = Permission::businessAllowed()->get();
+        return $this->sendResponse(['all' =>  PermissionResource::collection($permissions)], 'Permissions retrieved successfully');
     }
 
 
@@ -283,6 +293,7 @@ class BusinessAPIController extends AppBaseController
             if($request->role == 6 && !$request->period)
                 return $this->sendError('Consultancy Period is required');
             $user->attachRole($request->role, $business);
+            $user->attachPermissions($request->permissions, $business);
             $role_user = RoleUser::where(['user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])->first();
             $role_user->start_date = $request->start_date;
             $role_user->end_date = $request->end_date;
@@ -351,9 +362,13 @@ class BusinessAPIController extends AppBaseController
         try
         {
             $validator = Validator::make($request->all(), [
-                'business' => 'integer|required|exists:businesses,id',
-                'user' => 'integer|required|exists:users,id',
-                'role' => 'nullable|integer|exists:roles,id',
+                'business' => 'required|exists:businesses,id',
+                'user' => 'required|exists:users,id',
+                'role' => 'nullable|exists:roles,id',
+                'permissions' => 'nullable|array',
+                'permissions.*' => 'exists:permissions,id',
+                'period' => 'nullable',
+                'plan_id' => 'nullable|exists:offline_consultancy_plans,id',
                 'start_date' => 'nullable|date_format:Y-m-d',
                 'end_date' => 'nullable|date_format:Y-m-d',
             ]);
@@ -365,22 +380,22 @@ class BusinessAPIController extends AppBaseController
             $user = User::find($request->user);
             $business = Business::find($request->business);
 
-            if(auth()->id() != $business->user_id)
-            abort(503, __('Unauthorized, you are not the business owner!'));
+            // if(auth()->id() != $business->user_id)
+            if(!auth()->user()->hasPermission("edit-role", $business))
+                abort(503, __('Unauthorized, you don\'t have the required permissions!'));
 
             if($request->role)   //first attach or edit roles
             {
                 $role = Role::find($request->role);
-                if(!in_array($role->name, config('myconfig.business_allowed_roles')))
-                {
+                if(!in_array($role->name, config('myconfig.business_roles')))
                     return $this->sendError('Invalid Role');
-                }
 
                 if($user->get_roles($request->business)) //edit roles
                 {
                     if($request->role == 6 && !$request->period)
                         return $this->sendError('Consultancy Period is required');
                     $user->syncRoles([$request->role], $business);
+                    $user->syncPermissions($request->permissions, $business);
                     $role_user = RoleUser::where(['user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])->first();
                     $role_user->start_date = $request->start_date;
                     $role_user->end_date = $request->end_date;
@@ -402,8 +417,12 @@ class BusinessAPIController extends AppBaseController
                         auth()->user(),
                         $role,
                         $business,
-                        URL::temporarySignedRoute('api.businesses.roles.first_attach', now()->addDays(30),['user' => $request->user,'business' => $request->business,'role' => $request->role,'start_date' => $request->start_date, 'end_date' => $request->end_date, 'period' => $request->period, 'plan_id' => $request->plan_id]),
-                        URL::temporarySignedRoute('api.businesses.roles.decline_business_invitation', now()->addDays(30),['user' => $request->user,'business' => $request->business,'role' => $request->role,])
+                        URL::temporarySignedRoute('api.businesses.roles.first_attach', now()->addDays(30),[
+                            'user' => $request->user, 'business' => $request->business, 'role' => $request->role,
+                            'start_date' => $request->start_date, 'end_date' => $request->end_date, 'period' => $request->period,
+                            'plan_id' => $request->plan_id, 'permissions' => $request->permissions]),
+                        URL::temporarySignedRoute('api.businesses.roles.decline_business_invitation', now()->addDays(30),[
+                            'user' => $request->user, 'business' => $request->business, 'role' => $request->role])
                         ));
                     return $this->sendSuccess(__('Invitation sent successfully'));
                     }else{
@@ -415,7 +434,8 @@ class BusinessAPIController extends AppBaseController
             else                    //delete roles
             {
                 if($user->get_roles($request->business)){
-                    $user->detachRoles([], $business);
+                    $user->syncRoles([], $business);
+                    $user->syncPermissions([], $business);
                 }else{
                     return $this->sendError(__('This user is not a member in this business'), 7000);
                 }
@@ -565,6 +585,9 @@ class BusinessAPIController extends AppBaseController
             if (empty($business)) {
                 return $this->sendError('Business not found');
             }
+
+            if(!auth()->user()->hasPermission("edit-business", $business))
+                abort(503, __('Unauthorized, you don\'t have the required permissions!'));
 
             $business = $this->businessRepository->update($input, $id);
 

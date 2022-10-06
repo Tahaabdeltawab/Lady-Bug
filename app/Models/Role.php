@@ -10,7 +10,7 @@ class Role extends LaratrustRole
 
     public function scopeBusinessAllowedRoles($query)
     {
-        return $query->whereIn('name', config('myconfig.business_allowed_roles'));
+        return $query->whereIn('name', config('myconfig.business_roles'));
     }
 
     public function scopeAppAllowedRoles($query) // roles called for the dashboard

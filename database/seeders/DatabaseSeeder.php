@@ -26,8 +26,9 @@ class DatabaseSeeder extends Seeder
         // $this->call(TaskTypeSeeder::class);
         // $this->call(InfectionRateSeeder::class);
         // $this->call(DiseaseSeeder::class);
-        $this->call(ProductTypeSeeder::class);
-        $this->call(CityDistrictSeeder::class);
-        $this->call(AdditionalRolesSeeder::class);
+        // $this->call(ProductTypeSeeder::class);
+        // $this->call(CityDistrictSeeder::class);
+        // $this->call(AdditionalRolesSeeder::class);
+        $this->call(PermissionSeeder::class);
   }
 }

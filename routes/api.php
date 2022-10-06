@@ -44,28 +44,20 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     Route::group(
         ['middleware'=>[/* 'role:app-user' */]],
-        function()
-    {
-
-        // the above resource routes but separated because when using the middleware on the resource I cannot catch the request->id in the middleware wauth. but in this way I can do.
-        // also I tried to apply the middleware on the controller itself but the same problem occurred.
+        function(){
         Route::get('farms/relations/index', [App\Http\Controllers\API\FarmAPIController::class, 'relations_index'])->name('farms.relations.index');
         Route::post('farms/', [App\Http\Controllers\API\FarmAPIController::class, 'store'])->name('farms.store');
 
         // Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy')->middleware('check_business_role');
-        Route::group(['middleware'=>[/* 'check_business_role' */]], function()
-        {
 
-            Route::match(['put', 'patch', 'post'], 'farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('farms.update');
-            Route::get('farms/toggle_archive/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'toggleArchive'])->name('farms.toggle_archive');
 
-            Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['index', 'update', 'show', 'destroy']);
-            Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
-            // Route::resource('service_tasks', App\Http\Controllers\API\ServiceTaskAPIController::class);
-            // Route::resource('service_tables', App\Http\Controllers\API\ServiceTableAPIController::class);
-            // Route::get('service_tables/duplicate/{service_table}', [App\Http\Controllers\API\ServiceTableAPIController::class, 'duplicate']);
-            Route::get('posts/toggle_solve/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_solve_post']);
-        });
+        Route::match(['put', 'patch', 'post'], 'farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('farms.update');
+        Route::get('farms/toggle_archive/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'toggleArchive'])->name('farms.toggle_archive');
+
+        Route::resource('posts', App\Http\Controllers\API\PostAPIController::class)->except(['index', 'update', 'show', 'destroy']);
+        Route::match(['put', 'patch','post'], 'posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'update'])->name('posts.update');
+        Route::get('posts/toggle_solve/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_solve_post']);
+
 
         // LIKES
         Route::get('posts/toggle_like/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_like']);
@@ -360,7 +352,8 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     Route::get('businesses/users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_users'])->name('businesses.users.index');
     Route::get('businesses/app_users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'app_users']);
-    Route::get('businesses/app_roles/index', [App\Http\Controllers\API\BusinessAPIController::class, 'app_roles']);
+    Route::get('businesses/business_roles/index', [App\Http\Controllers\API\BusinessAPIController::class, 'business_roles']);
+    Route::get('businesses/business_permissions/index', [App\Http\Controllers\API\BusinessAPIController::class, 'business_permissions']);
 
     Route::get('businesses/farms/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_farms'])->name('businesses.farms.index');
     Route::get('businesses/products/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_products'])->name('businesses.products.index');

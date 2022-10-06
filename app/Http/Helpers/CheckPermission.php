@@ -35,7 +35,7 @@ class CheckPermission{
             }
 
 
-            $allowed_roles = config('myconfig.edit_business_allowed_roles');
+            $allowed_roles = config('myconfig.edit_business_roles');
             if(!$user->hasRole($allowed_roles, $business_id))
             {
                 return [

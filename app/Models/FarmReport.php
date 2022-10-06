@@ -26,7 +26,7 @@ class FarmReport extends Model
 
 
     public $table = 'farm_reports';
-    
+
 
 
 
@@ -67,7 +67,7 @@ class FarmReport extends Model
      */
     public static $rules = [
         'farm_id' => 'required|exists:farms,id',
-        'business_id' => 'nullable|exists:businesses,id',
+        'business_id' => 'required|exists:businesses,id',
         'farmed_type_stage_id' => 'nullable|exists:farmed_type_stages,id',
         'lat' => 'required',
         'lon' => 'required',
@@ -88,7 +88,7 @@ class FarmReport extends Model
     {
         return $this->belongsTo(\App\Models\Business::class);
     }
-   
+
     public function user()
     {
         return $this->belongsTo(\App\Models\User::class);

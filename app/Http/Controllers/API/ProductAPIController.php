@@ -14,6 +14,7 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\CityResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\ProductTypeResource;
+use App\Models\Business;
 use App\Models\Fertilizer;
 use App\Models\Insecticide;
 use App\Models\NutElemValue;
@@ -154,6 +155,13 @@ class ProductAPIController extends AppBaseController
             try
             {
                 DB::beginTransaction();
+
+                if($request->business_id){
+                    $business = Business::find($request->business_id);
+                    if(!auth()->user()->hasPermission("create-product", $business))
+                        abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+                }
+
                 $input = $request->all();
                 $input['seller_id'] = auth()->id();
                 $input['sold'] = 0;
@@ -257,8 +265,13 @@ class ProductAPIController extends AppBaseController
             /** @var Product $product */
             $product = $this->productRepository->find($id);
 
-            if (empty($product)) {
+            if (empty($product))
                 return $this->sendError('Product not found');
+
+            if($product->business_id){
+                $business = Business::find($product->business_id);
+                if(!auth()->user()->hasPermission("edit-product", $business))
+                    abort(503, __('Unauthorized, you don\'t have the required permissions!'));
             }
 
             $input = $request->all();
