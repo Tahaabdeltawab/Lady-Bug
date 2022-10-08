@@ -397,7 +397,7 @@ class BusinessAPIController extends AppBaseController
 
             // if(auth()->id() != $business->user_id)
             if(!auth()->user()->hasPermission("edit-role", $business))
-                abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+                return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
             if($request->role)   //first attach or edit roles
             {
@@ -602,7 +602,7 @@ class BusinessAPIController extends AppBaseController
             }
 
             if(!auth()->user()->hasPermission("edit-business", $business))
-                abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+                return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
             $business = $this->businessRepository->update($input, $id);
 

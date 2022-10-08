@@ -270,7 +270,7 @@ class FarmAPIController extends AppBaseController
         try{
             $business = Business::find($request->business_id);
             if(!auth()->user()->hasPermission("create-activity", $business))
-                abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+                return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
             $input = $request->validated();
 
@@ -475,7 +475,7 @@ class FarmAPIController extends AppBaseController
 
             $business = Business::find($farm->business_id);
             if(!auth()->user()->hasPermission("edit-activity", $business))
-                abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+                return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
             $fat_id = $input["farm_activity_type_id"];
 

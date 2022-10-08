@@ -80,7 +80,7 @@ class FarmReportAPIController extends AppBaseController
 
             $business = Business::find($request->business_id);
             if(!auth()->user()->hasPermission("create-report", $business))
-                abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+                return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
             $input = $request->all();
             $input['user_id'] = auth()->id();
@@ -148,7 +148,7 @@ class FarmReportAPIController extends AppBaseController
 
         $business = Business::find($farmReport->business_id);
         if(!auth()->user()->hasPermission("edit-report", $business))
-            abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+            return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
         $farmReport = $this->farmReportRepository->update($input, $id);
 

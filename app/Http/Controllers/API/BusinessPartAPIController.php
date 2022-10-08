@@ -78,7 +78,7 @@ class BusinessPartAPIController extends AppBaseController
     {
         $business = Business::find($request->business_id);
         if(!auth()->user()->hasPermission("create-$request->type", $business))
-            abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+            return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
         $input = $request->all();
 
@@ -128,7 +128,7 @@ class BusinessPartAPIController extends AppBaseController
 
         $business = Business::find($businessPart->business_id);
         if(!auth()->user()->hasPermission("edit-$request->type", $business))
-            abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+            return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
         $businessPart = $this->businessPartRepository->update($input, $id);
 

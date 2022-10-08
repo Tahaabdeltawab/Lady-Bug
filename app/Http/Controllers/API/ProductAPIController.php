@@ -159,7 +159,7 @@ class ProductAPIController extends AppBaseController
                 if($request->business_id){
                     $business = Business::find($request->business_id);
                     if(!auth()->user()->hasPermission("create-product", $business))
-                        abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+                        return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
                 }
 
                 $input = $request->all();
@@ -271,7 +271,7 @@ class ProductAPIController extends AppBaseController
             if($product->business_id){
                 $business = Business::find($product->business_id);
                 if(!auth()->user()->hasPermission("edit-product", $business))
-                    abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+                    return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
             }
 
             $input = $request->all();

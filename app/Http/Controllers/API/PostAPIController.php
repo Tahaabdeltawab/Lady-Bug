@@ -278,7 +278,7 @@ class PostAPIController extends AppBaseController
             if($request->business_id){
                 $business = Business::find($request->business_id);
                 if(!auth()->user()->hasPermission("create-post", $business))
-                    abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+                    return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
                 $post_type_id = 4;
             }
@@ -462,7 +462,7 @@ class PostAPIController extends AppBaseController
             if($post->business_id){
                 $business = Business::find($post->business_id);
                 if(!auth()->user()->hasPermission("edit-post", $business))
-                    abort(503, __('Unauthorized, you don\'t have the required permissions!'));
+                    return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
             }
 
             $validator = Validator::make($request->all(), [
