@@ -89,6 +89,21 @@ class BusinessAPIController extends AppBaseController
         }
     }
 
+    public function get_business_posts($id)
+    {
+        try
+        {
+            $business = Business::find($id);
+            if (empty($business))
+                return $this->sendError('business not found');
+            $posts = $business->posts()->accepted()->notVideo()->get();
+            return $this->sendResponse(PostXsResource::collection($posts), 'business posts retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
     public function get_business_videos($id)
     {
         try

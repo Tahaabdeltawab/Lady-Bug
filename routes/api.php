@@ -357,7 +357,8 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     Route::get('businesses/farms/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_farms'])->name('businesses.farms.index');
     Route::get('businesses/products/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_products'])->name('businesses.products.index');
-    Route::get('business_with_posts/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_with_posts'])->name('businesses.posts.index');
+    Route::get('business_with_posts/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_with_posts'])->name('business_with_posts');
+    Route::get('businesses/posts/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_posts'])->name('businesses.posts.index');
     Route::get('businesses/videos/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_videos'])->name('businesses.videos.index');
     Route::get('businesses/stories/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_stories'])->name('businesses.stories.index');
 
