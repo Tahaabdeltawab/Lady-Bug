@@ -420,6 +420,20 @@ class UserAPIController extends AppBaseController
 
 
     // RATE
+
+    // admin
+    public function ladybug_rating(User $user, Request $request)
+    {
+        // $user = User::find($request->user_id);
+        $user->id_verified = $request->id_verified;
+        $user->made_transaction = $request->made_transaction;
+        $user->met_ladybug = $request->met_ladybug;
+        $user->reactive = $request->reactive;
+        $user->save();
+
+        return $this->sendSuccess('updated successfully');
+    }
+
     public function user_rating_details($id)
     {
         $user = $this->userRepository->find($id);

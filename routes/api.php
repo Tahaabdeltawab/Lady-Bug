@@ -134,7 +134,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     });
 
 
-    // //  ADMIN AREA  // //
+    // ADMIN AREA
 
     Route::group([
         'prefix'        => 'admin/',
@@ -155,6 +155,8 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
         Route::get('users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'admin_show']);
         Route::get('generic_users/{user}', [App\Http\Controllers\API\UserAPIController::class, 'show']);
+
+        Route::post('ladybug_rating/{user}', [App\Http\Controllers\API\UserAPIController::class, 'ladybug_rating']);
 
         Route::get('users/toggle_activate/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggle_activate_user']);
 

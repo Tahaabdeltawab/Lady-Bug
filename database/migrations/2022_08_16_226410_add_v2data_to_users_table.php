@@ -29,14 +29,14 @@ class AddV2dataToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            if (Schema::hasColumn('users', 'provider'))
-                $table->dropColumn('provider');
-            if (Schema::hasColumn('users', 'fcm'))
-                $table->dropColumn('fcm');
-            if (Schema::hasColumn('users', 'avatar'))
-                $table->dropColumn('avatar');
-            if (Schema::hasColumn('users', 'code'))
-                $table->dropColumn('code');
+            if (Schema::hasColumn('users', 'bio'))
+                $table->dropColumn('bio');
+            if (Schema::hasColumn('users', 'balance'))
+                $table->dropColumn('balance');
+            if (Schema::hasColumn('users', 'marital_status'))
+                $table->dropColumn('marital_status');
+            if (Schema::hasColumn('users', 'is_consultant'))
+                $table->dropColumn('is_consultant');
         });
     }
 }

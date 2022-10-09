@@ -229,4 +229,13 @@ class User extends Authenticatable implements JWTSubject
         return $code;
     }
 
+    public function ladybug_rating()
+    {
+        $r  = $this->id_verified ? 30 : 0;
+        $r += $this->made_transaction ? 30 : 0;
+        $r += $this->met_ladybug ? 20 : 0;
+        $r += $this->reactive ? 20 : 0;
+        return $r;
+    }
+
 }
