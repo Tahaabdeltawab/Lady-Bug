@@ -35,12 +35,7 @@ class RatingQuestionAPIController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $ratingQuestions = $this->ratingQuestionRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
-        );
-
+        $ratingQuestions = RatingQuestion::get(['id', 'name']);
         return $this->sendResponse(RatingQuestionResource::collection($ratingQuestions), 'Rating Questions retrieved successfully');
     }
 

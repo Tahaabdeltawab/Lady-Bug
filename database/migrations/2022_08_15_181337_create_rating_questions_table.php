@@ -17,8 +17,8 @@ class CreateRatingQuestionsTable extends Migration
         Schema::create('rating_questions', function (Blueprint $table) {
             $table->id();
             $table->json('name');
-            $table->json('description');
-            $table->string('type');
+            $table->json('description')->nullable();
+            $table->string('type')->nullable();
         });
     }
 

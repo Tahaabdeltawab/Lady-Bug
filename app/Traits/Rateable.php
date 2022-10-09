@@ -1,8 +1,10 @@
 <?php
 
-namespace willvincent\Rateable;
+namespace App\Traits;
 
+use App\Models\Rating;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 trait Rateable
 {
@@ -14,16 +16,25 @@ trait Rateable
      *
      * @return Rating
      */
-    public function rate($value)
+    public function rate($value, $questions = [])
     {
         $rating = new Rating();
         $rating->rating = $value;
         $rating->user_id = Auth::id();
 
         $this->ratings()->save($rating);
+        foreach ($questions as $id => $answer) {
+            DB::table('rating_rating_question')->insert([
+                'rating_id' => $rating->id,
+                'rating_question_id' => $id,
+                'rateable_id' => $rating->rateable_id,
+                'answer' => $answer,
+            ]);
+        }
+        return $rating;
     }
 
-    public function rateOnce($value)
+    public function rateOnce($value, $questions = [])
     {
         $rating = Rating::query()
             ->where('rateable_type', '=', get_class($this))
@@ -35,14 +46,24 @@ trait Rateable
         if ($rating) {
             $rating->rating = $value;
             $rating->save();
+            DB::table('rating_rating_question')->where('rating_id', $rating->id)->delete();
+            foreach ($questions as $id => $answer) {
+                DB::table('rating_rating_question')->insert([
+                    'rating_id' => $rating->id,
+                    'rating_question_id' => $id,
+                    'rateable_id' => $rating->rateable_id,
+                    'answer' => $answer,
+                ]);
+            }
+            return $rating;
         } else {
-            $this->rate($value);
+            return $this->rate($value, $questions);
         }
     }
 
     public function ratings()
     {
-        return $this->morphMany('willvincent\Rateable\Rating', 'rateable');
+        return $this->morphMany(Rating::class, 'rateable');
     }
 
     public function averageRating()

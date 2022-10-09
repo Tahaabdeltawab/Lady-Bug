@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\Rateable;
 use Eloquent as Model;
-use willvincent\Rateable\Rateable;
 
 
 

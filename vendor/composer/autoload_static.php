@@ -45,10 +45,6 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
     );
 
     public static $prefixLengthsPsr4 = array (
-        'w' => 
-        array (
-            'willvincent\\Rateable\\' => 21,
-        ),
         'v' => 
         array (
             'voku\\' => 5,
@@ -212,10 +208,6 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
     );
 
     public static $prefixDirsPsr4 = array (
-        'willvincent\\Rateable\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/willvincent/laravel-rateable/src',
-        ),
         'voku\\' => 
         array (
             0 => __DIR__ . '/..' . '/voku/portable-ascii/src/voku',
@@ -938,6 +930,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Http\\Resources\\FarmReportXsResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmReportXsResource.php',
         'App\\Http\\Resources\\FarmResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmResource.php',
         'App\\Http\\Resources\\FarmWithReportsResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmWithReportsResource.php',
+        'App\\Http\\Resources\\FarmWithReportsXsResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmWithReportsXsResource.php',
         'App\\Http\\Resources\\FarmWithServiceTasksReource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmWithServiceTasksReource.php',
         'App\\Http\\Resources\\FarmXsResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmXsResource.php',
         'App\\Http\\Resources\\FarmedTypeClassResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmedTypeClassResource.php',
@@ -951,6 +944,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Http\\Resources\\FarmingMethodResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmingMethodResource.php',
         'App\\Http\\Resources\\FarmingWayResource' => __DIR__ . '/../..' . '/app/Http/Resources/FarmingWayResource.php',
         'App\\Http\\Resources\\FertilizerResource' => __DIR__ . '/../..' . '/app/Http/Resources/FertilizerResource.php',
+        'App\\Http\\Resources\\FertilizerSmResource' => __DIR__ . '/../..' . '/app/Http/Resources/FertilizerSmResource.php',
         'App\\Http\\Resources\\FertilizerXsResource' => __DIR__ . '/../..' . '/app/Http/Resources/FertilizerXsResource.php',
         'App\\Http\\Resources\\HomePlantIlluminatingSourceResource' => __DIR__ . '/../..' . '/app/Http/Resources/HomePlantIlluminatingSourceResource.php',
         'App\\Http\\Resources\\HomePlantPotSizeResource' => __DIR__ . '/../..' . '/app/Http/Resources/HomePlantPotSizeResource.php',
@@ -958,6 +952,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Http\\Resources\\InfectionRateResource' => __DIR__ . '/../..' . '/app/Http/Resources/InfectionRateResource.php',
         'App\\Http\\Resources\\InformationResource' => __DIR__ . '/../..' . '/app/Http/Resources/InformationResource.php',
         'App\\Http\\Resources\\InsecticideResource' => __DIR__ . '/../..' . '/app/Http/Resources/InsecticideResource.php',
+        'App\\Http\\Resources\\InsecticideSmResource' => __DIR__ . '/../..' . '/app/Http/Resources/InsecticideSmResource.php',
         'App\\Http\\Resources\\InsecticideXsResource' => __DIR__ . '/../..' . '/app/Http/Resources/InsecticideXsResource.php',
         'App\\Http\\Resources\\IrrigationRateResource' => __DIR__ . '/../..' . '/app/Http/Resources/IrrigationRateResource.php',
         'App\\Http\\Resources\\IrrigationWayResource' => __DIR__ . '/../..' . '/app/Http/Resources/IrrigationWayResource.php',
@@ -983,6 +978,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Http\\Resources\\ReportTypeResource' => __DIR__ . '/../..' . '/app/Http/Resources/ReportTypeResource.php',
         'App\\Http\\Resources\\ResidenceResource' => __DIR__ . '/../..' . '/app/Http/Resources/ResidenceResource.php',
         'App\\Http\\Resources\\RoleResource' => __DIR__ . '/../..' . '/app/Http/Resources/RoleResource.php',
+        'App\\Http\\Resources\\RoleSmResource' => __DIR__ . '/../..' . '/app/Http/Resources/RoleSmResource.php',
         'App\\Http\\Resources\\SaltDetailResource' => __DIR__ . '/../..' . '/app/Http/Resources/SaltDetailResource.php',
         'App\\Http\\Resources\\SaltTypeResource' => __DIR__ . '/../..' . '/app/Http/Resources/SaltTypeResource.php',
         'App\\Http\\Resources\\SeedlingSourceResource' => __DIR__ . '/../..' . '/app/Http/Resources/SeedlingSourceResource.php',
@@ -999,9 +995,11 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Http\\Resources\\UserCollection' => __DIR__ . '/../..' . '/app/Http/Resources/UserCollection.php',
         'App\\Http\\Resources\\UserConsResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserConsResource.php',
         'App\\Http\\Resources\\UserConsXsResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserConsXsResource.php',
+        'App\\Http\\Resources\\UserLgResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserLgResource.php',
         'App\\Http\\Resources\\UserProfileResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserProfileResource.php',
         'App\\Http\\Resources\\UserResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserResource.php',
         'App\\Http\\Resources\\UserSmResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserSmResource.php',
+        'App\\Http\\Resources\\UserWithPostsResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserWithPostsResource.php',
         'App\\Http\\Resources\\UserXsResource' => __DIR__ . '/../..' . '/app/Http/Resources/UserXsResource.php',
         'App\\Http\\Resources\\VisitedResource' => __DIR__ . '/../..' . '/app/Http/Resources/VisitedResource.php',
         'App\\Http\\Resources\\WeatherNoteResource' => __DIR__ . '/../..' . '/app/Http/Resources/WeatherNoteResource.php',
@@ -1016,6 +1014,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Models\\Asset' => __DIR__ . '/../..' . '/app/Models/Asset.php',
         'App\\Models\\Business' => __DIR__ . '/../..' . '/app/Models/Business.php',
         'App\\Models\\BusinessBranch' => __DIR__ . '/../..' . '/app/Models/BusinessBranch.php',
+        'App\\Models\\BusinessConsultant' => __DIR__ . '/../..' . '/app/Models/BusinessConsultant.php',
         'App\\Models\\BusinessField' => __DIR__ . '/../..' . '/app/Models/BusinessField.php',
         'App\\Models\\BusinessPart' => __DIR__ . '/../..' . '/app/Models/BusinessPart.php',
         'App\\Models\\BuyingNote' => __DIR__ . '/../..' . '/app/Models/BuyingNote.php',
@@ -1070,11 +1069,13 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Models\\Product' => __DIR__ . '/../..' . '/app/Models/Product.php',
         'App\\Models\\ProductAd' => __DIR__ . '/../..' . '/app/Models/ProductAd.php',
         'App\\Models\\ProductType' => __DIR__ . '/../..' . '/app/Models/ProductType.php',
+        'App\\Models\\Rating' => __DIR__ . '/../..' . '/app/Models/Rating.php',
         'App\\Models\\RatingQuestion' => __DIR__ . '/../..' . '/app/Models/RatingQuestion.php',
         'App\\Models\\Report' => __DIR__ . '/../..' . '/app/Models/Report.php',
         'App\\Models\\ReportType' => __DIR__ . '/../..' . '/app/Models/ReportType.php',
         'App\\Models\\Residence' => __DIR__ . '/../..' . '/app/Models/Residence.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
+        'App\\Models\\RoleUser' => __DIR__ . '/../..' . '/app/Models/RoleUser.php',
         'App\\Models\\SaltDetail' => __DIR__ . '/../..' . '/app/Models/SaltDetail.php',
         'App\\Models\\SaltType' => __DIR__ . '/../..' . '/app/Models/SaltType.php',
         'App\\Models\\SeedlingSource' => __DIR__ . '/../..' . '/app/Models/SeedlingSource.php',
@@ -1182,6 +1183,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'App\\Rules\\UniqueTranslationRule' => __DIR__ . '/../..' . '/app/Rules/UniqueTranslationRule.php',
         'App\\Traits\\Followable' => __DIR__ . '/../..' . '/app/Traits/Followable.php',
         'App\\Traits\\Follower' => __DIR__ . '/../..' . '/app/Traits/Follower.php',
+        'App\\Traits\\Rateable' => __DIR__ . '/../..' . '/app/Traits/Rateable.php',
         'App\\Traits\\SpatieHasTranslations' => __DIR__ . '/../..' . '/app/Traits/SpatieHasTranslations.php',
         'Asm89\\Stack\\Cors' => __DIR__ . '/..' . '/asm89/stack-cors/src/Cors.php',
         'Asm89\\Stack\\CorsService' => __DIR__ . '/..' . '/asm89/stack-cors/src/CorsService.php',
@@ -2059,6 +2061,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'Cron\\MinutesField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MinutesField.php',
         'Cron\\MonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/MonthField.php',
         'Database\\Factories\\HumanJobFactory' => __DIR__ . '/../..' . '/database/factories/HumanJobFactory.php',
+        'Database\\Seeders\\AdditionalRolesSeeder' => __DIR__ . '/../..' . '/database/seeders/AdditionalRolesSeeder.php',
         'Database\\Seeders\\BusinessFieldSeeder' => __DIR__ . '/../..' . '/database/seeders/BusinessFieldSeeder.php',
         'Database\\Seeders\\CityDistrictSeeder' => __DIR__ . '/../..' . '/database/seeders/CityDistrictSeeder.php',
         'Database\\Seeders\\DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeders/DatabaseSeeder.php',
@@ -2069,6 +2072,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'Database\\Seeders\\HumanJobSeeder' => __DIR__ . '/../..' . '/database/seeders/HumanJobSeeder.php',
         'Database\\Seeders\\InfectionRateSeeder' => __DIR__ . '/../..' . '/database/seeders/InfectionRateSeeder.php',
         'Database\\Seeders\\LaratrustSeeder' => __DIR__ . '/../..' . '/database/seeders/LaratrustSeeder.php',
+        'Database\\Seeders\\PermissionSeeder' => __DIR__ . '/../..' . '/database/seeders/PermissionSeeder.php',
         'Database\\Seeders\\PostTypeSeeder' => __DIR__ . '/../..' . '/database/seeders/PostTypeSeeder.php',
         'Database\\Seeders\\ProductTypeSeeder' => __DIR__ . '/../..' . '/database/seeders/ProductTypeSeeder.php',
         'Database\\Seeders\\RoleSeeder' => __DIR__ . '/../..' . '/database/seeders/RoleSeeder.php',
@@ -7010,9 +7014,6 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'phpDocumentor\\Reflection\\Types\\Void_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Void_.php',
         'phpDocumentor\\Reflection\\Utils' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/Utils.php',
         'voku\\helper\\ASCII' => __DIR__ . '/..' . '/voku/portable-ascii/src/voku/helper/ASCII.php',
-        'willvincent\\Rateable\\Rateable' => __DIR__ . '/..' . '/willvincent/laravel-rateable/src/Rateable.php',
-        'willvincent\\Rateable\\RateableServiceProvider' => __DIR__ . '/..' . '/willvincent/laravel-rateable/src/RateableServiceProvider.php',
-        'willvincent\\Rateable\\Rating' => __DIR__ . '/..' . '/willvincent/laravel-rateable/src/Rating.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

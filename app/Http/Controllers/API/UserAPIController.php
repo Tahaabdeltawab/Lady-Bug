@@ -26,7 +26,13 @@ use App\Repositories\FarmedTypeGinfoRepository;
 use App\Http\Helpers\WeatherApi;
 use App\Http\Requests\API\CreateUserAPIRequest;
 use App\Http\Requests\API\UpdateProfileAPIRequest;
+use App\Http\Resources\BusinessResource;
+use App\Http\Resources\ConsultancyProfileResource;
+use App\Http\Resources\PostXsResource;
+use App\Http\Resources\ProductXsResource;
 use App\Http\Resources\UserProfileResource;
+use App\Http\Resources\UserSmResource;
+use App\Http\Resources\UserWithPostsResource;
 
 /**
  * Class UserController
@@ -190,7 +196,102 @@ class UserAPIController extends AppBaseController
 
 
 
+    public function get_user_with_posts($id)
+    {
+        try
+        {
+            $user = User::find($id);
+            if (empty($user))
+                return $this->sendError('user not found');
+            return $this->sendResponse(new UserWithPostsResource($user), 'user with posts retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
 
+    public function get_user_posts($id)
+    {
+        try
+        {
+            $user = User::find($id);
+            if (empty($user))
+                return $this->sendError('user not found');
+            $posts = $user->posts()->accepted()->notVideo()->get();
+            return $this->sendResponse(PostXsResource::collection($posts), 'user posts retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+    public function get_user_videos($id)
+    {
+        try
+        {
+            $user = User::find($id);
+            if (empty($user))
+                return $this->sendError('user not found');
+            $videos = $user->posts()->accepted()->video()->get();
+            return $this->sendResponse(PostXsResource::collection($videos), 'user videos retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    public function get_user_stories($id)
+    {
+        try
+        {
+            $user = User::find($id);
+            if (empty($user))
+                return $this->sendError('user not found');
+            $videos = $user->posts()->accepted()->video()->get();
+            return $this->sendResponse(PostXsResource::collection($videos), 'user stories retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+    public function get_user_products($id)
+    {
+        try
+        {
+            $user = User::find($id);
+            if (empty($user))
+                return $this->sendError('user not found');
+            $products = $user->products;
+            return $this->sendResponse(ProductXsResource::collection($products), 'user products retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+    public function get_user_businesses($id)
+    {
+        try{
+            $user = User::find($id);
+            if (empty($user))
+                return $this->sendError('user not found');
+            $own_businesses = $user->ownBusinesses;
+            $shared_businesses = $user->sharedBusinesses($own_businesses->pluck('id'))->get();
+            $followed_businesses = $user->followedBusinesses;
+            return $this->sendResponse([
+                'cons'                  => $user->consultancyProfile ? new ConsultancyProfileResource($user->consultancyProfile) : null,
+                'own_businesses'        => BusinessResource::collection($own_businesses),
+                'shared_businesses'     => BusinessResource::collection($shared_businesses),
+                'followed_businesses'   => BusinessResource::collection($followed_businesses)
+            ], 'businesses retrieved successfully');
+        }catch(\Throwable $th){
+            throw $th;
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
 
     // POSTS
 
@@ -298,11 +399,12 @@ class UserAPIController extends AppBaseController
         }
     }
 
-    public function my_followers()
+    public function user_followers($id = null)
     {
-        $my_followers = auth()->user()->followers;
+        $user = $id ? User::findOrFail($id) : auth()->user();
+        $user_followers = $user->followers;
 
-        return $this->sendResponse(['count' => $my_followers->count(), 'all' => UserResource::collection($my_followers)], 'User followers retrieved successfully');
+        return $this->sendResponse(['count' => $user_followers->count(), 'all' => UserSmResource::collection($user_followers)], 'User followers retrieved successfully');
     }
 
     public function my_followings()
@@ -318,7 +420,23 @@ class UserAPIController extends AppBaseController
 
 
     // RATE
+    public function user_rating_details($id)
+    {
+        $user = $this->userRepository->find($id);
 
+        if (empty($user))
+            return $this->sendError('User not found');
+
+        $data['users_rating'] = $user->ratingPercent().'%';
+        $data['ratings_number'] = $user->usersRated();
+        $data['know_personally'] = DB::table('rating_rating_question')->where('rateable_id', $id)->where('rating_question_id', 1)->where('answer', 1)->count();
+        $data['beneficial_knowledge'] = DB::table('rating_rating_question')->where('rateable_id', $id)->where('rating_question_id', 2)->where('answer', 1)->count();
+        $data['dealt_personally'] = DB::table('rating_rating_question')->where('rateable_id', $id)->where('rating_question_id', 3)->where('answer', 1)->count();
+        $data['good_financially'] = DB::table('rating_rating_question')->where('rateable_id', $id)->where('rating_question_id', 4)->where('answer', 1)->count();
+        $data['bad_financially'] = DB::table('rating_rating_question')->where('rateable_id', $id)->where('rating_question_id', 5)->where('answer', 1)->count();
+
+        return $this->sendResponse($data, 'rating data retrieved successfully');
+    }
     public function rate(Request $request)
     {
         try
@@ -327,22 +445,21 @@ class UserAPIController extends AppBaseController
                 $request->all(),
                 [
                     'rating' => ['required', 'numeric', 'max:5', 'min:1'],
-                    'user' => ['required', 'integer', 'exists:users,id']
+                    'user' => ['required', 'integer', 'exists:users,id'],
+                    'questions' => ['nullable', 'array'],
                 ]
             );
 
-            if($validator->fails()){
+            if($validator->fails())
                 return $this->sendError(json_encode($validator->errors()), 422);
-            }
 
             $user = $this->userRepository->find($request->user);
 
             if (empty($user))
-            {
                 return $this->sendError('User not found');
-            }
-                $user->rateOnce($request->rating);
-                return $this->sendSuccess("You have rated $user->name with $request->rating stars successfully");
+
+            $user->rateOnce($request->rating, $request->questions);
+            return $this->sendSuccess("You have rated $user->name with $request->rating stars successfully");
         }
         catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);

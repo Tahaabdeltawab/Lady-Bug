@@ -18,6 +18,7 @@ class CreateRatingRatingQuestionTable extends Migration
             $table->foreignId('rating_id')->nullable()->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreignId('rating_question_id')->constrained()->onUpdate('CASCADE')->onDelete('CASCADE');
             $table->foreignId('rateable_id')->nullable()->constrained('users')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->boolean('answer')->default(0);
         });
     }
 

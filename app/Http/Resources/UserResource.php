@@ -54,7 +54,7 @@ class UserResource extends JsonResource
             'city_id'           => (string) $this->city_id,
             'city'              => $this->city->name ?? '',
 
-            // 'is_following'      => $this->isFollowedBy(auth()->user()), // Am I following him?
+            'is_following'      => $this->isFollowedBy(auth()->user()), // Am I following him?
             'is_rated'          => $this->isRatedBy(auth()->id()), // Did I rate him?
 
             // 'business_roles'        => $this->when($this->business, $this->getRoles($this->business)),

@@ -26,8 +26,7 @@
         "overtrue/laravel-like": "^4.0",
         "santigarcor/laratrust": "^6.3",
         "spatie/laravel-translatable": "^4.6",
-        "tymon/jwt-auth": "^1.0",
-        "willvincent/laravel-rateable": "^2.3"
+        "tymon/jwt-auth": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

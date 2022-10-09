@@ -77,15 +77,25 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         Route::get('users/notifications/read/{notification}', [App\Http\Controllers\API\UserAPIController::class, 'read_notification']);
         Route::get('users/notifications/unread/{notification}', [App\Http\Controllers\API\UserAPIController::class, 'unread_notification']);
         // FOLLOW
-        Route::get('users/followers/index', [App\Http\Controllers\API\UserAPIController::class, 'my_followers']);
+        Route::get('users/followers/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'user_followers']);
         Route::get('users/followings/index', [App\Http\Controllers\API\UserAPIController::class, 'my_followings']);
         Route::get('users/toggle_follow/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggle_follow']);
         // RATE
+        Route::get('user_rating_details/{user}', [App\Http\Controllers\API\UserAPIController::class, 'user_rating_details']);
         Route::post('users/rate', [App\Http\Controllers\API\UserAPIController::class, 'rate']);
         // NOTIFIABLE
         Route::get('users/toggle_notifiable', [App\Http\Controllers\API\UserAPIController::class, 'toggle_notifiable']);
 
         Route::get('users/search/{query}', [App\Http\Controllers\API\UserAPIController::class, 'search']);
+
+
+        Route::get('users/products/index/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_products'])->name('users.products.index');
+        Route::get('user_with_posts/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_with_posts'])->name('user_with_posts');
+        Route::get('users/posts/index/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_posts'])->name('users.posts.index');
+        Route::get('users/videos/index/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_videos'])->name('users.videos.index');
+        Route::get('users/stories/index/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_stories'])->name('users.stories.index');
+        Route::get('users/businesses/index/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_businesses'])->name('users.businesses.index');
+
 
         Route::get('users/posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_posts']);
         Route::get('users/liked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_liked_posts']);
