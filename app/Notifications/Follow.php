@@ -33,7 +33,7 @@ class Follow extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ($notifiable->is_notifiable && $notifiable->notification_settings->timeline_interactions) ? ['database'] : [];
     }
 
     /**
@@ -62,7 +62,6 @@ class Follow extends Notification
             'object_id'         => $notifiable->id, // following_id
         ];
 
-        if($notifiable->is_notifiable)
         Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id'], 'type' => $return['type'], 'object_id' => $return['object_id']]);
 
         return $return;

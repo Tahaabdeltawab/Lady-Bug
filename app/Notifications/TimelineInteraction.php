@@ -112,7 +112,9 @@ class TimelineInteraction extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        if($this->type == 'following_post')
+            return ($notifiable->is_notifiable && $notifiable->notification_settings->followings_posts) ? ['database'] : [];
+        return ($notifiable->is_notifiable && $notifiable->notification_settings->timeline_interactions) ? ['database'] : [];
     }
 
     /**
@@ -138,20 +140,15 @@ class TimelineInteraction extends Notification
             'type'      => $this->type,
             'id'        => $this->post->id,
         ];
-        if($this->type == 'comment'){
-            $return['object_id'] = $this->comment->id;
-        }elseif($this->type == 'like'){
-            $return['object_id'] = $this->like->id;
-        }elseif($this->type == 'following_post'){
-            $return['object_id'] = $this->reactor->id;
-        }
 
-        info($return);
+        if($this->type == 'comment')
+            $return['object_id'] = $this->comment->id;
+        elseif($this->type == 'like')
+            $return['object_id'] = $this->like->id;
+        elseif($this->type == 'following_post')
+            $return['object_id'] = $this->reactor->id;
 
         Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id'], 'type' => $return['type'], 'object_id' => $return['object_id']]);
-
-
-
 
         return $return;
     }

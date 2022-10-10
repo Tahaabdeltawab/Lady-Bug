@@ -24,6 +24,7 @@ use App\Repositories\ProductRepository;
 use App\Repositories\FarmedTypeGinfoRepository;
 
 use App\Http\Helpers\WeatherApi;
+use App\Http\Requests\API\CreateNotificationSettingAPIRequest;
 use App\Http\Requests\API\CreateUserAPIRequest;
 use App\Http\Requests\API\UpdateProfileAPIRequest;
 use App\Http\Resources\BusinessResource;
@@ -33,6 +34,7 @@ use App\Http\Resources\ProductXsResource;
 use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserSmResource;
 use App\Http\Resources\UserWithPostsResource;
+use App\Models\NotificationSetting;
 
 /**
  * Class UserController
@@ -135,6 +137,12 @@ class UserAPIController extends AppBaseController
 
     // NOTIFICATIONS
 
+    public function notification_settings(CreateNotificationSettingAPIRequest $request)
+    {
+        $ns = NotificationSetting::updateOrCreate(['user_id' => auth()->id()], $request->validated());
+        return $this->sendResponse($ns, 'Notification settings updated successfully');
+    }
+
     public function toggle_notifiable()
     {
         $msg = auth()->user()->is_notifiable ? 'User became not notifiable Successfully' : 'User became notifiable Successfully';
@@ -154,8 +162,8 @@ class UserAPIController extends AppBaseController
                 $user->unreadNotifications->markAsRead();
 
                 return $this->sendResponse(['all' => NotificationResource::collection($notifications)], 'Notifications retrieved successfully');
-            }
-            return $this->sendError(__('Your Notifications are off, turn them on to see your notifications.'));
+            }else
+                return $this->sendError(__('Your Notifications are off, turn them on to see your notifications.'));
         }
         catch(\Throwable $th)
         {
@@ -389,7 +397,6 @@ class UserAPIController extends AppBaseController
             else
             {
                 auth()->user()->follow($user);
-                if($user->is_notifiable)
                 $user->notify(new \App\Notifications\Follow(auth()->user()));
                 return $this->sendSuccess("You have followed $user->name successfully");
             }
@@ -424,7 +431,6 @@ class UserAPIController extends AppBaseController
     // admin
     public function ladybug_rating(User $user, Request $request)
     {
-        // $user = User::find($request->user_id);
         $user->id_verified = $request->id_verified;
         $user->made_transaction = $request->made_transaction;
         $user->met_ladybug = $request->met_ladybug;
@@ -433,7 +439,7 @@ class UserAPIController extends AppBaseController
 
         return $this->sendSuccess('updated successfully');
     }
-
+    // user
     public function user_rating_details($id)
     {
         $user = $this->userRepository->find($id);

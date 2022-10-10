@@ -126,6 +126,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(ConsultancyProfile::class);
     }
 
+    public function notification_settings()
+    {
+        return $this->hasOne(NotificationSetting::class);
+    }
+
     public function educations()
     {
         return $this->hasMany(Education::class);

@@ -22,7 +22,7 @@ class TaskAlarm extends Notification
         $this->task = $task;
         $this->type = 'task_alarm';
         $this->title= __('Task Alarm');
-        $this->msg  = __('You have a task') . ' ' . $this->task->name . ' ' . __('on') . ' ' . date('Y-m-d', strtotime($this->task->start_at));
+        $this->msg  = __('You have a task') . ' ' . $this->task->name . ' ' . __('on') . ' ' . date('Y-m-d', strtotime($this->task->date));
     }
 
     /**
@@ -33,7 +33,7 @@ class TaskAlarm extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ($notifiable->is_notifiable && $notifiable->notification_settings->tasks) ? ['database'] : [];
     }
 
     /**
@@ -58,11 +58,10 @@ class TaskAlarm extends Notification
             'title'             => $this->title,
             'body'              => $this->msg,
             'type'              => $this->type,
-            'id'                => $this->task->farm->id,
+            'id'                => $this->task->business_id,
             'object_id'         => $this->task->id,
         ];
 
-        if($notifiable->is_notifiable)
         Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id'], 'type' => $return['type'], 'object_id' => $return['object_id']]);
 
         return $return;

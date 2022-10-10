@@ -39,7 +39,7 @@ class BusinessInvitation extends Notification
     public function via($notifiable)
     {
         // return ['mail', 'database'];
-        return ['database'];
+        return ($notifiable->is_notifiable) ? ['database'] : [];
     }
 
     /**
@@ -97,7 +97,6 @@ class BusinessInvitation extends Notification
             'decline_signature' => $decline_signature,
         ];
 
-        if($notifiable->is_notifiable)
         Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, $return);
 
         return $return;

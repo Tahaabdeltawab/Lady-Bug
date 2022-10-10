@@ -350,9 +350,14 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('report_types/{report_type}', [App\Http\Controllers\API\ReportTypeAPIController::class, 'show'])->name('report_types.show');
     // end routes for users and admins
 
+
+    Route::post('notification_settings', [App\Http\Controllers\API\UserAPIController::class, 'notification_settings']);
+
     // * new
     // Business
-    Route::resource('businesses', App\Http\Controllers\API\BusinessAPIController::class);
+    Route::resource('businesses', App\Http\Controllers\API\BusinessAPIController::class)->except(['update']);
+    Route::match(['put', 'patch','post'], 'businesses/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'update'])->name('businesses.update');
+
     Route::get('businesses/relations/index/{business_field?}', [App\Http\Controllers\API\BusinessAPIController::class, 'getRelations']);
     //get weather and auth farms
     Route::post('users/businesses/index', [App\Http\Controllers\API\BusinessAPIController::class, 'user_businesses']);

@@ -83,7 +83,6 @@ class CommentAPIController extends AppBaseController
 
             $comment->loadMissing(['siblings.commenter']);
             foreach ($comment->siblings()->get() as $sibling) {
-                if($sibling->commenter->is_notifiable)
                 $sibling->commenter->notify(new \App\Notifications\TimelineInteraction($comment, 'same_post_comment'));
             }
 
@@ -116,7 +115,7 @@ class CommentAPIController extends AppBaseController
             if($like instanceOf  $like_model)
             {
                 $msg = 'Comment liked successfully';
-                if($comment->commenter->is_notifiable && $like->user_id != $comment->commenter_id)
+                if($like->user_id != $comment->commenter_id)
                 $comment->commenter->notify(new \App\Notifications\TimelineInteraction($like));
             }
             else
@@ -149,7 +148,7 @@ class CommentAPIController extends AppBaseController
             if($dislike instanceOf  $like_model)
             {
                 $msg = 'Comment disliked successfully';
-                if($comment->commenter->is_notifiable && $dislike->user_id != $comment->commenter_id)
+                if($dislike->user_id != $comment->commenter_id)
                 $comment->commenter->notify(new \App\Notifications\TimelineInteraction($dislike));
             }
             else

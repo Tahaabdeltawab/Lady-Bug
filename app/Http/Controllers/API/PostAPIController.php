@@ -303,15 +303,12 @@ class PostAPIController extends AppBaseController
             }
 
             // notify the original post that someone shared his post
-            if($request->shared_id){
-                if($$post->shared->author->is_notifiable)
+            if($request->shared_id)
                 $post->shared->author->notify(new \App\Notifications\TimelineInteraction($post, 'post_share'));
-            }
 
             // notify the post author followers
             $post->loadMissing('author.followers');
             foreach($post->author->followers as $follower){
-                if($follower->is_notifiable)
                 $follower->notify(new \App\Notifications\TimelineInteraction($post));
             }
 
@@ -341,7 +338,7 @@ class PostAPIController extends AppBaseController
             if($like instanceOf  $like_model)
             {
                 $msg = 'Post liked successfully';
-                if($post->author->is_notifiable && $like->user_id != $post->author_id)
+                if($like->user_id != $post->author_id)
                 $post->author->notify(new \App\Notifications\TimelineInteraction($like));
             }
             else
@@ -383,7 +380,6 @@ class PostAPIController extends AppBaseController
             if($dislike instanceOf  $like_model)
             {
                 $msg = 'Post disliked successfully';
-                if($post->author->is_notifiable)
                 $post->author->notify(new \App\Notifications\TimelineInteraction($dislike));
             }
             else

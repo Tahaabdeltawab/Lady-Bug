@@ -1462,6 +1462,7 @@ return array(
     'Database\\Seeders\\PermissionSeeder' => $baseDir . '/database/seeders/PermissionSeeder.php',
     'Database\\Seeders\\PostTypeSeeder' => $baseDir . '/database/seeders/PostTypeSeeder.php',
     'Database\\Seeders\\ProductTypeSeeder' => $baseDir . '/database/seeders/ProductTypeSeeder.php',
+    'Database\\Seeders\\RatingQuestionSeeder' => $baseDir . '/database/seeders/RatingQuestionSeeder.php',
     'Database\\Seeders\\RoleSeeder' => $baseDir . '/database/seeders/RoleSeeder.php',
     'Database\\Seeders\\SettingSeeder' => $baseDir . '/database/seeders/SettingSeeder.php',
     'Database\\Seeders\\TaskTypeSeeder' => $baseDir . '/database/seeders/TaskTypeSeeder.php',

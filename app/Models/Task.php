@@ -35,7 +35,7 @@ class Task extends Model
 
     public $table = 'tasks';
 	public $timestamps = false;
-    
+
 
 
 
@@ -142,4 +142,13 @@ class Task extends Model
     {
         return $this->belongsTo(\App\Models\Fertilizer::class);
     }
+
+    public function scopeDone($q){
+        return $q->where('done', true);
+    }
+
+    public function scopeOpen($q){
+        return $q->where('done', false);
+    }
+
 }

@@ -2075,6 +2075,7 @@ class ComposerStaticInit8af4debaf0355deb7b6a0c0c86675100
         'Database\\Seeders\\PermissionSeeder' => __DIR__ . '/../..' . '/database/seeders/PermissionSeeder.php',
         'Database\\Seeders\\PostTypeSeeder' => __DIR__ . '/../..' . '/database/seeders/PostTypeSeeder.php',
         'Database\\Seeders\\ProductTypeSeeder' => __DIR__ . '/../..' . '/database/seeders/ProductTypeSeeder.php',
+        'Database\\Seeders\\RatingQuestionSeeder' => __DIR__ . '/../..' . '/database/seeders/RatingQuestionSeeder.php',
         'Database\\Seeders\\RoleSeeder' => __DIR__ . '/../..' . '/database/seeders/RoleSeeder.php',
         'Database\\Seeders\\SettingSeeder' => __DIR__ . '/../..' . '/database/seeders/SettingSeeder.php',
         'Database\\Seeders\\TaskTypeSeeder' => __DIR__ . '/../..' . '/database/seeders/TaskTypeSeeder.php',

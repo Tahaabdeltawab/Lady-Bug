@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\ServiceTask;
+use App\Models\Task;
 use Illuminate\Console\Command;
 
 class NotifyTaskCommand extends Command
@@ -38,10 +38,9 @@ class NotifyTaskCommand extends Command
      */
     public function handle()
     {
-        $alarmed_tasks = ServiceTask::with('farm.users')->open()->where('notify_at', today())->get();
+        $alarmed_tasks = Task::with('business.users')->open()->where('date', today())->get();
         foreach($alarmed_tasks as $task){
-            foreach($task->farm->users as $user){
-                if($user->is_notifiable)
+            foreach($task->business->users as $user){
                 $user->notify(new \App\Notifications\TaskAlarm($task));
             }
         }
