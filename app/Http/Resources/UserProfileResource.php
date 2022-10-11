@@ -17,6 +17,7 @@ class UserProfileResource extends JsonResource
             'mobile'            => $this->mobile,
             'marital_status'    => $this->marital_status,
             'bio'               => $this->bio,
+            'balance'           => $this->balance,
             'job_name'          => $this->job->name ?? "",
             'dob'               => $this->dob ? date('Y-m-d', strtotime($this->dob)) : null,
             'activity_points'   => $this->activity_points,

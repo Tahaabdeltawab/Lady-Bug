@@ -777,7 +777,7 @@ class UserAPIController extends AppBaseController
             $arrays = ['educations', 'careers', 'residences', 'visiteds'];
             foreach($arrays as $prop){
                 $user->$prop()->delete();
-                foreach($request->$prop as $one){
+                foreach($request->$prop ?? [] as $one){
                     $user->$prop()->create($one);
                 }
             }
