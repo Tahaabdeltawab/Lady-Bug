@@ -784,7 +784,8 @@ class UserAPIController extends AppBaseController
 
             if($photo = $request->file('photo'))
             {
-                $user->asset->delete();
+                if($user->asset)
+                    $user->asset->delete();
                 $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo);
                 $user->asset()->create($oneasset);
             }

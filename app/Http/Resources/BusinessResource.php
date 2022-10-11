@@ -32,8 +32,7 @@ class BusinessResource extends JsonResource
             'lon' => $this->lon,
             // 'country_id' => $this->country_id,
             'privacy' => $this->privacy,
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at
+            'is_following' => $this->isFollowedBy(auth()->user()), // Am I following him?
         ];
     }
 }
