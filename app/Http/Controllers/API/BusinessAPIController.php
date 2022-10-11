@@ -533,12 +533,12 @@ class BusinessAPIController extends AppBaseController
             if(auth()->user()->isFollowing($business))
             {
                 auth()->user()->unfollow($business);
-                return $this->sendSuccess("You have unfollowed $business->com_name successfully");
+                return $this->sendSuccess(__('unfollowed', ['name' => $business->com_name]));
             }
             else
             {
                 auth()->user()->follow($business);
-                return $this->sendSuccess("You have followed $business->com_name successfully");
+                return $this->sendSuccess(__('followed', ['name' => $business->com_name]));
             }
         }
         catch(\Throwable $th){

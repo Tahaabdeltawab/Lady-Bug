@@ -392,13 +392,13 @@ class UserAPIController extends AppBaseController
             if(auth()->user()->isFollowing($user))
             {
                 auth()->user()->unfollow($user);
-                return $this->sendSuccess("You have unfollowed $user->name successfully");
+                return $this->sendSuccess(__('unfollowed', ['name' => $user->name]));
             }
             else
             {
                 auth()->user()->follow($user);
                 $user->notify(new \App\Notifications\Follow(auth()->user()));
-                return $this->sendSuccess("You have followed $user->name successfully");
+                return $this->sendSuccess(__('followed', ['name' => $user->name]));
             }
         }
         catch(\Throwable $th){

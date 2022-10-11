@@ -49,6 +49,8 @@
 
 
     "Hello": "Hello :name",
-    "business_invitation_msg": ":inviter has invited you to join his :business business as a/an :role"
+    "business_invitation_msg": ":inviter has invited you to join his :business business as a/an :role",
+    "followed": "You have followed :name successfully",
+    "unfollowed": "You have unfollowed :name successfully"
 
 }

@@ -92,5 +92,8 @@
     "your comment": "تعليقك",
     "You have a task": "لديك مهمة",
     "on": "في",
+    "successfully": "بنجاح",
+    "followed": "لقد قمت بمتابعة :name بنجاح",
+    "unfollowed": "لقد ألغيت متابعة :name بنجاح",
     "has followed you": "قام بمتابعتك"
 }
