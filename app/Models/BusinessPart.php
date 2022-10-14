@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Eloquent as Model;
 
 
@@ -73,5 +74,9 @@ class BusinessPart extends Model
     public function business()
     {
         return $this->belongsTo(\App\Models\Business::class);
+    }
+
+    public function getDateAttribute($value){
+        return Carbon::parse($value)->format('Y-m-d');
     }
 }

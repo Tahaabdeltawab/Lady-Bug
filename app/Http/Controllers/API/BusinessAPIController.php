@@ -12,16 +12,14 @@ use App\Http\Helpers\WeatherApi;
 use App\Http\Resources\BusinessResource;
 use App\Http\Resources\BusinessWithPostsResource;
 use App\Http\Resources\BusinessWithTasksResource;
-use App\Http\Resources\FarmResource;
 use App\Http\Resources\FarmXsResource;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\PostXsResource;
-use App\Http\Resources\ProductResource;
 use App\Http\Resources\ProductXsResource;
-use App\Http\Resources\RoleResource;
 use App\Http\Resources\RoleSmResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\UserConsXsResource;
+use App\Http\Resources\UserOfBusinessResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserXsResource;
 use App\Models\BusinessConsultant;
@@ -214,15 +212,23 @@ class BusinessAPIController extends AppBaseController
     {
         try
         {
-            $business = Business::find($id);
+            // $business = Business::find($id);
 
-            if (empty($business))
-            {
-                return $this->sendError('business not found');
+            // if (empty($business))
+            //     return $this->sendError('business not found');
+
+            $slcts = User::$selects;
+            foreach (config('myconfig.business_roles') as $role) {
+                // $users[$role] = UserXsResource::collection(User::whereRoleIs($role, $business)->get($slcts));
+                $role_id = Role::where('name', $role)->value('id');
+                $us = User::join('role_user', 'users.id', 'role_user.user_id')
+                ->where('business_id', $id)
+                ->where('role_id', $role_id)
+                ->get(['role_user.start_date', 'role_user.end_date', ...$slcts]);
+                $users[$role] = UserOfBusinessResource::collection($us);
             }
 
-            $users = $business->users;
-            return $this->sendResponse(['all' => UserResource::collection($users)], 'business users retrieved successfully');
+            return $this->sendResponse($users, 'business users retrieved successfully');
         }
         catch(\Throwable $th)
         {

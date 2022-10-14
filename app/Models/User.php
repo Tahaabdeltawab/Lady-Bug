@@ -69,6 +69,7 @@ class User extends Authenticatable implements JWTSubject
         })->map->only(['id', 'name'])->toArray();
     }
 
+    public static $selects =  ['users.id', 'users.name', 'users.human_job_id', 'users.avatar'];
 
    /*  public function farms()
     {
