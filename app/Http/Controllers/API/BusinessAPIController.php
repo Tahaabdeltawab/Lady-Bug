@@ -255,13 +255,13 @@ class BusinessAPIController extends AppBaseController
         if (empty($business))
             return $this->sendError('business not found');
 
-        $business_users = $business->users()->pluck('id');
+        $business_users = $business->users()->pluck('users.id');
         $business_users[] = auth()->id();
-        $users = User::whereNotIn('id', $business_users)->whereHas('roles', function($q){
+        $users = User::whereNotIn('users.id', $business_users)->whereHas('roles', function($q){
             $q->where('name', config('myconfig.user_default_role'));
         })
         ->when($request->cons, fn ($q) => $q->cons())
-        ->get(['id', 'name', 'human_job_id', 'email', 'is_consultant']);
+        ->select(['email', 'is_consultant', ...User::$selects])->get();
 
         return $this->sendResponse(['all' => $request->cons ? UserConsXsResource::collection($users) : UserXsResource::collection($users)], 'Users retrieved successfully');
     }
