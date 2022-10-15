@@ -70,8 +70,8 @@ class BusinessInvitation extends Notification
         parse_str(parse_url($accept_url, PHP_URL_QUERY), $accept_query);
         $accept_expires = $accept_query['expires'];
         $accept_signature = $accept_query['signature'];
-        $accept_start_date = $accept_query['start_date'];
-        $accept_end_date = $accept_query['end_date'];
+        // $accept_start_date = $accept_query['start_date']; // not queries but params
+        // $accept_end_date = $accept_query['end_date'];
         $accept_period = $accept_query['period'];
         $accept_plan_id = $accept_query['plan_id'];
         $accept_permissions = $accept_query['permissions'];
