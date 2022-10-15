@@ -445,10 +445,10 @@ class BusinessAPIController extends AppBaseController
                             'period' => $request->period,
                         ]);
 
+                        $cp = ConsultancyProfile::where('user_id', $request->user)->first();
                         if($request->plan_id)
                             $price = OfflineConsultancyPlan::where('id', $request->plan_id)->value($request->period);
                         else{
-                            $cp = ConsultancyProfile::where('user_id', $request->user)->first();
                             $price = $cp->{$request->period};
                         }
                         Transaction::create([
