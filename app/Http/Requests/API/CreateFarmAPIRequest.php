@@ -91,12 +91,12 @@ class CreateFarmAPIRequest extends APIRequest
                 'irrigation.salt.Na2CO3'                  => 'requiredIf:farm_activity_type_id,1,2',
 
             //animals 4
-            "animal_medicine_sources"               => "array|requiredIf:farm_activity_type_id,4",
-            "animal_medicine_sources.*"             => "requiredIf:farm_activity_type_id,4|exists:businesses,id",
-            "animal_fodder_sources"                 => "array|requiredIf:farm_activity_type_id,4",
-            "animal_fodder_sources.*"               => "requiredIf:farm_activity_type_id,4|exists:businesses,id",
-            "animal_fodder_types"                   => "array|requiredIf:farm_activity_type_id,4",
-            "animal_fodder_types.*"                 => "requiredIf:farm_activity_type_id,4|exists:animal_fodder_types,id",
+            "animal_medicine_sources"               => "array",
+            "animal_medicine_sources.*"             => "exists:businesses,id",
+            "animal_fodder_sources"                 => "array",
+            "animal_fodder_sources.*"               => "exists:businesses,id",
+            "animal_fodder_types"                   => "array",
+            "animal_fodder_types.*"                 => "exists:animal_fodder_types,id",
             'animal_breeding_purpose_id'            => 'requiredIf:farm_activity_type_id,4|exists:animal_breeding_purposes,id',
             'drink.salt'                            => 'array|requiredIf:farm_activity_type_id,4',
                 'drink.salt.PH'                      => 'requiredIf:farm_activity_type_id,4|numeric|max:14|min:0',
@@ -111,10 +111,10 @@ class CreateFarmAPIRequest extends APIRequest
                 'drink.salt.Na2CO3'                  => 'requiredIf:farm_activity_type_id,4',
 
             //crops, trees, homeplants 1,2,3
-            "chemical_fertilizer_sources"           => "array|requiredIf:farm_activity_type_id,1,2,3",
-            "chemical_fertilizer_sources.*"         => "requiredIf:farm_activity_type_id,1,2,3|exists:businesses,id",
-            "seedling_sources"                      => "array|requiredIf:farm_activity_type_id,1,2,3",
-            "seedling_sources.*"                    => "requiredIf:farm_activity_type_id,1,2,3|exists:businesses,id",
+            "chemical_fertilizer_sources"           => "array",
+            "chemical_fertilizer_sources.*"         => "exists:businesses,id",
+            "seedling_sources"                      => "array",
+            "seedling_sources.*"                    => "exists:businesses,id",
             //homeplant, trees, animals 2,3,4
             "farmed_number"                         => "requiredIf:farm_activity_type_id,2,3,4|integer",
             //homeplants 3
