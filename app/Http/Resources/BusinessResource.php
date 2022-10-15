@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 class BusinessResource extends JsonResource
 {
@@ -14,6 +15,10 @@ class BusinessResource extends JsonResource
      */
     public function toArray($request)
     {
+        $ps = DB::table('permissions')->join('permission_user', 'permissions.id', 'permission_user.permission_id')
+                ->where('business_id', $this->id)
+                ->where('user_id', auth()->id())
+                ->pluck('permissions.name');
         return [
             'id' => $this->id,
             'agents' => $this->agents()->pluck('businesses.id'),
@@ -33,6 +38,7 @@ class BusinessResource extends JsonResource
             // 'country_id' => $this->country_id,
             'privacy' => $this->privacy,
             'is_following' => $this->isFollowedBy(auth()->user()), // Am I following him?
+            'user_permissions' => $ps,
         ];
     }
 }

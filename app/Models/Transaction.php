@@ -23,7 +23,7 @@ class Transaction extends Model
 
 
     public $table = 'transactions';
-    
+
 
 
 
@@ -55,7 +55,7 @@ class Transaction extends Model
      * @var array
      */
     public static $rules = [
-        'type' => 'nullable',
+        'type' => 'required',
         'gateway' => 'nullable',
         'total' => 'required',
         'description' => 'nullable'

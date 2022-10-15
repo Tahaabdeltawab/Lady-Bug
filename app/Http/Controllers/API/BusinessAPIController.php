@@ -24,10 +24,13 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\UserXsResource;
 use App\Models\BusinessConsultant;
 use App\Models\BusinessField;
+use App\Models\ConsultancyProfile;
+use App\Models\OfflineConsultancyPlan;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\Task;
+use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -212,20 +215,14 @@ class BusinessAPIController extends AppBaseController
     {
         try
         {
-            // $business = Business::find($id);
-
-            // if (empty($business))
-            //     return $this->sendError('business not found');
-
             $slcts = User::$selects;
             foreach (config('myconfig.business_roles') as $role) {
-                // $users[$role] = UserXsResource::collection(User::whereRoleIs($role, $business)->get($slcts));
                 $role_id = Role::where('name', $role)->value('id');
                 $us = User::join('role_user', 'users.id', 'role_user.user_id')
                 ->where('business_id', $id)
                 ->where('role_id', $role_id)
                 ->get(['role_user.start_date', 'role_user.end_date', ...$slcts]);
-                $users[$role] = UserOfBusinessResource::collection($us);
+                $users[\Str::camel($role)] = UserOfBusinessResource::collection($us);
             }
 
             return $this->sendResponse($users, 'business users retrieved successfully');
@@ -320,12 +317,30 @@ class BusinessAPIController extends AppBaseController
             $role_user->end_date = $request->end_date;
             $role_user->save();
             // إضافة استشاري
-            if($request->role == 6)
+            if($request->role == 6){
                 BusinessConsultant::create([
                     'role_user_id' => $role_user->id,
                     'plan_id' => $request->plan_id,
                     'period' => $request->period,
                 ]);
+
+                if($request->plan_id)
+                    $price = OfflineConsultancyPlan::where('id', $request->plan_id)->value($request->period);
+                else{
+                    $cp = ConsultancyProfile::where('user_id', $request->user)->first();
+                    $price = $cp->{$request->period};
+                }
+                Transaction::create([
+                    'type' => 'out',
+                    'user_id' => auth()->id(),
+                    'gateway' => '',
+                    'total' => $price,
+                    'description' => "Add consultant $cp->id with period $request->period $request->plan_id"
+                ]);
+                auth()->user()->balance -= $price;
+                auth()->user()->save();
+
+            }
 
 
             DB::table('notifications')
@@ -382,6 +397,7 @@ class BusinessAPIController extends AppBaseController
     {
         try
         {
+            DB::beginTransaction();
             $validator = Validator::make($request->all(), [
                 'business' => 'required|exists:businesses,id',
                 'user' => 'required|exists:users,id',
@@ -422,12 +438,30 @@ class BusinessAPIController extends AppBaseController
                     $role_user->end_date = $request->end_date;
                     $role_user->save();
                     // إضافة استشاري
-                    if($request->role == 6 && $request->period)
+                    if($request->role == 6){
                         BusinessConsultant::create([
                             'role_user_id' => $role_user->id,
                             'plan_id' => $request->plan_id,
                             'period' => $request->period,
                         ]);
+
+                        if($request->plan_id)
+                            $price = OfflineConsultancyPlan::where('id', $request->plan_id)->value($request->period);
+                        else{
+                            $cp = ConsultancyProfile::where('user_id', $request->user)->first();
+                            $price = $cp->{$request->period};
+                        }
+                        Transaction::create([
+                            'type' => 'out',
+                            'user_id' => auth()->id(),
+                            'gateway' => '',
+                            'total' => $price,
+                            'description' => "Add consultant $cp->id with period $request->period $request->plan_id"
+                        ]);
+                        auth()->user()->balance -= $price;
+                        auth()->user()->save();
+
+                    }
                 }
                 else            // first attach role
                 {
@@ -462,10 +496,21 @@ class BusinessAPIController extends AppBaseController
                 }
             }
 
-            return $this->sendResponse(new UserResource($user), __('business roles saved successfully'));
+            $slcts = User::$selects;
+            $us = User::join('role_user', 'users.id', 'role_user.user_id')
+                ->where('business_id', $request->business)
+                ->where('role_id', $request->role)
+                ->where('user_id', $request->user)
+                ->select(['role_user.start_date', 'role_user.end_date', ...$slcts])
+                ->first();
+
+            DB::commit();
+            return $this->sendResponse(new UserOfBusinessResource($us), __('business roles saved successfully'));
         }
         catch(\Throwable $th)
         {
+            DB::rollBack();
+            throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }

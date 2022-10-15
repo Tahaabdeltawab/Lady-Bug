@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 class BusinessWithPostsResource extends JsonResource
 {
@@ -14,6 +15,10 @@ class BusinessWithPostsResource extends JsonResource
      */
     public function toArray($request)
     {
+        $ps = DB::table('permissions')->join('permission_user', 'permissions.id', 'permission_user.permission_id')
+                ->where('business_id', $this->id)
+                ->where('user_id', auth()->id())
+                ->pluck('permissions.name');
         return [
             'id' => $this->id,
             'com_name' => $this->com_name,
@@ -25,6 +30,7 @@ class BusinessWithPostsResource extends JsonResource
             'followers_count' => $this->followers()->count(),
             'participants_count' => $this->users()->count(),
             'posts' => PostXsResource::collection($this->posts()->accepted()->notVideo()->get()),
+            'user_permissions' => $ps,
         ];
     }
 }

@@ -35,13 +35,8 @@ class TransactionAPIController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $transactions = $this->transactionRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
-        );
-
-        return $this->sendResponse(TransactionResource::collection($transactions), 'Transactions retrieved successfully');
+        $transactions = Transaction::where(['user_id' => auth()->id()])->latest()->get();
+        return $this->sendResponse(['balance' => auth()->user()->balance, 'all' => TransactionResource::collection($transactions)], 'Transactions retrieved successfully');
     }
 
     /**
@@ -55,8 +50,14 @@ class TransactionAPIController extends AppBaseController
     public function store(CreateTransactionAPIRequest $request)
     {
         $input = $request->all();
-
+        $input['user_id'] = auth()->id();
         $transaction = $this->transactionRepository->create($input);
+
+        if($request->type=='in')
+        auth()->user()->balance += $request->total;
+        else
+        auth()->user()->balance -= $request->total;
+        auth()->user()->save();
 
         return $this->sendResponse(new TransactionResource($transaction), 'Transaction saved successfully');
     }
