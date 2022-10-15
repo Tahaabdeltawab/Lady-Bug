@@ -261,9 +261,41 @@ class BusinessAPIController extends AppBaseController
             $q->where('name', config('myconfig.user_default_role'));
         })
         ->when($request->cons, fn ($q) => $q->cons())
-        ->select(['email', 'is_consultant', ...User::$selects])->get();
+        ->get(['email', 'is_consultant', ...User::$selects]);
 
         return $this->sendResponse(['all' => $request->cons ? UserConsXsResource::collection($users) : UserXsResource::collection($users)], 'Users retrieved successfully');
+    }
+
+    public function search_cons(Request $request)
+    {
+        $business = Business::find($request->business);
+        if (empty($business))
+            return $this->sendError('business not found');
+
+        $business_users = $business->users()->pluck('users.id');
+        $business_users[] = auth()->id();
+        $users = User::whereNotIn('users.id', $business_users)
+        ->whereHas('roles', function($q){
+            $q->where('name', config('myconfig.user_default_role'));
+        })
+        ->whereHas('consultancyProfile', function($q){
+            $q
+            ->when(request()->ar, fn ($qq) => $qq->where('ar', 1))
+            ->when(request()->en, fn ($qq) => $qq->where('en', 1))
+            ->when(request()->experience, fn ($qq) => $qq->where('experience', request()->experience))
+            ->when(request()->consultancy_price, fn ($qq) => $qq->whereBetween('consultancy_price', request()->consultancy_price))
+            ->when(request()->year_consultancy_price, fn ($qq) => $qq->whereBetween('year_consultancy_price', request()->year_consultancy_price))
+            ->when(request()->work_fields,fn ($qq) => $qq->whereHas('workFields', function($q){
+                $q->whereIn('work_fields.id', request()->work_fields);
+            }))
+            ;
+        })
+        // ->when(request()->cities, fn ($qq) => $qq->whereIn('city_id', request()->cities)) // not present in user nor consultancy registration
+        ->cons()
+
+        ->get(['email', 'is_consultant', ...User::$selects]);
+
+        return $this->sendResponse(['all' => UserConsXsResource::collection($users)], 'Users retrieved successfully');
     }
 
     private function is_valid_invitation($request){
@@ -448,9 +480,9 @@ class BusinessAPIController extends AppBaseController
                         $cp = ConsultancyProfile::where('user_id', $request->user)->first();
                         if($request->plan_id)
                             $price = OfflineConsultancyPlan::where('id', $request->plan_id)->value($request->period);
-                        else{
+                        else
                             $price = $cp->{$request->period};
-                        }
+
                         Transaction::create([
                             'type' => 'out',
                             'user_id' => auth()->id(),
@@ -460,6 +492,8 @@ class BusinessAPIController extends AppBaseController
                         ]);
                         auth()->user()->balance -= $price;
                         auth()->user()->save();
+
+                        $cp->user->notify(new \App\Notifications\ConsBought($price));
 
                     }
                 }

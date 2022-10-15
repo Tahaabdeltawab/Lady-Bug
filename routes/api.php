@@ -369,6 +369,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     Route::get('businesses/users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_users'])->name('businesses.users.index');
     Route::get('businesses/app_users/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'app_users']);
+    Route::post('search_cons/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'search_cons']);
     Route::get('businesses/business_roles/index', [App\Http\Controllers\API\BusinessAPIController::class, 'business_roles']);
     Route::get('businesses/business_permissions/index', [App\Http\Controllers\API\BusinessAPIController::class, 'business_permissions']);
 

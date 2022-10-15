@@ -95,5 +95,7 @@
     "successfully": "بنجاح",
     "followed": "لقد قمت بمتابعة :name بنجاح",
     "unfollowed": "لقد ألغيت متابعة :name بنجاح",
-    "has followed you": "قام بمتابعتك"
+    "has followed you": "قام بمتابعتك",
+    "has bought a consultancy plan from you": "قام بشراء باقة استشاري لك",
+    "has bought a consultancy plan from you with price ": "قام بشراء باقة استشاري لك بسعر "
 }
