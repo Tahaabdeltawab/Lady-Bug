@@ -3,11 +3,16 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\DB;
 
 class UserOfBusinessResource extends JsonResource
 {
     public function toArray($request)
     {
+        $ps = DB::table('permissions')->join('permission_user', 'permissions.id', 'permission_user.permission_id')
+                ->where('business_id', $request->business)
+                ->where('user_id', $this->id)
+                ->pluck('permissions.name');
         return [
             'id'                => $this->id,
             'name'              => $this->name,
@@ -15,6 +20,7 @@ class UserOfBusinessResource extends JsonResource
             'photo_url'         => $this->avatar ? $this->avatar : (isset($this->asset->asset_url) ? $this->asset->asset_url:''),
             'start_date'        => $this->start_date,
             'end_date'          => $this->end_date,
+            'user_permissions'  => $ps,
         ];
     }
 }

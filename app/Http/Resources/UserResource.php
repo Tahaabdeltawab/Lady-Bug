@@ -50,6 +50,7 @@ class UserResource extends JsonResource
             'rating'            => $this->averageRating,
 
             'income'            => $this->income,
+            'balance'           => $this->balance,
             'dob'               => $this->dob ? date('Y-m-d', strtotime($this->dob)) : null,
             'city_id'           => (string) $this->city_id,
             'city'              => $this->city->name ?? '',
