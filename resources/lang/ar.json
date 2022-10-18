@@ -97,5 +97,6 @@
     "unfollowed": "لقد ألغيت متابعة :name بنجاح",
     "has followed you": "قام بمتابعتك",
     "has bought a consultancy plan from you": "قام بشراء باقة استشاري لك",
-    "has bought a consultancy plan from you with price ": "قام بشراء باقة استشاري لك بسعر "
+    "has bought a consultancy plan from you with price ": "قام بشراء باقة استشاري لك بسعر ",
+    "Consultant not found, please refer him to register in our app.": "الاستشاري غير موجود يرجى توجيهه للتسجيل في التطبيق"
 }

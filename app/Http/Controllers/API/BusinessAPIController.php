@@ -298,7 +298,8 @@ class BusinessAPIController extends AppBaseController
 
 
         $users = $users->cons()->get(['email', 'is_consultant', ...User::$selects]);
-
+        if(request()->by_name && count($users) == 0)
+            return $this->sendError(__('Consultant not found, please refer him to register in our app.'));
         return $this->sendResponse(['all' => UserConsXsResource::collection($users)], 'Users retrieved successfully');
     }
 
