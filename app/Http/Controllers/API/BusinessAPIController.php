@@ -277,8 +277,12 @@ class BusinessAPIController extends AppBaseController
         $users = User::whereNotIn('users.id', $business_users)
         ->whereHas('roles', function($q){
             $q->where('name', config('myconfig.user_default_role'));
-        })
-        ->whereHas('consultancyProfile', function($q){
+        });
+        if(request()->by_name)
+            $users = $users->when(request()->name, fn ($q) => $q->where('name', 'like', "%".request()->name."%"))
+                           ->when(request()->mobile, fn ($q) => $q->where('mobile', 'like', "%".request()->mobile."%"));
+        else
+        $users = $users->whereHas('consultancyProfile', function($q){
             $q
             ->when(request()->ar, fn ($qq) => $qq->where('ar', 1))
             ->when(request()->en, fn ($qq) => $qq->where('en', 1))
@@ -289,11 +293,11 @@ class BusinessAPIController extends AppBaseController
                 $q->whereIn('work_fields.id', request()->work_fields);
             }))
             ;
-        })
+        });
         // ->when(request()->cities, fn ($qq) => $qq->whereIn('city_id', request()->cities)) // not present in user nor consultancy registration
-        ->cons()
 
-        ->get(['email', 'is_consultant', ...User::$selects]);
+
+        $users = $users->cons()->get(['email', 'is_consultant', ...User::$selects]);
 
         return $this->sendResponse(['all' => UserConsXsResource::collection($users)], 'Users retrieved successfully');
     }
