@@ -19,6 +19,10 @@ class BusinessResource extends JsonResource
                 ->where('business_id', $this->id)
                 ->where('user_id', auth()->id())
                 ->pluck('permissions.name');
+        $prts = $this->users;
+        foreach ($prts as $prt ) {
+            $imgs[] = $prt->avatar ?: (isset($prt->asset->asset_url) ? $prt->asset->asset_url:'');
+        }
         return [
             'id' => $this->id,
             'agents' => $this->agents()->pluck('businesses.id'),
@@ -31,6 +35,7 @@ class BusinessResource extends JsonResource
             'cover_asset' => @$this->cover_asset[0]->asset_url,
             'com_name' => $this->com_name,
             'status' => $this->status,
+            'status_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->statuses[$this->status]['name'],
             'mobile' => $this->mobile,
             'whatsapp' => $this->whatsapp,
             'lat' => $this->lat,
@@ -39,6 +44,10 @@ class BusinessResource extends JsonResource
             'privacy' => $this->privacy,
             'is_following' => $this->isFollowedBy(auth()->user()), // Am I following him?
             'user_permissions' => $ps,
+            'participants_count' => count($prts),
+            'participants_images' => $imgs,
+            // 'photo_url'         => $this->avatar ?: (isset($this->asset->asset_url) ? $this->asset->asset_url:''),
+
         ];
     }
 }
