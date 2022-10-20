@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Requests\API\CreateProductAPIRequest;
-use App\Http\Requests\API\UpdateProductAPIRequest;
 use App\Models\Product;
 use App\Repositories\ProductRepository;
 use App\Repositories\CityRepository;
@@ -19,10 +18,7 @@ use App\Models\Fertilizer;
 use App\Models\Insecticide;
 use App\Models\NutElemValue;
 use App\Models\ProductType;
-use Response;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -44,17 +40,29 @@ class ProductAPIController extends AppBaseController
         $this->cityRepository = $cityRepo;
     }
 
+    public function pag($class, $perPage, $page)
+    {
+        $pag['itemsCount'] = $class::count();
+        $pag['perPage'] = (int) ($perPage ?? 10);
+        $pag['pagesCount'] = ceil($pag['itemsCount'] / $pag['perPage']);
+        $pag['currentPage'] = (int) ($page ?? 1);
+        $pag['skip'] = ($pag['currentPage'] - 1) * $pag['perPage'];
+        return $pag;
+    }
+
     public function index(Request $request)
     {
-        $products = $this->productRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
-        );
+        $pag = $this->pag(Product::class, $request->perPage, $request->page);
+        $products = Product::when(request()->product_type, fn ($q) => $q->where('product_type_id', request()->product_type))
+        ->skip($pag['skip'])->limit($pag['perPage'])->get();
 
         $user = auth()->user();
 
-        return $this->sendResponse([  'unread_notifications_count' => $user->unreadNotifications->count(), 'all' => ProductResource::collection($products)], 'Products retrieved successfully');
+        return $this->sendResponse([
+            'unread_notifications_count' => $user->unreadNotifications->count(),
+            'all' => ProductResource::collection($products),
+            'meta' => $pag
+        ], 'Products retrieved successfully');
     }
 
 

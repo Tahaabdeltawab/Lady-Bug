@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\AppBaseController;
+use App\Http\Resources\UserLoginResource;
 use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
@@ -108,7 +109,7 @@ class AuthController extends AppBaseController
         $user->save();
 
         $data = [
-            'user' => new UserResource($user),
+            'user' => new UserLoginResource($user),
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in_minutes' => auth('api')->factory()->getTTL(),
