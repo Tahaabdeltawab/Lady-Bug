@@ -51,18 +51,25 @@ class FarmedType extends Model
      * @var array
      */
     public static $rules = [
-        'name_ar_localized' => 'required|max:200',
-        'name_en_localized' => 'required|max:200',
-        'parent_id' => 'nullable|exists:farmed_types,id',
-        'country_id' => 'nullable|exists:countries,id',
-        'farm_activity_type_id' => 'required',
-        'farming_temperature' => 'nullable|numeric',
-        'flowering_temperature' => 'nullable|numeric',
-        'maturity_temperature' => 'nullable|numeric',
-        'humidity' => 'nullable|numeric',
-        'flowering_time' => 'nullable|integer',
-        'maturity_time' => 'nullable|integer',
-        'photo' => 'nullable|max:5000|mimes:jpeg,jpg,png',
+        'name_ar_localized'                     => 'required|max:200',
+        'name_en_localized'                     => 'required|max:200',
+        'farm_activity_type_id'                 => 'required',
+        'parent_id'                             => 'nullable|exists:farmed_types,id',
+        'country_id'                            => 'nullable|exists:countries,id',
+        'photo'                                 => 'nullable|max:5000|mimes:jpeg,jpg,png',
+        'flowering_time'                        => 'nullable|integer', // number of days till flowering
+        'maturity_time'                         => 'nullable|integer',  // number of days till maturity
+
+        'farming_temperature'                   => 'nullable',
+        'flowering_temperature'                 => 'nullable',
+        'maturity_temperature'                  => 'nullable',
+        // 'humidity'                              => 'nullable|array|size:2', // in the time of maturity
+        // 'humidity.*'                            => 'nullable|numeric', // in the time of maturity
+        'humidity'                              => 'nullable', // in the time of maturity
+        'suitable_soil_salts_concentration'     => 'nullable',
+        'suitable_water_salts_concentration'    => 'nullable',
+        'suitable_ph'                           => 'nullable',
+        'suitable_soil_types'                   => 'nullable',
     ];
 
 
