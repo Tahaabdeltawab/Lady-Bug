@@ -81,12 +81,12 @@ class RegisterController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'mobile' => ['required', 'string', 'max:255', 'unique:users'],
             'human_job_id' => ['required'],
-            'photo' => ['required', 'max:2000', 'mimes:jpeg,jpg,png'],
+            'photo' => ['required', 'max:5000', 'mimes:jpeg,jpg,png'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
-   
+
     protected function create($data)
     {
 
@@ -98,14 +98,14 @@ class RegisterController extends Controller
             'photo_id' => $saved_photo->id,
             'password' => Hash::make($data->password),
         ]);
-        
+
 
         if($photo = $data->file('photo')){
             $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo);
             $user->asset()->create($oneasset);
         }
-        
-      
+
+
 
         return $user;
     }
@@ -118,7 +118,7 @@ class RegisterController extends Controller
         //     'name'  => config('laravel_user_management.auth.user_default_role')
         // ]);
 
-        // if (!$userDefaultRole) 
+        // if (!$userDefaultRole)
         // {
         //     return redirect()->back()->with('fail_message',trans('trans.default_role_does_not_exist'));
         // }

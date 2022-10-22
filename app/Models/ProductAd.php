@@ -57,7 +57,7 @@ class ProductAd extends Model
         'name' => 'nullable',
         'description' => 'nullable',
         'stacked' => 'nullable',
-        'asset' => 'nullable'
+        'asset' => 'nullable|max:5000|mimes:jpeg,jpg,png,svg'
     ];
 
     /**

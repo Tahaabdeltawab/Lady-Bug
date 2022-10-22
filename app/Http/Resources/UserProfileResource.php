@@ -22,6 +22,7 @@ class UserProfileResource extends JsonResource
             'dob'               => $this->dob ? date('Y-m-d', strtotime($this->dob)) : null,
             'activity_points'   => $this->activity_points,
             'rating'            => $this->averageRating,
+            'is_consultant'     => $this->is_consultant,
 
             'educations'        => EducationResource::collection($this->educations),
             'careers'           => CareerResource::collection($this->careers),

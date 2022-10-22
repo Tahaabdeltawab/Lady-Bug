@@ -34,7 +34,7 @@ class DiseaseRegistration extends Model
 
 
     public $table = 'disease_registrations';
-    
+
 
 
 
@@ -74,15 +74,14 @@ class DiseaseRegistration extends Model
      * @var array
      */
     public static $rules = [
-        'disease_id' => 'nullable',
+        'disease_id' => 'nullable|exists:diseases,id',
         'expected_name' => 'nullable',
         'status' => 'nullable',
         'discovery_date' => 'nullable',
-        'user_id' => 'nullable',
-        'farm_id' => 'nullable',
-        'farm_report_id' => 'nullable',
-        'infection_rate_id' => 'nullable',
-        'country_id' => 'nullable'
+        'farm_id' => 'nullable|exists:farms,id',
+        'farm_report_id' => 'nullable|exists:farm_reports,id',
+        'infection_rate_id' => 'nullable|exists:infection_rates,id',
+        'country_id' => 'nullable|exists:countries,id'
     ];
 
     /**

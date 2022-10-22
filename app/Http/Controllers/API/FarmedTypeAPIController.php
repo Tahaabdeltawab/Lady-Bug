@@ -47,10 +47,8 @@ class FarmedTypeAPIController extends AppBaseController
 
     public function search($query)
     {
-        $farmedTypes = FarmedType::whereHas('translations', function($q) use($query)
-        {
-            $q->where('name','like', '%'.$query.'%' );
-        })->get();
+        $query = strtolower(trim($query));
+        $farmedTypes = FarmedType::whereRaw('LOWER(`name`) regexp ? ', '"(ar|en)":"\w*' . $query . '.*"')->get();
 
         return $this->sendResponse(['all' => FarmedTypeResource::collection($farmedTypes)], 'Farmed Types retrieved successfully');
     }
@@ -62,7 +60,7 @@ class FarmedTypeAPIController extends AppBaseController
             'name_en_localized'                     => 'required|max:200',
             'farm_activity_type_id'                 => 'required',
             'parent_id'                             => 'nullable',
-            'photo'                                 => 'nullable|max:2000|mimes:jpeg,jpg,png',
+            'photo'                                 => 'nullable|max:5000|mimes:jpeg,jpg,png',
             'flowering_time'                        => 'nullable|integer', // number of days till flowering
             'maturity_time'                         => 'nullable|integer',  // number of days till maturity
 
@@ -154,7 +152,7 @@ class FarmedTypeAPIController extends AppBaseController
             'name_en_localized'                     => 'required|max:200',
             'farm_activity_type_id'                 => 'required',
             'parent_id'                             => 'nullable',
-            'photo'                                 => 'nullable|max:2000|mimes:jpeg,jpg,png', // nullable only for update
+            'photo'                                 => 'nullable|max:5000|mimes:jpeg,jpg,png', // nullable only for update
             'flowering_time'                        => 'nullable|integer', // number of days till flowering
             'maturity_time'                         => 'nullable|integer',  // number of days till maturity
 

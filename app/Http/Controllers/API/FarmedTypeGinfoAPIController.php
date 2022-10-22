@@ -99,7 +99,7 @@ class FarmedTypeGinfoAPIController extends AppBaseController
                     'farmed_type_id' => 'required|exists:farmed_types,id',
                     'farmed_type_stage_id' => 'required|exists:farmed_type_stages,id',
                     'assets' => ['nullable','array'],
-                    'assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
+                    'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
                 ]);
 
                 // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);
@@ -166,7 +166,7 @@ class FarmedTypeGinfoAPIController extends AppBaseController
                 'farmed_type_id' => 'required|exists:farmed_types,id',
                 'farmed_type_stage_id' => 'required|exists:farmed_type_stages,id',
                 'assets' => ['nullable','array'],
-                'assets.*' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png,svg']
+                'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
             ]);
 
             // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);

@@ -498,7 +498,7 @@ class UserAPIController extends AppBaseController
                 "mobile" => ["required", "string", "max:255", "unique:users,mobile,".null.",id"],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
                 'human_job_id' => ['nullable', 'exists:human_jobs,id'],
-                'photo' => ['nullable', 'max:2000', 'image', 'mimes:jpeg,jpg,png'],
+                'photo' => ['nullable', 'max:5000', 'image', 'mimes:jpeg,jpg,png'],
                 'roles'   => ['nullable', 'array'],
                 'roles.*' => ['nullable', 'exists:roles,id'],
             ]);
@@ -682,7 +682,7 @@ class UserAPIController extends AppBaseController
                 "income" => ["nullable", "integer", "min:0"],
                 "dob" => ["nullable", "date_format:Y-m-d"],
                 "city_id" => ["nullable", "exists:cities,id"],
-                "photo" => ["nullable", "max:2000", "mimes:jpeg,jpg,png"],
+                "photo" => ["nullable", "max:5000", "mimes:jpeg,jpg,png"],
                 'roles'   => ['nullable', 'array'],
                 'roles.*' => ['nullable', 'exists:roles,id'],
             ]);

@@ -54,7 +54,7 @@ class CommentAPIController extends AppBaseController
                 'post_id' => ['required', 'integer', 'exists:posts,id'],
                 'parent_id' => ['nullable', 'integer', 'exists:comments,id'],
                 'assets' => ['nullable','array'],
-                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg']
+                'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
             ]);
 
             if($validator->fails()){
@@ -189,7 +189,7 @@ class CommentAPIController extends AppBaseController
             $validator = Validator::make($request->all(), [
                 'content' => ['requiredIf:assets,null'],
                 'assets' => ['nullable','array'],
-                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg']
+                'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
             ]);
 
             if($validator->fails()){

@@ -68,7 +68,7 @@ class ReportAPIController extends AppBaseController
                 'post_id' => ['required', 'exists:posts,id'],
                 'report_type_id' => ['required', 'exists:report_types,id'],
                 'assets' => ['nullable', 'array'],
-                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg']
+                'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
             ]);
 
             if ($validator->fails()) {
@@ -145,7 +145,7 @@ class ReportAPIController extends AppBaseController
                 'post_id' => ['required', 'exists:posts,id'],
                 'report_type_id' => ['required', 'exists:report_types,id'],
                 'assets' => ['nullable', 'array'],
-                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg']
+                'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
             ]);
 
             if ($validator->fails()) {

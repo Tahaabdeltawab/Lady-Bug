@@ -20,6 +20,7 @@ class FarmedType extends Model
     public $fillable = [
         'name',
         'parent_id',
+        'country_id',
         'farm_activity_type_id',
         'farming_temperature',
         'flowering_temperature',
@@ -53,6 +54,7 @@ class FarmedType extends Model
         'name_ar_localized' => 'required|max:200',
         'name_en_localized' => 'required|max:200',
         'parent_id' => 'nullable|exists:farmed_types,id',
+        'country_id' => 'nullable|exists:countries,id',
         'farm_activity_type_id' => 'required',
         'farming_temperature' => 'nullable|numeric',
         'flowering_temperature' => 'nullable|numeric',
@@ -60,7 +62,7 @@ class FarmedType extends Model
         'humidity' => 'nullable|numeric',
         'flowering_time' => 'nullable|integer',
         'maturity_time' => 'nullable|integer',
-        'photo' => 'nullable|max:2000|mimes:jpeg,jpg,png',
+        'photo' => 'nullable|max:5000|mimes:jpeg,jpg,png',
     ];
 
 
@@ -108,6 +110,27 @@ class FarmedType extends Model
 
 
 
+    public function extra(){
+        return $this->hasOne(FarmedTypeExtras::class);
+    }
+
+    public function taxonomy(){
+        return $this->hasOne(Taxonomy::class);
+    }
+
+    public function nutVal(){
+        return $this->hasOne(FarmedTypeNutVal::class);
+    }
+
+    public function marketing(){
+        return $this->hasOne(MarketingData::class);
+    }
+
+    public function fneeds()
+    {
+        return $this->hasMany(FarmedTypeFertilizationNeed::class);
+    }
+
     public function farm_activity_type(){
         return $this->belongsTo(FarmActivityType::class);
     }
@@ -126,7 +149,12 @@ class FarmedType extends Model
     {
         return $this->hasMany(FarmedTypeClass::class);
     }
-    
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
+    }
+
     public function parent()
     {
         return $this->belongsTo(self::class, 'parent_id');

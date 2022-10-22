@@ -31,7 +31,7 @@ class FarmedTypeExtras extends Model
 
     public $table = 'farmed_type_extras';
 	public $timestamps = false;
-    
+
 
 
 
@@ -77,7 +77,7 @@ class FarmedTypeExtras extends Model
     public static $rules = [
         'farmed_type_id' => 'required',
         'irrigation_rate_id' => 'nullable',
-        'seedling_type' => 'nullable',
+        'seedling_type' => 'nullable|in:seedlings,seeds',
         'scientific_name' => 'nullable',
         'history' => 'nullable',
         'producer' => 'nullable',

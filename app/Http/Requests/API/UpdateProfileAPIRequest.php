@@ -26,7 +26,7 @@ class UpdateProfileAPIRequest extends APIRequest
     {
         $id = auth()->id();
         return [
-            'photo' => ['nullable', 'max:2000', 'mimes:jpeg,jpg,png'],
+            'photo' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', "unique:users,email,$id,id"],
             'human_job_id' => ['required', 'exists:human_jobs,id'],

@@ -54,17 +54,17 @@ class Business extends Team
      * @var array
      */
     public static $rules = [
-        'business_field_id' => 'required',
+        'business_field_id' => 'required|exists:business_fields,id',
         'description' => 'nullable',
-        'main_asset' => 'nullable',
-        'cover_asset' => 'nullable',
+        'main_asset' => 'nullable|max:5000|mimes:jpeg,jpg,png,svg',
+        'cover_asset' => 'nullable|max:5000|mimes:jpeg,jpg,png,svg',
         'com_name' => 'required',
         'status' => 'required',
         'mobile' => 'nullable',
         'whatsapp' => 'nullable',
         'lat' => 'nullable',
         'lon' => 'nullable',
-        'country_id' => 'nullable',
+        'country_id' => 'nullable|exists:countries,id',
         'privacy' => 'nullable',
         'branches' => 'nullable|array',
         'agents' => 'nullable|array',

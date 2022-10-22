@@ -68,11 +68,10 @@ class ProductAPIController extends AppBaseController
 
     public function search($query)
     {
-        $products = Product::whereHas('translations', function($q) use($query)
-        {
-            $q->where('name','like', '%'.$query.'%' )->orWhere('description','like', '%'.$query.'%');
-        })->get();
-
+        $query = strtolower(trim($query));
+        $products = Product::whereRaw('LOWER(`name`) regexp ? ', '"(ar|en)":"\w*' . $query . '.*"')
+        ->orWhereRaw('LOWER(`description`) regexp ? ', '"(ar|en)":"\w*' . $query . '.*"')
+        ->get();
         return $this->sendResponse(['all' => ProductResource::collection($products)], 'Products retrieved successfully');
     }
 

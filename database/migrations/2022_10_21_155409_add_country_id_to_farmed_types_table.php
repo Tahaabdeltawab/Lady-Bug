@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddParentIdToFarmedTypesTable extends Migration
+class AddCountryIdToFarmedTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddParentIdToFarmedTypesTable extends Migration
     public function up()
     {
         Schema::table('farmed_types', function (Blueprint $table) {
-            $table->foreignId('parent_id')->nullable()->constrained('farmed_types');
+            $table->foreignId('country_id')->nullable()->constrained();
         });
     }
 
@@ -26,8 +26,8 @@ class AddParentIdToFarmedTypesTable extends Migration
     public function down()
     {
         Schema::table('farmed_types', function (Blueprint $table) {
-            if (Schema::hasColumn('farmed_types', 'parent_id'))
-                $table->dropColumn('parent_id');
+            if (Schema::hasColumn('farmed_types', 'country_id'))
+                $table->dropColumn('country_id');
         });
     }
 }
