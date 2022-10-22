@@ -116,22 +116,10 @@ class ProductAPIController extends AppBaseController
 
     // // // // // RATE // // // //
 
-    public function rate(Request $request)
+    public function rate(RateProductRequest $request)
     {
         try
         {
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    'rating' => ['required', 'numeric', 'max:5', 'min:1'],
-                    'product' => ['required', 'integer', 'exists:products,id']
-                ]
-            );
-
-            if($validator->fails()){
-                return $this->sendError(json_encode($validator->errors()), 422);
-            }
-
             $product = $this->productRepository->find($request->product);
 
                 $product->rateOnce($request->rating);

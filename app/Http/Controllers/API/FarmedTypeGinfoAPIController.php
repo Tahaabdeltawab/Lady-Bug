@@ -87,52 +87,33 @@ class FarmedTypeGinfoAPIController extends AppBaseController
         return $this->sendResponse(['all' => $data], 'Farmed Type Ginfos retrieved successfully');
      }
 
-    public function store(Request $request)
+    public function store(CreateFarmedTypeGinfoAPIRequest $request)
     {
-        try
+        try {
+            $data['title_ar_localized'] = $request->title_ar_localized;
+            $data['title_en_localized'] = $request->title_en_localized;
+            $data['content_ar_localized'] = $request->content_ar_localized;
+            $data['content_en_localized'] = $request->content_en_localized;
+            $data['farmed_type_id'] = $request->farmed_type_id;
+            $data['farmed_type_stage_id'] = $request->farmed_type_stage_id;
+
+            $farmedTypeGinfo = $this->farmedTypeGinfoRepository->save_localized($data);
+
+            if($assets = $request->file('assets'))
             {
-                $validator = Validator::make($request->all(), [
-                    'title_ar_localized' => 'required|max:200',
-                    'title_en_localized' => 'required|max:200',
-                    'content_ar_localized' => 'required',
-                    'content_en_localized' => 'required',
-                    'farmed_type_id' => 'required|exists:farmed_types,id',
-                    'farmed_type_stage_id' => 'required|exists:farmed_type_stages,id',
-                    'assets' => ['nullable','array'],
-                    'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
-                ]);
-
-                // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);
-                if($validator->fails()){
-                    $errors = $validator->errors();
-
-                    return $this->sendError(json_encode($errors), 989);
-                }
-
-                $data['title_ar_localized'] = $request->title_ar_localized;
-                $data['title_en_localized'] = $request->title_en_localized;
-                $data['content_ar_localized'] = $request->content_ar_localized;
-                $data['content_en_localized'] = $request->content_en_localized;
-                $data['farmed_type_id'] = $request->farmed_type_id;
-                $data['farmed_type_stage_id'] = $request->farmed_type_stage_id;
-
-                $farmedTypeGinfo = $this->farmedTypeGinfoRepository->save_localized($data);
-
-                if($assets = $request->file('assets'))
+                foreach($assets as $asset)
                 {
-                    foreach($assets as $asset)
-                    {
-                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'farmed-type-ginfo');
-                        $farmedTypeGinfo->assets()->create($oneasset);
-                    }
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'farmed-type-ginfo');
+                    $farmedTypeGinfo->assets()->create($oneasset);
                 }
+            }
 
-                return $this->sendResponse(new FarmedTypeGinfoResource($farmedTypeGinfo), 'Farmed Type Ginfo saved successfully');
-            }
-            catch(\Throwable $th)
-            {
-                return $this->sendError($th->getMessage(), 500);
-            }
+            return $this->sendResponse(new FarmedTypeGinfoResource($farmedTypeGinfo), 'Farmed Type Ginfo saved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
     }
 
     public function show($id)
@@ -147,34 +128,14 @@ class FarmedTypeGinfoAPIController extends AppBaseController
         return $this->sendResponse(new FarmedTypeGinfoResource($farmedTypeGinfo), 'Farmed Type Ginfo retrieved successfully');
     }
 
-    public function update($id, Request $request)
+    public function update($id, CreateFarmedTypeGinfoAPIRequest $request)
     {
-        try
-        {
+        try{
             /** @var FarmedTypeGinfo $farmedTypeGinfo */
             $farmedTypeGinfo = $this->farmedTypeGinfoRepository->find($id);
 
-            if (empty($farmedTypeGinfo)) {
+            if (empty($farmedTypeGinfo))
                 return $this->sendError('Farmed Type Ginfo not found');
-            }
-
-            $validator = Validator::make($request->all(), [
-                'title_ar_localized' => 'required|max:200',
-                'title_en_localized' => 'required|max:200',
-                'content_ar_localized' => 'required',
-                'content_en_localized' => 'required',
-                'farmed_type_id' => 'required|exists:farmed_types,id',
-                'farmed_type_stage_id' => 'required|exists:farmed_type_stages,id',
-                'assets' => ['nullable','array'],
-                'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
-            ]);
-
-            // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);
-            if($validator->fails()){
-                $errors = $validator->errors();
-
-                return $this->sendError(json_encode($errors), 989);
-            }
 
             $data['title_ar_localized'] = $request->title_ar_localized;
             $data['title_en_localized'] = $request->title_en_localized;

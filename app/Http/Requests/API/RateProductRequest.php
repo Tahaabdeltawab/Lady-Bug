@@ -5,7 +5,7 @@ namespace App\Http\Requests\API;
 use App\Models\Comment;
 use InfyOm\Generator\Request\APIRequest;
 
-class UpdateCommentAPIRequest extends APIRequest
+class RateProductRequest extends APIRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,9 +25,8 @@ class UpdateCommentAPIRequest extends APIRequest
     public function rules()
     {
         return [
-            'content' => ['requiredIf:assets,null'],
-            'assets' => ['nullable','array'],
-            'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
+            'rating' => ['required', 'numeric', 'max:5', 'min:1'],
+            'product' => ['required', 'integer', 'exists:products,id']
         ];
     }
 }

@@ -251,29 +251,10 @@ class PostAPIController extends AppBaseController
             ], 'Posts retrieved successfully');
     }
 
-    public function store(/* CreatePostAPI */Request $request)
+    public function store(CreatePostAPIRequest $request)
     {
         try
         {
-            $validator = Validator::make($request->all(), [
-                'title' => ['nullable', 'max:200'],
-                'content' => ['nullable'],
-                'business_id' => ['nullable', 'exists:businesses,id'],
-                'farmed_type_id' => ['nullable'],
-                'post_type_id' => ['nullable', 'exists:post_types,id'],
-                'solved' => ['nullable'],
-                'shared_id' => ['nullable', 'exists:posts,id'],
-                'assets' => ['nullable','array'],
-                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv,qt,asf'] //qt for mov , asf for wmv
-            ]);
-
-            // return $this->sendError(json_encode($request->file('assets')[0]->getMimeType()), 777);
-            if($validator->fails()){
-                $errors = $validator->errors();
-
-                return $this->sendError(json_encode($errors), 777);
-            }
-
             $post_type_id = $request->post_type_id;
             if($request->business_id){
                 $business = Business::find($request->business_id);
@@ -445,7 +426,7 @@ class PostAPIController extends AppBaseController
         return $this->sendResponse(new PostXsResource($post), 'Post retrieved successfully');
     }
 
-    public function update($id, /* CreatePostAPI */Request $request)
+    public function update($id, CreatePostAPIRequest $request)
     {
         try
         {
@@ -459,21 +440,6 @@ class PostAPIController extends AppBaseController
                 $business = Business::find($post->business_id);
                 if(!auth()->user()->hasPermission("edit-post", $business))
                     return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
-            }
-
-            $validator = Validator::make($request->all(), [
-                'title' => ['nullable', 'max:200'],
-                'content' => ['nullable'],
-                'farmed_type_id' => ['nullable'],
-                'post_type_id' => ['nullable', 'exists:post_types,id'],
-                'solved' => ['nullable'],
-                'assets' => ['nullable','array'],
-                'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv,qt,asf'] //qt for mov , asf for wmv
-            ]);
-
-            if($validator->fails()){
-                $errors = $validator->errors();
-                return $this->sendError(json_encode($errors), 777);
             }
 
             $data['title'] = $request->title;

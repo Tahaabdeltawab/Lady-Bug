@@ -26,6 +26,7 @@ use App\Repositories\FarmedTypeGinfoRepository;
 use App\Http\Helpers\WeatherApi;
 use App\Http\Requests\API\CreateNotificationSettingAPIRequest;
 use App\Http\Requests\API\CreateUserAPIRequest;
+use App\Http\Requests\API\RateUserRequest;
 use App\Http\Requests\API\UpdateProfileAPIRequest;
 use App\Http\Resources\BusinessResource;
 use App\Http\Resources\ConsultancyProfileResource;
@@ -457,22 +458,10 @@ class UserAPIController extends AppBaseController
 
         return $this->sendResponse($data, 'rating data retrieved successfully');
     }
-    public function rate(Request $request)
+    public function rate(RateUserRequest $request)
     {
         try
         {
-            $validator = Validator::make(
-                $request->all(),
-                [
-                    'rating' => ['required', 'numeric', 'max:5', 'min:1'],
-                    'user' => ['required', 'integer', 'exists:users,id'],
-                    'questions' => ['nullable', 'array'],
-                ]
-            );
-
-            if($validator->fails())
-                return $this->sendError(json_encode($validator->errors()), 422);
-
             $user = $this->userRepository->find($request->user);
 
             if (empty($user))

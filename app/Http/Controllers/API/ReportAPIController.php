@@ -60,23 +60,9 @@ class ReportAPIController extends AppBaseController
      *
      * @return Response
      */
-    public function store(/* CreateReportAPI */Request $request)
+    public function store(CreateReportAPIRequest $request)
     {
         try {
-            $validator = Validator::make($request->all(), [
-                'description' => ['nullable'],
-                'post_id' => ['required', 'exists:posts,id'],
-                'report_type_id' => ['required', 'exists:report_types,id'],
-                'assets' => ['nullable', 'array'],
-                'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
-            ]);
-
-            if ($validator->fails()) {
-                $errors = $validator->errors();
-
-                return $this->sendError(json_encode($errors), 777);
-            }
-
             $data['description'] = $request->description;
             $data['report_type_id'] = $request->report_type_id;
             $data['reportable_type'] = 'App\Models\Post';
@@ -128,7 +114,7 @@ class ReportAPIController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, /* UpdateReportAPI */ Request $request)
+    public function update($id, CreateReportAPIRequest $request)
     {
         // $input = $request->all();
 
@@ -140,20 +126,6 @@ class ReportAPIController extends AppBaseController
         }
 
         try {
-            $validator = Validator::make($request->all(), [
-                'description' => ['nullable'],
-                'post_id' => ['required', 'exists:posts,id'],
-                'report_type_id' => ['required', 'exists:report_types,id'],
-                'assets' => ['nullable', 'array'],
-                'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
-            ]);
-
-            if ($validator->fails()) {
-                $errors = $validator->errors();
-
-                return $this->sendError(json_encode($errors), 777);
-            }
-
             $data['description'] = $request->description;
             $data['report_type_id'] = $request->report_type_id;
             $data['reportable_type'] = 'App\Models\Post';

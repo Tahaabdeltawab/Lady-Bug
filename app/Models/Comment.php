@@ -41,9 +41,11 @@ class Comment extends Model
      * @var array
      */
     public static $rules = [
-        'content' => 'required',
-        'post_id' => 'required|integer|exists:posts,id',
-        'parent_id' => 'nullable|integer|exists:comments,id'
+        'content' => ['requiredIf:assets,null'],
+        'post_id' => ['required', 'integer', 'exists:posts,id'],
+        'parent_id' => ['nullable', 'integer', 'exists:comments,id'],
+        'assets' => ['nullable','array'],
+        'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
     ];
 
     public function post()

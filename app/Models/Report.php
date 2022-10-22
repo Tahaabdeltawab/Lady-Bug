@@ -39,9 +39,11 @@ class Report extends Model
      * @var array
      */
     public static $rules = [
-        'report_type_id' => 'required|exists:report_types,id',
-        'description' => 'nullable|string',
-        'status' => 'required'
+        'description' => ['nullable'],
+        'post_id' => ['required', 'exists:posts,id'],
+        'report_type_id' => ['required', 'exists:report_types,id'],
+        'assets' => ['nullable', 'array'],
+        'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
     ];
 
     public function reportable()
@@ -49,7 +51,7 @@ class Report extends Model
         return $this->morphTo();
     }
 
- 
+
     public function reporter()
     {
         return $this->belongsTo(User::class, 'reporter_id');

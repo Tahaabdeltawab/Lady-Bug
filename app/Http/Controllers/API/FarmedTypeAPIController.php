@@ -103,18 +103,8 @@ class FarmedTypeAPIController extends AppBaseController
         /** @var FarmedType $farmedType */
         $farmedType = $this->farmedTypeRepository->find($id);
 
-        if (empty($farmedType)) {
+        if (empty($farmedType))
             return $this->sendError('Farmed Type not found');
-        }
-
-        $validator = Validator::make($request->all(), [
-
-        ]);
-
-        if($validator->fails())
-        {
-            return $this->sendError(json_encode($validator->errors()), 5050);
-        }
 
         $to_save['name_ar_localized'] = $request->name_ar_localized;
         $to_save['name_en_localized'] = $request->name_en_localized;

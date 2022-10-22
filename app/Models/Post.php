@@ -50,15 +50,15 @@ class Post extends Model
      * @var array
      */
     public static $rules = [
-        'title' => 'nullable|max:200',
-        'content' => 'required',
-        'author_id' => 'nullable',
-        'farm_id' => 'nullable',
-        'business_id' => 'nullable',
-        'farmed_type_id' => 'nullable',
-        'post_type_id' => 'required',
-        'solved' => 'nullable',
-        'asset' => 'nullable'
+        'title' => ['nullable', 'max:200'],
+        'content' => ['nullable'],
+        'business_id' => ['nullable', 'exists:businesses,id'],
+        'farmed_type_id' => ['nullable'],
+        'post_type_id' => ['nullable', 'exists:post_types,id'],
+        'solved' => ['nullable'],
+        'shared_id' => ['nullable', 'exists:posts,id'],
+        'assets' => ['nullable','array'],
+        'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv,qt,asf'] //qt for mov , asf for wmv
     ];
 
     public function updateReactions(){

@@ -44,25 +44,10 @@ class CommentAPIController extends AppBaseController
         return $this->sendResponse(['all' => CommentResource::collection($comments)], 'Comments retrieved successfully');
     }
 
-    public function store(/* CreateCommentAPI */Request $request)
+    public function store(CreateCommentAPIRequest $request)
     {
         try
         {
-
-            $validator = Validator::make($request->all(), [
-                'content' => ['requiredIf:assets,null'],
-                'post_id' => ['required', 'integer', 'exists:posts,id'],
-                'parent_id' => ['nullable', 'integer', 'exists:comments,id'],
-                'assets' => ['nullable','array'],
-                'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
-            ]);
-
-            if($validator->fails()){
-                $errors = $validator->errors();
-
-                return $this->sendError(json_encode($errors), 777);
-            }
-
             $data['commenter_id'] = auth()->id();
             $data['content'] = $request->content;
             $data['post_id'] = $request->post_id;
@@ -176,7 +161,7 @@ class CommentAPIController extends AppBaseController
         return $this->sendResponse(new CommentResource($comment), 'Comment retrieved successfully');
     }
 
-    public function update($id, /* UpdateCommentAPI */Request $request) //don't change it to create request please as it differs in validation
+    public function update($id, UpdateCommentAPIRequest $request) //don't change it to create request please as it differs in validation
     {
         try
         {
@@ -184,18 +169,6 @@ class CommentAPIController extends AppBaseController
 
             if (empty($comment)) {
                 return $this->sendError('comment not found');
-            }
-
-            $validator = Validator::make($request->all(), [
-                'content' => ['requiredIf:assets,null'],
-                'assets' => ['nullable','array'],
-                'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
-            ]);
-
-            if($validator->fails()){
-                $errors = $validator->errors();
-
-                return $this->sendError(json_encode($errors), 777);
             }
 
             $data['content'] = $request->content;
