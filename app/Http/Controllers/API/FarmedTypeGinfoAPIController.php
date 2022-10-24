@@ -90,14 +90,8 @@ class FarmedTypeGinfoAPIController extends AppBaseController
     public function store(CreateFarmedTypeGinfoAPIRequest $request)
     {
         try {
-            $data['title_ar_localized'] = $request->title_ar_localized;
-            $data['title_en_localized'] = $request->title_en_localized;
-            $data['content_ar_localized'] = $request->content_ar_localized;
-            $data['content_en_localized'] = $request->content_en_localized;
-            $data['farmed_type_id'] = $request->farmed_type_id;
-            $data['farmed_type_stage_id'] = $request->farmed_type_stage_id;
-
-            $farmedTypeGinfo = $this->farmedTypeGinfoRepository->save_localized($data);
+            $data = $request->validated();
+            $farmedTypeGinfo = $this->farmedTypeGinfoRepository->create($data);
 
             if($assets = $request->file('assets'))
             {
@@ -137,14 +131,8 @@ class FarmedTypeGinfoAPIController extends AppBaseController
             if (empty($farmedTypeGinfo))
                 return $this->sendError('Farmed Type Ginfo not found');
 
-            $data['title_ar_localized'] = $request->title_ar_localized;
-            $data['title_en_localized'] = $request->title_en_localized;
-            $data['content_ar_localized'] = $request->content_ar_localized;
-            $data['content_en_localized'] = $request->content_en_localized;
-            $data['farmed_type_id'] = $request->farmed_type_id;
-            $data['farmed_type_stage_id'] = $request->farmed_type_stage_id;
-
-            $farmedTypeGinfo = $this->farmedTypeGinfoRepository->save_localized($data, $id);
+            $data = $request->validated();
+            $farmedTypeGinfo = $this->farmedTypeGinfoRepository->update($data, $id);
 
             if($assets = $request->file('assets'))
             {

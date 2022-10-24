@@ -54,7 +54,7 @@ class CountryAPIController extends AppBaseController
      */
     public function store(CreateCountryAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $country = $this->countryRepository->create($input);
 
@@ -92,7 +92,7 @@ class CountryAPIController extends AppBaseController
      */
     public function update($id, UpdateCountryAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Country $country */
         $country = $this->countryRepository->find($id);

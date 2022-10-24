@@ -41,7 +41,7 @@ class ChemicalDetailAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $chemicalDetail = $this->chemicalDetailRepository->save_localized($input);
+        $chemicalDetail = $this->chemicalDetailRepository->create($input);
 
         return $this->sendResponse(new ChemicalDetailResource($chemicalDetail), 'Chemical Detail saved successfully');
     }
@@ -69,7 +69,7 @@ class ChemicalDetailAPIController extends AppBaseController
             return $this->sendError('Chemical Detail not found');
         }
 
-        $chemicalDetail = $this->chemicalDetailRepository->save_localized($input, $id);
+        $chemicalDetail = $this->chemicalDetailRepository->update($input, $id);
 
         return $this->sendResponse(new ChemicalDetailResource($chemicalDetail), 'ChemicalDetail updated successfully');
     }

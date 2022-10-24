@@ -51,8 +51,8 @@ class FarmedType extends Model
      * @var array
      */
     public static $rules = [
-        'name_ar_localized'                     => 'required|max:200',
-        'name_en_localized'                     => 'required|max:200',
+        'name.ar'                               => 'required|max:200',
+        'name.en'                               => 'required|max:200',
         'farm_activity_type_id'                 => 'required',
         'parent_id'                             => 'nullable|exists:farmed_types,id',
         'country_id'                            => 'nullable|exists:countries,id',
@@ -116,6 +116,11 @@ class FarmedType extends Model
     // END MUTATORS
 
 
+    // SCOPES
+    public function scopeGlobal($q)
+    {
+        return $q->whereNull('parent_id');
+    }
 
     public function extra(){
         return $this->hasOne(FarmedTypeExtras::class);
@@ -133,10 +138,35 @@ class FarmedType extends Model
         return $this->hasOne(MarketingData::class);
     }
 
-    public function fneeds()
+    public function fneeds($farmed_type_stage_id = null)
     {
-        return $this->hasMany(FarmedTypeFertilizationNeed::class);
+        return $this->hasMany(FarmedTypeFertilizationNeed::class)
+            ->when($farmed_type_stage_id, function($q) use($farmed_type_stage_id){
+                return $q->where('farmed_type_stage_id', $farmed_type_stage_id);
+            });
     }
+
+    public function popular_countries()
+    {
+        return $this->belongsToMany(Country::class)->wherePivot('popular', 1);
+    }
+
+    public function names_countries()
+    {
+        return $this->belongsToMany(Country::class)->withPivot('common_name')->wherePivotNotNull('common_name');
+    }
+
+    public function sensitive_diseases()
+    {
+        return $this->belongsToMany(Disease::class)->using(DiseaseFarmedType::class)->wherePivot('sensitive', 1);
+    }
+
+    public function resistant_diseases()
+    {
+        return $this->belongsToMany(Disease::class)->using(DiseaseFarmedType::class)->wherePivot('sensitive', 0);
+    }
+
+
 
     public function farm_activity_type(){
         return $this->belongsTo(FarmActivityType::class);
@@ -170,26 +200,6 @@ class FarmedType extends Model
     public function children()
     {
         return $this->hasMany(self::class, 'parent_id');
-    }
-
-    public function popular_countries()
-    {
-        return $this->belongsToMany(Country::class)->wherePivot('popular', 1);
-    }
-
-    public function names_countries()
-    {
-        return $this->belongsToMany(Country::class)->withPivot('common_name')->wherePivotNotNull('common_name');
-    }
-
-    public function sensitive_diseases()
-    {
-        return $this->belongsToMany(Disease::class)->using(DiseaseFarmedType::class)->wherePivot('sensitive', 1);
-    }
-
-    public function resistant_diseases()
-    {
-        return $this->belongsToMany(Disease::class)->using(DiseaseFarmedType::class)->wherePivot('sensitive', 0);
     }
 
     public function products()

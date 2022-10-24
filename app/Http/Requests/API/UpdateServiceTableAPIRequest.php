@@ -23,10 +23,10 @@ class UpdateServiceTableAPIRequest extends APIRequest
      * @return array
      */
     public function rules()
-    {        
+    {
         return [
-            'name_ar_localized' => 'required|max:200',
-            'name_en_localized' => 'required|max:200',
+            'name.ar' => 'required|max:200',
+            'name.en' => 'required|max:200',
         ];
     }
 }

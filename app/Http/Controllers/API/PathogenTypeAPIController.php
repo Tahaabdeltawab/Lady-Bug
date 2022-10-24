@@ -54,7 +54,7 @@ class PathogenTypeAPIController extends AppBaseController
      */
     public function store(CreatePathogenTypeAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $pathogenType = $this->pathogenTypeRepository->create($input);
 
@@ -92,7 +92,7 @@ class PathogenTypeAPIController extends AppBaseController
      */
     public function update($id, UpdatePathogenTypeAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var PathogenType $pathogenType */
         $pathogenType = $this->pathogenTypeRepository->find($id);

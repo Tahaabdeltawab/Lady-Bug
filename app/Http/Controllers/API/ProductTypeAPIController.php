@@ -54,7 +54,7 @@ class ProductTypeAPIController extends AppBaseController
      */
     public function store(CreateProductTypeAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $productType = $this->productTypeRepository->create($input);
 
@@ -92,7 +92,7 @@ class ProductTypeAPIController extends AppBaseController
      */
     public function update($id, UpdateProductTypeAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var ProductType $productType */
         $productType = $this->productTypeRepository->find($id);

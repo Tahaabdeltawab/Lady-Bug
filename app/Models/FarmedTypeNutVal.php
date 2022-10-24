@@ -36,7 +36,7 @@ class FarmedTypeNutVal extends Model
 
     public $table = 'farmed_type_nut_vals';
 	public $timestamps = false;
-    
+
 
 
 
@@ -68,7 +68,7 @@ class FarmedTypeNutVal extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'farmed_type_id' => 'decimal:2',
+        'farmed_type_id' => 'integer',
         'calories' => 'decimal:2',
         'total_fat' => 'decimal:2',
         'sat_fat' => 'decimal:2',
@@ -94,30 +94,30 @@ class FarmedTypeNutVal extends Model
      * @var array
      */
     public static $rules = [
-        'farmed_type_id' => 'required',
-        'calories' => 'nullable',
-        'total_fat' => 'nullable',
-        'sat_fat' => 'nullable',
-        'cholesterol' => 'nullable',
-        'na' => 'nullable',
-        'k' => 'nullable',
-        'total_carb' => 'nullable',
-        'dietary_fiber' => 'nullable',
-        'sugar' => 'nullable',
-        'protein' => 'nullable',
-        'v_c' => 'nullable',
-        'fe' => 'nullable',
-        'v_b6' => 'nullable',
-        'mg' => 'nullable',
-        'ca' => 'nullable',
-        'v_d' => 'nullable',
-        'cobalamin' => 'nullable'
+        'farmed_type_id' => 'required|exists:farmed_types,id',
+        'calories' => 'nullable|numeric',
+        'total_fat' => 'nullable|numeric',
+        'sat_fat' => 'nullable|numeric',
+        'cholesterol' => 'nullable|numeric',
+        'na' => 'nullable|numeric',
+        'k' => 'nullable|numeric',
+        'total_carb' => 'nullable|numeric',
+        'dietary_fiber' => 'nullable|numeric',
+        'sugar' => 'nullable|numeric',
+        'protein' => 'nullable|numeric',
+        'v_c' => 'nullable|numeric',
+        'fe' => 'nullable|numeric',
+        'v_b6' => 'nullable|numeric',
+        'mg' => 'nullable|numeric',
+        'ca' => 'nullable|numeric',
+        'v_d' => 'nullable|numeric',
+        'cobalamin' => 'nullable|numeric'
     ];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function farmed_type()
+    public function farmedType()
     {
         return $this->belongsTo(\App\Models\FarmedType::class);
     }

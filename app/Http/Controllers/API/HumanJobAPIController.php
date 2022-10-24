@@ -41,7 +41,7 @@ class HumanJobAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $job = $this->humanJobRepository->save_localized($input);
+        $job = $this->humanJobRepository->create($input);
         return $this->sendResponse(new HumanJobResource($job), 'Job saved successfully');
     }
 
@@ -68,7 +68,7 @@ class HumanJobAPIController extends AppBaseController
             return $this->sendError('Job not found');
         }
 
-        $job = $this->humanJobRepository->save_localized($input, $id);
+        $job = $this->humanJobRepository->update($input, $id);
 
         return $this->sendResponse(new HumanJobResource($job), 'Job updated successfully');
     }

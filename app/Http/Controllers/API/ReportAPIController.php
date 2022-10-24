@@ -70,7 +70,7 @@ class ReportAPIController extends AppBaseController
             $data['report_type_id'] = $request->report_type_id;
             $data['reporter_id'] = auth()->id();
 
-            $report = $this->reportRepository->save_localized($data);
+            $report = $this->reportRepository->create($data);
 
             if ($assets = $request->file('assets')) {
                 foreach ($assets as $asset) {
@@ -116,7 +116,7 @@ class ReportAPIController extends AppBaseController
      */
     public function update($id, CreateReportAPIRequest $request)
     {
-        // $input = $request->all();
+        // $input = $request->validated();
 
         /** @var Report $report */
         $report = $this->reportRepository->find($id);
@@ -133,7 +133,7 @@ class ReportAPIController extends AppBaseController
             $data['report_type_id'] = $request->report_type_id;
             $data['reporter_id'] = auth()->id();
 
-            $report = $this->reportRepository->save_localized($data, $id);
+            $report = $this->reportRepository->update($data, $id);
 
             if ($assets = $request->file('assets')) {
                 foreach ($assets as $asset) {

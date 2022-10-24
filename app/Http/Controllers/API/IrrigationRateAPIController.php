@@ -54,7 +54,7 @@ class IrrigationRateAPIController extends AppBaseController
      */
     public function store(CreateIrrigationRateAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $irrigationRate = $this->irrigationRateRepository->create($input);
 
@@ -92,7 +92,7 @@ class IrrigationRateAPIController extends AppBaseController
      */
     public function update($id, UpdateIrrigationRateAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var IrrigationRate $irrigationRate */
         $irrigationRate = $this->irrigationRateRepository->find($id);

@@ -54,7 +54,7 @@ class InfectionRateAPIController extends AppBaseController
      */
     public function store(CreateInfectionRateAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $infectionRate = $this->infectionRateRepository->create($input);
 
@@ -92,7 +92,7 @@ class InfectionRateAPIController extends AppBaseController
      */
     public function update($id, UpdateInfectionRateAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var InfectionRate $infectionRate */
         $infectionRate = $this->infectionRateRepository->find($id);

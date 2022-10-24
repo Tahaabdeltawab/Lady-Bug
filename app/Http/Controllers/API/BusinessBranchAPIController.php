@@ -54,7 +54,7 @@ class BusinessBranchAPIController extends AppBaseController
      */
     public function store(CreateBusinessBranchAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $businessBranch = $this->businessBranchRepository->create($input);
 
@@ -92,7 +92,7 @@ class BusinessBranchAPIController extends AppBaseController
      */
     public function update($id, UpdateBusinessBranchAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var BusinessBranch $businessBranch */
         $businessBranch = $this->businessBranchRepository->find($id);

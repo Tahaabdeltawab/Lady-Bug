@@ -126,7 +126,7 @@ class FertilizerAPIController extends AppBaseController
     {
         try{
             DB::beginTransaction();
-            $input = $request->all();
+            $input = $request->validated();
 
             /** @var Fertilizer $fertilizer */
             $fertilizer = $this->fertilizerRepository->find($id);

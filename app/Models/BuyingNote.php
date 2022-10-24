@@ -36,8 +36,8 @@ class BuyingNote extends Model
      * @var array
      */
     public static $rules = [
-        'content_ar_localized' => 'required',
-        'content_en_localized' => 'required',
+        'content.ar' => 'required|max:200',
+        'content.en' => 'required|max:200',
     ];
 
 

@@ -45,7 +45,7 @@ class FarmingMethodAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $farmingMethod = $this->farmingMethodRepository->save_localized($input);
+        $farmingMethod = $this->farmingMethodRepository->create($input);
 
         return $this->sendResponse(new FarmingMethodResource($farmingMethod), 'Farming Method saved successfully');
     }
@@ -73,7 +73,7 @@ class FarmingMethodAPIController extends AppBaseController
             return $this->sendError('Farming Method not found');
         }
 
-        $farmingMethod = $this->farmingMethodRepository->save_localized($input, $id);
+        $farmingMethod = $this->farmingMethodRepository->update($input, $id);
 
         return $this->sendResponse(new FarmingMethodResource($farmingMethod), 'FarmingMethod updated successfully');
     }

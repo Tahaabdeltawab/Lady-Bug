@@ -45,7 +45,7 @@ class SaltTypeAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $saltType = $this->saltTypeRepository->save_localized($input);
+        $saltType = $this->saltTypeRepository->create($input);
 
         return $this->sendResponse(new SaltTypeResource($saltType), 'Salt Type saved successfully');
     }
@@ -73,7 +73,7 @@ class SaltTypeAPIController extends AppBaseController
             return $this->sendError('Salt Type not found');
         }
 
-        $saltType = $this->saltTypeRepository->save_localized($input, $id);
+        $saltType = $this->saltTypeRepository->update($input, $id);
 
         return $this->sendResponse(new SaltTypeResource($saltType), 'SaltType updated successfully');
     }

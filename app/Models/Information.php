@@ -38,12 +38,10 @@ class Information extends Model
      * @var array
      */
     public static $rules = [
-        'title_ar_localized' => 'required|max:200',
-        'title_en_localized' => 'required|max:200',
-        'content_ar_localized' => 'required',
-        'content_en_localized' => 'required',
-        // 'title' => 'required|max:200',
-        // 'content' => 'required'
+        'title.ar' => 'required|max:200',
+        'title.en' => 'required|max:200',
+        'content.ar' => 'required',
+        'content.en' => 'required',
     ];
 
 

@@ -45,7 +45,7 @@ class FarmedTypeStageAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $farmedTypeStage = $this->farmedTypeStageRepository->save_localized($input);
+        $farmedTypeStage = $this->farmedTypeStageRepository->create($input);
 
         return $this->sendResponse(new FarmedTypeStageResource($farmedTypeStage), 'Farmed Type Stage saved successfully');
     }
@@ -73,7 +73,7 @@ class FarmedTypeStageAPIController extends AppBaseController
             return $this->sendError('Farmed Type Stage not found');
         }
 
-        $farmedTypeStage = $this->farmedTypeStageRepository->save_localized($input, $id);
+        $farmedTypeStage = $this->farmedTypeStageRepository->update($input, $id);
 
         return $this->sendResponse(new FarmedTypeStageResource($farmedTypeStage), 'FarmedTypeStage updated successfully');
     }

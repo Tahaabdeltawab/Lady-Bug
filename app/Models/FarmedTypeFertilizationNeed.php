@@ -24,14 +24,14 @@ class FarmedTypeFertilizationNeed extends Model
 
     public $table = 'farmed_type_fertilization_needs';
 	public $timestamps = false;
-    
+
 
 
 
     public $fillable = [
         'farmed_type_id',
         'farmed_type_stage_id',
-        'per',
+        // 'per',
         'nut_elem_value_id'
     ];
 
@@ -44,7 +44,7 @@ class FarmedTypeFertilizationNeed extends Model
         'id' => 'integer',
         'farmed_type_id' => 'integer',
         'farmed_type_stage_id' => 'integer',
-        'per' => 'string',
+        // 'per' => 'string',
         'nut_elem_value_id' => 'integer'
     ];
 
@@ -54,11 +54,29 @@ class FarmedTypeFertilizationNeed extends Model
      * @var array
      */
     public static $rules = [
-        'farmed_type_id' => 'required',
-        'farmed_type_stage_id' => 'nullable',
-        'per' => 'nullable',
-        'nut_elem_value_id' => 'required'
+        'farmed_type_id' => 'required|exists:farmed_types,id',
+        'farmed_type_stage_id' => 'nullable|exists:farmed_type_stages,id',
+        // 'per' => 'nullable|in:acre,tree',
+        // 'nut_elem_value_id' => 'required'
+        'nut_elem_value.n' => 'required|numeric',
+        'nut_elem_value.p' => 'required|numeric',
+        'nut_elem_value.k' => 'required|numeric',
+        'nut_elem_value.fe' => 'required|numeric',
+        'nut_elem_value.b' => 'required|numeric',
+        'nut_elem_value.ca' => 'required|numeric',
+        'nut_elem_value.mg' => 'required|numeric'
     ];
+
+    protected $appends = ['per'];
+
+    /**
+     * لو الصنف محصول يبقى معدل التسميد لكل فدان
+     *  ولو اشجار يبقى لكل شجرة
+     */
+    public function getPerAttribute()
+    {
+        return $this->farmedType->farm_activity_type_id == 1 ? 'acre' : 'tree';
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

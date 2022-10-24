@@ -45,7 +45,7 @@ class TaskTypeAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $taskType = $this->taskTypeRepository->save_localized($input);
+        $taskType = $this->taskTypeRepository->create($input);
 
         return $this->sendResponse(new TaskTypeResource($taskType), 'Task Type saved successfully');
     }
@@ -73,7 +73,7 @@ class TaskTypeAPIController extends AppBaseController
             return $this->sendError('Task Type not found');
         }
 
-        $taskType = $this->taskTypeRepository->save_localized($input, $id);
+        $taskType = $this->taskTypeRepository->update($input, $id);
 
         return $this->sendResponse(new TaskTypeResource($taskType), 'TaskType updated successfully');
     }

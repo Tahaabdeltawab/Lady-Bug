@@ -54,7 +54,7 @@ class WorkFieldAPIController extends AppBaseController
      */
     public function store(CreateWorkFieldAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $workField = $this->workFieldRepository->create($input);
 
@@ -92,7 +92,7 @@ class WorkFieldAPIController extends AppBaseController
      */
     public function update($id, UpdateWorkFieldAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var WorkField $workField */
         $workField = $this->workFieldRepository->find($id);

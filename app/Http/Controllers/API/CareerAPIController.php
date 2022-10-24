@@ -54,7 +54,7 @@ class CareerAPIController extends AppBaseController
      */
     public function store(CreateCareerAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $career = $this->careerRepository->create($input);
 
@@ -92,7 +92,7 @@ class CareerAPIController extends AppBaseController
      */
     public function update($id, UpdateCareerAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Career $career */
         $career = $this->careerRepository->find($id);

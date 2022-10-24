@@ -42,10 +42,10 @@ class FarmedTypeGinfo extends Model
      * @var array
      */
     public static $rules = [
-        'title_ar_localized' => 'required|max:200',
-        'title_en_localized' => 'required|max:200',
-        'content_ar_localized' => 'required',
-        'content_en_localized' => 'required',
+        'title.ar' => 'required|max:200',
+        'title.en' => 'required|max:200',
+        'content.ar' => 'required',
+        'content.en' => 'required',
         'farmed_type_id' => 'required|exists:farmed_types,id',
         'farmed_type_stage_id' => 'required|exists:farmed_type_stages,id',
         'assets' => ['nullable','array'],

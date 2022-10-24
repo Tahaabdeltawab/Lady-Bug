@@ -45,7 +45,7 @@ class FarmingWayAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $farmingWay = $this->farmingWayRepository->save_localized($input);
+        $farmingWay = $this->farmingWayRepository->create($input);
 
         return $this->sendResponse(new FarmingWayResource($farmingWay), 'Farming Way saved successfully');
     }
@@ -73,7 +73,7 @@ class FarmingWayAPIController extends AppBaseController
             return $this->sendError('Farming Way not found');
         }
 
-        $farmingWay = $this->farmingWayRepository->save_localized($input, $id);
+        $farmingWay = $this->farmingWayRepository->update($input, $id);
 
         return $this->sendResponse(new FarmingWayResource($farmingWay), 'FarmingWay updated successfully');
     }

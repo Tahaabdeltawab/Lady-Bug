@@ -54,7 +54,7 @@ class NutElemValueAPIController extends AppBaseController
      */
     public function store(CreateNutElemValueAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $nutElemValue = $this->nutElemValueRepository->create($input);
 
@@ -92,7 +92,7 @@ class NutElemValueAPIController extends AppBaseController
      */
     public function update($id, UpdateNutElemValueAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var NutElemValue $nutElemValue */
         $nutElemValue = $this->nutElemValueRepository->find($id);

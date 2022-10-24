@@ -49,7 +49,7 @@ class TransactionAPIController extends AppBaseController
      */
     public function store(CreateTransactionAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
         $input['user_id'] = auth()->id();
         $transaction = $this->transactionRepository->create($input);
 
@@ -93,7 +93,7 @@ class TransactionAPIController extends AppBaseController
      */
     public function update($id, UpdateTransactionAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Transaction $transaction */
         $transaction = $this->transactionRepository->find($id);

@@ -119,7 +119,7 @@ class TaskAPIController extends AppBaseController
             }
             return $this->sendSuccess('tasks created successfully');
         }
-        $input = $request->all();
+        $input = $request->validated();
 
         $task = $this->taskRepository->create($input);
 
@@ -157,7 +157,7 @@ class TaskAPIController extends AppBaseController
      */
     public function update($id, UpdateTaskAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Task $task */
         $task = $this->taskRepository->find($id);

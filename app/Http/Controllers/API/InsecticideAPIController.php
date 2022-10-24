@@ -116,7 +116,7 @@ class InsecticideAPIController extends AppBaseController
      */
     public function update($id, UpdateInsecticideAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Insecticide $insecticide */
         $insecticide = $this->insecticideRepository->find($id);

@@ -57,7 +57,7 @@ class DiseaseRegistrationAPIController extends AppBaseController
      */
     public function store(CreateDiseaseRegistrationAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
         $input['user_id'] = auth()->id();
         $diseaseRegistration = $this->diseaseRegistrationRepository->create($input);
         if($assets = $request->file('assets'))
@@ -123,7 +123,7 @@ class DiseaseRegistrationAPIController extends AppBaseController
      */
     public function update($id, UpdateDiseaseRegistrationAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var DiseaseRegistration $diseaseRegistration */
         $diseaseRegistration = $this->diseaseRegistrationRepository->find($id);

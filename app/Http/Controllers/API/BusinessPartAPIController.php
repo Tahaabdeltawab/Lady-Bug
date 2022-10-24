@@ -80,7 +80,7 @@ class BusinessPartAPIController extends AppBaseController
         if(!auth()->user()->hasPermission("create-$request->type", $business))
             return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
-        $input = $request->all();
+        $input = $request->validated();
 
         $businessPart = $this->businessPartRepository->create($input);
 
@@ -118,7 +118,7 @@ class BusinessPartAPIController extends AppBaseController
      */
     public function update($id, UpdateBusinessPartAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var BusinessPart $businessPart */
         $businessPart = $this->businessPartRepository->find($id);

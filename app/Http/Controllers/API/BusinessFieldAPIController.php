@@ -54,7 +54,7 @@ class BusinessFieldAPIController extends AppBaseController
      */
     public function store(CreateBusinessFieldAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $businessField = $this->businessFieldRepository->create($input);
 
@@ -92,7 +92,7 @@ class BusinessFieldAPIController extends AppBaseController
      */
     public function update($id, UpdateBusinessFieldAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var BusinessField $businessField */
         $businessField = $this->businessFieldRepository->find($id);

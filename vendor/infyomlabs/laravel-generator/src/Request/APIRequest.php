@@ -30,14 +30,14 @@ class APIRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-        $messages = [];
-        $errors = $validator->errors();
-        foreach ($errors as $error) {
-            // array_push($messages, $item);
-        }
+        // $messages = [];
+        // $errors = $validator->errors();
+        // foreach ($errors as $error) {
+        //     array_push($messages, $error);
+        // }
 
-    throw new HttpResponseException(response()->json(ResponseUtil::makeError(json_encode($errors), 422)));
+    throw new HttpResponseException(response()->json(ResponseUtil::makeError($validator->errors()->first(), 422, $validator->errors())));
 
-        // return Response::json(ResponseUtil::makeError($messages), 400);
+    // return Response::json(ResponseUtil::makeError($messages , 400), 400);
     }
 }

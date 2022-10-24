@@ -45,7 +45,7 @@ class PostTypeAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $postType = $this->postTypeRepository->save_localized($input);
+        $postType = $this->postTypeRepository->create($input);
 
         return $this->sendResponse(new PostTypeResource($postType), 'Post Type saved successfully');
     }
@@ -73,7 +73,7 @@ class PostTypeAPIController extends AppBaseController
             return $this->sendError('Post Type not found');
         }
 
-        $postType = $this->postTypeRepository->save_localized($input, $id);
+        $postType = $this->postTypeRepository->update($input, $id);
 
         return $this->sendResponse(new PostTypeResource($postType), 'PostType updated successfully');
     }

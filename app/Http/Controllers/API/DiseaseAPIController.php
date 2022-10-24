@@ -54,7 +54,7 @@ class DiseaseAPIController extends AppBaseController
      */
     public function store(CreateDiseaseAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $disease = $this->diseaseRepository->create($input);
 
@@ -92,7 +92,7 @@ class DiseaseAPIController extends AppBaseController
      */
     public function update($id, UpdateDiseaseAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Disease $disease */
         $disease = $this->diseaseRepository->find($id);

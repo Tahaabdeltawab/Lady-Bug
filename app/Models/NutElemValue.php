@@ -25,7 +25,7 @@ class NutElemValue extends Model
 
     public $table = 'nut_elem_values';
 	public $timestamps = false;
-    
+
 
 
 
@@ -61,14 +61,14 @@ class NutElemValue extends Model
      * @var array
      */
     public static $rules = [
-        'n' => 'nullable',
-        'p' => 'nullable',
-        'k' => 'nullable',
-        'fe' => 'nullable',
-        'b' => 'nullable',
-        'ca' => 'nullable',
-        'mg' => 'nullable'
+        'n' => 'nullable|numeric',
+        'p' => 'nullable|numeric',
+        'k' => 'nullable|numeric',
+        'fe' => 'nullable|numeric',
+        'b' => 'nullable|numeric',
+        'ca' => 'nullable|numeric',
+        'mg' => 'nullable|numeric'
     ];
 
-    
+
 }

@@ -27,7 +27,7 @@ class MarketingData extends Model
 
     public $table = 'marketing_datas';
 	public $timestamps = false;
-    
+
 
 
 
@@ -63,13 +63,13 @@ class MarketingData extends Model
      * @var array
      */
     public static $rules = [
-        'farmed_type_id' => 'required',
-        'year' => 'nullable',
-        'country_id' => 'nullable',
-        'production' => 'nullable',
-        'consumption' => 'nullable',
-        'export' => 'nullable',
-        'price_avg' => 'nullable'
+        'farmed_type_id' => 'required|exists:farmed_types,id',
+        'country_id' => 'nullable|exists:countries,id',
+        'year' => 'nullable|numeric',
+        'production' => 'nullable|numeric',
+        'consumption' => 'nullable|numeric',
+        'export' => 'nullable|numeric',
+        'price_avg' => 'nullable|numeric'
     ];
 
     /**

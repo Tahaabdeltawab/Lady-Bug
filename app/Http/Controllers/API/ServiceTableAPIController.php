@@ -61,7 +61,7 @@ class ServiceTableAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $serviceTable = $this->serviceTableRepository->save_localized($input);
+        $serviceTable = $this->serviceTableRepository->create($input);
 
         return $this->sendResponse(new ServiceTableResource($serviceTable), 'Service Table saved successfully');
     }
@@ -89,7 +89,7 @@ class ServiceTableAPIController extends AppBaseController
             return $this->sendError('Service Table not found');
         }
 
-        $serviceTable = $this->serviceTableRepository->save_localized($input, $id);
+        $serviceTable = $this->serviceTableRepository->update($input, $id);
 
         return $this->sendResponse(new ServiceTableResource($serviceTable), 'ServiceTable updated successfully');
     }

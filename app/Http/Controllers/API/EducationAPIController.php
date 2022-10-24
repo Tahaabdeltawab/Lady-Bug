@@ -54,7 +54,7 @@ class EducationAPIController extends AppBaseController
      */
     public function store(CreateEducationAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $education = $this->educationRepository->create($input);
 
@@ -92,7 +92,7 @@ class EducationAPIController extends AppBaseController
      */
     public function update($id, UpdateEducationAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Education $education */
         $education = $this->educationRepository->find($id);

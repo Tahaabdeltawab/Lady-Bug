@@ -45,7 +45,7 @@ class HomePlantIlluminatingSourceAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $homePlantIlluminatingSource = $this->homePlantIlluminatingSourceRepository->save_localized($input);
+        $homePlantIlluminatingSource = $this->homePlantIlluminatingSourceRepository->create($input);
 
         return $this->sendResponse(new HomePlantIlluminatingSourceResource($homePlantIlluminatingSource), 'Home Plant Illuminating Source saved successfully');
     }
@@ -73,7 +73,7 @@ class HomePlantIlluminatingSourceAPIController extends AppBaseController
             return $this->sendError('Home Plant Illuminating Source not found');
         }
 
-        $homePlantIlluminatingSource = $this->homePlantIlluminatingSourceRepository->save_localized($input, $id);
+        $homePlantIlluminatingSource = $this->homePlantIlluminatingSourceRepository->update($input, $id);
 
         return $this->sendResponse(new HomePlantIlluminatingSourceResource($homePlantIlluminatingSource), 'HomePlantIlluminatingSource updated successfully');
     }

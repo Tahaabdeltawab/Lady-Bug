@@ -45,7 +45,7 @@ class BuyingNoteAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $buyingNote = $this->buyingNoteRepository->save_localized($input);
+        $buyingNote = $this->buyingNoteRepository->create($input);
 
         return $this->sendResponse(new BuyingNoteResource($buyingNote), 'Buying Note saved successfully');
     }
@@ -73,7 +73,7 @@ class BuyingNoteAPIController extends AppBaseController
             return $this->sendError('Buying Note not found');
         }
 
-        $buyingNote = $this->buyingNoteRepository->save_localized($input, $id);
+        $buyingNote = $this->buyingNoteRepository->update($input, $id);
 
         return $this->sendResponse(new BuyingNoteResource($buyingNote), 'BuyingNote updated successfully');
     }

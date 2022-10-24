@@ -45,7 +45,7 @@ class MeasuringUnitAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $measuringUnit = $this->measuringUnitRepository->save_localized($input);
+        $measuringUnit = $this->measuringUnitRepository->create($input);
 
         return $this->sendResponse(new MeasuringUnitResource($measuringUnit), 'Measuring Unit saved successfully');
     }
@@ -73,7 +73,7 @@ class MeasuringUnitAPIController extends AppBaseController
             return $this->sendError('Measuring Unit not found');
         }
 
-        $measuringUnit = $this->measuringUnitRepository->save_localized($input, $id);
+        $measuringUnit = $this->measuringUnitRepository->update($input, $id);
 
         return $this->sendResponse(new MeasuringUnitResource($measuringUnit), 'MeasuringUnit updated successfully');
     }

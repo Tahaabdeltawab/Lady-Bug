@@ -17,9 +17,10 @@ class FarmedTypeFertilizationNeedResource extends JsonResource
         return [
             'id' => $this->id,
             'farmed_type_id' => $this->farmed_type_id,
-            'farmed_type_stage_id' => $this->farmed_type_stage_id,
+            'farmed_type_stage' => $this->farmedTypeStage,
             'per' => $this->per,
-            'nut_elem_value_id' => $this->nut_elem_value_id
+            // 'per' => @app('\App\Http\Controllers\API\FarmedTypeFertilizationNeedAPIController')->pers($this->per),
+            'nut_elem_value' => $this->nutElemValue
         ];
     }
 }

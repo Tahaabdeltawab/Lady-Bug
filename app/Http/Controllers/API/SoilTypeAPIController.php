@@ -45,7 +45,7 @@ class SoilTypeAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $soilType = $this->soilTypeRepository->save_localized($input);
+        $soilType = $this->soilTypeRepository->create($input);
 
         return $this->sendResponse(new SoilTypeResource($soilType), 'Soil Type saved successfully');
     }
@@ -73,7 +73,7 @@ class SoilTypeAPIController extends AppBaseController
             return $this->sendError('Soil Type not found');
         }
 
-        $soilType = $this->soilTypeRepository->save_localized($input, $id);
+        $soilType = $this->soilTypeRepository->update($input, $id);
 
         return $this->sendResponse(new SoilTypeResource($soilType), 'SoilType updated successfully');
     }

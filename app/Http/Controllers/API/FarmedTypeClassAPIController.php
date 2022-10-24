@@ -45,7 +45,7 @@ class FarmedTypeClassAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $farmedTypeClass = $this->farmedTypeClassRepository->save_localized($input);
+        $farmedTypeClass = $this->farmedTypeClassRepository->create($input);
 
         return $this->sendResponse(new FarmedTypeClassResource($farmedTypeClass), 'Farmed Type Class saved successfully');
     }
@@ -73,7 +73,7 @@ class FarmedTypeClassAPIController extends AppBaseController
             return $this->sendError('Farmed Type Class not found');
         }
 
-        $farmedTypeClass = $this->farmedTypeClassRepository->save_localized($input, $id);
+        $farmedTypeClass = $this->farmedTypeClassRepository->update($input, $id);
 
         return $this->sendResponse(new FarmedTypeClassResource($farmedTypeClass), 'FarmedTypeClass updated successfully');
     }

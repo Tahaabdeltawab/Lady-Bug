@@ -49,7 +49,7 @@ class RatingQuestionAPIController extends AppBaseController
      */
     public function store(CreateRatingQuestionAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $ratingQuestion = $this->ratingQuestionRepository->create($input);
 
@@ -87,7 +87,7 @@ class RatingQuestionAPIController extends AppBaseController
      */
     public function update($id, UpdateRatingQuestionAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var RatingQuestion $ratingQuestion */
         $ratingQuestion = $this->ratingQuestionRepository->find($id);

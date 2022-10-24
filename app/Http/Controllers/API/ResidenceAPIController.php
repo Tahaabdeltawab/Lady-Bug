@@ -54,7 +54,7 @@ class ResidenceAPIController extends AppBaseController
      */
     public function store(CreateResidenceAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $residence = $this->residenceRepository->create($input);
 
@@ -92,7 +92,7 @@ class ResidenceAPIController extends AppBaseController
      */
     public function update($id, UpdateResidenceAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Residence $residence */
         $residence = $this->residenceRepository->find($id);

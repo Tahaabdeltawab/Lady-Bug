@@ -41,7 +41,7 @@ class SaltDetailAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $saltDetail = $this->saltDetailRepository->save_localized($input);
+        $saltDetail = $this->saltDetailRepository->create($input);
 
         return $this->sendResponse(new SaltDetailResource($saltDetail), 'Salt Detail saved successfully');
     }
@@ -69,7 +69,7 @@ class SaltDetailAPIController extends AppBaseController
             return $this->sendError('Salt Detail not found');
         }
 
-        $saltDetail = $this->saltDetailRepository->save_localized($input, $id);
+        $saltDetail = $this->saltDetailRepository->update($input, $id);
 
         return $this->sendResponse(new SaltDetailResource($saltDetail), 'SaltDetail updated successfully');
     }

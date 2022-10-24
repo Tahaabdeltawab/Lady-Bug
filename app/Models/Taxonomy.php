@@ -30,7 +30,7 @@ class Taxonomy extends Model
 
     public $table = 'taxonomies';
 	public $timestamps = false;
-    
+
 
 
 
@@ -74,17 +74,17 @@ class Taxonomy extends Model
      * @var array
      */
     public static $rules = [
-        'farmed_type_id' => 'required',
-        'kingdom' => 'nullable',
-        'domain' => 'nullable',
-        'phylum' => 'nullable',
-        'subphylum' => 'nullable',
-        'superclass' => 'nullable',
-        'class' => 'nullable',
-        'order' => 'nullable',
-        'family' => 'nullable',
-        'genus' => 'nullable',
-        'species' => 'nullable'
+        'farmed_type_id' => 'required|exists:farmed_types,id',
+        'kingdom' => 'nullable|max:30',
+        'domain' => 'nullable|max:30',
+        'phylum' => 'nullable|max:30',
+        'subphylum' => 'nullable|max:30',
+        'superclass' => 'nullable|max:30',
+        'class' => 'nullable|max:30',
+        'order' => 'nullable|max:30',
+        'family' => 'nullable|max:30',
+        'genus' => 'nullable|max:30',
+        'species' => 'nullable|max:30'
     ];
 
     /**

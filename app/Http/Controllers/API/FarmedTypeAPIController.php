@@ -9,7 +9,13 @@ use App\Repositories\FarmedTypeRepository;
 use App\Repositories\AssetRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use App\Http\Resources\CountryResource;
+use App\Http\Resources\DiseaseResource;
 use App\Http\Resources\FarmedTypeResource;
+use App\Http\Resources\NamesCountriesResource;
+use App\Models\Country;
+use App\Models\FarmActivityType;
+use Illuminate\Support\Facades\DB;
 use Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -45,6 +51,15 @@ class FarmedTypeAPIController extends AppBaseController
         return $this->sendResponse(['all' => FarmedTypeResource::collection($farmedTypes)], 'Farmed Types retrieved successfully');
     }
 
+    public function getRelations()
+    {
+        $data['farm_activity_types'] = FarmActivityType::all();
+        $data['parents'] = FarmedType::global()->get(['id', 'name']);
+        $data['countries'] = Country::all();
+
+        return $this->sendResponse($data, 'relations retrieved');
+    }
+
     public function search($query)
     {
         $query = strtolower(trim($query));
@@ -53,16 +68,114 @@ class FarmedTypeAPIController extends AppBaseController
         return $this->sendResponse(['all' => FarmedTypeResource::collection($farmedTypes)], 'Farmed Types retrieved successfully');
     }
 
+    public function get_popular_countries($id)
+    {
+        $farmedType = FarmedType::find($id);
+        if(!$farmedType) return $this->sendError('Farmed type not found');
+        return $this->sendResponse(CountryResource::collection($farmedType->popular_countries), 'popular countries retrieved successfully');
+    }
+
+    public function get_names_countries($id)
+    {
+        $farmedType = FarmedType::find($id);
+        if(!$farmedType) return $this->sendError('Farmed type not found');
+        $names = $farmedType->names_countries()->get();
+        return $this->sendResponse(NamesCountriesResource::collection($names), 'different countries names of farmed type retrieved successfully');
+    }
+
+    public function popular_countries(Request $request)
+    {
+        $farmedType = FarmedType::find($request->farmed_type_id);
+        if(!$farmedType) return $this->sendError('Farmed type not found');
+
+        DB::table('country_farmed_type')->where('farmed_type_id', $farmedType->id)
+            ->whereNotNull('common_name')
+            ->update(['popular' => 0]);
+        DB::table('country_farmed_type')->where('farmed_type_id', $farmedType->id)
+            ->whereNull('common_name')
+            ->delete();
+
+        $cnames = $farmedType->names_countries()->pluck('country_id');
+        foreach($request->countries as $c_id){
+            if($cnames->contains($c_id))
+                DB::table('country_farmed_type')->where('farmed_type_id', $farmedType->id)->where('country_id', $c_id)
+                    ->update(['popular' => 1]);
+            else
+                $farmedType->popular_countries()->attach($c_id, ['popular' => 1]);
+        }
+        return $this->sendSuccess('saved');
+    }
+
+    public function names_countries(Request $request)
+    {
+        $farmedType = FarmedType::find($request->farmed_type_id);
+        if(!$farmedType) return $this->sendError('Farmed type not found');
+
+        DB::table('country_farmed_type')->where('farmed_type_id', $farmedType->id)
+            ->where('popular', 1)
+            ->update(['common_name' => null]);
+        DB::table('country_farmed_type')->where('farmed_type_id', $farmedType->id)
+            ->where('popular', 0)
+            ->delete();
+
+        $populars = $farmedType->popular_countries()->pluck('country_id');
+        foreach($request->countries as $c){
+            if($populars->contains($c['id']))
+                DB::table('country_farmed_type')->where('farmed_type_id', $farmedType->id)->where('country_id', $c['id'])
+                    ->update(['common_name' => $c['name']]);
+            else
+                $farmedType->names_countries()->attach($c['id'], ['common_name' => $c['name']]);
+        }
+        return $this->sendSuccess('saved');
+    }
+
+    public function get_sensitive_diseases($id)
+    {
+        $farmedType = FarmedType::find($id);
+        if(!$farmedType) return $this->sendError('Farmed type not found');
+        return $this->sendResponse(DiseaseResource::collection($farmedType->sensitive_diseases), 'sensitive diseases retrieved successfully');
+    }
+    public function get_resistant_diseases($id)
+    {
+        $farmedType = FarmedType::find($id);
+        if(!$farmedType) return $this->sendError('Farmed type not found');
+        return $this->sendResponse(DiseaseResource::collection($farmedType->resistant_diseases), 'resistant diseases retrieved successfully');
+    }
+    public function sensitive_diseases(Request $request)
+    {
+        $farmedType = FarmedType::find($request->farmed_type_id);
+        if(!$farmedType) return $this->sendError('Farmed type not found');
+        $res = $farmedType->resistant_diseases()->pluck('disease_id');
+        $farmedType->sensitive_diseases()->detach();
+        foreach($request->diseases as $d_id){
+            if($res->contains($d_id))
+                DB::table('disease_farmed_type')->where('farmed_type_id', $farmedType->id)->where('disease_id', $d_id)
+                    ->update(['sensitive' => 1]);
+            else
+                $farmedType->sensitive_diseases()->attach($d_id, ['sensitive' => 1]);
+        }
+        return $this->sendSuccess('saved');
+    }
+    public function resistant_diseases(Request $request)
+    {
+        $farmedType = FarmedType::find($request->farmed_type_id);
+        if(!$farmedType) return $this->sendError('Farmed type not found');
+
+        $sens = $farmedType->sensitive_diseases()->pluck('disease_id');
+        $farmedType->resistant_diseases()->detach();
+        foreach($request->diseases as $d_id){
+            if($sens->contains($d_id))
+                DB::table('disease_farmed_type')->where('farmed_type_id', $farmedType->id)->where('disease_id', $d_id)
+                    ->update(['sensitive' => 0]);
+            else
+                $farmedType->resistant_diseases()->attach($d_id, ['sensitive' => 0]);
+        }
+        return $this->sendSuccess('saved');
+    }
+
     public function store(CreateFarmedTypeAPIRequest $request)
     {
-        $to_save['name_ar_localized'] = $request->name_ar_localized;
-        $to_save['name_en_localized'] = $request->name_en_localized;
-        $to_save['parent_id'] = $request->parent_id;
-        $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
-
-        $to_save['flowering_time'] = $request->flowering_time;
-        $to_save['maturity_time'] = $request->maturity_time;
-
+        $to_save = $request->validated();
         $to_save['farming_temperature'] = is_array($request->farming_temperature) ? json_encode($request->farming_temperature) : $request->farming_temperature;
         $to_save['flowering_temperature'] = is_array($request->flowering_temperature) ? json_encode($request->flowering_temperature) : $request->flowering_temperature;
         $to_save['maturity_temperature'] = is_array($request->maturity_temperature) ? json_encode($request->maturity_temperature) : $request->maturity_temperature;
@@ -72,7 +185,7 @@ class FarmedTypeAPIController extends AppBaseController
         $to_save['suitable_ph'] = is_array($request->suitable_ph) ? json_encode($request->suitable_ph) : $request->suitable_ph;
         $to_save['suitable_soil_types'] = is_array($request->suitable_soil_types) ? json_encode($request->suitable_soil_types) : $request->suitable_soil_types;
 
-        $farmedType = $this->farmedTypeRepository->save_localized($to_save);
+        $farmedType = $this->farmedTypeRepository->create($to_save);
 
         if($photo = $request->file('photo'))
         {
@@ -106,14 +219,7 @@ class FarmedTypeAPIController extends AppBaseController
         if (empty($farmedType))
             return $this->sendError('Farmed Type not found');
 
-        $to_save['name_ar_localized'] = $request->name_ar_localized;
-        $to_save['name_en_localized'] = $request->name_en_localized;
-        $to_save['parent_id'] = $request->parent_id;
-        $to_save['farm_activity_type_id'] = $request->farm_activity_type_id;
-
-        $to_save['flowering_time'] = $request->flowering_time;
-        $to_save['maturity_time'] = $request->maturity_time;
-
+        $to_save = $request->validated();
         $to_save['farming_temperature'] = is_array($request->farming_temperature) ? json_encode($request->farming_temperature) : $request->farming_temperature;
         $to_save['flowering_temperature'] = is_array($request->flowering_temperature) ? json_encode($request->flowering_temperature) : $request->flowering_temperature;
         $to_save['maturity_temperature'] = is_array($request->maturity_temperature) ? json_encode($request->maturity_temperature) : $request->maturity_temperature;
@@ -123,18 +229,19 @@ class FarmedTypeAPIController extends AppBaseController
         $to_save['suitable_ph'] = is_array($request->suitable_ph) ? json_encode($request->suitable_ph) : $request->suitable_ph;
         $to_save['suitable_soil_types'] = is_array($request->suitable_soil_types) ? json_encode($request->suitable_soil_types) : $request->suitable_soil_types;
 
-        $farmedType = $this->farmedTypeRepository->save_localized($to_save, $id);
+        $farmedType = $this->farmedTypeRepository->update($to_save, $id);
 
         if($photo = $request->file('photo'))
         {
+            if($farmedType->asset)
+                    $farmedType->asset->delete();
             $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo, 'farmed-type');
             $farmedType->asset()->create($oneasset);
-
+            $farmedType->load('asset');
         }
-
         return $this->sendResponse(new FarmedTypeResource($farmedType), 'Farmed Type updated successfully');
 
-        $farmedType = $this->farmedTypeRepository->save_localized($input, $id);
+        $farmedType = $this->farmedTypeRepository->update($input, $id);
     }
 
     public function destroy($id)
@@ -150,6 +257,11 @@ class FarmedTypeAPIController extends AppBaseController
 
         $farmedType->delete();
         $farmedType->asset->delete();
+        $farmedType->extra()->delete();
+        $farmedType->fneeds()->delete();
+        $farmedType->taxonomy()->delete();
+        $farmedType->marketing()->delete();
+        $farmedType->nutVal()->delete();
 
         return $this->sendSuccess('Farmed Type deleted successfully');
         }

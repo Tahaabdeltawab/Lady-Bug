@@ -45,7 +45,7 @@ class AnimalFodderTypeAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $animalFodderType = $this->animalFodderTypeRepository->save_localized($input);
+        $animalFodderType = $this->animalFodderTypeRepository->create($input);
 
         return $this->sendResponse(new AnimalFodderTypeResource($animalFodderType), 'Animal Fodder Type saved successfully');
     }
@@ -73,7 +73,7 @@ class AnimalFodderTypeAPIController extends AppBaseController
             return $this->sendError('Animal Fodder Type not found');
         }
 
-        $animalFodderType = $this->animalFodderTypeRepository->save_localized($input, $id);
+        $animalFodderType = $this->animalFodderTypeRepository->update($input, $id);
 
         return $this->sendResponse(new AnimalFodderTypeResource($animalFodderType), 'AnimalFodderType updated successfully');
     }

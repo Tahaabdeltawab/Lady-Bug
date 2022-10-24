@@ -45,7 +45,7 @@ class AnimalMedicineSourceAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $animalMedicineSource = $this->animalMedicineSourceRepository->save_localized($input);
+        $animalMedicineSource = $this->animalMedicineSourceRepository->create($input);
 
         return $this->sendResponse(new AnimalMedicineSourceResource($animalMedicineSource), 'Animal Medicine Source saved successfully');
     }
@@ -73,7 +73,7 @@ class AnimalMedicineSourceAPIController extends AppBaseController
             return $this->sendError('Animal Medicine Source not found');
         }
 
-        $animalMedicineSource = $this->animalMedicineSourceRepository->save_localized($input, $id);
+        $animalMedicineSource = $this->animalMedicineSourceRepository->update($input, $id);
 
         return $this->sendResponse(new AnimalMedicineSourceResource($animalMedicineSource), 'AnimalMedicineSource updated successfully');
     }

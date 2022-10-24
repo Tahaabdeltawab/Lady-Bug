@@ -54,7 +54,7 @@ class DiseaseCausativeAPIController extends AppBaseController
      */
     public function store(CreateDiseaseCausativeAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $diseaseCausative = $this->diseaseCausativeRepository->create($input);
 
@@ -92,7 +92,7 @@ class DiseaseCausativeAPIController extends AppBaseController
      */
     public function update($id, UpdateDiseaseCausativeAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var DiseaseCausative $diseaseCausative */
         $diseaseCausative = $this->diseaseCausativeRepository->find($id);

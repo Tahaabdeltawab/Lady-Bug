@@ -45,7 +45,7 @@ class SeedlingSourceAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $seedlingSource = $this->seedlingSourceRepository->save_localized($input);
+        $seedlingSource = $this->seedlingSourceRepository->create($input);
 
         return $this->sendResponse(new SeedlingSourceResource($seedlingSource), 'Seedling Source saved successfully');
     }
@@ -73,7 +73,7 @@ class SeedlingSourceAPIController extends AppBaseController
             return $this->sendError('Seedling Source not found');
         }
 
-        $seedlingSource = $this->seedlingSourceRepository->save_localized($input, $id);
+        $seedlingSource = $this->seedlingSourceRepository->update($input, $id);
 
         return $this->sendResponse(new SeedlingSourceResource($seedlingSource), 'SeedlingSource updated successfully');
     }

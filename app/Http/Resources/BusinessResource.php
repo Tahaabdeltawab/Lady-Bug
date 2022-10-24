@@ -35,7 +35,7 @@ class BusinessResource extends JsonResource
             'cover_asset' => @$this->cover_asset[0]->asset_url,
             'com_name' => $this->com_name,
             'status' => $this->status,
-            'status_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->statuses[$this->status]['name'],
+            'status_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->statuses($this->status)['name'],
             'mobile' => $this->mobile,
             'whatsapp' => $this->whatsapp,
             'lat' => $this->lat,

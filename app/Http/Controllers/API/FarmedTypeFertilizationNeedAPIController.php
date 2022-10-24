@@ -9,6 +9,8 @@ use App\Repositories\FarmedTypeFertilizationNeedRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmedTypeFertilizationNeedResource;
+use App\Models\FarmedTypeStage;
+use App\Models\NutElemValue;
 use Response;
 
 /**
@@ -44,6 +46,25 @@ class FarmedTypeFertilizationNeedAPIController extends AppBaseController
         return $this->sendResponse(FarmedTypeFertilizationNeedResource::collection($farmedTypeFertilizationNeeds), 'Farmed Type Fertilization Needs retrieved successfully');
     }
 
+    // public function pers($value = null)
+    // {
+    //     $pers = [
+    //         ['value' => 'acre', 'name' => app()->getLocale() == 'ar' ?  'فدان' : 'Acre'],
+    //         ['value' => 'tree', 'name' => app()->getLocale() == 'ar' ?  'شجرة' : 'Tree'],
+    //     ];
+
+    //     if($value){
+    //         return collect($pers)->firstWhere('value', $value);
+    //     }else
+    //         return $pers;
+    // }
+    public function getRelations()
+    {
+        $data['farmed_type_stages'] = FarmedTypeStage::all();
+        // $data['pers'] = $this->pers();
+        return $this->sendResponse($data, 'relations retrieved');
+    }
+
     /**
      * Store a newly created FarmedTypeFertilizationNeed in storage.
      * POST /farmedTypeFertilizationNeeds
@@ -54,9 +75,18 @@ class FarmedTypeFertilizationNeedAPIController extends AppBaseController
      */
     public function store(CreateFarmedTypeFertilizationNeedAPIRequest $request)
     {
-        $input = $request->all();
-
-        $farmedTypeFertilizationNeed = $this->farmedTypeFertilizationNeedRepository->create($input);
+        $input = $request->validated();
+        $farmedTypeFertilizationNeed = FarmedTypeFertilizationNeed::where('farmed_type_id', $request->farmed_type_id)->where('farmed_type_stage_id', $request->farmed_type_stage_id)->first();
+        unset($input['nut_elem_value']);
+        if($farmedTypeFertilizationNeed){
+            NutElemValue::where('id', $farmedTypeFertilizationNeed->nut_elem_value_id)->update($request->nut_elem_value);
+            $farmedTypeFertilizationNeed->update($input);
+        }else{
+            $nutElemValue = NutElemValue::create($request->nut_elem_value);
+            $input['nut_elem_value_id'] = $nutElemValue->id;
+            $farmedTypeFertilizationNeed = FarmedTypeFertilizationNeed::create($input);
+        }
+        // $farmedTypeFertilizationNeed = FarmedTypeFertilizationNeed::updateOrCreate(['farmed_type_id' => $request->farmed_type_id], $input);
 
         return $this->sendResponse(new FarmedTypeFertilizationNeedResource($farmedTypeFertilizationNeed), 'Farmed Type Fertilization Need saved successfully');
     }
@@ -81,6 +111,27 @@ class FarmedTypeFertilizationNeedAPIController extends AppBaseController
         return $this->sendResponse(new FarmedTypeFertilizationNeedResource($farmedTypeFertilizationNeed), 'Farmed Type Fertilization Need retrieved successfully');
     }
 
+    public function by_ft_id($id, $fts = null)
+    {
+        $farmedTypeFertilizationNeed = FarmedTypeFertilizationNeed::where('farmed_type_id', $id)
+        ->when($fts, function($q) use($fts){
+            return $q->where('farmed_type_stage_id', $fts);
+        });
+        if($fts){
+            $farmedTypeFertilizationNeed = $farmedTypeFertilizationNeed->first();
+            $method = 'make';
+        }else{
+            $farmedTypeFertilizationNeed = $farmedTypeFertilizationNeed->get();
+            $method = 'collection';
+        }
+
+        if (empty($farmedTypeFertilizationNeed)) {
+            return $this->sendError('farmed Type Fertilization Need not found');
+        }
+
+        return $this->sendResponse(FarmedTypeFertilizationNeedResource::$method($farmedTypeFertilizationNeed), 'farmed Type Fertilization Need retrieved successfully');
+    }
+
     /**
      * Update the specified FarmedTypeFertilizationNeed in storage.
      * PUT/PATCH /farmedTypeFertilizationNeeds/{id}
@@ -92,7 +143,7 @@ class FarmedTypeFertilizationNeedAPIController extends AppBaseController
      */
     public function update($id, UpdateFarmedTypeFertilizationNeedAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var FarmedTypeFertilizationNeed $farmedTypeFertilizationNeed */
         $farmedTypeFertilizationNeed = $this->farmedTypeFertilizationNeedRepository->find($id);
@@ -126,6 +177,7 @@ class FarmedTypeFertilizationNeedAPIController extends AppBaseController
         }
 
         $farmedTypeFertilizationNeed->delete();
+        $farmedTypeFertilizationNeed->nutElemValue()->delete();
 
         return $this->sendSuccess('Farmed Type Fertilization Need deleted successfully');
     }

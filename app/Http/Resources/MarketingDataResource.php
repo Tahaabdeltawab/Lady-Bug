@@ -17,8 +17,8 @@ class MarketingDataResource extends JsonResource
         return [
             'id' => $this->id,
             'farmed_type_id' => $this->farmed_type_id,
+            'country' => $this->country,
             'year' => $this->year,
-            'country_id' => $this->country_id,
             'production' => $this->production,
             'consumption' => $this->consumption,
             'export' => $this->export,

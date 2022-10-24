@@ -39,9 +39,9 @@ class LocationAPIController extends AppBaseController
 
     public function store(CreateLocationAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
-        $location = $this->locationRepository->save_localized($input);
+        $location = $this->locationRepository->create($input);
 
         return $this->sendResponse(new LocationResource($location), 'Location saved successfully');
     }
@@ -60,7 +60,7 @@ class LocationAPIController extends AppBaseController
 
     public function update($id, CreateLocationAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Location $location */
         $location = $this->locationRepository->find($id);
@@ -69,7 +69,7 @@ class LocationAPIController extends AppBaseController
             return $this->sendError('Location not found');
         }
 
-        $location = $this->locationRepository->save_localized($input, $id);
+        $location = $this->locationRepository->update($input, $id);
 
         return $this->sendResponse(new LocationResource($location), 'Location updated successfully');
     }

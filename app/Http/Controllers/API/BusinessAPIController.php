@@ -48,15 +48,9 @@ class BusinessAPIController extends AppBaseController
 {
     /** @var  BusinessRepository */
     private $businessRepository;
-    public $statuses;
     public function __construct(BusinessRepository $businessRepo)
     {
         $this->businessRepository = $businessRepo;
-        $this->statuses = [
-            ['id' => 0, 'name' => app()->getLocale()=='ar' ?  'لم يبدأ بعد' : 'have not started'],
-            ['id' => 1, 'name' => app()->getLocale()=='ar' ?  'تحت الإنشاء' : 'Under Construction'],
-            ['id' => 2, 'name' => app()->getLocale()=='ar' ?  'يمارس نشاطه' : 'Working']
-        ];
     }
 
     /**
@@ -662,6 +656,19 @@ class BusinessAPIController extends AppBaseController
         return $this->sendResponse(new BusinessResource($business), 'Business retrieved successfully');
     }
 
+    public function statuses($id = null)
+    {
+        $statuses =  [
+            ['id' => 0, 'name' => app()->getLocale() == 'ar' ?  'لم يبدأ بعد' : 'have not started'],
+            ['id' => 1, 'name' => app()->getLocale() == 'ar' ?  'تحت الإنشاء' : 'Under Construction'],
+            ['id' => 2, 'name' => app()->getLocale() == 'ar' ?  'يمارس نشاطه' : 'Working']
+        ];
+        if($id){
+            return collect($statuses)->firstWhere('id', $id);
+        }else
+            return $statuses;
+    }
+
     public function getRelations($business_field_id = null)
     {
         if($business_field_id == null){
@@ -675,7 +682,7 @@ class BusinessAPIController extends AppBaseController
         return $this->sendResponse([
             'agents' => $similar_dealers,
             'distributors' => $similar_dealers,
-            'statuses' => $this->statuses
+            'statuses' => $this->statuses()
         ], 'business relations retrieved successfully');
     }
 
@@ -683,7 +690,7 @@ class BusinessAPIController extends AppBaseController
     {
         try{
             DB::beginTransaction();
-            $input = $request->all();
+            $input = $request->validated();
 
             /** @var Business $business */
             $business = $this->businessRepository->find($id);

@@ -60,7 +60,7 @@ class ReportTypeAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $reportType = $this->reportTypeRepository->save_localized($input);
+        $reportType = $this->reportTypeRepository->create($input);
 
         return $this->sendResponse(new ReportTypeResource($reportType), 'Report Type saved successfully');
     }
@@ -105,7 +105,7 @@ class ReportTypeAPIController extends AppBaseController
             return $this->sendError('Report Type not found');
         }
 
-        $reportType = $this->reportTypeRepository->save_localized($input, $id);
+        $reportType = $this->reportTypeRepository->update($input, $id);
 
         return $this->sendResponse(new ReportTypeResource($reportType), 'ReportType updated successfully');
     }

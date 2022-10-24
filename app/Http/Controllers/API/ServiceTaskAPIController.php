@@ -39,13 +39,13 @@ class ServiceTaskAPIController extends AppBaseController
         return $this->sendResponse(['all' => ServiceTaskResource::collection($serviceTasks)], 'Service Tasks retrieved successfully');
     }
 
-   
+
     public function store(CreateServiceTaskAPIRequest $request)
     {
         $input = $request->validated();
         $input['done'] = 0;
 
-        $serviceTask = $this->serviceTaskRepository->save_localized($input);
+        $serviceTask = $this->serviceTaskRepository->create($input);
 
         return $this->sendResponse(new ServiceTaskResource($serviceTask), 'Service Task saved successfully');
     }
@@ -73,7 +73,7 @@ class ServiceTaskAPIController extends AppBaseController
             return $this->sendError('Service Task not found');
         }
 
-        $serviceTask = $this->serviceTaskRepository->save_localized($input, $id);
+        $serviceTask = $this->serviceTaskRepository->update($input, $id);
 
         return $this->sendResponse(new ServiceTaskResource($serviceTask), 'ServiceTask updated successfully');
     }

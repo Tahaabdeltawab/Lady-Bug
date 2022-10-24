@@ -30,6 +30,8 @@ class DatabaseSeeder extends Seeder
         // $this->call(CityDistrictSeeder::class);
         // $this->call(AdditionalRolesSeeder::class);
         // $this->call(PermissionSeeder::class);
-        $this->call(RatingQuestionSeeder::class);
+        // $this->call(RatingQuestionSeeder::class);
+        $this->call(CountrySeeder::class);
+        $this->call(IrrigationRateSeeder::class);
   }
 }

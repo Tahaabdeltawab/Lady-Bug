@@ -54,9 +54,8 @@ class MarketingDataAPIController extends AppBaseController
      */
     public function store(CreateMarketingDataAPIRequest $request)
     {
-        $input = $request->all();
-
-        $marketingData = $this->marketingDataRepository->create($input);
+        $input = $request->validated();
+        $marketingData = MarketingData::updateOrCreate(['farmed_type_id' => $request->farmed_type_id], $input);
 
         return $this->sendResponse(new MarketingDataResource($marketingData), 'Marketing Data saved successfully');
     }
@@ -81,6 +80,17 @@ class MarketingDataAPIController extends AppBaseController
         return $this->sendResponse(new MarketingDataResource($marketingData), 'Marketing Data retrieved successfully');
     }
 
+    public function by_ft_id($id)
+    {
+        $marketingData = MarketingData::where('farmed_type_id', $id)->first();
+
+        if (empty($marketingData)) {
+            return $this->sendError('Marketing Data not found');
+        }
+
+        return $this->sendResponse(new MarketingDataResource($marketingData), 'Marketing Data retrieved successfully');
+    }
+
     /**
      * Update the specified MarketingData in storage.
      * PUT/PATCH /marketingDatas/{id}
@@ -92,7 +102,7 @@ class MarketingDataAPIController extends AppBaseController
      */
     public function update($id, UpdateMarketingDataAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var MarketingData $marketingData */
         $marketingData = $this->marketingDataRepository->find($id);

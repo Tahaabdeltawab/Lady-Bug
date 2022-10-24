@@ -54,7 +54,7 @@ class PathogenGrowthStageAPIController extends AppBaseController
      */
     public function store(CreatePathogenGrowthStageAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $pathogenGrowthStage = $this->pathogenGrowthStageRepository->create($input);
 
@@ -92,7 +92,7 @@ class PathogenGrowthStageAPIController extends AppBaseController
      */
     public function update($id, UpdatePathogenGrowthStageAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var PathogenGrowthStage $pathogenGrowthStage */
         $pathogenGrowthStage = $this->pathogenGrowthStageRepository->find($id);

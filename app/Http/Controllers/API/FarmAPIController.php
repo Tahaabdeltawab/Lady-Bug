@@ -293,7 +293,7 @@ class FarmAPIController extends AppBaseController
             $location['city'] = $input["location"]["city"];
             $location['district'] = $input["location"]["district"];
             $location['details'] = $input["location"]["details"];
-            $saved_location = $this->locationRepository->save_localized($location);
+            $saved_location = $this->locationRepository->create($location);
             $farm_detail['location_id'] = $saved_location->id;
 
             //crops 1
@@ -329,7 +329,7 @@ class FarmAPIController extends AppBaseController
                 $soil_salt_detail["K"] = $input["soil"]["salt"]["K"];
                 $soil_salt_detail["Na"] = $input["soil"]["salt"]["Na"];
                 $soil_salt_detail["Na2CO3"] = $input["soil"]["salt"]["Na2CO3"];
-                $saved_soil_salt_detail = $this->saltDetailRepository->save_localized($soil_salt_detail);
+                $saved_soil_salt_detail = $this->saltDetailRepository->create($soil_salt_detail);
                 //soil
                 $soil_detail['salt_detail_id'] = $saved_soil_salt_detail->id;
                 $soil_detail['type'] = "soil";
@@ -339,7 +339,7 @@ class FarmAPIController extends AppBaseController
                 $soil_detail['salt_type_id'] = $input["soil"]["salt_type_id"];
                 $soil_detail['salt_concentration_value'] = $input["soil"]["salt_concentration_value"];
                 $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"] ?? null;
-                $saved_soil_detail = $this->chemicalDetailRepository->save_localized($soil_detail);
+                $saved_soil_detail = $this->chemicalDetailRepository->create($soil_detail);
                 $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
 
                 //irrigation.salt
@@ -354,7 +354,7 @@ class FarmAPIController extends AppBaseController
                 $irrigation_salt_detail["K"] = $input["irrigation"]["salt"]["K"];
                 $irrigation_salt_detail["Na"] = $input["irrigation"]["salt"]["Na"];
                 $irrigation_salt_detail["Na2CO3"] = $input["irrigation"]["salt"]["Na2CO3"];
-                $saved_irrigation_salt_detail = $this->saltDetailRepository->save_localized($irrigation_salt_detail);
+                $saved_irrigation_salt_detail = $this->saltDetailRepository->create($irrigation_salt_detail);
                 //irrigation
                 $irrigation_detail['salt_detail_id'] = $saved_irrigation_salt_detail->id;
                 $irrigation_detail['type'] = "irrigation";
@@ -364,7 +364,7 @@ class FarmAPIController extends AppBaseController
                 $irrigation_detail['salt_type_id'] = $input["irrigation"]["salt_type_id"];
                 $irrigation_detail['salt_concentration_value'] = $input["irrigation"]["salt_concentration_value"];
                 $irrigation_detail['salt_concentration_unit_id'] = $input["irrigation"]["salt_concentration_unit_id"] ?? null;
-                $saved_irrigation_detail = $this->chemicalDetailRepository->save_localized($irrigation_detail);
+                $saved_irrigation_detail = $this->chemicalDetailRepository->create($irrigation_detail);
                 $farm_detail['irrigation_water_detail_id'] = $saved_irrigation_detail->id;
             }
 
@@ -397,11 +397,11 @@ class FarmAPIController extends AppBaseController
                 $drink_salt_detail["K"] = $input["drink"]["salt"]["K"];
                 $drink_salt_detail["Na"] = $input["drink"]["salt"]["Na"];
                 $drink_salt_detail["Na2CO3"] = $input["drink"]["salt"]["Na2CO3"];
-                $saved_drink_salt_detail = $this->saltDetailRepository->save_localized($drink_salt_detail);
+                $saved_drink_salt_detail = $this->saltDetailRepository->create($drink_salt_detail);
                 $farm_detail['animal_drink_water_salt_detail_id'] = $saved_drink_salt_detail->id;
             }
 
-            $farm = $this->farmRepository->save_localized($farm_detail);
+            $farm = $this->farmRepository->create($farm_detail);
 
             //crops, trees, homeplants 1,2,3
             if($fat_id == 1 || $fat_id == 2 || $fat_id == 3)
@@ -494,7 +494,7 @@ class FarmAPIController extends AppBaseController
             $location['city'] = $input["location"]["city"];
             $location['district'] = $input["location"]["district"];
             $location['details'] = $input["location"]["details"];
-            $saved_location = $this->locationRepository->save_localized($location, $farm->location_id);
+            $saved_location = $this->locationRepository->update($location, $farm->location_id);
             $farm_detail['location_id'] = $saved_location->id;
 
             //crops 1
@@ -530,7 +530,7 @@ class FarmAPIController extends AppBaseController
                 $soil_salt_detail["K"] = $input["soil"]["salt"]["K"];
                 $soil_salt_detail["Na"] = $input["soil"]["salt"]["Na"];
                 $soil_salt_detail["Na2CO3"] = $input["soil"]["salt"]["Na2CO3"];
-                $saved_soil_salt_detail = $this->saltDetailRepository->save_localized($soil_salt_detail, $farm->soil_detail->salt_detail_id);
+                $saved_soil_salt_detail = $this->saltDetailRepository->update($soil_salt_detail, $farm->soil_detail->salt_detail_id);
                 //soil
                 $soil_detail['salt_detail_id'] = $saved_soil_salt_detail->id;
                 $soil_detail['type'] = "soil";
@@ -540,7 +540,7 @@ class FarmAPIController extends AppBaseController
                 $soil_detail['salt_type_id'] = $input["soil"]["salt_type_id"];
                 $soil_detail['salt_concentration_value'] = $input["soil"]["salt_concentration_value"];
                 $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"] ?? null;
-                $saved_soil_detail = $this->chemicalDetailRepository->save_localized($soil_detail, $farm->soil_detail_id);
+                $saved_soil_detail = $this->chemicalDetailRepository->update($soil_detail, $farm->soil_detail_id);
                 $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
 
                 //irrigation.salt
@@ -555,7 +555,7 @@ class FarmAPIController extends AppBaseController
                 $irrigation_salt_detail["K"] = $input["irrigation"]["salt"]["K"];
                 $irrigation_salt_detail["Na"] = $input["irrigation"]["salt"]["Na"];
                 $irrigation_salt_detail["Na2CO3"] = $input["irrigation"]["salt"]["Na2CO3"];
-                $saved_irrigation_salt_detail = $this->saltDetailRepository->save_localized($irrigation_salt_detail, $farm->irrigation_water_detail->salt_detail_id);
+                $saved_irrigation_salt_detail = $this->saltDetailRepository->update($irrigation_salt_detail, $farm->irrigation_water_detail->salt_detail_id);
                 //irrigation
                 $irrigation_detail['salt_detail_id'] = $saved_irrigation_salt_detail->id;
                 $irrigation_detail['type'] = "irrigation";
@@ -565,7 +565,7 @@ class FarmAPIController extends AppBaseController
                 $irrigation_detail['salt_type_id'] = $input["irrigation"]["salt_type_id"];
                 $irrigation_detail['salt_concentration_value'] = $input["irrigation"]["salt_concentration_value"];
                 $irrigation_detail['salt_concentration_unit_id'] = $input["irrigation"]["salt_concentration_unit_id"] ?? null;
-                $saved_irrigation_detail = $this->chemicalDetailRepository->save_localized($irrigation_detail, $farm->irrigation_water_detail_id);
+                $saved_irrigation_detail = $this->chemicalDetailRepository->update($irrigation_detail, $farm->irrigation_water_detail_id);
                 $farm_detail['irrigation_water_detail_id'] = $saved_irrigation_detail->id;
             }
 
@@ -598,11 +598,11 @@ class FarmAPIController extends AppBaseController
                 $drink_salt_detail["K"] = $input["drink"]["salt"]["K"];
                 $drink_salt_detail["Na"] = $input["drink"]["salt"]["Na"];
                 $drink_salt_detail["Na2CO3"] = $input["drink"]["salt"]["Na2CO3"];
-                $saved_drink_salt_detail = $this->saltDetailRepository->save_localized($drink_salt_detail, $farm->animal_drink_water_salt_detail_id);
+                $saved_drink_salt_detail = $this->saltDetailRepository->update($drink_salt_detail, $farm->animal_drink_water_salt_detail_id);
                 $farm_detail['animal_drink_water_salt_detail_id'] = $saved_drink_salt_detail->id;
             }
 
-            $farm = $this->farmRepository->save_localized($farm_detail, $id);
+            $farm = $this->farmRepository->update($farm_detail, $id);
 
             //crops, trees, homeplants 1,2,3
             if($fat_id == 1 || $fat_id == 2 || $fat_id == 3)

@@ -45,7 +45,7 @@ class DistrictAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $district = $this->districtRepository->save_localized($input);
+        $district = $this->districtRepository->create($input);
 
         return $this->sendResponse(new DistrictResource($district), 'District saved successfully');
     }
@@ -73,7 +73,7 @@ class DistrictAPIController extends AppBaseController
             return $this->sendError('District not found');
         }
 
-        $district = $this->districtRepository->save_localized($input, $id);
+        $district = $this->districtRepository->update($input, $id);
 
         return $this->sendResponse(new DistrictResource($district), 'District updated successfully');
     }

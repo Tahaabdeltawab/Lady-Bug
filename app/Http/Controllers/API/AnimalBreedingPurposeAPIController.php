@@ -45,7 +45,7 @@ class AnimalBreedingPurposeAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $animalBreedingPurpose = $this->animalBreedingPurposeRepository->save_localized($input);
+        $animalBreedingPurpose = $this->animalBreedingPurposeRepository->create($input);
 
         return $this->sendResponse(new AnimalBreedingPurposeResource($animalBreedingPurpose), 'Animal Breeding Purpose saved successfully');
     }
@@ -73,7 +73,7 @@ class AnimalBreedingPurposeAPIController extends AppBaseController
             return $this->sendError('Animal Breeding Purpose not found');
         }
 
-        $animalBreedingPurpose = $this->animalBreedingPurposeRepository->save_localized($input, $id);
+        $animalBreedingPurpose = $this->animalBreedingPurposeRepository->update($input, $id);
 
         return $this->sendResponse(new AnimalBreedingPurposeResource($animalBreedingPurpose), 'AnimalBreedingPurpose updated successfully');
     }

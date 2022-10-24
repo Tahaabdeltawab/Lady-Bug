@@ -41,8 +41,8 @@ class MeasuringUnit extends Model
      * @var array
      */
     public static $rules = [
-        'name_ar_localized' => 'required|max:200',
-        'name_en_localized' => 'required|max:200',
+        'name.ar' => 'required|max:200',
+        'name.en' => 'required|max:200',
         'code' => 'required|max:200',
         'measurable' => 'required|max:200'
     ];

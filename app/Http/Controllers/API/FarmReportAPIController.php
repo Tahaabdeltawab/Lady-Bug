@@ -82,7 +82,7 @@ class FarmReportAPIController extends AppBaseController
             if(!auth()->user()->hasPermission("create-report", $business))
                 return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
-            $input = $request->all();
+            $input = $request->validated();
             $input['user_id'] = auth()->id();
             $farmReport = $this->farmReportRepository->create($input);
 
@@ -138,7 +138,7 @@ class FarmReportAPIController extends AppBaseController
      */
     public function update($id, UpdateFarmReportAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var FarmReport $farmReport */
         $farmReport = $this->farmReportRepository->find($id);

@@ -7,7 +7,7 @@ class DocsFarmAPIController
     {
         /**
          * get the weather in selected coordinates
-         * accepts lat and lon of the place 
+         * accepts lat and lon of the place
          */
     }
 
@@ -54,7 +54,7 @@ class DocsFarmAPIController
     {
         /**
          * store a farm in the database
-         * 
+         *
          */
     }
 
@@ -93,14 +93,14 @@ class DocsFarmAPIController
     public function first_attach_farm_role(Request $request)
     {
         /**
-         * attach a farm role to a user who has a valid invitation link   
+         * attach a farm role to a user who has a valid invitation link
          **/
     }
 
     public function decline_farm_invitation(Request $request)
     {
        /**
-        * decline farm invitation by setting its 'accepted' value to false 
+        * decline farm invitation by setting its 'accepted' value to false
         */
     }
 

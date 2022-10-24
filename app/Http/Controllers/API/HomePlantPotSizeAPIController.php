@@ -43,7 +43,7 @@ class HomePlantPotSizeAPIController extends AppBaseController
 
     public function store(CreateHomePlantPotSizeAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $homePlantPotSize = $this->homePlantPotSizeRepository->create($input);
 
@@ -64,7 +64,7 @@ class HomePlantPotSizeAPIController extends AppBaseController
 
     public function update($id, UpdateHomePlantPotSizeAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var HomePlantPotSize $homePlantPotSize */
         $homePlantPotSize = $this->homePlantPotSizeRepository->find($id);

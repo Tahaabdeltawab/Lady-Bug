@@ -17,8 +17,8 @@ class FarmedTypeExtrasResource extends JsonResource
         return [
             'id' => $this->id,
             'farmed_type_id' => $this->farmed_type_id,
-            'irrigation_rate_id' => $this->irrigation_rate_id,
-            'seedling_type' => $this->seedling_type,
+            'irrigation_rate' => $this->irrigationRate,
+            'seedling_type' => @app('\App\Http\Controllers\API\FarmedTypeExtrasAPIController')->seedling_types($this->seedling_type),
             'scientific_name' => $this->scientific_name,
             'history' => $this->history,
             'producer' => $this->producer,

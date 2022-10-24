@@ -45,7 +45,7 @@ class WeatherNoteAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $weatherNote = $this->weatherNoteRepository->save_localized($input);
+        $weatherNote = $this->weatherNoteRepository->create($input);
 
         return $this->sendResponse(new WeatherNoteResource($weatherNote), 'Weather Note saved successfully');
     }
@@ -73,7 +73,7 @@ class WeatherNoteAPIController extends AppBaseController
             return $this->sendError('Weather Note not found');
         }
 
-        $weatherNote = $this->weatherNoteRepository->save_localized($input, $id);
+        $weatherNote = $this->weatherNoteRepository->update($input, $id);
 
         return $this->sendResponse(new WeatherNoteResource($weatherNote), 'WeatherNote updated successfully');
     }

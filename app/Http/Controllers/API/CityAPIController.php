@@ -45,7 +45,7 @@ class CityAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $city = $this->cityRepository->save_localized($input);
+        $city = $this->cityRepository->create($input);
 
         return $this->sendResponse(new CityResource($city), 'City saved successfully');
     }
@@ -73,7 +73,7 @@ class CityAPIController extends AppBaseController
             return $this->sendError('City not found');
         }
 
-        $city = $this->cityRepository->save_localized($input, $id);
+        $city = $this->cityRepository->update($input, $id);
 
         return $this->sendResponse(new CityResource($city), 'City updated successfully');
     }

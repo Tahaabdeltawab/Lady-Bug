@@ -54,7 +54,7 @@ class AcAPIController extends AppBaseController
      */
     public function store(CreateAcAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $ac = $this->acRepository->create($input);
 
@@ -92,7 +92,7 @@ class AcAPIController extends AppBaseController
      */
     public function update($id, UpdateAcAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Ac $ac */
         $ac = $this->acRepository->find($id);

@@ -54,9 +54,8 @@ class TaxonomyAPIController extends AppBaseController
      */
     public function store(CreateTaxonomyAPIRequest $request)
     {
-        $input = $request->all();
-
-        $taxonomy = $this->taxonomyRepository->create($input);
+        $input = $request->validated();
+        $taxonomy = Taxonomy::updateOrCreate(['farmed_type_id' => $request->farmed_type_id], $input);
 
         return $this->sendResponse(new TaxonomyResource($taxonomy), 'Taxonomy saved successfully');
     }
@@ -81,6 +80,17 @@ class TaxonomyAPIController extends AppBaseController
         return $this->sendResponse(new TaxonomyResource($taxonomy), 'Taxonomy retrieved successfully');
     }
 
+    public function by_ft_id($id)
+    {
+        $taxonomy = Taxonomy::where('farmed_type_id', $id)->first();
+
+        if (empty($taxonomy)) {
+            return $this->sendError('taxonomy not found');
+        }
+
+        return $this->sendResponse(new TaxonomyResource($taxonomy), 'taxonomy retrieved successfully');
+    }
+
     /**
      * Update the specified Taxonomy in storage.
      * PUT/PATCH /taxonomies/{id}
@@ -92,7 +102,7 @@ class TaxonomyAPIController extends AppBaseController
      */
     public function update($id, UpdateTaxonomyAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Taxonomy $taxonomy */
         $taxonomy = $this->taxonomyRepository->find($id);

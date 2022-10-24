@@ -54,9 +54,8 @@ class FarmedTypeNutValAPIController extends AppBaseController
      */
     public function store(CreateFarmedTypeNutValAPIRequest $request)
     {
-        $input = $request->all();
-
-        $farmedTypeNutVal = $this->farmedTypeNutValRepository->create($input);
+        $input = $request->validated();
+        $farmedTypeNutVal = FarmedTypeNutVal::updateOrCreate(['farmed_type_id' => $request->farmed_type_id], $input);
 
         return $this->sendResponse(new FarmedTypeNutValResource($farmedTypeNutVal), 'Farmed Type Nut Val saved successfully');
     }
@@ -81,6 +80,17 @@ class FarmedTypeNutValAPIController extends AppBaseController
         return $this->sendResponse(new FarmedTypeNutValResource($farmedTypeNutVal), 'Farmed Type Nut Val retrieved successfully');
     }
 
+    public function by_ft_id($id)
+    {
+        $farmedTypeNutVal = FarmedTypeNutVal::where('farmed_type_id', $id)->first();
+
+        if (empty($farmedTypeNutVal)) {
+            return $this->sendError('Farmed Type Nutritional Values not found');
+        }
+
+        return $this->sendResponse(new FarmedTypeNutValResource($farmedTypeNutVal), 'Farmed Type Nutritional Values retrieved successfully');
+    }
+
     /**
      * Update the specified FarmedTypeNutVal in storage.
      * PUT/PATCH /farmedTypeNutVals/{id}
@@ -92,7 +102,7 @@ class FarmedTypeNutValAPIController extends AppBaseController
      */
     public function update($id, UpdateFarmedTypeNutValAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var FarmedTypeNutVal $farmedTypeNutVal */
         $farmedTypeNutVal = $this->farmedTypeNutValRepository->find($id);

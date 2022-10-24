@@ -48,12 +48,9 @@ class CommentAPIController extends AppBaseController
     {
         try
         {
+            $data = $request->validated();
             $data['commenter_id'] = auth()->id();
-            $data['content'] = $request->content;
-            $data['post_id'] = $request->post_id;
-            $data['parent_id'] = $request->parent_id;
-
-            $comment = $this->commentRepository->save_localized($data);
+            $comment = $this->commentRepository->create($data);
             $comment->post->updateReactions();
             if($assets = $request->file('assets'))
             {
@@ -173,7 +170,7 @@ class CommentAPIController extends AppBaseController
 
             $data['content'] = $request->content;
 
-            $comment = $this->commentRepository->save_localized($data, $id);
+            $comment = $this->commentRepository->update($data, $id);
 
             if($assets = $request->file('assets'))
             {

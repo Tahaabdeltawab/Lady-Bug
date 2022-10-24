@@ -75,17 +75,17 @@ class FarmedTypeExtras extends Model
      * @var array
      */
     public static $rules = [
-        'farmed_type_id' => 'required',
-        'irrigation_rate_id' => 'nullable',
+        'farmed_type_id' => 'required|exists:farmed_types,id',
+        'irrigation_rate_id' => 'nullable|exists:irrigation_rates,id',
         'seedling_type' => 'nullable|in:seedlings,seeds',
-        'scientific_name' => 'nullable',
-        'history' => 'nullable',
-        'producer' => 'nullable',
-        'description' => 'nullable',
-        'cold_hours' => 'nullable',
-        'illumination_hours' => 'nullable',
-        'seeds_rate' => 'nullable',
-        'production_rate' => 'nullable'
+        'scientific_name' => 'nullable|max:255',
+        'history' => 'nullable|max:255',
+        'producer' => 'nullable|max:255',
+        'description' => 'nullable|max:255',
+        'cold_hours' => 'nullable|numeric',
+        'illumination_hours' => 'nullable|numeric',
+        'seeds_rate' => 'nullable|numeric',
+        'production_rate' => 'nullable|numeric'
     ];
 
     /**

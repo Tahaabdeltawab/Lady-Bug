@@ -9,6 +9,8 @@ use App\Repositories\FarmedTypeExtrasRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmedTypeExtrasResource;
+use App\Models\FarmedType;
+use App\Models\IrrigationRate;
 use Response;
 
 /**
@@ -44,6 +46,24 @@ class FarmedTypeExtrasAPIController extends AppBaseController
         return $this->sendResponse(FarmedTypeExtrasResource::collection($farmedTypeExtras), 'Farmed Type Extras retrieved successfully');
     }
 
+    public function seedling_types($value = null)
+    {
+        $types = [
+            ['value' => 'seeds', 'name' => app()->getLocale() == 'ar' ?  'بذور' : 'Seeds'],
+            ['value' => 'seedlings', 'name' => app()->getLocale() == 'ar' ?  'شتلات' : 'Seedlings'],
+        ];
+
+        if($value){
+            return collect($types)->firstWhere('value', $value);
+        }else
+            return $types;
+    }
+    public function getRelations()
+    {
+        $data['irrigation_rates'] = IrrigationRate::all();
+        $data['seedling_types'] = $this->seedling_types();
+        return $this->sendResponse($data, 'relations retrieved');
+    }
     /**
      * Store a newly created FarmedTypeExtras in storage.
      * POST /farmedTypeExtras
@@ -54,9 +74,8 @@ class FarmedTypeExtrasAPIController extends AppBaseController
      */
     public function store(CreateFarmedTypeExtrasAPIRequest $request)
     {
-        $input = $request->all();
-
-        $farmedTypeExtras = $this->farmedTypeExtrasRepository->create($input);
+        $input = $request->validated();
+        $farmedTypeExtras = FarmedTypeExtras::updateOrCreate(['farmed_type_id' => $request->farmed_type_id], $input);
 
         return $this->sendResponse(new FarmedTypeExtrasResource($farmedTypeExtras), 'Farmed Type Extras saved successfully');
     }
@@ -81,6 +100,17 @@ class FarmedTypeExtrasAPIController extends AppBaseController
         return $this->sendResponse(new FarmedTypeExtrasResource($farmedTypeExtras), 'Farmed Type Extras retrieved successfully');
     }
 
+    public function by_ft_id($id)
+    {
+        $farmedTypeExtras = FarmedTypeExtras::where('farmed_type_id', $id)->first();
+
+        if (empty($farmedTypeExtras)) {
+            return $this->sendError('Farmed Type Extras not found');
+        }
+
+        return $this->sendResponse(new FarmedTypeExtrasResource($farmedTypeExtras), 'Farmed Type Extras retrieved successfully');
+    }
+
     /**
      * Update the specified FarmedTypeExtras in storage.
      * PUT/PATCH /farmedTypeExtras/{id}
@@ -92,7 +122,7 @@ class FarmedTypeExtrasAPIController extends AppBaseController
      */
     public function update($id, UpdateFarmedTypeExtrasAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var FarmedTypeExtras $farmedTypeExtras */
         $farmedTypeExtras = $this->farmedTypeExtrasRepository->find($id);

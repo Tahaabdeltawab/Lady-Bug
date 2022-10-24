@@ -272,7 +272,7 @@ class PostAPIController extends AppBaseController
             $data['solved'] = $request->solved;
             $data['author_id'] = auth()->id();
 
-            $post = $this->postRepository->save_localized($data);
+            $post = $this->postRepository->create($data);
 
             if($assets = $request->file('assets'))
             {
@@ -448,7 +448,7 @@ class PostAPIController extends AppBaseController
             $data['post_type_id'] = $request->post_type_id;
             $data['solved'] = $request->solved;
 
-            $post = $this->postRepository->save_localized($data, $id);
+            $post = $this->postRepository->update($data, $id);
 
             if($assets = $request->file('assets'))
             {

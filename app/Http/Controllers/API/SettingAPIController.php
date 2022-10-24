@@ -55,7 +55,7 @@ class SettingAPIController extends AppBaseController
      */
     public function store(CreateSettingAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $setting = $this->settingRepository->create($input);
 
@@ -93,7 +93,7 @@ class SettingAPIController extends AppBaseController
      */
     public function update($id, UpdateSettingAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Setting $setting */
         $setting = $this->settingRepository->find($id);

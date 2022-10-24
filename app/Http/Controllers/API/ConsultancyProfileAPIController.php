@@ -69,7 +69,7 @@ class ConsultancyProfileAPIController extends AppBaseController
             if(auth()->user()->consultancyProfile()->exists())
                 return $this->sendError('Already registerd before');
 
-            $input = $request->all();
+            $input = $request->validated();
             $input['user_id'] = auth()->id();
             $consultancyProfile = $this->consultancyProfileRepository->create($input);
 
@@ -140,7 +140,7 @@ class ConsultancyProfileAPIController extends AppBaseController
      */
     public function update($id, UpdateConsultancyProfileAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var ConsultancyProfile $consultancyProfile */
         $consultancyProfile = $this->consultancyProfileRepository->find($id);
@@ -164,7 +164,7 @@ class ConsultancyProfileAPIController extends AppBaseController
 
     public function update_my_consultancy_profile(UpdateConsultancyProfileAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $consultancyProfile = auth()->user()->consultancyProfile;
 

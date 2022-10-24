@@ -41,8 +41,7 @@ class FarmActivityTypeAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $farmActivityType = $this->farmActivityTypeRepository->save_localized($input);
-        // $farmActivityType = $this->farmActivityTypeRepository->save_localized($input);
+        $farmActivityType = $this->farmActivityTypeRepository->create($input);
 
         return $this->sendResponse(new FarmActivityTypeResource($farmActivityType), 'Farm Activity Type saved successfully');
     }
@@ -70,8 +69,7 @@ class FarmActivityTypeAPIController extends AppBaseController
             return $this->sendError('Farm Activity Type not found');
         }
 
-        $farmActivityType = $this->farmActivityTypeRepository->save_localized($input, $id);
-        // $farmActivityType = $this->farmActivityTypeRepository->save_localized($input, $id);
+        $farmActivityType = $this->farmActivityTypeRepository->update($input, $id);
 
         return $this->sendResponse(new FarmActivityTypeResource($farmActivityType), 'FarmActivityType updated successfully');
     }

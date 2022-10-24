@@ -45,7 +45,7 @@ class InformationAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $information = $this->informationRepository->save_localized($input);
+        $information = $this->informationRepository->create($input);
 
         return $this->sendResponse(new InformationResource($information), 'Information saved successfully');
     }
@@ -73,7 +73,7 @@ class InformationAPIController extends AppBaseController
             return $this->sendError('Information not found');
         }
 
-        $information = $this->informationRepository->save_localized($input, $id);
+        $information = $this->informationRepository->update($input, $id);
 
         return $this->sendResponse(new InformationResource($information), 'Information updated successfully');
     }

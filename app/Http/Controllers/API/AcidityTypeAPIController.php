@@ -43,9 +43,9 @@ class AcidityTypeAPIController extends AppBaseController
 
     public function store(CreateAcidityTypeAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
-        $acidityType = $this->acidityTypeRepository->save_localized($input);
+        $acidityType = $this->acidityTypeRepository->create($input);
 
         return $this->sendResponse(new AcidityTypeResource($acidityType), 'Acidity Type saved successfully');
     }
@@ -64,7 +64,7 @@ class AcidityTypeAPIController extends AppBaseController
 
     public function update($id, CreateAcidityTypeAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var AcidityType $acidityType */
         $acidityType = $this->acidityTypeRepository->find($id);
@@ -73,7 +73,7 @@ class AcidityTypeAPIController extends AppBaseController
             return $this->sendError('Acidity Type not found');
         }
 
-        $acidityType = $this->acidityTypeRepository->save_localized($input, $id);
+        $acidityType = $this->acidityTypeRepository->update($input, $id);
 
         return $this->sendResponse(new AcidityTypeResource($acidityType), 'AcidityType updated successfully');
     }

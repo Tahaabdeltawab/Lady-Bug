@@ -45,7 +45,7 @@ class IrrigationWayAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $irrigationWay = $this->irrigationWayRepository->save_localized($input);
+        $irrigationWay = $this->irrigationWayRepository->create($input);
 
         return $this->sendResponse(new IrrigationWayResource($irrigationWay), 'Irrigation Way saved successfully');
     }
@@ -73,7 +73,7 @@ class IrrigationWayAPIController extends AppBaseController
             return $this->sendError('Irrigation Way not found');
         }
 
-        $irrigationWay = $this->irrigationWayRepository->save_localized($input, $id);
+        $irrigationWay = $this->irrigationWayRepository->update($input, $id);
 
         return $this->sendResponse(new IrrigationWayResource($irrigationWay), 'IrrigationWay updated successfully');
     }

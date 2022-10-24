@@ -60,7 +60,7 @@ class ProductAdAPIController extends AppBaseController
             return $this->sendSuccess('ads created successfully');
         }
 
-        $input = $request->all();
+        $input = $request->validated();
 
         $productAd = $this->productAdRepository->create($input);
 
@@ -98,7 +98,7 @@ class ProductAdAPIController extends AppBaseController
      */
     public function update($id, UpdateProductAdAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var ProductAd $productAd */
         $productAd = $this->productAdRepository->find($id);

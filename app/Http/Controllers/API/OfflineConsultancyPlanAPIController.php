@@ -54,7 +54,7 @@ class OfflineConsultancyPlanAPIController extends AppBaseController
      */
     public function store(CreateOfflineConsultancyPlanAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $offlineConsultancyPlan = $this->offlineConsultancyPlanRepository->create($input);
 
@@ -92,7 +92,7 @@ class OfflineConsultancyPlanAPIController extends AppBaseController
      */
     public function update($id, UpdateOfflineConsultancyPlanAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var OfflineConsultancyPlan $offlineConsultancyPlan */
         $offlineConsultancyPlan = $this->offlineConsultancyPlanRepository->find($id);

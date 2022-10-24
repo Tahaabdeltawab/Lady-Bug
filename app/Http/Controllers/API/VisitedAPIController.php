@@ -54,7 +54,7 @@ class VisitedAPIController extends AppBaseController
      */
     public function store(CreateVisitedAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         $visited = $this->visitedRepository->create($input);
 
@@ -92,7 +92,7 @@ class VisitedAPIController extends AppBaseController
      */
     public function update($id, UpdateVisitedAPIRequest $request)
     {
-        $input = $request->all();
+        $input = $request->validated();
 
         /** @var Visited $visited */
         $visited = $this->visitedRepository->find($id);

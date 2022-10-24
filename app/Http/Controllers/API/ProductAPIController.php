@@ -157,7 +157,7 @@ class ProductAPIController extends AppBaseController
                         return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
                 }
 
-                $input = $request->all();
+                $input = $request->validated();
                 $input['seller_id'] = auth()->id();
                 $input['sold'] = 0;
                 // if insecticide
@@ -269,7 +269,7 @@ class ProductAPIController extends AppBaseController
                     return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
             }
 
-            $input = $request->all();
+            $input = $request->validated();
 
              // if insecticide
              if($request->product_type_id == 1 && $insecticideData = $request->insecticide){
@@ -322,7 +322,7 @@ class ProductAPIController extends AppBaseController
                 }
             }
 
-            $product = $this->productRepository->save_localized($input, $id);
+            $product = $this->productRepository->update($input, $id);
 
             $product->farmedTypes()->sync($request->farmed_types);
             $product->shippingCities()->detach();

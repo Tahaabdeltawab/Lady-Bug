@@ -719,7 +719,7 @@ class UserAPIController extends AppBaseController
 
 
             DB::beginTransaction();
-            $user = $this->userRepository->save_localized($to_save, $id);
+            $user = $this->userRepository->update($to_save, $id);
 
             if (isset($request->roles))
             {
@@ -737,9 +737,11 @@ class UserAPIController extends AppBaseController
 
             if($photo = $request->file('photo'))
             {
-                $user->asset->delete();
+                if($user->asset)
+                    $user->asset->delete();
                 $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo);
                 $user->asset()->create($oneasset);
+                $user->load('asset');
             }
 
             DB::commit();
@@ -762,7 +764,7 @@ class UserAPIController extends AppBaseController
             $user = auth()->user();
             $input = $request->validated();
             DB::beginTransaction();
-            $user = $this->userRepository->save_localized($input, $user->id);
+            $user = $this->userRepository->update($input, $user->id);
             $arrays = ['educations', 'careers', 'residences', 'visiteds'];
             foreach($arrays as $prop){
                 $user->$prop()->delete();
@@ -777,9 +779,10 @@ class UserAPIController extends AppBaseController
                     $user->asset->delete();
                 $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo);
                 $user->asset()->create($oneasset);
+                $user->load('asset');
             }
             DB::commit();
-            return $this->sendResponse(new UserProfileResource(User::find($user->id)), __('Success'));
+            return $this->sendResponse(new UserProfileResource($user), __('Success'));
         }
         catch(\Throwable $th)
         {

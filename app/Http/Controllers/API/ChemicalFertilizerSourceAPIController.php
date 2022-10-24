@@ -45,7 +45,7 @@ class ChemicalFertilizerSourceAPIController extends AppBaseController
     {
         $input = $request->validated();
 
-        $chemicalFertilizerSource = $this->chemicalFertilizerSourceRepository->save_localized($input);
+        $chemicalFertilizerSource = $this->chemicalFertilizerSourceRepository->create($input);
 
         return $this->sendResponse(new ChemicalFertilizerSourceResource($chemicalFertilizerSource), 'Chemical Fertilizer Source saved successfully');
     }
@@ -73,7 +73,7 @@ class ChemicalFertilizerSourceAPIController extends AppBaseController
             return $this->sendError('Chemical Fertilizer Source not found');
         }
 
-        $chemicalFertilizerSource = $this->chemicalFertilizerSourceRepository->save_localized($input, $id);
+        $chemicalFertilizerSource = $this->chemicalFertilizerSourceRepository->update($input, $id);
 
         return $this->sendResponse(new ChemicalFertilizerSourceResource($chemicalFertilizerSource), 'ChemicalFertilizerSource updated successfully');
     }

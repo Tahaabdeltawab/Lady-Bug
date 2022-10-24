@@ -26,10 +26,8 @@ class CreateSaltTypeAPIRequest extends APIRequest
      */
     public function rules(Request $request)
     {
-        $id = $this->salt_type ?? null;
-        return [
-            'name_ar_localized' => ['required','max:200', new UniqueTranslationRule($request->all(), 'salt_types', 'type', $id)],
-            'name_en_localized' => ['required','max:200', new UniqueTranslationRule($request->all(), 'salt_types', 'type', $id)],
+        return[
+            'name' => ['required'],
             'type' => ['required']
         ];
     }
