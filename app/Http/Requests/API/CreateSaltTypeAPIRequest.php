@@ -27,8 +27,8 @@ class CreateSaltTypeAPIRequest extends APIRequest
     public function rules(Request $request)
     {
         return[
-            'name' => ['required'],
-            'type' => ['required']
+            'name' => 'required',
+            'type' => 'required'
         ];
     }
 }

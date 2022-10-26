@@ -30,8 +30,8 @@ class UpdateFarmingWayAPIRequest extends APIRequest
         // print(json_encode($this->route())); //from this, you can know the parameter name {farming_way}
         // $id = $this->farming_way ?? null;
         return[
-            'name' => ['required'],
-            'type' => ['required']
+            'name' => 'required',
+            'type' => 'required'
         ];
     }
 }

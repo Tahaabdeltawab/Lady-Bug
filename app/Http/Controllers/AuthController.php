@@ -123,15 +123,15 @@ class AuthController extends AppBaseController
         {
             $password_required = $request->provider ? 'nullable' : 'required'; // if social reg., don't require password
             $validator = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'max:255'],
-                "email" => ["required", "string", "email", "max:255", "unique:users,email," . null . ",id"],
-                "mobile" => ["required", "string", "max:255", "unique:users,mobile," . null . ",id"],
-                'password' => [$password_required, 'string', 'min:8', 'confirmed'],
-                'human_job_id' => ['required', 'exists:human_jobs,id'],
-                'photo' => ['nullable', 'max:5000', 'image'],
-                'fcm' => ['nullable'],
-                'provider' => ['nullable'],
-                'avatar' => ['nullable'],
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email,' . null . ',id',
+                'mobile' => 'required|string|max:255|unique:users,mobile,' . null . ',id',
+                'password' => $password_required . '|string|min:8|confirmed',
+                'human_job_id' => 'required|exists:human_jobs,id',
+                'photo' => 'nullable|max:5000|image',
+                'fcm' => 'nullable',
+                'provider' => 'nullable',
+                'avatar' => 'nullable',
             ]);
 
             if ($validator->fails()) {
@@ -236,9 +236,9 @@ class AuthController extends AppBaseController
     {
         //make validation
         $validator = Validator::make($request->all(), [
-            'code' => ['required'],
-            'mobile' => ['required'],
-            'password' => ["required", "string", "min:8", "confirmed"],
+            'code' => 'required',
+            'mobile' => 'required',
+            'password' => 'required|string|min:8|confirmed',
         ]);
 
         if ($validator->fails())

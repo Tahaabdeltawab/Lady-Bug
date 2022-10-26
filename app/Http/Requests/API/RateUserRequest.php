@@ -24,9 +24,9 @@ class RateUserRequest extends APIRequest
     public function rules()
     {
         return [
-            'rating' => ['required', 'numeric', 'max:5', 'min:1'],
-            'user' => ['required', 'integer', 'exists:users,id'],
-            'questions' => ['nullable', 'array'],
+            'rating' => 'required|numeric|max:5|min:1',
+            'user' => 'required|integer|exists:users,id',
+            'questions' => 'nullable|array',
         ];
     }
 }

@@ -29,7 +29,7 @@ class CreateFarmingWayAPIRequest extends APIRequest
         return[
             'name.ar' => 'required|max:200',
             'name.en' => 'required|max:200',
-            'type' => ['required', 'in:farming,breeding']
+            'type' => 'required|in:farming,breeding'
         ];
     }
 }

@@ -56,9 +56,9 @@ class RoleAPIController extends AppBaseController
         try
         {
             $validator = Validator::make($request->all(), [
-                'role' => ['integer', 'required', 'exists:roles,id'],
-                "permissions" => ['nullable', 'array'],
-                'permissions.*' => ["nullable", "exists:permissions,id"],
+                'role' => 'integer|required|exists:roles,id',
+                'permissions' => 'nullable|array',
+                'permissions.*' => 'nullable|exists:permissions,id',
             ]);
 
             if ($validator->fails()) {

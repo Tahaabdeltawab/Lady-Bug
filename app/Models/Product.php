@@ -72,10 +72,10 @@ class Product extends Model
         'district_id'                   => 'required|exists:districts,id',
         'seller_mobile'                 => 'required|max:20',
         'other_links'                   => 'nullable',
-        'internal_assets'               => ['nullable','array'],
-        'external_assets'               => ['nullable','array'],
-        'internal_assets.*'             => ['nullable', 'max:5000', 'image'],
-        'external_assets.*'             => ['nullable', 'max:5000', 'image']
+        'internal_assets'               => 'nullable|array',
+        'external_assets'               => 'nullable|array',
+        'internal_assets.*'             => 'nullable|max:5000|image',
+        'external_assets.*'             => 'nullable|max:5000|image'
     ];
 
     protected static function booted()

@@ -48,8 +48,8 @@ class FarmedTypeGinfo extends Model
         'content.en' => 'required',
         'farmed_type_id' => 'required|exists:farmed_types,id',
         'farmed_type_stage_id' => 'required|exists:farmed_type_stages,id',
-        'assets' => ['nullable','array'],
-        'assets.*' => ['nullable', 'max:5000', 'image']
+        'assets' => 'nullable|array',
+        'assets.*' => 'nullable|max:5000|image'
     ];
 
     public function assets()

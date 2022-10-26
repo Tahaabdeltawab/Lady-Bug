@@ -25,8 +25,8 @@ class RateProductRequest extends APIRequest
     public function rules()
     {
         return [
-            'rating' => ['required', 'numeric', 'max:5', 'min:1'],
-            'product' => ['required', 'integer', 'exists:products,id']
+            'rating' => 'required|numeric|max:5|min:1',
+            'product' => 'required|integer|exists:products,id'
         ];
     }
 }

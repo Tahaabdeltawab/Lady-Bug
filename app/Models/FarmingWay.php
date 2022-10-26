@@ -39,8 +39,8 @@ class FarmingWay extends Model
      * @var array
      */
     // public static $rules = [
-    //     'name' => ['required','max:200'],
-    //     'type' => ['required', 'in:farming,breeding']
+    //     'name' => 'required|max:200',
+    //     'type' => 'required|in:farming,breeding'
     // ];
 
 }

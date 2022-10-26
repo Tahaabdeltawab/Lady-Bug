@@ -26,21 +26,21 @@ class UpdateProfileAPIRequest extends APIRequest
     {
         $id = auth()->id();
         return [
-            'photo' => ['nullable', 'max:5000', 'image'],
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', "unique:users,email,$id,id"],
-            'human_job_id' => ['required', 'exists:human_jobs,id'],
-            'bio' => ['nullable', 'string', 'max:255'],
-            'dob' => ['nullable', 'date_format:Y-m-d'],
-            'marital_status' => ['nullable'],
-            'educations' => ['nullable', 'array'],
-            'careers' => ['nullable', 'array'],
-            'residences' => ['nullable', 'array'],
-            'visiteds' => ['nullable', 'array'],
+            'photo' => 'nullable|max:5000|image',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,'.$id.',id',
+            'human_job_id' => 'required|exists:human_jobs,id',
+            'bio' => 'nullable|string|max:255',
+            'dob' => 'nullable|date_format:Y-m-d',
+            'marital_status' => 'nullable',
+            'educations' => 'nullable|array',
+            'careers' => 'nullable|array',
+            'residences' => 'nullable|array',
+            'visiteds' => 'nullable|array',
 
-            'mobile' => ['nullable', 'string', 'max:255', "unique:users,mobile,$id,id"],
-            'income' => ['nullable', 'integer', 'min:0'],
-            'city_id' => ['nullable', 'exists:cities,id'],
+            'mobile' => 'nullable|string|max:255|unique:users,mobile,'.$id.',id',
+            'income' => 'nullable|integer|min:0',
+            'city_id' => 'nullable|exists:cities,id',
         ];
     }
 }

@@ -482,14 +482,14 @@ class UserAPIController extends AppBaseController
         try
         {
             $validator = Validator::make($request->all(), [
-                'name' => ['required', 'string', 'max:255'],
-                "email" => ["required", "string", "email", "max:255", "unique:users,email,".null.",id"],
-                "mobile" => ["required", "string", "max:255", "unique:users,mobile,".null.",id"],
-                'password' => ['required', 'string', 'min:8', 'confirmed'],
-                'human_job_id' => ['nullable', 'exists:human_jobs,id'],
-                'photo' => ['nullable', 'max:5000', 'image'],
-                'roles'   => ['nullable', 'array'],
-                'roles.*' => ['nullable', 'exists:roles,id'],
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email,'.null.',id',
+                'mobile' => 'required|string|max:255|unique:users,mobile,'.null.',id',
+                'password' => 'required|string|min:8|confirmed',
+                'human_job_id' => 'nullable|exists:human_jobs,id',
+                'photo' => 'nullable|max:5000|image',
+                'roles'   => 'nullable|array',
+                'roles.*' => 'nullable|exists:roles,id',
             ]);
 
             if($validator->fails()){
@@ -511,7 +511,7 @@ class UserAPIController extends AppBaseController
             $user = $this->userRepository->create([
                 'name' => $request->get('name'),
                 'email' => $request->get('email'),
-                'type'  => "app_admin",
+                'type'  => 'app_admin',
                 'mobile' => $request->get('mobile'),
                 'human_job_id' => $request->get('human_job_id'),
                 'password' => Hash::make($request->get('password')),
@@ -615,7 +615,10 @@ class UserAPIController extends AppBaseController
 
             if($user->status == 'accepted')
             {
-                $validator = Validator::make(request()->all(), [ 'blocked_until' => 'nullable|date_format:Y-m-d', 'block_days' => 'nullable|integer']);
+                $validator = Validator::make(request()->all(), [
+                    'blocked_until' => 'nullable|date_format:Y-m-d',
+                    'block_days' => 'nullable|integer'
+                ]);
                 if($validator->fails())
                     return $this->sendError(json_encode($validator->errors()), 757);
 
@@ -663,17 +666,17 @@ class UserAPIController extends AppBaseController
             }
 
             $validator = Validator::make($request->all(), [
-                "name" => ["required", "string", "max:255"],
-                "email" => ["required", "string", "email", "max:255", "unique:users,email,$id,id"],
-                "mobile" => ["required", "string", "max:255", "unique:users,mobile,$id,id"],
-                "password" => ["nullable", "string", "min:8", "confirmed"],
-                "human_job_id" => ["nullable", "exists:human_jobs,id"],
-                "income" => ["nullable", "integer", "min:0"],
-                "dob" => ["nullable", "date_format:Y-m-d"],
-                "city_id" => ["nullable", "exists:cities,id"],
-                "photo" => ["nullable", "max:5000", "image"],
-                'roles'   => ['nullable', 'array'],
-                'roles.*' => ['nullable', 'exists:roles,id'],
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users,email,'.$id.',id',
+                'mobile' => 'required|string|max:255|unique:users,mobile,'.$id.',id',
+                'password' => 'nullable|string|min:8|confirmed',
+                'human_job_id' => 'nullable|exists:human_jobs,id',
+                'income' => 'nullable|integer|min:0',
+                'dob' => 'nullable|date_format:Y-m-d',
+                'city_id' => 'nullable|exists:cities,id',
+                'photo' => 'nullable|max:5000|image',
+                'roles'   => 'nullable|array',
+                'roles.*' => 'nullable|exists:roles,id',
             ]);
 
             if($validator->fails()){
@@ -804,8 +807,8 @@ class UserAPIController extends AppBaseController
             $old_password_required = $user->password ? 'required' : 'nullable';
 
             $validator = Validator::make($request->all(), [
-                "old_password" => [$old_password_required, "string"],
-                "password" => ["required", "string", "min:8", "confirmed"],
+                'old_password' => $old_password_required . '|string',
+                'password' => 'required|string|min:8|confirmed',
             ]);
 
             if($validator->fails()){

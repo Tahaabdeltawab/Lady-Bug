@@ -25,9 +25,9 @@ class UpdateCommentAPIRequest extends APIRequest
     public function rules()
     {
         return [
-            'content' => ['requiredIf:assets,null'],
-            'assets' => ['nullable','array'],
-            'assets.*' => ['nullable', 'max:5000', 'image']
+            'content' => 'requiredIf:assets,null',
+            'assets' => 'nullable|array',
+            'assets.*' => 'nullable|max:5000|image'
         ];
     }
 }
