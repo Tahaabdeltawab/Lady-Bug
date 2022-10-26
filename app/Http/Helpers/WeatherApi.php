@@ -31,12 +31,12 @@ class WeatherApi{
         }
         finally
         {
-            return $response->ok() ? $this->handle_response($response) : ['status' => false, 'data' => $response->json()];
+            return $this->handle_response($response);
         }
     }
 
-    protected function handle_response($response){
-
+    protected function handle_response($response)
+    {
         $data = $response->json()['data'];
         if(isset($data['error'])){
             $resp['error'] = $data['error'][0]['msg'];

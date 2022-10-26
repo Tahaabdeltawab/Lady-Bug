@@ -58,10 +58,10 @@ class Compatibility{
     }
 
     /**
-     * هذه الفنكشن خاصة بحساب الدرجة الخاصة بخصائص الملاءمة التي تكون الدرجة العظمى فيها هي القيمة المتوسطة 
+     * هذه الفنكشن خاصة بحساب الدرجة الخاصة بخصائص الملاءمة التي تكون الدرجة العظمى فيها هي القيمة المتوسطة
      * مثال
      * قيمة الأس الهيدروجيني الملائم للمزرعة يكون ما بين 8 إلى 10
-     * تأخد المزرعة الدرجة النهائية إذا كانت قيمة أسها الهيدروجيني تساوي 9 لأنها القيمة المتوسطة 
+     * تأخد المزرعة الدرجة النهائية إذا كانت قيمة أسها الهيدروجيني تساوي 9 لأنها القيمة المتوسطة
      * وتأخذ درجة أقل إذا زادت أو قلت عن المتوسط إلى أن تصل إلى درجة صفر عندما يكون قيمة الأس الهيدروجيني مساوية للقيمة العظمى 10 أو الصغري 8
      * value -> قيمة الأس الهيدروجيني الفعلي للمزرعة
      * model -> [8, 10] -> قيمة الأس الهيدروجيني الملائم للمزرعة
@@ -85,10 +85,10 @@ class Compatibility{
     }
 
     /**
-     * هذه الفنكشن خاصة بحساب الدرجة الخاصة بخصائص الملاءمة التي تكون الدرجة العظمى فيها هي القيمة الدنيا أو أقل من القيمة الدنيا 
+     * هذه الفنكشن خاصة بحساب الدرجة الخاصة بخصائص الملاءمة التي تكون الدرجة العظمى فيها هي القيمة الدنيا أو أقل من القيمة الدنيا
      * مثال
      * قيمة أملاح التربة الملائمة للمزرعة يكون ما بين 300 إلى 1200
-     * تأخد المزرعة الدرجة النهائية إذا كانت قيمة أسها الهيدروجيني تساوي 300 أو أقل    
+     * تأخد المزرعة الدرجة النهائية إذا كانت قيمة أسها الهيدروجيني تساوي 300 أو أقل
      * وتأخذ درجة أقل إذا زادت عن القيمة الدنيا إلى أن تصل إلى درجة صفر عندما يكون قيمة أملاح التربة مساوية للقيمة العظمى 12008
      * value -> قيمة أملاح التربة الفعلية للمزرعة
      * model -> [300, 1200] -> قيمة أملاح التربة الملائمة للمزرعة
@@ -141,8 +141,8 @@ class Compatibility{
         return Resp::makeError('crop flowering and maturity times cannot be null');
 
         /**
-         * ظروف الطقس للعام الماضي لأنها تكون مشابهة للعام الجاري ولعدم عثورنا على 
-         * API 
+         * ظروف الطقس للعام الماضي لأنها تكون مشابهة للعام الجاري ولعدم عثورنا على
+         * API
          * يقوم بجلب توقعات لفترات بعيدة مثل شهور
          **/
 
@@ -192,18 +192,18 @@ class Compatibility{
         if(isset($farming_info['error'])){return Resp::makeError($farming_info['error']);}
         // جلب معلومات الطقس عند الزراعة في أيام مختلقة ثم الحصول على متوسط هذه القيم
         $flowering_info1 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day1);
-        if(isset($flowering_info1['error'])){return Resp::makeError($flowering_info1['error']);}
+        if(isset($flowering_info1['error'])) return Resp::makeError($flowering_info1['error']);
         $flowering_info2 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day2);
-        if(isset($flowering_info2['error'])){return Resp::makeError($flowering_info2['error']);}
+        if(isset($flowering_info2['error'])) return Resp::makeError($flowering_info2['error']);
         $flowering_info3 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day3);
-        if(isset($flowering_info3['error'])){return Resp::makeError($flowering_info3['error']);}
+        if(isset($flowering_info3['error'])) return Resp::makeError($flowering_info3['error']);
         $flowering_info4 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day4);
-        if(isset($flowering_info4['error'])){return Resp::makeError($flowering_info4['error']);}
+        if(isset($flowering_info4['error'])) return Resp::makeError($flowering_info4['error']);
         $flowering_info5 = WeatherApi::instance()->weather_history($lat, $lon, $flowering_day5);
-        if(isset($flowering_info5['error'])){return Resp::makeError($flowering_info5['error']);}
+        if(isset($flowering_info5['error'])) return Resp::makeError($flowering_info5['error']);
         // جلب معلومات الطقس عند النضج
         $maturity_info  = WeatherApi::instance()->weather_history($lat, $lon, $maturity_day);
-        if(isset($maturity_info['error'])){return Resp::makeError($maturity_info['error']);}
+        if(isset($maturity_info['error'])) return Resp::makeError($maturity_info['error']);
 
 
         // الحرارة عند الزراعة
@@ -233,45 +233,25 @@ class Compatibility{
 
         $messages = [];
         if($total < 50)
-        {
             $messages[] = "incompatible";
-        }
         else
-        {
             $messages []= "compatible";
-        }
         if($water_salt_deg == 0)
-        {
             $messages[] = "incompatible because of non suitable water salts concentration";
-        }
         if($soil_salt_deg == 0)
-        {
             $messages[] = "incompatible because of non suitable soil salts concentration";
-        }
         if($tflowering_deg == 0)
-        {
             $messages[] = "incompatible because of non suitable flowering temperature";
-        }
         if($tfarming_deg == 0)
-        {
             $messages[] = "incompatible because of non suitable farming temperature";
-        }
         if($tmaturity_deg == 0)
-        {
             $messages[] = "incompatible because of non suitable maturity temperature";
-        }
         if($ph_deg == 0)
-        {
             $messages[] = "incompatible because of non suitable PH";
-        }
         if($soil_type_deg == 0)
-        {
             $messages[] = "incompatible because of non suitable soil type";
-        }
         if($hmaturity_deg == 0)
-        {
             $messages[] = "incompatible because of non suitable humidity";
-        }
 
         $data = [
             'total' => $total,
