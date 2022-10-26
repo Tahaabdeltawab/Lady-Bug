@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDiseaseFarmedTypeTable extends Migration
+class CreateSensitiveDiseaseFarmedTypeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateDiseaseFarmedTypeTable extends Migration
      */
     public function up()
     {
-        Schema::create('disease_farmed_type', function (Blueprint $table) {
+        Schema::create('sensitive_disease_farmed_type', function (Blueprint $table) {
             $table->id();
             $table->foreignId('disease_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreignId('farmed_type_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->boolean('sensitive')->default(0);
+            $table->foreignId('farmed_type_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('farmed_type_stage_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 
@@ -28,6 +28,6 @@ class CreateDiseaseFarmedTypeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('disease_farmed_type');
+        Schema::dropIfExists('sensitive_disease_farmed_type');
     }
 }

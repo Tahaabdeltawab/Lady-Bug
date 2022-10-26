@@ -314,10 +314,13 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::post('popular_countries', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'popular_countries'])->name('farmed_types.popular_countries');
     Route::post('names_countries', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'names_countries'])->name('farmed_types.names_countries');
 
-    Route::get('sensitive_diseases/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'get_sensitive_diseases'])->name('farmed_types.get_sensitive_diseases');
-    Route::get('resistant_diseases/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'get_resistant_diseases'])->name('farmed_types.get_resistant_diseases');
-    Route::post('sensitive_diseases', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'sensitive_diseases'])->name('farmed_types.sensitive_diseases');
-    Route::post('resistant_diseases', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'resistant_diseases'])->name('farmed_types.resistant_diseases');
+    Route::get('sensitive_diseases/{farmed_type}/{farmed_type_stage?}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'get_sensitive_diseases'])->name('farmed_types.get_sensitive_diseases');
+    Route::get('one_sensitive_disease/{disease_farmed_type}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'one_sensitive_disease'])->name('farmed_types.one_sensitive_disease');
+    Route::post('save_sensitive_disease', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'save_sensitive_disease'])->name('farmed_types.save_sensitive_disease');
+    Route::delete('delete_sensitive_disease/{disease_farmed_type}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'delete_sensitive_disease'])->name('farmed_types.delete_sensitive_disease');
+
+    Route::get('resistant_diseases/{farmed_type}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'get_resistant_diseases'])->name('farmed_types.get_resistant_diseases');
+    Route::post('resistant_diseases', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'resistant_diseases'])->name('farmed_types.resistant_diseases');
 
     Route::resource('infection_rates', App\Http\Controllers\API\InfectionRateAPIController::class);
     Route::resource('pathogen_growth_stages', App\Http\Controllers\API\PathogenGrowthStageAPIController::class);
