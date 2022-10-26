@@ -21,7 +21,7 @@ class SensitiveDiseaseFarmedType extends Model
         'farmed_type_id' => 'required|exists:farmed_types,id',
         'farmed_type_stage_id' => 'nullable|exists:farmed_type_stages,id',
         'assets' => 'nullable|array',
-        'assets.*' => 'nullable|max:5000|mimes:jpeg,jpg,png,svg',
+        'assets.*' => 'nullable|max:5000|image',
     ];
 
     public function farmedType()

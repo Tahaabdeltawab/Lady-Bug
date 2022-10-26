@@ -27,7 +27,7 @@ class UpdateCommentAPIRequest extends APIRequest
         return [
             'content' => ['requiredIf:assets,null'],
             'assets' => ['nullable','array'],
-            'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
+            'assets.*' => ['nullable', 'max:5000', 'image']
         ];
     }
 }

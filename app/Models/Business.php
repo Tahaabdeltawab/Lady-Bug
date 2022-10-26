@@ -56,8 +56,8 @@ class Business extends Team
     public static $rules = [
         'business_field_id' => 'required|exists:business_fields,id',
         'description' => 'nullable',
-        'main_asset' => 'nullable|max:5000|mimes:jpeg,jpg,png,svg',
-        'cover_asset' => 'nullable|max:5000|mimes:jpeg,jpg,png,svg',
+        'main_asset' => 'nullable|max:5000|image',
+        'cover_asset' => 'nullable|max:5000|image',
         'com_name' => 'required',
         'status' => 'required',
         'mobile' => 'nullable',

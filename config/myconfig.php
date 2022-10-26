@@ -71,6 +71,7 @@ return [
         'image/png',
         'image/*',
         'image/jpeg',
+        'image/webp',
         'image/svg+xml',
     ],
 

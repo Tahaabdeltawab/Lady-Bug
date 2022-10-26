@@ -30,7 +30,7 @@ class CreateUserAPIRequest extends APIRequest
             'mobile' => ['required', 'string', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'human_job_id' => ['required'],
-            'photo' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png'],
+            'photo' => ['nullable', 'max:5000', 'image'],
         ];
     }
 }

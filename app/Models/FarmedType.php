@@ -56,7 +56,7 @@ class FarmedType extends Model
         'farm_activity_type_id'                 => 'required',
         'parent_id'                             => 'nullable|exists:farmed_types,id',
         'country_id'                            => 'nullable|exists:countries,id',
-        'photo'                                 => 'nullable|max:5000|mimes:jpeg,jpg,png',
+        'photo'                                 => 'nullable|max:5000|image',
         'flowering_time'                        => 'nullable|integer', // number of days till flowering
         'maturity_time'                         => 'nullable|integer',  // number of days till maturity
 

@@ -128,7 +128,7 @@ class AuthController extends AppBaseController
                 "mobile" => ["required", "string", "max:255", "unique:users,mobile," . null . ",id"],
                 'password' => [$password_required, 'string', 'min:8', 'confirmed'],
                 'human_job_id' => ['required', 'exists:human_jobs,id'],
-                'photo' => ['nullable', 'max:5000', 'image', 'mimes:jpeg,jpg,png'],
+                'photo' => ['nullable', 'max:5000', 'image'],
                 'fcm' => ['nullable'],
                 'provider' => ['nullable'],
                 'avatar' => ['nullable'],

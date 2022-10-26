@@ -43,7 +43,7 @@ class Report extends Model
         'post_id' => ['required', 'exists:posts,id'],
         'report_type_id' => ['required', 'exists:report_types,id'],
         'assets' => ['nullable', 'array'],
-        'assets.*' => ['nullable', 'max:5000', 'mimes:jpeg,jpg,png,svg']
+        'assets.*' => ['nullable', 'max:5000', 'image']
     ];
 
     public function reportable()

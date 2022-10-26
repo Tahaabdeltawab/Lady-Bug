@@ -58,7 +58,7 @@ class Post extends Model
         'solved' => ['nullable'],
         'shared_id' => ['nullable', 'exists:posts,id'],
         'assets' => ['nullable','array'],
-        'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,mp4,mov,wmv,qt,asf'] //qt for mov , asf for wmv
+        'assets.*' => ['nullable', 'max:20000', 'mimes:jpeg,jpg,png,svg,bmp,gif,webp,mp4,mov,wmv,qt,asf'] //qt for mov , asf for wmv
     ];
 
     public function updateReactions(){
