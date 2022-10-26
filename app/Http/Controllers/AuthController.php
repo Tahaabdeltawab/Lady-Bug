@@ -184,7 +184,7 @@ class AuthController extends AppBaseController
             $token = auth('api')->attempt($credentials);
             $user = $this->userRepository->find($user->id);
             $data = [
-                'user' => new UserResource($user),
+                'user' => new UserLoginResource($user),
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in_minutes' => auth('api')->factory()->getTTL(),
@@ -277,7 +277,7 @@ class AuthController extends AppBaseController
 
         $user->update(['mobile_verified' => true, 'code' => null]);
 
-        return $this->sendResponse($data, __('success'));
+        return $this->sendResponse([], __('success'));
     }
 
     public function me()

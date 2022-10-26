@@ -7,13 +7,6 @@ use App\Models\Business;
 
 class UserLoginResource extends JsonResource
 {
-    protected $farm;
-
-    public function farm($farm){
-        $this->farm = $farm;
-        return $this;
-    }
-
 
     /**
      * Transform the resource into an array.
