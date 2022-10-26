@@ -36,7 +36,7 @@ class APIRequest extends FormRequest
         //     array_push($messages, $error);
         // }
 
-    throw new HttpResponseException(response()->json(ResponseUtil::makeError($validator->errors()->first(), 422, $validator->errors())));
+    throw new HttpResponseException(response()->json(ResponseUtil::makeError($validator->errors()->first(), 422)));
 
     // return Response::json(ResponseUtil::makeError($messages , 400), 400);
     }
