@@ -57,7 +57,7 @@ class AuthController extends AppBaseController
                 // $token = auth('api')->setTTL($this->ttl)->attempt(['email' => $user->email]);
                 $token = auth('api')->setTTL($this->ttl)->login($user);
                 $data = [
-                    'user' => new UserResource($user),
+                    'user' => new UserLoginResource($user),
                     'access_token' => $token,
                     'token_type' => 'bearer',
                     'expires_in_minutes' => auth('api')->factory()->getTTL(),
