@@ -148,7 +148,7 @@ class AuthController extends AppBaseController
                     $code = 5030;
                 }
 
-                return $this->sendError(json_encode($validator->errors()), $code);
+                return $this->sendError($validator->errors()->first(), $code);
             }
 
             $user_role = Role::where('name', config('myconfig.user_default_role'))->first();
@@ -205,7 +205,7 @@ class AuthController extends AppBaseController
         ]);
 
         if ($validator->fails())
-        return $this->sendError(json_encode($validator->errors()));
+        return $this->sendError($validator->errors()->first());
 
         $user = User::where('mobile', $request->mobile)->first();
 
@@ -242,7 +242,7 @@ class AuthController extends AppBaseController
         ]);
 
         if ($validator->fails())
-            return $this->sendError(json_encode($validator->errors()));
+            return $this->sendError($validator->errors()->first());
 
         if (!$user = User::where('mobile', $request->mobile)->first())
             return $this->sendError(__('No user found'));
@@ -267,7 +267,7 @@ class AuthController extends AppBaseController
         ]);
 
         if ($validator->fails())
-            return $this->sendError(json_encode($validator->errors()));
+            return $this->sendError($validator->errors()->first());
 
         if (!$user = User::where('mobile', $request->mobile)->first())
             return $this->sendError(__('No user found'));

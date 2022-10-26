@@ -504,7 +504,7 @@ class UserAPIController extends AppBaseController
                     $code = 5034;
                 else
                     $code = 5030;
-                return $this->sendError(json_encode($validator->errors()), $code);
+                return $this->sendError($validator->errors()->first(), $code);
             }
 
             DB::beginTransaction();
@@ -555,7 +555,7 @@ class UserAPIController extends AppBaseController
             ]);
 
             if ($validator->fails()) {
-                return $this->sendError(json_encode($validator->errors()));
+                return $this->sendError($validator->errors()->first());
             }
 
             $user = $this->userRepository->find($request->user);
@@ -620,7 +620,7 @@ class UserAPIController extends AppBaseController
                     'block_days' => 'nullable|integer'
                 ]);
                 if($validator->fails())
-                    return $this->sendError(json_encode($validator->errors()), 757);
+                    return $this->sendError($validator->errors()->first(), 757);
 
                 if($block_days = request()->block_days)
                     $blocked_until = today()->addDays($block_days);
@@ -691,7 +691,7 @@ class UserAPIController extends AppBaseController
                     $code = 5034;
                 else
                     $code = 5030;
-                return $this->sendError(json_encode($validator->errors()), $code);
+                return $this->sendError($validator->errors()->first(), $code);
             }
 
             $to_save = [
@@ -812,7 +812,7 @@ class UserAPIController extends AppBaseController
             ]);
 
             if($validator->fails()){
-                return $this->sendError(json_encode($validator->errors()));
+                return $this->sendError($validator->errors()->first());
             }
             if($old_password_required == 'required'){
                 if(! password_verify($request->old_password, $user->password))

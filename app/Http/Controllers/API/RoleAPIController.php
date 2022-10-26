@@ -62,7 +62,7 @@ class RoleAPIController extends AppBaseController
             ]);
 
             if ($validator->fails()) {
-                return $this->sendError(json_encode($validator->errors()));
+                return $this->sendError($validator->errors()->first());
             }
 
             $role = Role::find($request->role);

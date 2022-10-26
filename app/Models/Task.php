@@ -81,9 +81,9 @@ class Task extends Model
      * @var array
      */
     public static $rules = [
-        'farm_report_id' => 'nullable|exists:farm_reports,id',
-        'farm_id' => 'nullable|exists:farms,id',
-        'business_id' => 'nullable|exists:businesses,id',
+        'farm_report_id' => 'required|exists:farm_reports,id',
+        'farm_id' => 'required|exists:farms,id',
+        'business_id' => 'required|exists:businesses,id',
         'task_type_id' => 'required|exists:task_types,id',
         'insecticide_id' => 'nullable',
         'fertilizer_id' => 'nullable',
@@ -92,7 +92,20 @@ class Task extends Model
         'quantity' => 'nullable',
         'quantity_unit' => 'nullable|in:kilo,gram',
         'notes' => 'nullable',
-        'done' => 'nullable'
+    ];
+
+    public static $mass_rules = [
+        'tasks.*.farm_report_id' => 'required|exists:farm_reports,id',
+        'tasks.*.farm_id' => 'required|exists:farms,id',
+        'tasks.*.business_id' => 'required|exists:businesses,id',
+        'tasks.*.task_type_id' => 'required|exists:task_types,id',
+        'tasks.*.insecticide_id' => 'nullable',
+        'tasks.*.fertilizer_id' => 'nullable',
+        'tasks.*.date' => 'nullable|date_format:Y-m-d',
+        'tasks.*.week' => 'nullable|in:1,2,3,4',
+        'tasks.*.quantity' => 'nullable',
+        'tasks.*.quantity_unit' => 'nullable|in:kilo,gram',
+        'tasks.*.notes' => 'nullable',
     ];
 
     /**

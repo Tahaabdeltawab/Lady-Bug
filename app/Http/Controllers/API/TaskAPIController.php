@@ -14,6 +14,7 @@ use App\Http\Resources\TaskResource;
 use App\Models\Ac;
 use App\Models\Fertilizer;
 use App\Models\TaskType;
+use Illuminate\Support\Facades\Validator;
 use Response;
 
 /**
@@ -113,14 +114,22 @@ class TaskAPIController extends AppBaseController
      */
     public function store(Request $request)
     {
-        if($tasks = $request->tasks){
-            foreach ($tasks as $t) {
+        if($request->tasks){
+            $validator = Validator::make($request->all(), Task::$mass_rules);
+            if ($validator->fails())
+                return $this->sendError($validator->errors()->first());
+            $input = $validator->validated();
+            foreach ($input['tasks'] as $t) {
                 $this->taskRepository->create($t);
             }
             return $this->sendSuccess('tasks created successfully');
         }
-        $input = $request->validated();
 
+        $validator = Validator::make($request->all(), Task::$rules);
+        if ($validator->fails())
+            return $this->sendError($validator->errors()->first());
+
+        $input = $validator->validated();
         $task = $this->taskRepository->create($input);
 
         return $this->sendResponse(new TaskResource($task), 'Task saved successfully');
