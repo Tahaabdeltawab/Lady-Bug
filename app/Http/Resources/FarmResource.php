@@ -72,16 +72,16 @@ class FarmResource extends JsonResource
         //  {
              $farm_detail['animal_breeding_purpose'] = new AnimalBreedingPurposeResource($this->animal_breeding_purpose);
              $farm_detail['animal_drink_water_salt_detail'] = new SaltDetailResource($this->animal_drink_water_salt_detail);
-             $farm_detail['animal_medicine_sources'] =  BusinessXsResource::collection($this->animal_medicine_sources);
-             $farm_detail['animal_fodder_sources'] =  BusinessXsResource::collection($this->animal_fodder_sources);
+             $farm_detail['animal_medicine_sources'] =  BusinessXsResource::collection($this->animal_medicine_sources()->get(['businesses.id', 'businesses.com_name']));
+             $farm_detail['animal_fodder_sources'] =  BusinessXsResource::collection($this->animal_fodder_sources()->get(['businesses.id', 'businesses.com_name']));
              $farm_detail['animal_fodder_types'] =  AnimalFodderTypeResource::collection($this->animal_fodder_types);
         //  }
 
          //crops, trees, homeplants 1,2,3
         //  if($fat_id == 1 || $fat_id == 2 || $fat_id == 3)
         //  {
-            $farm_detail['chemical_fertilizer_sources'] = BusinessXsResource::collection($this->chemical_fertilizer_sources);
-            $farm_detail['seedling_sources'] =  BusinessXsResource::collection($this->seedling_sources);
+            $farm_detail['chemical_fertilizer_sources'] = BusinessXsResource::collection($this->chemical_fertilizer_sources()->get(['businesses.id', 'businesses.com_name']));
+            $farm_detail['seedling_sources'] =  BusinessXsResource::collection($this->seedling_sources()->get(['businesses.id', 'businesses.com_name']));
         //  }
 
          // pass the farm to the usercollection to add the business_roles to the collection
