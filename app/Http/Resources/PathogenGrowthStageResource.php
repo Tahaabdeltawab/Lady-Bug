@@ -16,7 +16,9 @@ class PathogenGrowthStageResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name
+            'name' => $this->name,
+            'pathogen_id' => $this->pathogen_id,
+            'assets' => $this->assets()->pluck('asset_url'),
         ];
     }
 }

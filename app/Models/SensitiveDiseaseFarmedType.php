@@ -16,6 +16,13 @@ class SensitiveDiseaseFarmedType extends Model
         'farmed_type_stage_id',
     ];
 
+    protected $casts = [
+        'id' => 'integer',
+        'disease_id' => 'integer',
+        'farmed_type_id' => 'integer',
+        'farmed_type_stage_id' => 'integer',
+    ];
+
     public static $rules = [
         'disease_id' => 'required|exists:diseases,id',
         'farmed_type_id' => 'required|exists:farmed_types,id',

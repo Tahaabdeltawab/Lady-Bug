@@ -22,11 +22,11 @@ use Eloquent as Model;
 class Pathogen extends Model
 {
     use \App\Traits\SpatieHasTranslations;
-    public $translatable = ['name',];
+    public $translatable = ['name'];
 	public $timestamps = false;
 
     public $table = 'pathogens';
-    
+
 
 
 
@@ -56,19 +56,12 @@ class Pathogen extends Model
      * @var array
      */
     public static $rules = [
-        'name' => 'required',
-        'pathogen_type_id' => 'required',
-        'bio_control' => 'nullable',
-        'ch_control' => 'nullable'
+        'name.ar' => 'required|max:30',
+        'name.en' => 'required|max:30',
+        'pathogen_type_id' => 'required|exists:pathogen_types,id',
+        'bio_control' => 'nullable|max:255',
+        'ch_control' => 'nullable|max:255'
     ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     **/
-    public function acs()
-    {
-        return $this->belongsToMany(\App\Models\Ac::class);
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -79,10 +72,20 @@ class Pathogen extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * Get the pathogenType that owns the Pathogen
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function pathogenType()
+    {
+        return $this->belongsTo(PathogenType::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
     public function pathogenGrowthStages()
     {
-        return $this->belongsToMany(\App\Models\PathogenGrowthStage::class, 'pa_pa_growth_stage', 'pathogen_id', 'pathogen_growth_stage_id')->using(PaPaGrowthStage::class);
+        return $this->hasMany(\App\Models\PathogenGrowthStage::class);
     }
 }

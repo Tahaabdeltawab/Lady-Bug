@@ -25,7 +25,7 @@ class Disease extends Model
 	public $timestamps = false;
 
     public $table = 'diseases';
-    
+
 
 
 
@@ -51,8 +51,10 @@ class Disease extends Model
      * @var array
      */
     public static $rules = [
-        'name' => 'required',
-        'description' => 'nullable'
+        'name.ar' => 'required|max:30',
+        'name.en' => 'required|max:30',
+        'description.ar' => 'required|max:255',
+        'description.en' => 'required|max:255',
     ];
 
     /**

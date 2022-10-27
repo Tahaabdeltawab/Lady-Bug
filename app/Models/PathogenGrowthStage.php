@@ -20,12 +20,13 @@ class PathogenGrowthStage extends Model
 	public $timestamps = false;
 
     public $table = 'pathogen_growth_stages';
-    
+
 
 
 
     public $fillable = [
-        'name'
+        'name',
+        'pathogen_id',
     ];
 
     /**
@@ -35,7 +36,8 @@ class PathogenGrowthStage extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'name' => 'string'
+        'name' => 'string',
+        'pathogen_id' => 'integer',
     ];
 
     /**
@@ -44,8 +46,27 @@ class PathogenGrowthStage extends Model
      * @var array
      */
     public static $rules = [
-        'name' => 'required'
+        'name.ar' => 'required|max:30',
+        'name.en' => 'required|max:30',
+        'pathogen_id' => 'required|exists:pathogens,id',
+        'assets' => 'nullable|array',
+        'assets.*' => 'nullable|max:5000|image',
+
     ];
 
-    
+
+    public function pathogen()
+    {
+        return $this->belongsTo(Pathogen::class);
+    }
+
+    public function affectingAcs()
+    {
+        return $this->belongsToMany(Ac::class, 'ac_pa_growth_stage', 'pathogen_growth_stage_id', 'ac_id')->withPivot('effect');
+    }
+
+    public function assets()
+    {
+        return $this->morphMany(Asset::class, 'assetable');
+    }
 }

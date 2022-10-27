@@ -25,7 +25,7 @@ class Ac extends Model
 	public $timestamps = false;
 
     public $table = 'acs';
-    
+
 
 
 
@@ -55,10 +55,12 @@ class Ac extends Model
      * @var array
      */
     public static $rules = [
-        'name' => 'required',
+        'name.ar' => 'required|max:30',
+        'name.en' => 'required|max:30',
         'who_class' => 'nullable|in:organic,inorganic,rejected',
-        'withdrawal_days' => 'nullable',
-        'precautions' => 'nullable'
+        'withdrawal_days' => 'nullable|integer',
+        'precautions.ar' => 'nullable|max:255',
+        'precautions.en' => 'nullable|max:255',
     ];
 
     /**
@@ -69,11 +71,8 @@ class Ac extends Model
         return $this->belongsToMany(\App\Models\Insecticide::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     **/
-    public function pathogens()
+    public function affectedPaGrStages()
     {
-        return $this->belongsToMany(\App\Models\Pathogen::class);
+        return $this->belongsToMany(PathogenGrowthStage::class, 'ac_pa_growth_stage', 'ac_id', 'pathogen_growth_stage_id')->withPivot('effect');
     }
 }

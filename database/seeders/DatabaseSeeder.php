@@ -33,5 +33,6 @@ class DatabaseSeeder extends Seeder
         // $this->call(RatingQuestionSeeder::class);
         // $this->call(CountrySeeder::class);
         // $this->call(IrrigationRateSeeder::class);
+        $this->call(PathogenTypeSeeder::class);
   }
 }

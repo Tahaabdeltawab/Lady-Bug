@@ -33,7 +33,7 @@ class Insecticide extends Model
 	public $timestamps = false;
 
     public $table = 'insecticides';
-    
+
 
 
 
@@ -79,24 +79,27 @@ class Insecticide extends Model
      * @var array
      */
     public static $rules = [
-        'name' => 'required',
+        'name.ar' => 'required|max:30',
+        'name.en' => 'required|max:30',
         'dosage_form' => 'nullable|in:powder,liquid',
         'acs' => 'nullable|array',
         'acs.*' => 'exists:acs,id',
-        'producer' => 'nullable',
-        'country_id' => 'nullable',
-        'conc' => 'nullable',
-        'reg_date' => 'nullable',
-        'reg_num' => 'nullable',
-        'mix_ph' => 'nullable',
-        'mix_rate' => 'nullable',
-        'expiry' => 'nullable',
-        'precautions' => 'nullable',
-        'notes' => 'nullable'
+        'producer' => 'nullable|string|max:30',
+        'country_id' => 'nullable|exists:countries,id',
+        'conc' => 'nullable|string|max:30',
+        'reg_date' => 'nullable|date_format:Y-m-d',
+        'reg_num' => 'nullable|string|max:30',
+        'mix_ph' => 'nullable|numeric|max:14|min:0',
+        'mix_rate' => 'nullable|numeric',
+        'expiry' => 'nullable|integer',
+        'precautions.ar' => 'nullable|max:255',
+        'precautions.en' => 'nullable|max:255',
+        'notes.ar' => 'nullable|max:255',
+        'notes.en' => 'nullable|max:255',
     ];
 
     protected $appends = ['withdrawal_days'];
-    
+
     public function getWithdrawalDaysAttribute()
     {
         return $this->acs()->max('withdrawal_days');

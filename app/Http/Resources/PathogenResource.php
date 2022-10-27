@@ -17,7 +17,7 @@ class PathogenResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'pathogen_type_id' => $this->pathogen_type_id,
+            'pathogen_type' => $this->pathogenType,
             'bio_control' => $this->bio_control,
             'ch_control' => $this->ch_control
         ];

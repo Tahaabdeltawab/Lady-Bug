@@ -44,6 +44,24 @@ class AcAPIController extends AppBaseController
         return $this->sendResponse(AcResource::collection($acs), 'Acs retrieved successfully');
     }
 
+    public function who_classes($value = null)
+    {
+        $who_classes =  [
+            ['value' => 'organic', 'name' => app()->getLocale() == 'ar' ?  'عضوي' : 'Organic'],
+            ['value' => 'inorganic', 'name' => app()->getLocale() == 'ar' ?  'غير عضوي' : 'Inorganic'],
+            ['value' => 'rejected', 'name' => app()->getLocale() == 'ar' ?  'مرفوض' : 'Rejected']
+        ];
+        if($value)
+            return collect($who_classes)->firstWhere('value', $value);
+        else
+            return $who_classes;
+    }
+
+    public function getRelations()
+    {
+        return $this->sendResponse(['who_classes' => $this->who_classes()], 'relations retrieved');
+    }
+
     /**
      * Store a newly created Ac in storage.
      * POST /acs

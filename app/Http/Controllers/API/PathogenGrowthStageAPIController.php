@@ -9,6 +9,7 @@ use App\Repositories\PathogenGrowthStageRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\PathogenGrowthStageResource;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 /**
@@ -44,6 +45,12 @@ class PathogenGrowthStageAPIController extends AppBaseController
         return $this->sendResponse(PathogenGrowthStageResource::collection($pathogenGrowthStages), 'Pathogen Growth Stages retrieved successfully');
     }
 
+    public function by_pa_id($pathogen_id)
+    {
+        $stages = PathogenGrowthStage::where('pathogen_id', $pathogen_id)->get();
+        return $this->sendResponse(PathogenGrowthStageResource::collection($stages), 'stages retrieved successfully');
+    }
+
     /**
      * Store a newly created PathogenGrowthStage in storage.
      * POST /pathogenGrowthStages
@@ -57,6 +64,15 @@ class PathogenGrowthStageAPIController extends AppBaseController
         $input = $request->validated();
 
         $pathogenGrowthStage = $this->pathogenGrowthStageRepository->create($input);
+
+        if($assets = $request->file('assets'))
+            {
+                foreach($assets as $asset)
+                {
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'pathogen-growth-stage');
+                    $assets[] = $pathogenGrowthStage->assets()->create($oneasset);
+                }
+            }
 
         return $this->sendResponse(new PathogenGrowthStageResource($pathogenGrowthStage), 'Pathogen Growth Stage saved successfully');
     }
@@ -103,6 +119,18 @@ class PathogenGrowthStageAPIController extends AppBaseController
 
         $pathogenGrowthStage = $this->pathogenGrowthStageRepository->update($input, $id);
 
+        if($assets = $request->file('assets'))
+        {
+            foreach ($pathogenGrowthStage->assets as $ass) {
+                $ass->delete();
+            }
+            foreach($assets as $asset)
+            {
+                $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'pathogen-growth-stage');
+                $assets[] = $pathogenGrowthStage->assets()->create($oneasset);
+            }
+        }
+
         return $this->sendResponse(new PathogenGrowthStageResource($pathogenGrowthStage), 'PathogenGrowthStage updated successfully');
     }
 
@@ -118,15 +146,34 @@ class PathogenGrowthStageAPIController extends AppBaseController
      */
     public function destroy($id)
     {
-        /** @var PathogenGrowthStage $pathogenGrowthStage */
-        $pathogenGrowthStage = $this->pathogenGrowthStageRepository->find($id);
+        try{
+            /** @var PathogenGrowthStage $pathogenGrowthStage */
+            $pathogenGrowthStage = $this->pathogenGrowthStageRepository->find($id);
 
-        if (empty($pathogenGrowthStage)) {
-            return $this->sendError('Pathogen Growth Stage not found');
+            if (empty($pathogenGrowthStage)) {
+                return $this->sendError('Pathogen Growth Stage not found');
+            }
+            DB::beginTransaction();
+
+            foreach(AcPaGrowthStage::where('pathogen_growth_stage_id', $pathogenGrowthStage->id)->get() as $acpa){
+                foreach($acpa->assets as $ass){
+                    $ass->delete();
+                }
+                $acpa->delete();
+            }
+            foreach($pathogenGrowthStage->assets as $ass){
+                $ass->delete();
+            }
+            $pathogenGrowthStage->delete();
+            DB::commit();
+            return $this->sendSuccess('Pathogen Growth Stage deleted successfully');
+        }catch(\Throwable $th)
+        {
+            DB::rollBack();
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
         }
-
-        $pathogenGrowthStage->delete();
-
-        return $this->sendSuccess('Pathogen Growth Stage deleted successfully');
     }
 }

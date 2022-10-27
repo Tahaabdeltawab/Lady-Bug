@@ -200,55 +200,51 @@ class FarmedTypeAPIController extends AppBaseController
             $farmedType->load('asset');
         }
         return $this->sendResponse(new FarmedTypeResource($farmedType), 'Farmed Type updated successfully');
-
-        $farmedType = $this->farmedTypeRepository->update($input, $id);
     }
 
     public function destroy($id)
     {
         try
         {
-        /** @var FarmedType $farmedType */
-        $farmedType = $this->farmedTypeRepository->find($id);
+            /** @var FarmedType $farmedType */
+            $farmedType = $this->farmedTypeRepository->find($id);
 
-        if (empty($farmedType)) {
-            return $this->sendError('Farmed Type not found');
-        }
-
-        DB::beginTransaction();
-
-        $farmedType->asset->delete();
-        $farmedType->extra()->delete();
-
-        foreach($farmedType->fneeds as $fneed){
-            $fneed->nutElemValue()->delete();
-            $fneed->delete();
-        }
-
-        $farmedType->taxonomy()->delete();
-        $farmedType->marketing()->delete();
-        $farmedType->nutVal()->delete();
-        // popular_countries & names countries
-        DB::table('country_farmed_type')->where('farmed_type_id', $id)->delete();
-        DB::table('favorites')->where('favoriteable_type', 'App\Models\FarmedType')->where('favoriteable_id', $id)->delete();
-        $farmedType->resistant_diseases()->detach();
-        $sensitives = SensitiveDiseaseFarmedType::where('farmed_type_id', $id)->get();
-        foreach ($sensitives as $sen) {
-            foreach ($sen->assets as $ass) {
-                $ass->delete();
+            if (empty($farmedType)) {
+                return $this->sendError('Farmed Type not found');
             }
-            $sen->delete();
-        }
-        $farmedType->products()->detach();
 
-        $farmedType->delete();
-        DB::commit();
-        return $this->sendSuccess('Farmed Type deleted successfully');
-        }
-        catch(\Throwable $th)
+            DB::beginTransaction();
+
+            $farmedType->asset->delete();
+            $farmedType->extra()->delete();
+
+            foreach($farmedType->fneeds as $fneed){
+                $fneed->nutElemValue()->delete();
+                $fneed->delete();
+            }
+
+            $farmedType->taxonomy()->delete();
+            $farmedType->marketing()->delete();
+            $farmedType->nutVal()->delete();
+            // popular_countries & names countries
+            DB::table('country_farmed_type')->where('farmed_type_id', $id)->delete();
+            DB::table('favorites')->where('favoriteable_type', 'App\Models\FarmedType')->where('favoriteable_id', $id)->delete();
+            $farmedType->resistant_diseases()->detach();
+            $sensitives = SensitiveDiseaseFarmedType::where('farmed_type_id', $id)->get();
+            foreach ($sensitives as $sen) {
+                foreach ($sen->assets as $ass) {
+                    $ass->delete();
+                }
+                $sen->delete();
+            }
+            $farmedType->products()->detach();
+
+            $farmedType->delete();
+            DB::commit();
+            return $this->sendSuccess('Farmed Type deleted successfully');
+        }catch(\Throwable $th)
         {
             DB::rollBack();
-            throw $th;
             if ($th instanceof \Illuminate\Database\QueryException)
             return $this->sendError('Model cannot be deleted as it is associated with other models');
             else

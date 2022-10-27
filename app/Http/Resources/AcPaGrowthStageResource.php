@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AcResource extends JsonResource
+class AcPaGrowthStageResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,11 +16,10 @@ class AcResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            // 'who_class' => $this->who_class,
-            'who_class' => @app('\App\Http\Controllers\API\AcAPIController')->who_classes($this->who_class),
-            'withdrawal_days' => $this->withdrawal_days,
-            'precautions' => $this->precautions
+            'effect' => $this->effect,
+            'pathogen_growth_stage_id' => $this->pathogen_growth_stage_id,
+            'ac' => AcXsResource::make($this->ac),
+            'assets' => $this->assets()->pluck('asset_url'),
         ];
     }
 }

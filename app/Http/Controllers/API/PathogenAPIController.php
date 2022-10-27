@@ -9,6 +9,8 @@ use App\Repositories\PathogenRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\PathogenResource;
+use App\Models\AcPaGrowthStage;
+use Illuminate\Support\Facades\DB;
 use Response;
 
 /**
@@ -118,15 +120,36 @@ class PathogenAPIController extends AppBaseController
      */
     public function destroy($id)
     {
-        /** @var Pathogen $pathogen */
-        $pathogen = $this->pathogenRepository->find($id);
+        try{
+            /** @var Pathogen $pathogen */
+            $pathogen = $this->pathogenRepository->find($id);
 
-        if (empty($pathogen)) {
-            return $this->sendError('Pathogen not found');
+            if (empty($pathogen)) {
+                return $this->sendError('Pathogen not found');
+            }
+            DB::beginTransaction();
+            foreach($pathogen->pathogenGrowthStages as $stage){
+                foreach(AcPaGrowthStage::where('pathogen_growth_stage_id', $stage->id)->get() as $acpa){
+                    foreach($acpa->assets as $ass){
+                        $ass->delete();
+                    }
+                    $acpa->delete();
+                }
+                foreach($stage->assets as $ass){
+                    $ass->delete();
+                }
+                $stage->delete();
+            }
+            $pathogen->delete();
+            DB::commit();
+            return $this->sendSuccess('Pathogen deleted successfully');
+        }catch(\Throwable $th)
+        {
+            DB::rollBack();
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
         }
-
-        $pathogen->delete();
-
-        return $this->sendSuccess('Pathogen deleted successfully');
     }
 }

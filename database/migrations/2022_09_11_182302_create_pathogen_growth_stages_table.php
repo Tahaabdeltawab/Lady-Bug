@@ -17,6 +17,7 @@ class CreatePathogenGrowthStagesTable extends Migration
         Schema::create('pathogen_growth_stages', function (Blueprint $table) {
             $table->id();
             $table->json('name');
+            $table->foreignId('pathogen_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

@@ -21,6 +21,7 @@ class DiseaseFarmedTypeAPIController extends AppBaseController
     public function one_sensitive_disease($disease_farmed_type_id)
     {
         $sensitive = SensitiveDiseaseFarmedType::find($disease_farmed_type_id);
+        if (empty($sensitive)) return $this->sendError('Farmed Type Disease not found');
         return $this->sendResponse(SensitiveDiseaseResource::make($sensitive), 'sensitive disease retrieved successfully');
     }
 
@@ -33,16 +34,44 @@ class DiseaseFarmedTypeAPIController extends AppBaseController
         return $this->sendResponse(SensitiveDiseaseResource::collection($sensitives), 'sensitive diseases retrieved successfully');
     }
 
-    public function save_sensitive_disease(SensitiveDiseaseRequest $request)
+    public function create_sensitive_disease(SensitiveDiseaseRequest $request)
     {
         $input = $request->validated();
         unset($input['assets']);
         if(!isset($input['farmed_type_stage_id'])) $input['farmed_type_stage_id'] = null;
 
-        $sensitive = SensitiveDiseaseFarmedType::firstOrCreate($input);
+        if(SensitiveDiseaseFarmedType::where($input)->exists())
+            return $this->sendError('This Disease is already present with this Farmed Type');
+
+        $sensitive = SensitiveDiseaseFarmedType::create($input);
         if($assets = $request->file('assets'))
         {
-            foreach ($sensitive->assets as $ass) { // will only apply if updating
+            foreach($assets as $asset)
+            {
+                $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'sensitive');
+                $assets[] = $sensitive->assets()->create($oneasset);
+            }
+        }
+        return $this->sendResponse(SensitiveDiseaseResource::make($sensitive), 'success');
+    }
+
+    public function update_sensitive_disease($disease_farmed_type_id, SensitiveDiseaseRequest $request)
+    {
+        $input = $request->validated();
+        unset($input['assets']);
+        if(!isset($input['farmed_type_stage_id'])) $input['farmed_type_stage_id'] = null;
+
+        if(!$sensitive = SensitiveDiseaseFarmedType::find($disease_farmed_type_id))
+            return $this->sendError('This Farmed Type Disease is not found');
+
+        $mine = ($sensitive->disease_id == $input['disease_id']) && ($sensitive->farmed_type_id == $input['farmed_type_id']) && ($sensitive->farmed_type_stage_id == $input['farmed_type_stage_id']);
+        if(!$mine && SensitiveDiseaseFarmedType::where($input)->exists())
+            return $this->sendError('This Disease is already present with this Farmed Type');
+
+        $sensitive->update($input);
+        if($assets = $request->file('assets'))
+        {
+            foreach ($sensitive->assets as $ass) {
                 $ass->delete();
             }
             foreach($assets as $asset)

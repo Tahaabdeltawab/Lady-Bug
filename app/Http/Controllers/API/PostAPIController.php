@@ -3,27 +3,19 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Requests\API\CreatePostAPIRequest;
-use App\Http\Requests\API\UpdatePostAPIRequest;
 use App\Models\Post;
 use App\Models\FarmedTypeGinfo;
 use App\Repositories\PostRepository;
-use App\Repositories\AssetRepository;
 use App\Repositories\PostTypeRepository;
 use App\Repositories\FarmedTypeRepository;
-use App\Repositories\FarmedTypeGinfoRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
-use App\Http\Resources\PostResource;
 use App\Http\Resources\PostTypeResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\FarmedTypeGinfoResource;
 use App\Http\Resources\FarmedTypeXsResource;
 use App\Http\Resources\PostXsResource;
 use App\Models\Business;
-use Response;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
@@ -35,20 +27,16 @@ class PostAPIController extends AppBaseController
 {
     /** @var  PostRepository */
     private $postRepository;
-    private $assetRepository;
     private $farmedTypeRepository;
-    private $farmedTypeGinfoRepository;
     private $postTypeRepository;
 
     private $skip       = 5;
     private $perPage    = 10;
 
-    public function __construct(PostRepository $postRepo, AssetRepository $assetRepo, PostTypeRepository $postTypeRepo, FarmedTypeRepository $farmedTypeRepo, FarmedTypeGinfoRepository $farmedTypeGinfoRepo)
+    public function __construct(PostRepository $postRepo, PostTypeRepository $postTypeRepo, FarmedTypeRepository $farmedTypeRepo)
     {
         $this->postRepository = $postRepo;
-        $this->assetRepository = $assetRepo;
         $this->farmedTypeRepository = $farmedTypeRepo;
-        $this->farmedTypeGinfoRepository = $farmedTypeGinfoRepo;
         $this->postTypeRepository = $postTypeRepo;
 
         $this->middleware('permission:posts.index')->only(['index']);

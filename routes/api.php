@@ -316,17 +316,29 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     Route::get('sensitive_diseases/{farmed_type}/{farmed_type_stage?}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'get_sensitive_diseases'])->name('farmed_types.get_sensitive_diseases');
     Route::get('one_sensitive_disease/{disease_farmed_type}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'one_sensitive_disease'])->name('farmed_types.one_sensitive_disease');
-    Route::post('save_sensitive_disease', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'save_sensitive_disease'])->name('farmed_types.save_sensitive_disease');
+    Route::post('create_sensitive_disease', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'create_sensitive_disease'])->name('farmed_types.create_sensitive_disease');
+    Route::post('update_sensitive_disease/{disease_farmed_type}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'update_sensitive_disease'])->name('farmed_types.update_sensitive_disease');
     Route::delete('delete_sensitive_disease/{disease_farmed_type}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'delete_sensitive_disease'])->name('farmed_types.delete_sensitive_disease');
+
+    Route::get('affecting_acs/{pathogen}/{pathogen_growth_stage?}', [App\Http\Controllers\API\AcPaGrowthStageAPIController::class, 'get_affecting_acs'])->name('pathogens.get_affecting_acs');
+    Route::get('one_affecting_ac/{ac_pa_growth_stage}', [App\Http\Controllers\API\AcPaGrowthStageAPIController::class, 'one_affecting_ac'])->name('pathogens.one_affecting_ac');
+    Route::post('create_affecting_ac', [App\Http\Controllers\API\AcPaGrowthStageAPIController::class, 'create_affecting_ac'])->name('pathogens.create_affecting_ac');
+    Route::post('update_affecting_ac/{ac_pa_growth_stage}', [App\Http\Controllers\API\AcPaGrowthStageAPIController::class, 'update_affecting_ac'])->name('pathogens.update_affecting_ac');
+    Route::delete('delete_affecting_ac/{ac_pa_growth_stage}', [App\Http\Controllers\API\AcPaGrowthStageAPIController::class, 'delete_affecting_ac'])->name('pathogens.delete_affecting_ac');
 
     Route::get('resistant_diseases/{farmed_type}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'get_resistant_diseases'])->name('farmed_types.get_resistant_diseases');
     Route::post('resistant_diseases', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'resistant_diseases'])->name('farmed_types.resistant_diseases');
 
     Route::resource('infection_rates', App\Http\Controllers\API\InfectionRateAPIController::class);
-    Route::resource('pathogen_growth_stages', App\Http\Controllers\API\PathogenGrowthStageAPIController::class);
     Route::resource('pathogen_types', App\Http\Controllers\API\PathogenTypeAPIController::class);
 
+    Route::resource('pathogen_growth_stages', App\Http\Controllers\API\PathogenGrowthStageAPIController::class)->except('update');
+    Route::match(['put', 'patch','post'], 'pathogen_growth_stages/{pathogen_growth_stage}', [App\Http\Controllers\API\PathogenGrowthStageAPIController::class, 'update'])->name('pathogen_growth_stages.update');
+    Route::get('pathogen_growth_stages/by_pa_id/{pathogen}', [App\Http\Controllers\API\PathogenGrowthStageAPIController::class, 'by_pa_id'])->name('pathogen_growth_stages.by_pa_id');
+
     Route::resource('acs', App\Http\Controllers\API\AcAPIController::class);
+    Route::get('acs/relations/index', [App\Http\Controllers\API\AcAPIController::class, 'getRelations'])->name('acs.getRelations');
+
     Route::resource('diseases', App\Http\Controllers\API\DiseaseAPIController::class);
     Route::resource('disease_causatives', App\Http\Controllers\API\DiseaseCausativeAPIController::class);
     Route::resource('pathogens', App\Http\Controllers\API\PathogenAPIController::class);
