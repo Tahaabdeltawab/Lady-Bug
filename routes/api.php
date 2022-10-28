@@ -340,6 +340,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('acs/relations/index', [App\Http\Controllers\API\AcAPIController::class, 'getRelations'])->name('acs.getRelations');
 
     Route::resource('diseases', App\Http\Controllers\API\DiseaseAPIController::class);
+    Route::get('diseases/relations/index', [App\Http\Controllers\API\DiseaseAPIController::class, 'getRelations'])->name('diseases.getRelations');
     Route::resource('disease_causatives', App\Http\Controllers\API\DiseaseCausativeAPIController::class);
     Route::resource('pathogens', App\Http\Controllers\API\PathogenAPIController::class);
 });

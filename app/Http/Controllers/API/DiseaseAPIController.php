@@ -9,6 +9,9 @@ use App\Repositories\DiseaseRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\DiseaseResource;
+use App\Http\Resources\PathogenResource;
+use App\Models\Country;
+use App\Models\Pathogen;
 use Response;
 
 /**
@@ -44,6 +47,13 @@ class DiseaseAPIController extends AppBaseController
         return $this->sendResponse(DiseaseResource::collection($diseases), 'Diseases retrieved successfully');
     }
 
+    public function getRelations()
+    {
+        return $this->sendResponse([
+            'countries' => Country::all(),
+            'pathogens' => PathogenResource::collection(Pathogen::all()),
+        ], 'relations retieved successfully');
+    }
     /**
      * Store a newly created Disease in storage.
      * POST /diseases
@@ -57,6 +67,7 @@ class DiseaseAPIController extends AppBaseController
         $input = $request->validated();
 
         $disease = $this->diseaseRepository->create($input);
+        $disease->countries()->attach($request->countries);
 
         return $this->sendResponse(new DiseaseResource($disease), 'Disease saved successfully');
     }
@@ -97,11 +108,11 @@ class DiseaseAPIController extends AppBaseController
         /** @var Disease $disease */
         $disease = $this->diseaseRepository->find($id);
 
-        if (empty($disease)) {
+        if (empty($disease))
             return $this->sendError('Disease not found');
-        }
 
         $disease = $this->diseaseRepository->update($input, $id);
+        $disease->countries()->sync($request->countries);
 
         return $this->sendResponse(new DiseaseResource($disease), 'Disease updated successfully');
     }

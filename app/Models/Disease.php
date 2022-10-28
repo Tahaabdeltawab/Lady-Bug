@@ -55,6 +55,8 @@ class Disease extends Model
         'name.en' => 'required|max:30',
         'description.ar' => 'required|max:255',
         'description.en' => 'required|max:255',
+        'countries' => 'nullable|array',
+        'countries.*' => 'exists:countries,id',
     ];
 
     /**
@@ -88,4 +90,16 @@ class Disease extends Model
     {
         return $this->belongsToMany(\App\Models\Country::class);
     }
+
+    public function sensitive_farmed_types()
+    {
+        // todo: this relation may return multiple farmed types due to presence of multiple stages in the same farmed type
+        return $this->belongsToMany(FarmedType::class, 'sensitive_disease_farmed_type')->withPivot('farmed_type_stage_id');
+    }
+
+    public function resistant_farmed_types()
+    {
+        return $this->belongsToMany(FarmedType::class, 'resistant_disease_farmed_type');
+    }
+
 }
