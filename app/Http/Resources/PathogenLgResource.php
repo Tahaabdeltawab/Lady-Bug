@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class DiseaseResource extends JsonResource
+class PathogenLgResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,9 +17,10 @@ class DiseaseResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
-            'countries' => CountryResource::collection($this->countries),
-            'pathogens' => PathogenXsResource::collection($this->pathogens()->get(['pathogens.id', 'pathogens.name'])),
+            'pathogen_type' => $this->pathogenType,
+            'bio_control' => $this->bio_control,
+            'ch_control' => $this->ch_control,
+            'growth_stages' => PathogenGrowthStageResource::collection($this->pathogenGrowthStages),
         ];
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\API\ResistantDiseaseRequest;
 use App\Http\Requests\API\SensitiveDiseaseRequest;
 use App\Http\Resources\DiseaseResource;
+use App\Http\Resources\DiseaseSmResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\SensitiveDiseaseResource;
 use App\Models\SensitiveDiseaseFarmedType;
@@ -41,7 +42,13 @@ class DiseaseFarmedTypeAPIController extends AppBaseController
         if(!isset($input['farmed_type_stage_id'])) $input['farmed_type_stage_id'] = null;
 
         if(SensitiveDiseaseFarmedType::where($input)->exists())
-            return $this->sendError('This Disease is already present with this Farmed Type');
+            return $this->sendError('This Farmed Type is already sensitive to this disease.');
+
+        $resistants = FarmedType::find($request->farmed_type_id)->resistant_diseases()->pluck('diseases.id')->toArray();
+        // check if this farmedType is resistant to any of the request diseases
+        $is_resistant = in_array($request->disease_id, $resistants);
+        if($is_resistant)
+        return $this->sendError('This disease is resistant to the this farmed type, can\'t be resistant and sensitive at the same time.');
 
         $sensitive = SensitiveDiseaseFarmedType::create($input);
         if($assets = $request->file('assets'))
@@ -109,12 +116,17 @@ class DiseaseFarmedTypeAPIController extends AppBaseController
     {
         $farmedType = FarmedType::find($id);
         if(!$farmedType) return $this->sendError('Farmed type not found');
-        return $this->sendResponse(DiseaseResource::collection($farmedType->resistant_diseases), 'resistant diseases retrieved successfully');
+        return $this->sendResponse(DiseaseSmResource::collection($farmedType->resistant_diseases), 'resistant diseases retrieved successfully');
     }
 
     public function resistant_diseases(ResistantDiseaseRequest $request)
     {
         $farmedType = FarmedType::find($request->farmed_type_id);
+        $sensitives = $farmedType->sensitive_diseases()->pluck('diseases.id')->toArray();
+        // check if this farmedType is sensitive to any of the request diseases
+        $is_sensitive = array_intersect($request->diseases, $sensitives);
+        if($is_sensitive)
+        return $this->sendError('There are diseases that are sensitive to the same farmed type, can\'t be sensitive and resistant at the same time.');
         $farmedType->resistant_diseases()->sync($request->diseases);
         return $this->sendSuccess('saved');
     }

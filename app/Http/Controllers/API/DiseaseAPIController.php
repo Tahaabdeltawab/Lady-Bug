@@ -8,7 +8,10 @@ use App\Models\Disease;
 use App\Repositories\DiseaseRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use App\Http\Resources\DiseaseLgResource;
 use App\Http\Resources\DiseaseResource;
+use App\Http\Resources\DiseaseSmResource;
+use App\Http\Resources\DiseaseXsResource;
 use App\Http\Resources\PathogenResource;
 use App\Models\Country;
 use App\Models\Pathogen;
@@ -44,7 +47,7 @@ class DiseaseAPIController extends AppBaseController
             $request->get('limit')
         );
 
-        return $this->sendResponse(DiseaseResource::collection($diseases), 'Diseases retrieved successfully');
+        return $this->sendResponse(DiseaseSmResource::collection($diseases), 'Diseases retrieved successfully');
     }
 
     public function getRelations()
@@ -68,8 +71,9 @@ class DiseaseAPIController extends AppBaseController
 
         $disease = $this->diseaseRepository->create($input);
         $disease->countries()->attach($request->countries);
+        $disease->pathogens()->attach($request->pathogens);
 
-        return $this->sendResponse(new DiseaseResource($disease), 'Disease saved successfully');
+        return $this->sendResponse(new DiseaseLgResource($disease), 'Disease saved successfully');
     }
 
     /**
@@ -89,7 +93,7 @@ class DiseaseAPIController extends AppBaseController
             return $this->sendError('Disease not found');
         }
 
-        return $this->sendResponse(new DiseaseResource($disease), 'Disease retrieved successfully');
+        return $this->sendResponse(new DiseaseLgResource($disease), 'Disease retrieved successfully');
     }
 
     /**
@@ -113,8 +117,9 @@ class DiseaseAPIController extends AppBaseController
 
         $disease = $this->diseaseRepository->update($input, $id);
         $disease->countries()->sync($request->countries);
+        $disease->pathogens()->sync($request->pathogens);
 
-        return $this->sendResponse(new DiseaseResource($disease), 'Disease updated successfully');
+        return $this->sendResponse(new DiseaseLgResource($disease), 'Disease updated successfully');
     }
 
     /**

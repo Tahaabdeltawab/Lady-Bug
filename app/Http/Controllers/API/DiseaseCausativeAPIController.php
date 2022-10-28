@@ -55,9 +55,8 @@ class DiseaseCausativeAPIController extends AppBaseController
     public function store(CreateDiseaseCausativeAPIRequest $request)
     {
         $input = $request->validated();
-
-        $diseaseCausative = $this->diseaseCausativeRepository->create($input);
-
+        unset($input['disease_id']);
+        $diseaseCausative = DiseaseCausative::updateOrCreate(['disease_id' => $request->disease_id], $input);
         return $this->sendResponse(new DiseaseCausativeResource($diseaseCausative), 'Disease Causative saved successfully');
     }
 

@@ -30,7 +30,7 @@ class DiseaseCausative extends Model
 
     public $table = 'disease_causatives';
 	public $timestamps = false;
-    
+
 
 
 
@@ -45,7 +45,7 @@ class DiseaseCausative extends Model
         'soil_salts_gt',
         'soil_salts_lt',
         'water_salts_gt',
-        'water_salts_lt'
+        'water_salts_lt',
     ];
 
     /**
@@ -74,17 +74,17 @@ class DiseaseCausative extends Model
      * @var array
      */
     public static $rules = [
-        'disease_id' => 'required',
-        'temp_gt' => 'nullable',
-        'temp_lt' => 'nullable',
-        'humidity_gt' => 'nullable',
-        'humidity_lt' => 'nullable',
-        'ph_gt' => 'nullable',
-        'ph_lt' => 'nullable',
-        'soil_salts_gt' => 'nullable',
-        'soil_salts_lt' => 'nullable',
-        'water_salts_gt' => 'nullable',
-        'water_salts_lt' => 'nullable'
+        'disease_id' => 'required|exists:diseases,id',
+        'temp_gt' => 'nullable|numeric',
+        'temp_lt' => 'nullable|numeric',
+        'humidity_gt' => 'nullable|numeric',
+        'humidity_lt' => 'nullable|numeric',
+        'ph_gt' => 'nullable|numeric|max:14|min:0',
+        'ph_lt' => 'nullable|numeric|max:14|min:0',
+        'soil_salts_gt' => 'nullable|numeric',
+        'soil_salts_lt' => 'nullable|numeric',
+        'water_salts_gt' => 'nullable|numeric',
+        'water_salts_lt' => 'nullable|numeric'
     ];
 
     /**

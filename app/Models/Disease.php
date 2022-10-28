@@ -57,6 +57,8 @@ class Disease extends Model
         'description.en' => 'required|max:255',
         'countries' => 'nullable|array',
         'countries.*' => 'exists:countries,id',
+        'pathogens' => 'nullable|array',
+        'pathogens.*' => 'exists:pathogens,id',
     ];
 
     /**
@@ -84,6 +86,14 @@ class Disease extends Model
     }
 
     /**
+     * Get the factors that help in Disease spread
+     */
+    public function causative()
+    {
+        return $this->hasOne(DiseaseCausative::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      **/
     public function countries()
@@ -91,10 +101,21 @@ class Disease extends Model
         return $this->belongsToMany(\App\Models\Country::class);
     }
 
+    /**
+     * this relation returns multiple records of the same farmed types due to presence of multiple stages in the same farmed type
+     * i.e. multiple records in sensitive_disease_farmed_type table
+     */
+    public function sensitive_farmed_types_stages()
+    {
+        return $this->belongsToMany(FarmedType::class, 'sensitive_disease_farmed_type')->withPivot('farmed_type_stage_id');
+    }
+
+    /**
+     * returns unique farmed types that are sensitive to a particular disease
+     */
     public function sensitive_farmed_types()
     {
-        // todo: this relation may return multiple farmed types due to presence of multiple stages in the same farmed type
-        return $this->belongsToMany(FarmedType::class, 'sensitive_disease_farmed_type')->withPivot('farmed_type_stage_id');
+        return $this->belongsToMany(FarmedType::class, 'sensitive_disease_farmed_type')->groupBy('farmed_types.id');
     }
 
     public function resistant_farmed_types()
