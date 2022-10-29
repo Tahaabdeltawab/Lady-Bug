@@ -246,7 +246,7 @@ class FarmAPIController extends AppBaseController
     {
         try
         {
-            $archived_farms = auth()->user()->farms()->where('archived', true);
+            $archived_farms = auth()->user()->farms()->where('archived', true)->get();
             return $this->sendResponse(['all' => FarmResource::collection($archived_farms)], 'Archived farms retrieved successfully');
         }
         catch(\Throwable $th){

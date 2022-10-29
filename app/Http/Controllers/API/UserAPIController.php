@@ -29,12 +29,14 @@ use App\Http\Requests\API\CreateUserAPIRequest;
 use App\Http\Requests\API\RateUserRequest;
 use App\Http\Requests\API\UpdateProfileAPIRequest;
 use App\Http\Resources\BusinessResource;
+use App\Http\Resources\BusinessXsResource;
 use App\Http\Resources\ConsultancyProfileResource;
 use App\Http\Resources\PostXsResource;
 use App\Http\Resources\ProductXsResource;
 use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserSmResource;
 use App\Http\Resources\UserWithPostsResource;
+use App\Http\Resources\UserXsResource;
 use App\Models\NotificationSetting;
 
 /**
@@ -417,11 +419,13 @@ class UserAPIController extends AppBaseController
 
     public function my_followings()
     {
-        // $my_followings = auth()->user()->followings;
-        // $my_followings = auth()->user()->users_i_follow;
-        $my_followings = auth()->user()->businesses_i_follow;
-
-        return $this->sendResponse(['count' => $my_followings->count(), 'all' => ($my_followings)], 'User followings retrieved successfully');
+        if(request()->type == 'user'){
+            $my_followings = auth()->user()->followedUsers;
+            return $this->sendResponse(['count' => $my_followings->count(), 'all' => UserSmResource::collection($my_followings)], 'Followed users retrieved successfully');
+        }else{
+            $my_followings = auth()->user()->followedBusinesses;
+            return $this->sendResponse(['count' => $my_followings->count(), 'all' => BusinessXsResource::collection($my_followings)], 'Followed businesses retrieved successfully');
+        }
     }
 
 

@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(CountrySeeder::class);
         // $this->call(IrrigationRateSeeder::class);
         // $this->call(PathogenTypeSeeder::class);
+        $this->call(ReportTypeSeeder::class);
 
         /**
          * ? ... ? means don't allow editing or deleting them
