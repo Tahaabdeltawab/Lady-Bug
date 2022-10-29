@@ -149,6 +149,7 @@ class DocsFarmAPIController
 
     public function destroy($id)
     {
+
         /**
          * delete a farm
          */

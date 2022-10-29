@@ -128,6 +128,8 @@ class FarmedTypeNutValAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var FarmedTypeNutVal $farmedTypeNutVal */
         $farmedTypeNutVal = $this->farmedTypeNutValRepository->find($id);
 
@@ -138,5 +140,13 @@ class FarmedTypeNutValAPIController extends AppBaseController
         $farmedTypeNutVal->delete();
 
         return $this->sendSuccess('Farmed Type Nut Val deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

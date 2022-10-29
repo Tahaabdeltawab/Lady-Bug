@@ -118,6 +118,8 @@ class ResidenceAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Residence $residence */
         $residence = $this->residenceRepository->find($id);
 
@@ -128,5 +130,13 @@ class ResidenceAPIController extends AppBaseController
         $residence->delete();
 
         return $this->sendSuccess('Residence deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

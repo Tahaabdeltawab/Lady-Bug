@@ -118,6 +118,8 @@ class CountryAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Country $country */
         $country = $this->countryRepository->find($id);
 
@@ -128,5 +130,13 @@ class CountryAPIController extends AppBaseController
         $country->delete();
 
         return $this->sendSuccess('Country deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

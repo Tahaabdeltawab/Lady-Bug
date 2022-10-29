@@ -50,7 +50,7 @@ class Post extends Model
      * @var array
      */
     public static $rules = [
-        'title' => 'nullable|max:200',
+        'title' => 'nullable|max:30',
         'content' => 'nullable',
         'business_id' => 'nullable|exists:businesses,id',
         'farmed_type_id' => 'nullable',

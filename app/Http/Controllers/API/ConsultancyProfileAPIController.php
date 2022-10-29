@@ -197,6 +197,8 @@ class ConsultancyProfileAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var ConsultancyProfile $consultancyProfile */
         $consultancyProfile = $this->consultancyProfileRepository->find($id);
 
@@ -210,10 +212,20 @@ class ConsultancyProfileAPIController extends AppBaseController
         auth()->user()->is_consultant = false;
         auth()->user()->save();
         return $this->sendSuccess('Consultancy Profile deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 
     public function delete_mine()
     {
+        try
+        {
         /** @var ConsultancyProfile $consultancyProfile */
         $consultancyProfile = auth()->user()->consultancyProfile;
 
@@ -227,5 +239,14 @@ class ConsultancyProfileAPIController extends AppBaseController
         auth()->user()->is_consultant = false;
         auth()->user()->save();
         return $this->sendSuccess('Consultancy Profile deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
+
     }
 }

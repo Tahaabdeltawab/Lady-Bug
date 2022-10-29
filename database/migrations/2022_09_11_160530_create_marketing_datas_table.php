@@ -18,7 +18,7 @@ class CreateMarketingDatasTable extends Migration
             $table->id();
             $table->foreignId('farmed_type_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('year')->nullable();
-            $table->bigInteger('country_id')->nullable();
+            $table->foreignId('country_id')->nullable()->constrained();
             $table->decimal('production')->nullable();
             $table->decimal('consumption')->nullable();
             $table->decimal('export')->nullable();

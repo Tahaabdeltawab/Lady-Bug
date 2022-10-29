@@ -34,5 +34,18 @@ class DatabaseSeeder extends Seeder
         // $this->call(CountrySeeder::class);
         // $this->call(IrrigationRateSeeder::class);
         // $this->call(PathogenTypeSeeder::class);
+
+        /**
+         * ? ... ? means don't allow editing or deleting them
+         * ? FarmActivityType ? because depended on by farms
+         * ? BusinessField ? because depended on by Business::class scopes
+         * ? ProductType ? because depended on by ProductAPIController()->store() method
+         * ? RatingQuestionSeeder ? because depended on by UserAPIController()->user_rating_details() method
+         *
+         * WorkField
+         * PathogenType
+         * InfectionRate
+         * IrrigationRate
+         */
   }
 }

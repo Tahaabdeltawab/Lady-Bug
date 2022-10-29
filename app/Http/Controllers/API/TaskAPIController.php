@@ -193,6 +193,8 @@ class TaskAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Task $task */
         $task = $this->taskRepository->find($id);
 
@@ -203,5 +205,13 @@ class TaskAPIController extends AppBaseController
         $task->delete();
 
         return $this->sendSuccess('Task deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

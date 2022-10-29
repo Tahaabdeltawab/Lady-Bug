@@ -118,6 +118,8 @@ class IrrigationRateAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var IrrigationRate $irrigationRate */
         $irrigationRate = $this->irrigationRateRepository->find($id);
 
@@ -128,5 +130,13 @@ class IrrigationRateAPIController extends AppBaseController
         $irrigationRate->delete();
 
         return $this->sendSuccess('Irrigation Rate deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

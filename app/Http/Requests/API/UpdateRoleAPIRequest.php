@@ -25,8 +25,8 @@ class UpdateRoleAPIRequest extends APIRequest
     {
         $id = $this->role ?? null;
         return [
-            'name' => 'required|max:200|unique:roles,name,'.$id,
-            'display_name' => 'required|max:200',
+            'name' => 'required|max:30|unique:roles,name,'.$id,
+            'display_name' => 'required|max:30',
             'description' => 'required|max:200',
         ];
     }

@@ -118,6 +118,8 @@ class CareerAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Career $career */
         $career = $this->careerRepository->find($id);
 
@@ -128,5 +130,13 @@ class CareerAPIController extends AppBaseController
         $career->delete();
 
         return $this->sendSuccess('Career deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

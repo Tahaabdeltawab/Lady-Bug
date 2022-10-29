@@ -155,6 +155,8 @@ class InsecticideAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Insecticide $insecticide */
         $insecticide = $this->insecticideRepository->find($id);
 
@@ -165,5 +167,13 @@ class InsecticideAPIController extends AppBaseController
         $insecticide->delete();
 
         return $this->sendSuccess('Insecticide deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

@@ -16,8 +16,8 @@ class CreateFarmedTypeExtrasTable extends Migration
     {
         Schema::create('farmed_type_extras', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('farmed_type_id');
-            $table->bigInteger('irrigation_rate_id');
+            $table->foreignId('farmed_type_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('irrigation_rate_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->enum('seedling_type', ['seedlings', 'seeds'])->nullable();
             $table->string('scientific_name')->nullable();
             $table->string('history')->nullable();

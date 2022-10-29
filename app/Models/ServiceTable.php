@@ -43,7 +43,7 @@ class ServiceTable extends Model
      * @var array
      */
     public static $rules = [
-        'name' => 'required|max:200',
+        'name' => 'required|max:30',
         'farm_id' => 'required|exists:farms,id'
     ];
 

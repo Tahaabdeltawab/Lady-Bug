@@ -118,6 +118,8 @@ class VisitedAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Visited $visited */
         $visited = $this->visitedRepository->find($id);
 
@@ -128,5 +130,13 @@ class VisitedAPIController extends AppBaseController
         $visited->delete();
 
         return $this->sendSuccess('Visited deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

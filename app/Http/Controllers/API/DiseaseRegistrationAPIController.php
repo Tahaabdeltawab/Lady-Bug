@@ -159,6 +159,8 @@ class DiseaseRegistrationAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var DiseaseRegistration $diseaseRegistration */
         $diseaseRegistration = $this->diseaseRegistrationRepository->find($id);
 
@@ -169,5 +171,13 @@ class DiseaseRegistrationAPIController extends AppBaseController
         $diseaseRegistration->delete();
 
         return $this->sendSuccess('Disease Registration deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

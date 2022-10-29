@@ -51,7 +51,7 @@ class Asset extends Model
      * @var array
      */
     public static $rules = [
-        'asset_name' => 'required|max:200',
+        'asset_name' => 'required|max:30',
         'asset_url' => 'required|max:200',
         'asset_size' => 'required',
         'asset_mime' => 'required|max:200',

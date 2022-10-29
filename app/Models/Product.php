@@ -64,7 +64,7 @@ class Product extends Model
         'business_id'                   => 'nullable|exists:businesses,id',
         'product_type_id'               => 'required|exists:product_types,id',
         'price'                         => 'required',
-        'name'                          => 'required|max:200',
+        'name'                          => 'required|max:30',
         'description'                   => 'required',
         'farmed_types'                  => 'nullable|array',
         'farmed_types.*'                => 'required|exists:farmed_types,id',

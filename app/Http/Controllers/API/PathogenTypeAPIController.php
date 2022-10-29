@@ -118,6 +118,8 @@ class PathogenTypeAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var PathogenType $pathogenType */
         $pathogenType = $this->pathogenTypeRepository->find($id);
 
@@ -128,5 +130,13 @@ class PathogenTypeAPIController extends AppBaseController
         $pathogenType->delete();
 
         return $this->sendSuccess('Pathogen Type deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

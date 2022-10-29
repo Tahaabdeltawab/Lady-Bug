@@ -118,6 +118,8 @@ class BusinessBranchAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var BusinessBranch $businessBranch */
         $businessBranch = $this->businessBranchRepository->find($id);
 
@@ -128,5 +130,13 @@ class BusinessBranchAPIController extends AppBaseController
         $businessBranch->delete();
 
         return $this->sendSuccess('Business Branch deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

@@ -42,8 +42,8 @@ class FarmedTypeGinfo extends Model
      * @var array
      */
     public static $rules = [
-        'title.ar' => 'required|max:200',
-        'title.en' => 'required|max:200',
+        'title.ar' => 'required|max:30',
+        'title.en' => 'required|max:30',
         'content.ar' => 'required',
         'content.en' => 'required',
         'farmed_type_id' => 'required|exists:farmed_types,id',

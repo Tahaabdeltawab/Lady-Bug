@@ -118,6 +118,8 @@ class InfectionRateAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var InfectionRate $infectionRate */
         $infectionRate = $this->infectionRateRepository->find($id);
 
@@ -128,5 +130,13 @@ class InfectionRateAPIController extends AppBaseController
         $infectionRate->delete();
 
         return $this->sendSuccess('Infection Rate deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

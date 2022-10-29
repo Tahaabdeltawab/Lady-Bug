@@ -160,6 +160,8 @@ class ReportAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Report $report */
         $report = $this->reportRepository->find($id);
 
@@ -173,5 +175,13 @@ class ReportAPIController extends AppBaseController
         }
 
         return $this->sendSuccess('Report deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

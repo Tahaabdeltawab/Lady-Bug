@@ -170,6 +170,8 @@ class FertilizerAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var Fertilizer $fertilizer */
         $fertilizer = $this->fertilizerRepository->find($id);
 
@@ -181,5 +183,13 @@ class FertilizerAPIController extends AppBaseController
         $fertilizer->nutElemValue()->delete();
 
         return $this->sendSuccess('Fertilizer deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

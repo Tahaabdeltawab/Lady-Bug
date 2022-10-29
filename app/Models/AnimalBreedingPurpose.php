@@ -39,8 +39,8 @@ class AnimalBreedingPurpose extends Model
      * @var array
      */
     public static $rules = [
-        'name.ar' => 'required|max:200',
-        'name.en' => 'required|max:200',
+        'name.ar' => 'required|max:30',
+        'name.en' => 'required|max:30',
     ];
 
 

@@ -51,8 +51,8 @@ class FarmedType extends Model
      * @var array
      */
     public static $rules = [
-        'name.ar'                               => 'required|max:200',
-        'name.en'                               => 'required|max:200',
+        'name.ar'                               => 'required|max:30',
+        'name.en'                               => 'required|max:30',
         'farm_activity_type_id'                 => 'required',
         'parent_id'                             => 'nullable|exists:farmed_types,id',
         'country_id'                            => 'nullable|exists:countries,id',

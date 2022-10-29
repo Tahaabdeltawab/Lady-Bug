@@ -32,6 +32,9 @@ class FarmingWayAPIController extends AppBaseController
 
     public function index(Request $request)
     {
+        // ! don't change repository all method as its first argument ($search = $request->exce...)
+        // ! is used to filter farming ways and breeding ways
+        // ! /farming_ways?type=breeding
         $farmingWays = $this->farmingWayRepository->all(
             $request->except(['skip', 'limit']),
             $request->get('skip'),

@@ -25,7 +25,7 @@ class UpdateServiceTaskAPIRequest extends APIRequest
     public function rules()
     {
         return  [
-            'name' => 'required|max:200',
+            'name' => 'required|max:30',
             'start_at' => 'required|date_format:Y-m-d',
             'notify_at' => 'required|date_format:Y-m-d',
             'due_at' => 'nullable|date_format:Y-m-d',

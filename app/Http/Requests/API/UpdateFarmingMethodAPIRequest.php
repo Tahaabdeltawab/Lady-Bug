@@ -27,8 +27,8 @@ class UpdateFarmingMethodAPIRequest extends APIRequest
         // $id = last(request()->segments());
         $id = $this->farming_method ?? null;
         return [
-            'name.ar' => 'required|max:200',
-            'name.en' => 'required|max:200',
+            'name.ar' => 'required|max:30',
+            'name.en' => 'required|max:30',
         ];
     }
 }

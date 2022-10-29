@@ -27,8 +27,8 @@ class CreateFarmingWayAPIRequest extends APIRequest
     public function rules(Request $request)
     {
         return[
-            'name.ar' => 'required|max:200',
-            'name.en' => 'required|max:200',
+            'name.ar' => 'required|max:30',
+            'name.en' => 'required|max:30',
             'type' => 'required|in:farming,breeding'
         ];
     }

@@ -118,6 +118,8 @@ class OfflineConsultancyPlanAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var OfflineConsultancyPlan $offlineConsultancyPlan */
         $offlineConsultancyPlan = $this->offlineConsultancyPlanRepository->find($id);
 
@@ -128,5 +130,13 @@ class OfflineConsultancyPlanAPIController extends AppBaseController
         $offlineConsultancyPlan->delete();
 
         return $this->sendSuccess('Offline Consultancy Plan deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

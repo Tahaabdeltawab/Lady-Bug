@@ -167,6 +167,8 @@ class FarmReportAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var FarmReport $farmReport */
         $farmReport = $this->farmReportRepository->find($id);
 
@@ -177,5 +179,13 @@ class FarmReportAPIController extends AppBaseController
         $farmReport->delete();
 
         return $this->sendSuccess('Farm Report deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }

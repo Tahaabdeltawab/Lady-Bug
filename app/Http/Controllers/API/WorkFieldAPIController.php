@@ -118,6 +118,8 @@ class WorkFieldAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        try
+        {
         /** @var WorkField $workField */
         $workField = $this->workFieldRepository->find($id);
 
@@ -128,5 +130,13 @@ class WorkFieldAPIController extends AppBaseController
         $workField->delete();
 
         return $this->sendSuccess('Work Field deleted successfully');
+        }
+        catch(\Throwable $th)
+        {
+            if ($th instanceof \Illuminate\Database\QueryException)
+            return $this->sendError('Model cannot be deleted as it is associated with other models');
+            else
+            return $this->sendError('Error deleting the model');
+        }
     }
 }
