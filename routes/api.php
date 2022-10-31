@@ -89,13 +89,39 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         Route::get('users/search/{query}', [App\Http\Controllers\API\UserAPIController::class, 'search']);
 
 
-        Route::get('users/products/index/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_products'])->name('users.products.index');
-        Route::get('user_with_posts/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_with_posts'])->name('user_with_posts');
-        Route::get('users/posts/index/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_posts'])->name('users.posts.index');
-        Route::get('users/videos/index/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_videos'])->name('users.videos.index');
-        Route::get('users/stories/index/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_stories'])->name('users.stories.index');
-        Route::get('users/businesses/index/{user}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_businesses'])->name('users.businesses.index');
+        Route::get('users/products/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_products'])->name('users.products.index');
+        Route::get('user_with_posts/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_with_posts'])->name('user_with_posts');
+        Route::get('users/posts/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_posts'])->name('users.posts.index');
+        Route::get('users/videos/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_videos'])->name('users.videos.index');
+        Route::get('users/stories/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_stories'])->name('users.stories.index');
+        Route::get('users/businesses/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_businesses'])->name('users.businesses.index');
 
+        // web
+        Route::group(['prefix' => 'web'], function ()
+        {
+            Route::get('home', [App\Http\Controllers\API\UserWebAPIController::class, 'home']);
+            Route::post('users_interests', [App\Http\Controllers\API\UserWebAPIController::class, 'user_interests']);
+            Route::get('user_businesses', [App\Http\Controllers\API\UserWebAPIController::class, 'user_businesses']); // (43)
+            Route::get('unread_notifications_count', [App\Http\Controllers\API\UserWebAPIController::class, 'unread_notifications_count']);
+            Route::get('get_user_profile/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_profile']);
+            Route::get('users/posts/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_posts']);
+            Route::get('users/products/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_products']);
+            Route::get('users/videos/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_videos']);
+            Route::get('users/stories/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_stories']);
+            Route::get('users/businesses/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_businesses']);
+            Route::get('user_rating_details/{user}', [App\Http\Controllers\API\UserWebAPIController::class, 'user_rating_details']);
+            // business profile
+            Route::get('businesses/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'business']); // (45)
+            Route::get('businesses/farms/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_farms']);
+            Route::get('businesses/products/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_products']);
+            Route::get('businesses/posts/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_posts']);
+            Route::get('businesses/videos/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_videos']);
+            Route::get('businesses/stories/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_stories']);
+
+            Route::get('farms/reports/index/{farm}', [App\Http\Controllers\API\UserWebAPIController::class, 'farm_with_reports'])->name('farm_with_reports');
+
+        });
+        // end web
 
         Route::get('users/posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_posts']);
         Route::get('users/liked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_liked_posts']);
@@ -156,10 +182,10 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::post('roles/permissions/save', [App\Http\Controllers\API\RoleAPIController::class, 'update_role_permissions']);
     Route::get('posts', [App\Http\Controllers\API\PostAPIController::class, 'index']);
     Route::get('posts/toggle_activate/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_activate']);
-    Route::post('products/rate', [App\Http\Controllers\API\ProductAPIController::class, 'rate']);
     // end admin area
 
     // start routes for users and admins
+    Route::post('rate_product', [App\Http\Controllers\API\ProductAPIController::class, 'rate_product']);
     Route::get('farmed_types/search/{query}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'search']);
     Route::get('farmed_types/farmed_type_ginfos/{farmed_type}/{stage?}', [App\Http\Controllers\API\FarmedTypeGinfoAPIController::class, 'farmed_type_ginfos_by_farmed_type_id']);
     Route::get('farms/calculate_compatibility/{id}', [App\Http\Controllers\API\FarmAPIController::class, 'calculate_compatibility']);
@@ -199,8 +225,12 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     // FOLLOW
     Route::get('businesses/toggle_follow/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'toggle_follow']);
+    // RATE
+    Route::post('rate_business', [App\Http\Controllers\API\BusinessAPIController::class, 'rate_business']);
 
+    // weather and an alias to it
     Route::post('farms/user/weather/index', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('farms.users.weather.index');
+    Route::post('weather', [App\Http\Controllers\API\FarmAPIController::class, 'get_weather'])->name('weather');
     Route::get('farms/archived/index', [App\Http\Controllers\API\FarmAPIController::class, 'getArchived'])->name('farms.get_archived');
 
     // REPORT

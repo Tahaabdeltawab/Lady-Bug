@@ -4,7 +4,7 @@ namespace App\Http\Requests\API;
 
 use InfyOm\Generator\Request\APIRequest;
 
-class RateProductRequest extends APIRequest
+class RateBusinessRequest extends APIRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class RateProductRequest extends APIRequest
     {
         return [
             'rating' => 'required|numeric|max:5|min:1',
-            'product' => 'required|integer|exists:products,id'
+            'business' => 'required|integer|exists:businesses,id'
         ];
     }
 }

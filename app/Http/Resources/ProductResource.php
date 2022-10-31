@@ -18,6 +18,7 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'farmed_types' => FarmedTypeXsResource::collection($this->farmedTypes),
             'ads' => ProductAdResource::collection($this->ads),
+            'shipping_cities' => ShippingCityResource::collection($this->shippingCities),
             'price' => $this->price,
             'seller_id' => $this->seller_id,
             'city' => $this->city->name,

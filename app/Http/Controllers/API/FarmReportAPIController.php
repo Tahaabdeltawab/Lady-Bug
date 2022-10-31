@@ -176,6 +176,7 @@ class FarmReportAPIController extends AppBaseController
             return $this->sendError('Farm Report not found');
         }
 
+        $farmReport->tasks()->delete();
         $farmReport->delete();
 
         return $this->sendSuccess('Farm Report deleted successfully');

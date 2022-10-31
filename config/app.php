@@ -232,6 +232,7 @@ return [
         'Flash' => Laracasts\Flash\Flash::class,
         'CheckPermission'=> App\Http\Helpers\CheckPermission::class,
         'WeatherApi'=> App\Http\Helpers\WeatherApi::class,
+        'Helper' => App\Http\Helpers\Helper::class,
         'Twilio' => Aloha\Twilio\Support\Laravel\Facade::class,
 
     ],

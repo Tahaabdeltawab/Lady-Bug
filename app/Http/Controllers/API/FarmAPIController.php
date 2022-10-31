@@ -56,6 +56,7 @@ use App\Http\Helpers\WeatherApi;
 use App\Http\Resources\FarmCollection;
 use App\Http\Resources\FarmWithReportsResource;
 use App\Models\Business;
+use Illuminate\Support\Facades\DB;
 
 class FarmAPIController extends AppBaseController
 {
@@ -149,11 +150,10 @@ class FarmAPIController extends AppBaseController
     public function get_weather(Request $request)
     {
         $resp = WeatherApi::instance()->weather_api($request);
-
         return $resp['status'] ?
         $this->sendResponse($resp['data'] , 'Weather data retrieved successfully')
         :
-        $this->sendError('Error fetching the weather data', $resp['data']['cod'], $resp['data']['message']);
+        $this->sendError('Error fetching the weather data');
     }
 
 
@@ -636,20 +636,24 @@ class FarmAPIController extends AppBaseController
         if (empty($farm)) {
             return $this->sendError('Farm not found');
         }
-
+        DB::beginTransaction();
         $farm->location()->delete();
-        $farm->soil_detail()->delete();
-        $farm->irrigation_water_detail()->delete();
+        $farm->soil_detail->delete();
+        $farm->soil_detail->salt_detail()->delete();
+        $farm->irrigation_water_detail->delete();
+        $farm->irrigation_water_detail->salt_detail()->delete();
         $farm->animal_drink_water_salt_detail()->delete();
-        $farm->posts()->delete();
-        $farm->service_tables()->delete();
-        $farm->service_tasks()->delete();
+        foreach($farm->farm_reports as $report){
+            $report->tasks()->delete();
+            $report->delete();
+        }
         $farm->delete();
-
-          return $this->sendSuccess('Model deleted successfully');
+        DB::commit();
+        return $this->sendSuccess('Model deleted successfully');
         }
         catch(\Throwable $th)
         {
+            DB::rollBack();
             if ($th instanceof \Illuminate\Database\QueryException)
             return $this->sendError('Model cannot be deleted as it is associated with other models');
             else

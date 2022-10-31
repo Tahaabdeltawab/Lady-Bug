@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Helpers\Compatibility;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserWithPostsResource extends JsonResource
+class FarmWithReportsWebResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,10 +15,8 @@ class UserWithPostsResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
-            'user' => new UserLgResource($this),
-            'posts' => PostXsResource::collection($this->posts()->accepted()->notVideo()->get()),
-        ];
-
+        $data['farm'] = FarmSmResource::make($this);
+        $data['reports'] = FarmReportXsWithTasksResource::collection($this->farm_reports);
+        return $data;
     }
 }

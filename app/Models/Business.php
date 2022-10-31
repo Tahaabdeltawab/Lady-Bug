@@ -4,10 +4,11 @@ namespace App\Models;
 
 use App\Traits\Followable;
 use App\Traits\Follower;
+use App\Traits\Rateable;
 
 class Business extends Team
 {
-    use Follower, Followable;
+    use Follower, Followable, Rateable;
 
     public $table = 'businesses';
 
@@ -94,6 +95,11 @@ class Business extends Team
     public function tasks()
     {
         return $this->hasMany(\App\Models\Task::class);
+    }
+
+    public function parts()
+    {
+        return $this->hasMany(\App\Models\BusinessPart::class);
     }
 
     /**

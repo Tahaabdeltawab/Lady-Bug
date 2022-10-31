@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserWithPostsResource extends JsonResource
+class ConsultancyProfileXsWebResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,9 +15,8 @@ class UserWithPostsResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'user' => new UserLgResource($this),
-            'posts' => PostXsResource::collection($this->posts()->accepted()->notVideo()->get()),
+            'id' => $this->id,
+            'work_fields' => WorkFieldResource::collection($this->workFields),
         ];
-
     }
 }

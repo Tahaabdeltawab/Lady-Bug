@@ -108,6 +108,12 @@ class Task extends Model
         'tasks.*.notes' => 'nullable',
     ];
 
+    protected static function booted(){
+        static::addGlobalScope('latest', function($q){
+             $q->orderByDesc('date');
+        });
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/

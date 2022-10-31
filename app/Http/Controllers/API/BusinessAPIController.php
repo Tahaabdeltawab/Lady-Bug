@@ -9,6 +9,7 @@ use App\Repositories\BusinessRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Helpers\WeatherApi;
+use App\Http\Requests\API\RateBusinessRequest;
 use App\Http\Resources\BusinessResource;
 use App\Http\Resources\BusinessWithPostsResource;
 use App\Http\Resources\BusinessWithTasksResource;
@@ -72,6 +73,18 @@ class BusinessAPIController extends AppBaseController
     }
 
 
+    public function rate_business(RateBusinessRequest $request)
+    {
+        try
+        {
+            $business = $this->businessRepository->find($request->business);
+            $business->rateOnce($request->rating);
+            return $this->sendSuccess("You have rated $business->com_name with $request->rating stars successfully");
+        }
+        catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
 
 
     public function get_business_with_posts($id)
@@ -564,7 +577,7 @@ class BusinessAPIController extends AppBaseController
             $shared_businesses = $user->sharedBusinesses($own_businesses->pluck('id'))->get();
             $followed_businesses = $user->followedBusinesses;
             return $this->sendResponse([
-                'unread_notifications_count' => $user->unreadNotifications()->count(),
+                'unread_notifications_count' => $user->unreadNotifications->count(),
                 'weather_data' => $weather_data,
                 'own_businesses' => BusinessResource::collection($own_businesses),
                 'shared_businesses' => BusinessResource::collection($shared_businesses),
@@ -758,16 +771,59 @@ class BusinessAPIController extends AppBaseController
         /** @var Business $business */
         $business = $this->businessRepository->find($id);
 
-        if (empty($business)) {
+        if (empty($business))
             return $this->sendError('Business not found');
+
+
+        if(auth()->id() != $business->user_id)
+            return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
+
+        DB::beginTransaction();
+
+        foreach($business->assets as $ass){
+            $ass->delete();
         }
-
+        foreach($business->posts as $post){
+            foreach($post->assets as $ass){
+                $ass->delete();
+             }
+             $post->delete();
+        }
+        foreach($business->products as $product){
+            foreach ($product->ads as $delad) {
+                $delad->asset->delete();
+                $delad->delete();
+            }
+            foreach($product->assets as $ass){
+                $ass->delete();
+            }
+            $product->delete();
+        }
+        foreach($business->farms as $farm){
+            $farm->location()->delete();
+            $farm->soil_detail->delete();
+            $farm->soil_detail->salt_detail()->delete();
+            $farm->irrigation_water_detail->delete();
+            $farm->irrigation_water_detail->salt_detail()->delete();
+            $farm->animal_drink_water_salt_detail()->delete();
+            foreach($farm->farm_reports as $report){
+                $report->tasks()->delete();
+                $report->delete();
+            }
+            $farm->delete();
+        }
+        $business->branches()->delete();
+        $business->parts()->delete();
+        DB::table('business_dealer')->where('business_id', $business->id)->delete();
+        DB::table('role_user')->where('business_id', $business->id)->delete();
+        DB::table('permission_user')->where('business_id', $business->id)->delete();
         $business->delete();
-
+        DB::commit();
         return $this->sendSuccess('Business deleted successfully');
         }
         catch(\Throwable $th)
         {
+            DB::rollBack();
             if ($th instanceof \Illuminate\Database\QueryException)
             return $this->sendError('Model cannot be deleted as it is associated with other models');
             else

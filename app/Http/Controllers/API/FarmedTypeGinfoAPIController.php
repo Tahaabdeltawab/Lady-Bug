@@ -13,6 +13,7 @@ use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmedTypeGinfoResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\FarmedTypeStageResource;
+use App\Http\Resources\FarmedTypeXsResource;
 use Response;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
@@ -62,7 +63,7 @@ class FarmedTypeGinfoAPIController extends AppBaseController
          return $this->sendResponse(
              [
                  'farmed_type_stages' => FarmedTypeStageResource::collection($farmed_type_stages),
-                 'farmed_types' => FarmedTypeResource::collection($farmed_types)
+                 'farmed_types' => FarmedTypeXsResource::collection($farmed_types)
              ], 'Farmed Type General Information relations retrieved successfully');
      }
 

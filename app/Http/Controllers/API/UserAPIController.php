@@ -34,6 +34,7 @@ use App\Http\Resources\ConsultancyProfileResource;
 use App\Http\Resources\PostXsResource;
 use App\Http\Resources\ProductXsResource;
 use App\Http\Resources\UserProfileResource;
+use App\Http\Resources\UserProfileWebResource;
 use App\Http\Resources\UserSmResource;
 use App\Http\Resources\UserWithPostsResource;
 use App\Http\Resources\UserXsResource;
@@ -104,7 +105,7 @@ class UserAPIController extends AppBaseController
         try{
             $products = $this->productRepository->where(['seller_id' => auth()->id()])->all();
 
-            return $this->sendResponse(['all' => ProductResource::collection($products)], 'User products retrieved successfully');
+            return $this->sendResponse(['all' => ProductXsResource::collection($products)], 'User products retrieved successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
         }
@@ -122,7 +123,9 @@ class UserAPIController extends AppBaseController
 
         $fav_farmed_type_ginfos = $this->farmedTypeGinfoRepository->whereIn(['farmed_type_id' => $fav_farmed_types_ids])->all();
 
-        $fav_products = Product::whereIn('farmed_type_id', $fav_farmed_types_ids)->limit(10)->get();
+        $fav_products = Product::whereHas('farmedTypes', function($q)use($fav_farmed_types_ids){
+            return $q->whereIn('farmed_types.id', $fav_farmed_types_ids);
+        })->limit(10)->get();
         $latest_products = Product::latest()->limit(10)->get();
 
         return $this->sendResponse(
@@ -130,8 +133,8 @@ class UserAPIController extends AppBaseController
                 'weather_data' => $weather_data,
                 'favourites' => FarmedTypeResource::collection($favorites),
                 'farmed_type_ginfos' => FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
-                'favorite_products' => ProductResource::collection($fav_products),
-                'latest_products' => ProductResource::collection($latest_products)
+                'favorite_products' => ProductXsResource::collection($fav_products),
+                'latest_products' => ProductXsResource::collection($latest_products)
             ], 'Farmed Type General Information relations retrieved successfully');
     }
 
@@ -174,6 +177,12 @@ class UserAPIController extends AppBaseController
         }
     }
 
+    public function unread_notifications_count()
+    {
+        $data['unread_notifications_count'] = auth()->user()->unreadNotifications->count();
+        return $this->sendResponse($data, 'notifications count retrieved successfully');
+
+    }
     public function read_notification($id)
     {
         try{
@@ -206,12 +215,15 @@ class UserAPIController extends AppBaseController
     }
 
 
+    // web
 
-    public function get_user_with_posts($id)
+    // end web
+
+    public function get_user_with_posts($id = null)
     {
         try
         {
-            $user = User::find($id);
+            $user = $id ? User::find($id) : auth()->user();
             if (empty($user))
                 return $this->sendError('user not found');
             return $this->sendResponse(new UserWithPostsResource($user), 'user with posts retrieved successfully');
@@ -222,11 +234,11 @@ class UserAPIController extends AppBaseController
         }
     }
 
-    public function get_user_posts($id)
+    public function get_user_posts($id = null)
     {
         try
         {
-            $user = User::find($id);
+            $user = $id ? User::find($id) : auth()->user();
             if (empty($user))
                 return $this->sendError('user not found');
             $posts = $user->posts()->accepted()->notVideo()->get();
@@ -237,11 +249,11 @@ class UserAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
-    public function get_user_videos($id)
+    public function get_user_videos($id = null)
     {
         try
         {
-            $user = User::find($id);
+            $user = $id ? User::find($id) : auth()->user();
             if (empty($user))
                 return $this->sendError('user not found');
             $videos = $user->posts()->accepted()->video()->get();
@@ -253,11 +265,11 @@ class UserAPIController extends AppBaseController
         }
     }
 
-    public function get_user_stories($id)
+    public function get_user_stories($id = null)
     {
         try
         {
-            $user = User::find($id);
+            $user = $id ? User::find($id) : auth()->user();
             if (empty($user))
                 return $this->sendError('user not found');
             $videos = $user->posts()->accepted()->video()->get();
@@ -268,11 +280,11 @@ class UserAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
-    public function get_user_products($id)
+    public function get_user_products($id = null)
     {
         try
         {
-            $user = User::find($id);
+            $user = $id ? User::find($id) : auth()->user();
             if (empty($user))
                 return $this->sendError('user not found');
             $products = $user->products;
@@ -283,10 +295,10 @@ class UserAPIController extends AppBaseController
             return $this->sendError($th->getMessage(), 500);
         }
     }
-    public function get_user_businesses($id)
+    public function get_user_businesses($id = null)
     {
         try{
-            $user = User::find($id);
+            $user = $id ? User::find($id) : auth()->user();
             if (empty($user))
                 return $this->sendError('user not found');
             $own_businesses = $user->ownBusinesses;
@@ -304,20 +316,6 @@ class UserAPIController extends AppBaseController
         }
     }
 
-    // POSTS
-
-    public function user_posts()
-    {
-        try
-        {
-            $posts = auth()->user()->posts()->accepted()->get();
-            return $this->sendResponse(['all' => PostResource::collection($posts)], 'User posts retrieved successfully');
-        }
-        catch(\Throwable $th)
-        {
-            return $this->sendError($th->getMessage(), 500);
-        }
-    }
 
     public function user_liked_posts()
     {

@@ -76,6 +76,11 @@ class Farm extends Model
      */
     public static $rules = [];
 
+    protected static function booted(){
+        static::addGlobalScope('latest', function($q){
+             $q->latest();
+        });
+    }
 
     public function admin()
     {
@@ -157,10 +162,10 @@ class Farm extends Model
         return $this->belongsTo(MeasuringUnit::class, 'area_unit_id');
     }
 
-    public function posts()
-    {
-        return $this->hasMany(Post::class);
-    }
+    // public function posts()
+    // {
+    //     return $this->hasMany(Post::class);
+    // }
 
     public function farm_reports()
     {

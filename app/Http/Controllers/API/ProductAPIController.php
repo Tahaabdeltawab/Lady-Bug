@@ -9,10 +9,12 @@ use App\Repositories\CityRepository;
 use App\Repositories\FarmedTypeRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use App\Http\Requests\API\RateProductRequest;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\CityResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\ProductTypeResource;
+use App\Http\Resources\ProductXsResource;
 use App\Models\Business;
 use App\Models\Fertilizer;
 use App\Models\Insecticide;
@@ -40,27 +42,15 @@ class ProductAPIController extends AppBaseController
         $this->cityRepository = $cityRepo;
     }
 
-    public function pag($class, $perPage, $page)
-    {
-        $pag['itemsCount'] = $class::count();
-        $pag['perPage'] = (int) ($perPage ?? 10);
-        $pag['pagesCount'] = ceil($pag['itemsCount'] / $pag['perPage']);
-        $pag['currentPage'] = (int) ($page ?? 1);
-        $pag['skip'] = ($pag['currentPage'] - 1) * $pag['perPage'];
-        return $pag;
-    }
-
     public function index(Request $request)
     {
-        $pag = $this->pag(Product::class, $request->perPage, $request->page);
-        $products = Product::when(request()->product_type, fn ($q) => $q->where('product_type_id', request()->product_type))
-        ->skip($pag['skip'])->limit($pag['perPage'])->get();
-
-        $user = auth()->user();
+        $query = Product::when(request()->product_type, fn ($q) => $q->where('product_type_id', request()->product_type));
+        $pag = \Helper::pag($query->count(), $request->perPage, $request->page);
+        $products = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
 
         return $this->sendResponse([
-            'unread_notifications_count' => $user->unreadNotifications->count(),
-            'all' => ProductResource::collection($products),
+            'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
+            'all' => ProductXsResource::collection($products),
             'meta' => $pag
         ], 'Products retrieved successfully');
     }
@@ -72,7 +62,7 @@ class ProductAPIController extends AppBaseController
         $products = Product::whereRaw('LOWER(`name`) regexp ? ', '"(ar|en)":"\w*' . $query . '.*"')
         ->orWhereRaw('LOWER(`description`) regexp ? ', '"(ar|en)":"\w*' . $query . '.*"')
         ->get();
-        return $this->sendResponse(['all' => ProductResource::collection($products)], 'Products retrieved successfully');
+        return $this->sendResponse(['all' => ProductXsResource::collection($products)], 'Products retrieved successfully');
     }
 
 
@@ -114,16 +104,15 @@ class ProductAPIController extends AppBaseController
     }
 
 
-    // // // // // RATE // // // //
+    // RATE
 
-    public function rate(RateProductRequest $request)
+    public function rate_product(RateProductRequest $request)
     {
         try
         {
             $product = $this->productRepository->find($request->product);
-
-                $product->rateOnce($request->rating);
-                return $this->sendSuccess("You have rated $product->name with $request->rating stars successfully");
+            $product->rateOnce($request->rating);
+            return $this->sendSuccess("You have rated $product->name with $request->rating stars successfully");
         }
         catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);

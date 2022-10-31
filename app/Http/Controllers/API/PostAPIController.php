@@ -10,11 +10,13 @@ use App\Repositories\PostTypeRepository;
 use App\Repositories\FarmedTypeRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use App\Http\Resources\BusinessSmResource;
 use App\Http\Resources\PostTypeResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\FarmedTypeGinfoResource;
 use App\Http\Resources\FarmedTypeXsResource;
 use App\Http\Resources\PostXsResource;
+use App\Http\Resources\UserSmResource;
 use App\Models\Business;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -89,7 +91,7 @@ class PostAPIController extends AppBaseController
         $posts = Post::accepted()->notVideo()->orderByDesc('reactions_count')->get();
         //  ترتيب المنشورات
         // الأشخاص الذين يتابعهم المستخدم
-        $followings_ids = auth()->user()->followings->pluck('id');
+        $followings_ids = auth()->user()->followedUsers->pluck('id');
         // المحاصيل الموجودة في مفضلة المستخدم
         $favorites_ids = auth()->user()->favorites->pluck('id');
         // المنشورات التي تخص أشخاص يتابعهم المستخدم وتخص محاصيل في مفضلة المستخدم
@@ -142,7 +144,7 @@ class PostAPIController extends AppBaseController
                     'meta' => $posts2->toArrayWithoutData(),
                 ],
                 'news' => FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
-                'unread_notifications_count' => auth()->user()->unreadNotifications()->count(),
+                'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
                 'favorites' => FarmedTypeXsResource::collection(auth()->user()->favorites),
             ];
         }
@@ -469,12 +471,10 @@ class PostAPIController extends AppBaseController
                 return $this->sendError('Post not found');
             }
 
-            $post->delete();
-
             foreach($post->assets as $ass){
                $ass->delete();
             }
-
+            $post->delete();
 
             return $this->sendSuccess('Model deleted successfully');
         }

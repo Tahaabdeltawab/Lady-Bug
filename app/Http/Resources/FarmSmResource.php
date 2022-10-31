@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use App\Http\Helpers\Compatibility;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FarmWithReportsXsResource extends JsonResource
+class FarmSmResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -28,7 +28,7 @@ class FarmWithReportsXsResource extends JsonResource
         $farm_detail['seedling_sources'] =  $this->seedling_sources()->pluck('com_name');
         $compat = (new Compatibility())->calculate_compatibility($this->id)['data'];
         $farm_detail['farming_compatibility'] = (array)$compat ?: null;
-        $farm_detail['reports'] = FarmReportXsResource::collection($this->farm_reports);
+
         return $farm_detail;
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Helpers\Compatibility;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FarmXsResource extends JsonResource
