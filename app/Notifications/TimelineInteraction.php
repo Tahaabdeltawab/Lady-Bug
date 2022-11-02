@@ -44,14 +44,14 @@ class TimelineInteraction extends Notification
                 $this->post         = $obj; // the new post
                 $this->reactor      = $this->post->author; // sharer, author of the new post
                 $this->title        = __('Post Share');
-                $post_substr        = $this->post->shared->content ? substr($this->post->shared->content, 0, 20).'...' : '';
+                $post_substr        = \Str::words($this->post->shared->content, 3, '...');
                 $this->msg = $this->reactor->name . ' ' . __('has shared your post') . ' ' . $post_substr;
             }else{
                 $this->type         = 'following_post';
                 $this->post         = $obj;
                 $this->reactor      = $this->post->author;
                 $this->title        = __('Following Post');
-                $post_substr        = $this->post->content ? substr($this->post->content, 0, 20).'...' : '';
+                $post_substr        = \Str::words($this->post->content, 3, '...');
                 $this->msg = $this->reactor->name . ' ' . __('has posted a new post') . ' ' . $post_substr;
             }
         }
@@ -62,7 +62,7 @@ class TimelineInteraction extends Notification
             $this->reactor      = $this->commenter;
             $this->post         = $this->comment->post;
             $this->title        = __('Post Comment');
-            $post_substr        = $this->post->content ? substr($this->post->content, 0, 20).'...' : '';
+            $post_substr        = \Str::words($this->post->content, 3, '...');
 
             $this->msg = $this->commenter->name . ' ' . __('has commented on') . ' ' . __($type == 'same_post_comment' ? 'a post you follow' : 'your post') . ' ' . $post_substr;
             // $this->msg = 'timeline_interaction_msg';
@@ -76,7 +76,7 @@ class TimelineInteraction extends Notification
             if($this->like->likeable_type == 'App\Models\Post')
             {
                 $this->post         = $this->like->likeable;
-                $post_substr        = $this->post->content ? substr($this->post->content, 0, 20).'...' : '';
+                $post_substr        = \Str::words($this->post->content, 3, '...');
                 if($this->like->is_like)
                 {
                     $this->title        = __('Post Like');
@@ -92,7 +92,7 @@ class TimelineInteraction extends Notification
             {
                 $this->comment  = $this->like->likeable;
                 $this->post     = $this->comment->post;
-                $comment_substr        = $this->comment->content ? substr($this->comment->content, 0, 20).'...' : '';
+                $comment_substr        = \Str::words($this->comment->content, 3, '...');
                 if($this->like->is_like){
                     $this->title        = __('Comment Like');
                     $this->msg          = $liker_name . ' ' . __('has liked') . ' ' . __('your comment') . ' ' . $comment_substr;
@@ -140,6 +140,7 @@ class TimelineInteraction extends Notification
             'type'      => $this->type,
             'id'        => $this->post->id,
         ];
+        $return = mb_convert_encoding($return, 'UTF-8', 'UTF-8');
 
         if($this->type == 'comment')
             $return['object_id'] = $this->comment->id;

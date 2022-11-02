@@ -140,8 +140,24 @@ class BusinessAPIController extends AppBaseController
             $business = Business::find($id);
             if (empty($business))
                 return $this->sendError('business not found');
-            $videos = $business->posts()->accepted()->video()->get();
+            $videos = $business->posts()->accepted()->story()->get();
             return $this->sendResponse(PostXsResource::collection($videos), 'business stories retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    public function get_business_articles($id)
+    {
+        try
+        {
+            $business = Business::find($id);
+            if (empty($business))
+                return $this->sendError('business not found');
+            $videos = $business->posts()->accepted()->article()->get();
+            return $this->sendResponse(PostXsResource::collection($videos), 'business articles retrieved successfully');
         }
         catch(\Throwable $th)
         {

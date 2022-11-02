@@ -41,11 +41,12 @@ class PostType extends Model
     ];
 
 
-    // don't return the 'farm' post_type because it is not an actual post type, it just indicates the post in a farm
+    // don't return the 'business' post_type because it is not an actual post type, it just indicates
+    // that the post belongs to a farm or is a story
     protected static function booted()
     {
-        static::addGlobalScope('all_except_farm', function ($builder) {
-            $builder->where('id','!=' , 4);
+        static::addGlobalScope('all_except_business_and_story', function ($q) {
+            $q->whereNotIn('id', [4,5]);
         });
     }
 

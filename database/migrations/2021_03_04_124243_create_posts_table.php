@@ -22,7 +22,7 @@ class CreatePostsTable extends Migration
             $table->foreignId('farm_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('farmed_type_id')->nullable()->constrained();
             $table->foreignId('post_type_id')->nullable()->constrained();
-            $table->boolean('solved')->nullable();
+            $table->boolean('solved')->default(0);
             $table->bigInteger('reactions_count')->nullable()->default(0);
             $table->timestamps();
         });

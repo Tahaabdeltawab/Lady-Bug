@@ -186,10 +186,28 @@ class UserWebAPIController extends AppBaseController
             $user = $id ? User::find($id) : auth()->user();
             if (empty($user))
                 return $this->sendError('user not found');
-            $query = $user->posts()->accepted()->video();
+            $query = $user->posts()->accepted()->story();
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $videos = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
             return $this->sendResponse(['data' => PostXsResource::collection($videos), 'meta' => $pag], 'user stories retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    public function get_user_articles($id = null)
+    {
+        try
+        {
+            $user = $id ? User::find($id) : auth()->user();
+            if (empty($user))
+                return $this->sendError('user not found');
+            $query = $user->posts()->accepted()->article();
+            $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
+            $videos = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
+            return $this->sendResponse(['data' => PostXsResource::collection($videos), 'meta' => $pag], 'user articles retrieved successfully');
         }
         catch(\Throwable $th)
         {

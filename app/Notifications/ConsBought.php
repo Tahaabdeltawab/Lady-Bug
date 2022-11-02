@@ -61,6 +61,7 @@ class ConsBought extends Notification
             'id'                => $this->buyer->id,
             'object_id'         => $notifiable->id, // the consultant
         ];
+        $return = mb_convert_encoding($return, 'UTF-8', 'UTF-8');
 
         Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id'], 'type' => $return['type'], 'object_id' => $return['object_id']]);
 

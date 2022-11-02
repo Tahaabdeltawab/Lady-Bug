@@ -272,8 +272,23 @@ class UserAPIController extends AppBaseController
             $user = $id ? User::find($id) : auth()->user();
             if (empty($user))
                 return $this->sendError('user not found');
-            $videos = $user->posts()->accepted()->video()->get();
+            $videos = $user->posts()->accepted()->story()->get();
             return $this->sendResponse(PostXsResource::collection($videos), 'user stories retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+    public function get_user_articles($id = null)
+    {
+        try
+        {
+            $user = $id ? User::find($id) : auth()->user();
+            if (empty($user))
+                return $this->sendError('user not found');
+            $videos = $user->posts()->accepted()->article()->get();
+            return $this->sendResponse(PostXsResource::collection($videos), 'user articles retrieved successfully');
         }
         catch(\Throwable $th)
         {

@@ -106,6 +106,7 @@ class BusinessInvitation extends Notification
             'decline_expires'   => $decline_expires,
             'decline_signature' => $decline_signature,
         ];
+        $return = mb_convert_encoding($return, 'UTF-8', 'UTF-8');
 
         Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, $return);
 

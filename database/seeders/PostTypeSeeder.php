@@ -18,6 +18,7 @@ class PostTypeSeeder extends Seeder
         PostType::create(['id' => 2, 'name' => ['ar' => 'طلب منتج', 'en' => 'Ordering Product']]);
         PostType::create(['id' => 3, 'name' => ['ar' => 'استفسار', 'en' => 'Inquiry']]);
         PostType::create(['id' => 4, 'name' => ['ar' => 'عمل', 'en' => 'Business']]);
-      
+        PostType::create(['id' => 5, 'name' => ['ar' => 'قصة', 'en' => 'Story']]);
+
     }
 }

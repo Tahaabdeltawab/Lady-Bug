@@ -61,6 +61,7 @@ class TaskAlarm extends Notification
             'id'                => $this->task->business_id,
             'object_id'         => $this->task->id,
         ];
+        $return = mb_convert_encoding($return, 'UTF-8', 'UTF-8');
 
         Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id'], 'type' => $return['type'], 'object_id' => $return['object_id']]);
 

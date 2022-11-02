@@ -260,6 +260,7 @@ class PostAPIController extends AppBaseController
             $data['farmed_type_id'] = $request->farmed_type_id;
             $data['post_type_id'] = $post_type_id;
             $data['solved'] = $request->solved;
+            $data['type'] = $request->type ?: 'post';
             $data['author_id'] = auth()->id();
 
             $post = $this->postRepository->create($data);
@@ -351,6 +352,7 @@ class PostAPIController extends AppBaseController
             if($dislike instanceOf  $like_model)
             {
                 $msg = 'Post disliked successfully';
+                if($dislike->user_id != $post->author_id)
                 $post->author->notify(new \App\Notifications\TimelineInteraction($dislike));
             }
             else

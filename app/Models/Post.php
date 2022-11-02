@@ -17,6 +17,7 @@ class Post extends Model
     public $fillable = [
         'title',
         'content',
+        'type',
         'author_id',
         'farm_id',
         'business_id',
@@ -34,6 +35,7 @@ class Post extends Model
     protected $casts = [
         'id' => 'integer',
         'title' => 'string',
+        'type' => 'string',
         'content' => 'string',
         'author_id' => 'integer',
         'farm_id' => 'integer',
@@ -52,6 +54,7 @@ class Post extends Model
     public static $rules = [
         'title' => 'nullable|max:30',
         'content' => 'nullable',
+        'type' => 'nullable|in:story,article,post',
         'business_id' => 'nullable|exists:businesses,id',
         'farmed_type_id' => 'nullable',
         'post_type_id' => 'nullable|exists:post_types,id',
@@ -76,9 +79,10 @@ class Post extends Model
         return $query->whereHas('assets', function ($q)
         {
             $q->whereIn('asset_mime', config('myconfig.video_mimes'));
-        });
+        })->notStory();
     }
 
+    // used for posts not videos
     public function scopeNotVideo($query)
     {
         return $query->whereHas('assets', function ($q)
@@ -86,6 +90,33 @@ class Post extends Model
             $q->whereNotIn('asset_mime', config('myconfig.video_mimes'));
         });
     }
+
+    public function scopeBusiness($query)
+    {
+        return $query->where('post_type_id', 4);
+    }
+
+
+    public function scopeArticle($query)
+    {
+        return $query->where('type', 'article');
+    }
+
+    public function scopeNotArticle($query)
+    {
+        return $query->where('type', '!=', 'article');
+    }
+
+    public function scopeStory($query)
+    {
+        return $query->where('type', 'story');
+    }
+
+    public function scopeNotStory($query)
+    {
+        return $query->where('type', '!=', 'story');
+    }
+
     public function scopeAccepted($query)
     {
         return $query->where('status', 'accepted');
