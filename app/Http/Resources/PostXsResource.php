@@ -30,8 +30,10 @@ class PostXsResource extends JsonResource
             'video_assets' => collect($post->assets)->whereIn('asset_mime', config('myconfig.video_mimes'))->pluck('asset_url')->all(),
             'post_type' => @new PostTypeResource($post_type), // @ because the 'farm' post type does not return by the global scope in the PostType model, so this will be null if the post type is 4 (farm)
             'comments_count' => $post->comments->count(),
-            'liked_by_me' => $post->likers->where('id', auth()->id())->count() ? true : false ,
-            'disliked_by_me' => $post->dislikers->where('id', auth()->id())->count() ? true : false ,
+            'likers_count' => $post->likers->count(),
+            'dislikers_count' => $post->dislikers->count(),
+            'liked_by_me' => $post->likers->where('id', auth()->id())->count() ? true : false,
+            'disliked_by_me' => $post->dislikers->where('id', auth()->id())->count() ? true : false,
             'comments' => $request->routeIs('api.posts.show') ? CommentResource::collection($post->comments->whereNull('parent_id')) : [],
             'created_at' => $post->created_at->diffForHumans(),
             'shared' => $notShared ? null : new UserResource($this->shared->author),

@@ -147,6 +147,8 @@ class TimelineInteraction extends Notification
             $return['object_id'] = $this->like->id;
         elseif($this->type == 'following_post')
             $return['object_id'] = $this->reactor->id;
+        elseif($this->type == 'post_share')
+            $return['object_id'] = $return['id'];
 
         Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id'], 'type' => $return['type'], 'object_id' => $return['object_id']]);
 

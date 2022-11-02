@@ -273,8 +273,8 @@ class PostAPIController extends AppBaseController
                     }
             }
 
-            // notify the original post that someone shared his post
-            if($request->shared_id)
+            // notify the original post author that someone shared his post
+            if($request->shared_id && $post->author_id != $post->shared->author_id)
                 $post->shared->author->notify(new \App\Notifications\TimelineInteraction($post, 'post_share'));
 
             // notify the post author followers
