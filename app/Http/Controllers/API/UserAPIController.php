@@ -34,6 +34,7 @@ use App\Http\Resources\ConsultancyProfileResource;
 use App\Http\Resources\PostXsResource;
 use App\Http\Resources\ProductXsResource;
 use App\Http\Resources\UserProfileResource;
+use App\Http\Resources\UserProfileSmResource;
 use App\Http\Resources\UserProfileWebResource;
 use App\Http\Resources\UserSmResource;
 use App\Http\Resources\UserWithPostsResource;
@@ -607,6 +608,21 @@ class UserAPIController extends AppBaseController
 
         return $this->sendResponse(new UserResource($user), 'User retrieved successfully');
     }
+
+    public function get_user_profile($id = null){
+        try
+        {
+            $user = $id ? User::find($id) : auth()->user();
+            if (empty($user))
+                return $this->sendError('user not found');
+            return $this->sendResponse(new UserProfileSmResource($user), 'user retrieved successfully');
+        }
+        catch(\Throwable $th)
+        {
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
 
     // admins
     public function admin_show($id)

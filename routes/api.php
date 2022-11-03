@@ -88,6 +88,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
         Route::get('users/search/{query}', [App\Http\Controllers\API\UserAPIController::class, 'search']);
 
+        Route::get('get_user_profile/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_profile']);
 
         Route::get('users/products/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_products'])->name('users.products.index');
         Route::get('user_with_posts/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_with_posts'])->name('user_with_posts');
