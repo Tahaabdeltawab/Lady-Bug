@@ -78,7 +78,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         Route::get('users/notifications/unread/{notification}', [App\Http\Controllers\API\UserAPIController::class, 'unread_notification']);
         // FOLLOW
         Route::get('users/followers/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'user_followers']);
-        Route::get('users/followings/index', [App\Http\Controllers\API\UserAPIController::class, 'my_followings']);
+        Route::get('users/followings/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'user_followings']);
         Route::get('users/toggle_follow/{user}', [App\Http\Controllers\API\UserAPIController::class, 'toggle_follow']);
         // RATE
         Route::get('user_rating_details/{user}', [App\Http\Controllers\API\UserAPIController::class, 'user_rating_details']);

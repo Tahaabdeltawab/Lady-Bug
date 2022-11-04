@@ -431,13 +431,14 @@ class UserAPIController extends AppBaseController
         return $this->sendResponse(['count' => $user_followers->count(), 'all' => UserSmResource::collection($user_followers)], 'User followers retrieved successfully');
     }
 
-    public function my_followings()
+    public function user_followings($id = null)
     {
+        $user = $id ? User::findOrFail($id) : auth()->user();
         if(request()->type == 'user'){
-            $my_followings = auth()->user()->followedUsers;
+            $my_followings = $user->followedUsers;
             return $this->sendResponse(['count' => $my_followings->count(), 'all' => UserSmResource::collection($my_followings)], 'Followed users retrieved successfully');
         }else{
-            $my_followings = auth()->user()->followedBusinesses;
+            $my_followings = $user->followedBusinesses;
             return $this->sendResponse(['count' => $my_followings->count(), 'all' => BusinessXsResource::collection($my_followings)], 'Followed businesses retrieved successfully');
         }
     }
