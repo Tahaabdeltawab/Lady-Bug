@@ -74,25 +74,32 @@ class Post extends Model
         });
     }
 
+
+    public function scopePost($query)
+    {
+        return $query->postOrVideo()->hasNoVideo();
+    }
+
     public function scopeVideo($query)
+    {
+        return $query->postOrVideo()->hasVideo();
+    }
+
+    public function scopeHasVideo($query)
     {
         return $query->whereHas('assets', function ($q)
         {
             $q->whereIn('asset_mime', config('myconfig.video_mimes'));
-        })->notStory();
+        });
     }
 
-    public function scopePost($query)
-    {
-        return $query->notVideo()->notStory();
-    }
-
-    public function scopeNotVideo($query)
+    // whera has no assets at all ('>=', 0) || or where has non-video assets
+    public function scopeHasNoVideo($query)
     {
         return $query->whereHas('assets', function ($q)
         {
             $q->whereNotIn('asset_mime', config('myconfig.video_mimes'));
-        });
+        }, '>=', 0);
     }
 
     public function scopeBusiness($query)

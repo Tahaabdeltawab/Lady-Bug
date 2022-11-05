@@ -33,7 +33,7 @@ class UserWebAPIController extends AppBaseController
 
     public function home()
     {
-        $type = request()->type == 'video' ? 'video' : 'notVideo';
+        $type = request()->type == 'video' ? 'video' : 'post';
         $query = Post::accepted()->$type()->orderByDesc('reactions_count');
         $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
         $posts = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
