@@ -82,7 +82,11 @@ class Post extends Model
         })->notStory();
     }
 
-    // used for posts not videos
+    public function scopePost($query)
+    {
+        return $query->notVideo()->notStory();
+    }
+
     public function scopeNotVideo($query)
     {
         return $query->whereHas('assets', function ($q)
@@ -96,6 +100,11 @@ class Post extends Model
         return $query->where('post_type_id', 4);
     }
 
+    // not article or story
+    public function scopePostOrVideo($query)
+    {
+        return $query->where('type', 'post');
+    }
 
     public function scopeArticle($query)
     {

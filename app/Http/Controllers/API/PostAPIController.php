@@ -88,7 +88,7 @@ class PostAPIController extends AppBaseController
     }
     public function timeline(Request $request)
     {
-        $posts = Post::accepted()->notVideo()->orderByDesc('reactions_count')->get();
+        $posts = Post::accepted()->post()->orderByDesc('reactions_count')->get();
         //  ترتيب المنشورات
         // الأشخاص الذين يتابعهم المستخدم
         $followings_ids = auth()->user()->followedUsers->pluck('id');
@@ -260,7 +260,7 @@ class PostAPIController extends AppBaseController
             $data['farmed_type_id'] = $request->farmed_type_id;
             $data['post_type_id'] = $post_type_id;
             $data['solved'] = $request->solved;
-            $data['type'] = $request->type ?: 'post';
+            $data['type'] = $request->type ?: 'post'; // or story or article
             $data['author_id'] = auth()->id();
 
             $post = $this->postRepository->create($data);

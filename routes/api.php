@@ -207,6 +207,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'show'])->name('farms.show');
 
     Route::post('notification_settings', [App\Http\Controllers\API\UserAPIController::class, 'notification_settings']);
+    Route::get('notification_settings', [App\Http\Controllers\API\UserAPIController::class, 'get_my_notification_settings']);
 
     // * new
     // Business

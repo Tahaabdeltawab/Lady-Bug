@@ -29,7 +29,7 @@ class BusinessWithPostsResource extends JsonResource
             'users_rating' => '70%',
             'followers_count' => $this->followers()->count(),
             'participants_count' => $this->users()->count(),
-            'posts' => PostXsResource::collection($this->posts()->accepted()->notVideo()->get()),
+            'posts' => PostXsResource::collection($this->posts()->accepted()->post()->get()),
             'user_permissions' => $ps,
         ];
     }

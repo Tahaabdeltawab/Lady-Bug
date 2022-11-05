@@ -150,6 +150,12 @@ class UserAPIController extends AppBaseController
         return $this->sendResponse($ns, 'Notification settings updated successfully');
     }
 
+    public function get_my_notification_settings()
+    {
+        $ns = NotificationSetting::where('user_id', auth()->id())->first();
+        return $this->sendResponse($ns, 'Notification settings retrieved successfully');
+    }
+
     public function toggle_notifiable()
     {
         $msg = auth()->user()->is_notifiable ? 'User became not notifiable Successfully' : 'User became notifiable Successfully';
@@ -242,7 +248,7 @@ class UserAPIController extends AppBaseController
             $user = $id ? User::find($id) : auth()->user();
             if (empty($user))
                 return $this->sendError('user not found');
-            $posts = $user->posts()->accepted()->notVideo()->get();
+            $posts = $user->posts()->accepted()->post()->get();
             return $this->sendResponse(PostXsResource::collection($posts), 'user posts retrieved successfully');
         }
         catch(\Throwable $th)

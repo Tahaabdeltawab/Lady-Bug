@@ -109,7 +109,7 @@ class BusinessAPIController extends AppBaseController
             $business = Business::find($id);
             if (empty($business))
                 return $this->sendError('business not found');
-            $posts = $business->posts()->accepted()->notVideo()->get();
+            $posts = $business->posts()->accepted()->post()->get();
             return $this->sendResponse(PostXsResource::collection($posts), 'business posts retrieved successfully');
         }
         catch(\Throwable $th)

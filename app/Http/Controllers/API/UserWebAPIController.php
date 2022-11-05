@@ -150,7 +150,7 @@ class UserWebAPIController extends AppBaseController
             $user = $id ? User::find($id) : auth()->user();
             if (empty($user))
                 return $this->sendError('user not found');
-            $query = $user->posts()->accepted()->notVideo();
+            $query = $user->posts()->accepted()->post();
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $posts = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
 
@@ -289,7 +289,7 @@ class UserWebAPIController extends AppBaseController
             $business = Business::find($id);
             if (empty($business))
                 return $this->sendError('business not found');
-            $query = $business->posts()->accepted()->notVideo();
+            $query = $business->posts()->accepted()->post();
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $posts = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
 
