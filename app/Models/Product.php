@@ -72,10 +72,8 @@ class Product extends Model
         'district_id'                   => 'required|exists:districts,id',
         'seller_mobile'                 => 'required|max:20',
         'other_links'                   => 'nullable',
-        'internal_assets'               => 'nullable|array',
-        'external_assets'               => 'nullable|array',
-        'internal_assets.*'             => 'nullable|max:5000|image',
-        'external_assets.*'             => 'nullable|max:5000|image'
+        'assets'                        => 'nullable|array',
+        'assets.*'                      => 'nullable|max:5000|image'
     ];
 
     protected static function booted()
@@ -124,15 +122,10 @@ class Product extends Model
         return $this->morphMany(Asset::class, 'assetable');
     }
 
-    public function internal_assets()
-    {
-        return $this->assets()->where('asset_name', 'like', 'product-internal%');
-    }
-
-    public function external_assets()
+    /* public function external_assets()
     {
         return $this->assets()->where('asset_name', 'like', 'product-external%');
-    }
+    } */
 
     public function shippingCities()
     {

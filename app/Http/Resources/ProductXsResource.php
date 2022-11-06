@@ -17,7 +17,8 @@ class ProductXsResource extends JsonResource
         $return = [
             'id' => $this->id,
             'price' => $this->price,
-            'external_assets' => $this->external_assets()->pluck('asset_url')->all(),
+            'rating' => $this->averageRating,
+            'assets' => $this->assets()->pluck('asset_url')->all(),
         ];
 
         if($request->header('Accept-Language') == 'all')

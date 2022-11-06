@@ -66,45 +66,22 @@ class BusinessInvitation extends Notification
 
     public function toDatabase($notifiable)
     {
-        $accept_url        = $this->accept_url;
-        parse_str(parse_url($accept_url, PHP_URL_QUERY), $accept_query);
-        $accept_expires = $accept_query['expires'];
-        $accept_signature = $accept_query['signature'];
-        // $accept_start_date = $accept_query['start_date']; // not queries but params
-        // $accept_end_date = $accept_query['end_date'];
-        // $accept_period = $accept_query['period'];
-        // $accept_plan_id = $accept_query['plan_id'];
-        // $accept_permissions = $accept_query['permissions'];
-
-        $decline_url        = $this->decline_url;
-        parse_str(parse_url($decline_url, PHP_URL_QUERY), $decline_query);
-        $decline_expires = $decline_query['expires'];
-        $decline_signature = $decline_query['signature'];
-
-        $inviter    = $this->inviter->id;
-        $role       = $this->role->id;
-        $business       = $this->business->id;
+        // parse_str(parse_url($this->accept_url, PHP_URL_QUERY), $accept_query);
+        // $accept_expires = $accept_query['expires'];
+        // parse_str(parse_url($this->decline_url, PHP_URL_QUERY), $decline_query);
+        // $decline_expires = $decline_query['expires'];
 
         $return = [
             'title'             => $this->title,
             'body'              => $this->msg,
-            'inviter'           => $inviter,
+            'inviter'           => $this->inviter->id,
             'invitee'           => $notifiable->id,
-            'role'              => $role,
-            'business'          => $business,
+            'role'              => $this->role->id,
+            'business'          => $this->business->id,
             'accepted'          => null,
             'type'              => $this->type,
-            'accept_url'        => $accept_url,
-            'accept_expires'    => $accept_expires,
-            'accept_signature'  => $accept_signature,
-            // 'accept_start_date' => $accept_start_date,
-            // 'accept_end_date'   => $accept_end_date,
-            // 'accept_period'     => $accept_period,
-            // 'accept_plan_id'    => $accept_plan_id,
-            // 'accept_permissions'=> $accept_permissions,
-            'decline_url'       => $decline_url,
-            'decline_expires'   => $decline_expires,
-            'decline_signature' => $decline_signature,
+            'accept_url'        => $this->accept_url,
+            'decline_url'       => $this->decline_url,
         ];
         $return = mb_convert_encoding($return, 'UTF-8', 'UTF-8');
 

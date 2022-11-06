@@ -417,7 +417,16 @@ class BusinessAPIController extends AppBaseController
             ->where('data->role', $request->role)
             ->update(['data->accepted' => true]);
 
-            return $this->sendResponse(new UserResource($user), __('Member added to business successfully'));
+
+
+            $slcts = User::$selects;
+            $us = User::join('role_user', 'users.id', 'role_user.user_id')
+                ->where('business_id', $request->business)
+                ->where('role_id', $request->role)
+                ->where('user_id', $request->user)
+                ->select(['role_user.start_date', 'role_user.end_date', ...$slcts])
+                ->first();
+            return $this->sendResponse(new UserOfBusinessResource($us), __('Member added to business successfully'));
         }
         catch(\Throwable $th)
         {
@@ -533,21 +542,22 @@ class BusinessAPIController extends AppBaseController
                 else            // first attach role
                 {
                     //send invitation to assignee user
-                    if($user->is_notifiable){
-
-                    $user->notify(new \App\Notifications\BusinessInvitation(
-                        auth()->user(),
-                        $role,
-                        $business,
-                        URL::temporarySignedRoute('api.businesses.roles.first_attach', now()->addDays(30),[
+                    if($user->is_notifiable)
+                    {
+                        $accept_url = URL::temporarySignedRoute('api.businesses.roles.first_attach', now()->addDays(30),[
                             'user' => $request->user, 'business' => $request->business, 'role' => $request->role,
                             'start_date' => $request->start_date, 'end_date' => $request->end_date, 'period' => $request->period,
-                            'plan_id' => $request->plan_id, 'permissions' => $request->permissions]),
-                        URL::temporarySignedRoute('api.businesses.roles.decline_business_invitation', now()->addDays(30),[
-                            'user' => $request->user, 'business' => $request->business, 'role' => $request->role])
-                        ));
-                    return $this->sendSuccess(__('Invitation sent successfully'));
-                    }else{
+                            'plan_id' => $request->plan_id, 'permissions' => $request->permissions]);
+
+                        $decline_url = URL::temporarySignedRoute('api.businesses.roles.decline_business_invitation', now()->addDays(30),[
+                            'user' => $request->user, 'business' => $request->business, 'role' => $request->role]);
+
+                        $user->notify(new \App\Notifications\BusinessInvitation(auth()->user(), $role, $business, $accept_url, $decline_url));
+                        DB::commit();
+                        return $this->sendSuccess(__('Invitation sent successfully'));
+                    }
+                    else
+                    {
                         return $this->sendSuccess(__('Invitation could not be sent because the user notifications are off'));
                     }
                 }

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class TaskAlarm extends Notification
+class Product extends Notification
 {
     use Queueable;
 
@@ -17,12 +17,13 @@ class TaskAlarm extends Notification
      *
      * @return void
      */
-    public function __construct($task)
+    public function __construct($product)
     {
-        $this->task = $task;
-        $this->type = 'task_alarm';
-        $this->title= __('Task Alarm');
-        $this->msg  = __('You have a task') . ' ' . $this->task->name . ' ' . __('on') . ' ' . date('Y-m-d', strtotime($this->task->date));
+        $this->product = $product;
+        $this->type = 'new_product';
+        $this->title = __('new_product', ['user' => auth()->user()->name]);
+        $this->msg = __('new_product_details', ['user' => auth()->user()->name, 'product' => $product->name]);
+
     }
 
     /**
@@ -33,7 +34,7 @@ class TaskAlarm extends Notification
      */
     public function via($notifiable)
     {
-        return ($notifiable->is_notifiable && $notifiable->notification_settings->tasks) ? ['database'] : [];
+        return ($notifiable->is_notifiable) ? ['database'] : [];
     }
 
     /**
@@ -58,13 +59,12 @@ class TaskAlarm extends Notification
             'title'             => $this->title,
             'body'              => $this->msg,
             'type'              => $this->type,
-            'farm_id'           => $this->task->farm_id,
-            'business_id'       => $this->task->business_id,
-            'object_id'         => $this->task->id,
+            'id'                => auth()->id(),
+            'object_id'         => $this->product->id,
         ];
         $return = mb_convert_encoding($return, 'UTF-8', 'UTF-8');
 
-        Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['business_id' => $return['business_id'], 'farm_id' => $return['farm_id'], 'type' => $return['type'], 'object_id' => $return['object_id']]);
+        Alerts::sendMobileNotification($this->title, $this->msg, $notifiable->fcm, ['id' => $return['id'], 'type' => $return['type'], 'object_id' => $return['object_id']]);
 
         return $return;
     }

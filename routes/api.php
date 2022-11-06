@@ -90,21 +90,21 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
         Route::get('get_user_profile/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_profile']);
 
-        Route::get('users/products/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_products'])->name('users.products.index');
         Route::get('user_with_posts/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_with_posts'])->name('user_with_posts');
         Route::get('users/posts/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_posts'])->name('users.posts.index');
         Route::get('users/videos/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_videos'])->name('users.videos.index');
-        Route::get('users/stories/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_stories'])->name('users.stories.index');
+        // Route::get('users/stories/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_stories'])->name('users.stories.index');
         Route::get('users/articles/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_articles'])->name('users.articles.index');
+        Route::get('users/products/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_products'])->name('users.products.index');
         Route::get('users/businesses/index/{user?}', [App\Http\Controllers\API\UserAPIController::class, 'get_user_businesses'])->name('users.businesses.index');
 
-        Route::get('businesses/farms/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_farms'])->name('businesses.farms.index');
-        Route::get('businesses/products/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_products'])->name('businesses.products.index');
         Route::get('business_with_posts/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_with_posts'])->name('business_with_posts');
         Route::get('businesses/posts/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_posts'])->name('businesses.posts.index');
         Route::get('businesses/videos/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_videos'])->name('businesses.videos.index');
         Route::get('businesses/stories/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_stories'])->name('businesses.stories.index');
-        Route::get('businesses/articles/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_articles'])->name('businesses.articles.index');
+        Route::get('businesses/products/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_products'])->name('businesses.products.index');
+        Route::get('businesses/farms/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_farms'])->name('businesses.farms.index');
+        // Route::get('businesses/articles/index/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'get_business_articles'])->name('businesses.articles.index');
 
         // web
         Route::group(['prefix' => 'web'], function ()
@@ -117,18 +117,18 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
             Route::get('users/posts/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_posts']);
             Route::get('users/products/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_products']);
             Route::get('users/videos/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_videos']);
-            Route::get('users/stories/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_stories']);
             Route::get('users/articles/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_articles']);
             Route::get('users/businesses/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_businesses']);
+            // Route::get('users/stories/index/{user?}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_user_stories']);
             Route::get('user_rating_details/{user}', [App\Http\Controllers\API\UserWebAPIController::class, 'user_rating_details']);
             // business profile
             Route::get('businesses/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'business']); // (45)
-            Route::get('businesses/farms/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_farms']);
-            Route::get('businesses/products/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_products']);
             Route::get('businesses/posts/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_posts']);
             Route::get('businesses/videos/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_videos']);
             Route::get('businesses/stories/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_stories']);
-            Route::get('businesses/articles/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_articles']);
+            Route::get('businesses/products/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_products']);
+            Route::get('businesses/farms/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_farms']);
+            // Route::get('businesses/articles/index/{business}', [App\Http\Controllers\API\UserWebAPIController::class, 'get_business_articles']);
 
             Route::get('farms/reports/index/{farm}', [App\Http\Controllers\API\UserWebAPIController::class, 'farm_with_reports'])->name('farm_with_reports');
 

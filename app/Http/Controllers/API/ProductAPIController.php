@@ -20,7 +20,6 @@ use App\Models\Fertilizer;
 use App\Models\Insecticide;
 use App\Models\NutElemValue;
 use App\Models\ProductType;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -48,11 +47,15 @@ class ProductAPIController extends AppBaseController
         $pag = \Helper::pag($query->count(), $request->perPage, $request->page);
         $products = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
 
-        return $this->sendResponse([
+        $data = [
             'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
-            'all' => ProductXsResource::collection($products),
+            'data' => ProductXsResource::collection($products),
             'meta' => $pag
-        ], 'Products retrieved successfully');
+        ];
+        if(!request()->product_type){
+            $data['product_types'] = ProductType::has('products')->get();
+        }
+        return $this->sendResponse($data, 'Products retrieved successfully');
     }
 
 
@@ -155,15 +158,6 @@ class ProductAPIController extends AppBaseController
                     $insecticide = Insecticide::create($insecticideData);
                     $insecticide->acs()->attach($request->insecticide_acs);
                     $input['insecticide_id'] = $insecticide->id;
-
-                    if($assets = $request->file('insecticide_assets'))
-                    {
-                        foreach($assets as $asset)
-                        {
-                            $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'insecticide');
-                            $insecticide->assets()->create($oneasset);
-                        }
-                    }
                 }
                 // if fertilizer
                 else if($request->product_type_id == 3 && $fertilizerData = $request->fertilizer){
@@ -172,15 +166,6 @@ class ProductAPIController extends AppBaseController
                     $fertilizerData['nut_elem_value_id'] = $nev->id;
                     $fertilizer = Fertilizer::create($fertilizerData);
                     $input['fertilizer_id'] = $fertilizer->id;
-
-                    if($assets = $request->file('fertilizer_assets'))
-                    {
-                        foreach($assets as $asset)
-                        {
-                            $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'fertilizer');
-                            $fertilizer->assets()->create($oneasset);
-                        }
-                    }
                 }
 
                 $product = Product::create($input);
@@ -201,24 +186,26 @@ class ProductAPIController extends AppBaseController
                     }
                 }
 
-
-                if($internal_assets = $request->file('internal_assets'))
+                if($assets = $request->file('assets'))
                 {
-                    foreach($internal_assets as $asset)
+                    foreach($assets as $asset)
                     {
-                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product-internal');
+                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product');
                         $product->assets()->create($oneasset);
+                        if(isset($insecticide))
+                            $insecticide->assets()->create($oneasset);
+                        else if(isset($fertilizer))
+                            $fertilizer->assets()->create($oneasset);
+
                     }
                 }
 
-                if($external_assets = $request->file('external_assets'))
-                {
-                    foreach($external_assets as $asset)
-                    {
-                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product-external');
-                        $product->assets()->create($oneasset);
-                    }
+
+                // notify the owner followers
+                foreach(auth()->user()->followers as $follower){
+                    $follower->notify(new \App\Notifications\Product($product));
                 }
+
                 DB::commit();
                 return $this->sendResponse(new ProductResource($product), __('Product saved successfully'));
             }
@@ -272,18 +259,6 @@ class ProductAPIController extends AppBaseController
                 $insecticide->notes = $request->insecticide['notes'];
                 $insecticide->save();
                 $insecticide->acs()->sync($request->insecticide_acs);
-
-                if($assets = $request->file('insecticide_assets'))
-                {
-                    foreach ($insecticide->assets as $ass) {
-                        $ass->delete();
-                    }
-                    foreach($assets as $asset)
-                    {
-                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'insecticide');
-                        $insecticide->assets()->create($oneasset);
-                    }
-                }
             }
             // if fertilizer
             else if($request->product_type_id == 3 && $fertilizerData = $request->fertilizer){
@@ -297,18 +272,6 @@ class ProductAPIController extends AppBaseController
                 $fertilizer->notes = $request->fertilizer['notes'];
                 $fertilizer->save();
                 $fertilizer->nutElemValue()->update($request->fertilizer_nut_elem_value);
-
-                if($assets = $request->file('fertilizer_assets'))
-                {
-                    foreach ($fertilizer->assets as $ass) {
-                        $ass->delete();
-                    }
-                    foreach($assets as $asset)
-                    {
-                        $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'fertilizer');
-                        $fertilizer->assets()->create($oneasset);
-                    }
-                }
             }
 
             $product = $this->productRepository->update($input, $id);
@@ -335,27 +298,31 @@ class ProductAPIController extends AppBaseController
                 }
             }
 
-            if($internal_assets = $request->file('internal_assets'))
+            if($assets = $request->file('assets'))
             {
-                foreach ($product->internal_assets as $ass) {
+                foreach ($product->assets as $ass) {
                     $ass->delete();
+                    // this will delete the assets from database and from
+                    // storage (storage assets which are the same storage assets for
+                    // either the product fertilizer or insecticide).
+                    // so no need for iterating over insecticide assets to delete them from storage
+                    // just db deletion is needed.
                 }
-                foreach($internal_assets as $asset)
-                {
-                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product-internal');
-                    $product->assets()->create($oneasset);
-                }
-            }
 
-            if($external_assets = $request->file('external_assets'))
-            {
-                foreach ($product->external_assets as $ass) {
-                    $ass->delete();
-                }
-                foreach($external_assets as $asset)
+                if(isset($insecticide))
+                    $insecticide->assets()->delete();
+                else if(isset($fertilizer))
+                    $fertilizer->assets()->delete();
+
+
+                foreach($assets as $asset)
                 {
-                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product-external');
+                    $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($asset, 'product');
                     $product->assets()->create($oneasset);
+                    if(isset($insecticide))
+                        $insecticide->assets()->create($oneasset);
+                    else if(isset($fertilizer))
+                        $fertilizer->assets()->create($oneasset);
                 }
             }
             DB::commit();

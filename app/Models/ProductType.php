@@ -21,7 +21,7 @@ class ProductType extends Model
 	public $timestamps = false;
 
     public $table = 'product_types';
-    
+
 
 
 
@@ -48,5 +48,15 @@ class ProductType extends Model
         'name' => 'required'
     ];
 
-    
+    /**
+     * Get all of the products for the ProductType
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+
 }
