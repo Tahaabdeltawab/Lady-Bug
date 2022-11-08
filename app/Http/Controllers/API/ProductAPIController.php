@@ -61,7 +61,7 @@ class ProductAPIController extends AppBaseController
 
     public function search($query)
     {
-        $query = strtolower(trim($query));
+        $query = \Str::lower(trim($query));
         $products = Product::whereRaw('LOWER(`name`) regexp ? ', '"(ar|en)":"\w*' . $query . '.*"')
         ->orWhereRaw('LOWER(`description`) regexp ? ', '"(ar|en)":"\w*' . $query . '.*"')
         ->get();
@@ -130,6 +130,14 @@ class ProductAPIController extends AppBaseController
                 'cities' => CityResource::collection($this->cityRepository->all()),
                 'farmed_types' => FarmedTypeResource::collection($this->farmedTypeRepository->all()),
                 'product_types' => ProductTypeResource::collection(ProductType::all()),
+                'dosage_forms' => [
+                    ['value' => 'liquid', 'name' => app()->getLocale()=='ar' ?  'سائل' : 'liquid'],
+                    ['value' => 'powder', 'name' => app()->getLocale()=='ar' ?  'بودرة' : 'powder'],
+                ],
+                'addition_ways' => [
+                    ['value' => 'soil', 'name' => app()->getLocale()=='ar' ?  'في التربة' : 'In Soil'],
+                    ['value' => 'leaves', 'name' => app()->getLocale()=='ar' ?  'على الأرواق' : 'On Leaves'],
+                ],
             ], 'Products relations retrieved successfully');
     }
 

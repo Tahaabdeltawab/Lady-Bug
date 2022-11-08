@@ -37,7 +37,7 @@ class FarmReport extends Model
         'farmed_type_stage_id',
         'lat',
         'lon',
-        'fertilization_start_date',
+        // 'fertilization_start_date',
         'fertilization_unit',
         'notes'
     ];
@@ -75,6 +75,12 @@ class FarmReport extends Model
         'fertilization_unit' => 'nullable|in:tree,acre',
         'notes' => 'nullable'
     ];
+
+    // GETTERS
+    public function getFertilizationStartDateAttribute($value){
+        return @$this->farm->fertilization_start_date;
+    }
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

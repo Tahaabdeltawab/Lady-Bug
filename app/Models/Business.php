@@ -74,6 +74,14 @@ class Business extends Team
         'distributors.*' => 'exists:businesses,id',
     ];
 
+
+    // GETTERS
+
+    public function getComNameAttribute($value){
+        return @$this->businessField->name . ' ' . $value;
+    }
+
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/

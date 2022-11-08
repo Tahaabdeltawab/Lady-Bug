@@ -66,7 +66,7 @@ class FarmedTypeAPIController extends AppBaseController
 
     public function search($query)
     {
-        $query = strtolower(trim($query));
+        $query = \Str::lower(trim($query));
         $farmedTypes = FarmedType::whereRaw('LOWER(`name`) regexp ? ', '"(ar|en)":"\w*' . $query . '.*"')->get();
 
         return $this->sendResponse(['all' => FarmedTypeResource::collection($farmedTypes)], 'Farmed Types retrieved successfully');

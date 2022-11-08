@@ -53,6 +53,19 @@
     "new_product": ":user has added a new product",
     "new_product_details": ":user has added a new product :product",
     "followed": "You have followed :name successfully",
-    "unfollowed": "You have unfollowed :name successfully"
+    "unfollowed": "You have unfollowed :name successfully",
+    "n": "Nitrogen",
+    "p": "Phosphorus",
+    "k": "Potassium",
+    "fe": "Iron",
+    "b": "Boron",
+    "ca": "Calcium",
+    "mg": "Magnesium",
+    "s": "Sulphur",
+    "zn": "Zinc",
+    "mn": "Manganese",
+    "cu": "Copper",
+    "cl": "Chlorine",
+    "mo": "Molybdenum"
 
 }

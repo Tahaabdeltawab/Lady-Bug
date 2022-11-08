@@ -249,7 +249,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     // TASKS
     Route::get('tasks/toggle_finish/{task}', [App\Http\Controllers\API\TaskAPIController::class, 'toggle_finish']);
     Route::resource('tasks', App\Http\Controllers\API\TaskAPIController::class);
-    Route::get('tasks/relations/index/{task_type?}', [App\Http\Controllers\API\TaskAPIController::class, 'getRelations']);
+    Route::get('tasks/relations/index/{task_type?}/{nut_elem?}', [App\Http\Controllers\API\TaskAPIController::class, 'getRelations']);
 
     // Disease Registration
     Route::resource('disease_registrations', App\Http\Controllers\API\DiseaseRegistrationAPIController::class);

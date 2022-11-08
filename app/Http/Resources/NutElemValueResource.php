@@ -22,7 +22,14 @@ class NutElemValueResource extends JsonResource
             'fe' => $this->fe,
             'b' => $this->b,
             'ca' => $this->ca,
-            'mg' => $this->mg
+            'mg' => $this->mg,
+            's' => $this->s,
+            'zn' => $this->zn,
+            'mn' => $this->mn,
+            'cu' => $this->cu,
+            'cl' => $this->cl,
+            'mo' => $this->mo,
+
         ];
     }
 }

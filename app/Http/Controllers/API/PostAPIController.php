@@ -169,12 +169,10 @@ class PostAPIController extends AppBaseController
 
     public function search($query, Request $request)
     {
+        $query = \Str::lower(trim($query));
         $posts = Post::accepted()->where('content','like', '%'.$query.'%' )
         ->when($request->type == 'video', function($q){
-            return $q->whereHas('assets', function ($q)
-            {
-                $q->whereIn('asset_mime', config('myconfig.video_mimes'));
-            });
+            return $q->video();
         })
         ->get();
         return $this->sendResponse(['all' => PostXsResource::collection($posts)], 'Posts retrieved successfully');

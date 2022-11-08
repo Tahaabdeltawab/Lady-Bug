@@ -22,7 +22,6 @@ class CreateFarmReportsTable extends Migration
             $table->foreignId('farmed_type_stage_id')->nullable()->constrained();
             $table->string('lat')->nullable();
             $table->string('lon')->nullable();
-            $table->date('fertilization_start_date')->nullable();
             $table->enum('fertilization_unit', ['tree', 'acre'])->nullable();
             $table->string('notes')->nullable();
             $table->timestamps();

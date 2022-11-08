@@ -19,6 +19,9 @@ class FertilizerSmResource extends JsonResource
             'name' => $this->name,
             'producer' => $this->producer,
             'usage_rate' => $this->usage_rate,
+            'nut_elem_value' => collect($this->nutElemValue)->except('id')->mapWithKeys(function($elem,$key){
+                return [$key => ['name' => __($key), 'value' => $elem]];
+            })->values(),
         ];
     }
 }

@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmReportResource;
 use App\Models\Business;
+use App\Models\Farm;
 use App\Models\FarmedTypeStage;
 use App\Models\Setting;
 use App\Models\Transaction;
@@ -84,6 +85,8 @@ class FarmReportAPIController extends AppBaseController
 
             $input = $request->validated();
             $input['user_id'] = auth()->id();
+            Farm::where('id', $input['farm_id'])->update(['fertilization_start_date' => $input['fertilization_start_date']]);
+            unset($input['fertilization_start_date']);
             $farmReport = $this->farmReportRepository->create($input);
 
             $create_report_price = Setting::where('name', 'report_price')->value('value');
@@ -150,6 +153,8 @@ class FarmReportAPIController extends AppBaseController
         if(!auth()->user()->hasPermission("edit-report", $business))
             return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
+        Farm::where('id', $input['farm_id'])->update(['fertilization_start_date' => $input['fertilization_start_date']]);
+        unset($input['fertilization_start_date']);
         $farmReport = $this->farmReportRepository->update($input, $id);
 
         return $this->sendResponse(new FarmReportResource($farmReport), 'FarmReport updated successfully');

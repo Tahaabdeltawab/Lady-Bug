@@ -58,13 +58,19 @@ class FarmedTypeFertilizationNeed extends Model
         'farmed_type_stage_id' => 'nullable|exists:farmed_type_stages,id',
         // 'per' => 'nullable|in:acre,tree',
         // 'nut_elem_value_id' => 'required'
-        'nut_elem_value.n' => 'required|numeric',
-        'nut_elem_value.p' => 'required|numeric',
-        'nut_elem_value.k' => 'required|numeric',
-        'nut_elem_value.fe' => 'required|numeric',
-        'nut_elem_value.b' => 'required|numeric',
-        'nut_elem_value.ca' => 'required|numeric',
-        'nut_elem_value.mg' => 'required|numeric'
+        'nut_elem_value.n' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.p' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.k' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.fe' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.b' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.ca' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.mg' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.s' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.zn' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.mn' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.cu' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.cl' => 'required|numeric|min:0|max:100',
+        'nut_elem_value.mo' => 'required|numeric|min:0|max:100',
     ];
 
     protected $appends = ['per'];

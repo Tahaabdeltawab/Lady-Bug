@@ -17,7 +17,7 @@ class FarmedTypeResource extends JsonResource
         $selected = auth()->check() ? (in_array($this->id, auth()->user()->favorites->pluck('id')->all()) ? 1 : 0) : 0;
         $return = [
             'id' => $this->id,
-            'farm_activity_type_name' => $this->farm_activity_type->name,
+            'farm_activity_type_name' => @$this->farm_activity_type->name,
             'farm_activity_type_id' => $this->farm_activity_type_id,
             'parent_id' => $this->parent_id,
             'country_id' => $this->country_id,

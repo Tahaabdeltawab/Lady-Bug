@@ -42,4 +42,12 @@ class FarmActivityType extends Model
     ];
 
 
+    // hide animals temporarily as commanded
+    protected static function booted()
+    {
+        static::addGlobalScope('all_except_animal', function ($q) {
+            $q->where('id', '!=', 4);
+        });
+    }
+
 }

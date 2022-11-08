@@ -95,6 +95,7 @@ class UserAPIController extends AppBaseController
 
     public function search($query)
     {
+        $query = \Str::lower(trim($query));
         $users = User::where('name','like', '%'.$query.'%' )->orWhere('email','like', '%'.$query.'%')->orWhere('mobile','like', '%'.$query.'%')->get();
         return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
     }

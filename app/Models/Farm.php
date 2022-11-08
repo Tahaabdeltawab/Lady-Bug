@@ -36,7 +36,8 @@ class Farm extends Model
         'soil_type_id',
         'soil_detail_id',
         'irrigation_water_detail_id',
-        'animal_drink_water_salt_detail_id'
+        'animal_drink_water_salt_detail_id',
+        'fertilization_start_date',
     ];
 
     /**
@@ -66,7 +67,8 @@ class Farm extends Model
         'soil_type_id' => 'integer',
         'soil_detail_id' => 'integer',
         'irrigation_water_detail_id' => 'integer',
-        'animal_drink_water_salt_detail_id' => 'integer'
+        'animal_drink_water_salt_detail_id' => 'integer',
+        'fertilization_start_date' => 'date',
     ];
 
     /**

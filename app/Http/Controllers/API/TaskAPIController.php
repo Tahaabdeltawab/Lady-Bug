@@ -13,6 +13,7 @@ use App\Http\Resources\FertilizerSmResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Ac;
 use App\Models\Fertilizer;
+use App\Models\NutElemValue;
 use App\Models\TaskType;
 use Illuminate\Support\Facades\Validator;
 use Response;
@@ -66,7 +67,7 @@ class TaskAPIController extends AppBaseController
     }
 
 
-    public function getRelations($task_type_id = null)
+    public function getRelations($task_type_id = null, $nut_elem = null)
     {
         if($task_type_id == null){
             return $this->sendResponse([
@@ -90,14 +91,30 @@ class TaskAPIController extends AppBaseController
         }
         // تسميد
         elseif($task_type_id == 3){
-            $ferts = Fertilizer::get(['id', 'name', 'producer', 'usage_rate']);
-            return $this->sendResponse([
-                'fertilizers' => FertilizerSmResource::collection($ferts),
-                'units' => [
-                    ['value' => 'kilo', 'name' => app()->getLocale()=='ar' ?  'كيلو' : 'Kilo'],
-                    ['value' => 'gram', 'name' => app()->getLocale()=='ar' ?  'جرام' : 'Gram'],
-                ]
-            ], '');
+            // يبعت العنصر علشان ياخد الأسمدة التي تحتويه
+            // ولو مبعتوش ياخد العناصر علشان يبعت ما بينها
+            if($nut_elem){
+                if(! in_array($nut_elem, array_keys(NutElemValue::$rules)))
+                    return $this->sendError('Invalid nutritional element!');
+                $ferts = Fertilizer::whereHas('nutElemValue', function($q) use($nut_elem){
+                    return $q->where($nut_elem, '>', 0);
+                })->get(['id', 'name', 'producer', 'usage_rate', 'nut_elem_value_id']);
+                return $this->sendResponse([
+                    'fertilizers' => FertilizerSmResource::collection($ferts),
+                ], '');
+
+            }else{
+                return $this->sendResponse([
+                    'nut_elem_values' => array_map(function($elem){return [
+                        'name' => __($elem),
+                        'value' => $elem
+                    ];}, array_keys(NutElemValue::$rules)),
+                    'units' => [
+                        ['value' => 'kilo', 'name' => app()->getLocale()=='ar' ?  'كيلو' : 'Kilo'],
+                        ['value' => 'gram', 'name' => app()->getLocale()=='ar' ?  'جرام' : 'Gram'],
+                    ]
+                ], '');
+            }
         }
         // ري أو عمليات حقلية 2و4
         else{

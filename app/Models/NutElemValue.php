@@ -36,7 +36,13 @@ class NutElemValue extends Model
         'fe',
         'b',
         'ca',
-        'mg'
+        'mg',
+        's',
+        'zn',
+        'mn',
+        'cu',
+        'cl',
+        'mo',
     ];
 
     /**
@@ -52,23 +58,44 @@ class NutElemValue extends Model
         'fe' => 'decimal:2',
         'b' => 'decimal:2',
         'ca' => 'decimal:2',
-        'mg' => 'decimal:2'
+        'mg' => 'decimal:2',
+        's' => 'decimal:2',
+        'zn' => 'decimal:2',
+        'mn' => 'decimal:2',
+        'cu' => 'decimal:2',
+        'cl' => 'decimal:2',
+        'mo' => 'decimal:2',
     ];
 
     /**
      * Validation rules
-     *
+     * نسب مئوية
      * @var array
      */
     public static $rules = [
-        'n' => 'nullable|numeric',
-        'p' => 'nullable|numeric',
-        'k' => 'nullable|numeric',
-        'fe' => 'nullable|numeric',
-        'b' => 'nullable|numeric',
-        'ca' => 'nullable|numeric',
-        'mg' => 'nullable|numeric'
+        'n' => 'nullable|numeric|min:0|max:100',
+        'p' => 'nullable|numeric|min:0|max:100',
+        'k' => 'nullable|numeric|min:0|max:100',
+        'fe' => 'nullable|numeric|min:0|max:100',
+        'b' => 'nullable|numeric|min:0|max:100',
+        'ca' => 'nullable|numeric|min:0|max:100',
+        'mg' => 'nullable|numeric|min:0|max:100',
+        's' => 'nullable|numeric|min:0|max:100',
+        'zn' => 'nullable|numeric|min:0|max:100',
+        'mn' => 'nullable|numeric|min:0|max:100',
+        'cu' => 'nullable|numeric|min:0|max:100',
+        'cl' => 'nullable|numeric|min:0|max:100',
+        'mo' => 'nullable|numeric|min:0|max:100',
     ];
 
+    /**
+     * Get the fertilizer associated with the NutElemValue
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function fertilizer()
+    {
+        return $this->hasOne(Fertilizer::class);
+    }
 
 }

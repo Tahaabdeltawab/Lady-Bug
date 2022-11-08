@@ -100,5 +100,18 @@
     "has followed you": "قام بمتابعتك",
     "has bought a consultancy plan from you": "قام بشراء باقة استشاري لك",
     "has bought a consultancy plan from you with price ": "قام بشراء باقة استشاري لك بسعر ",
-    "Consultant not found, please refer him to register in our app.": "الاستشاري غير موجود يرجى توجيهه للتسجيل في التطبيق"
+    "Consultant not found, please refer him to register in our app.": "الاستشاري غير موجود يرجى توجيهه للتسجيل في التطبيق",
+    "n": "نيتروجين",
+    "p": "فوسفور",
+    "k": "بوتاسيوم",
+    "fe": "حديد",
+    "b": "بورون",
+    "ca": "كالسيوم",
+    "mg": "ماغنيسيوم",
+    "s": "كبريت",
+    "zn": "زنك",
+    "mn": "منجنيز",
+    "cu": "نحاس",
+    "cl": "كلور",
+    "mo": "مولبيدنم"
 }
