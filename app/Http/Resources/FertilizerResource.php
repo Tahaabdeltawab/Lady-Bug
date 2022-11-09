@@ -23,7 +23,7 @@ class FertilizerResource extends JsonResource
             })->values(),
             'dosage_form' => $this->dosage_form,
             'producer' => $this->producer,
-            'country_id' => $this->country_id,
+            'country' => $this->country,
             'addition_way' => $this->addition_way,
             'conc' => $this->conc,
             'reg_date' => $this->reg_date,

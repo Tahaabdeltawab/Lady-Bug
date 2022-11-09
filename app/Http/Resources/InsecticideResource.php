@@ -21,7 +21,7 @@ class InsecticideResource extends JsonResource
             'assets' => $this->assets()->pluck('asset_url'),
             'dosage_form' => $this->dosage_form,
             'producer' => $this->producer,
-            'country_id' => $this->country_id,
+            'country' => $this->country,
             'conc' => $this->conc,
             'reg_date' => $this->reg_date,
             'reg_num' => $this->reg_num,

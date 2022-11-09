@@ -8,7 +8,9 @@ use App\Models\Fertilizer;
 use App\Repositories\FertilizerRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use App\Http\Resources\CountryResource;
 use App\Http\Resources\FertilizerResource;
+use App\Models\Country;
 use App\Models\NutElemValue;
 use Illuminate\Support\Facades\DB;
 use Response;
@@ -50,6 +52,7 @@ class FertilizerAPIController extends AppBaseController
     public function getRelations()
     {
         return $this->sendResponse([
+            'countries' => CountryResource::collection(Country::all()),
             'dosage_forms' => [
                 ['value' => 'liquid', 'name' => app()->getLocale()=='ar' ?  'سائل' : 'liquid'],
                 ['value' => 'powder', 'name' => app()->getLocale()=='ar' ?  'بودرة' : 'powder'],

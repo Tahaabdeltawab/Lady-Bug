@@ -14,12 +14,16 @@ use App\Http\Resources\AcResource;
 use App\Http\Resources\AcXsResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\CityResource;
+use App\Http\Resources\CountryResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\ProductLgResource;
 use App\Http\Resources\ProductTypeResource;
 use App\Http\Resources\ProductXsResource;
 use App\Models\Ac;
 use App\Models\Business;
+use App\Models\City;
+use App\Models\Country;
+use App\Models\FarmedType;
 use App\Models\Fertilizer;
 use App\Models\Insecticide;
 use App\Models\NutElemValue;
@@ -131,8 +135,9 @@ class ProductAPIController extends AppBaseController
     {
         return $this->sendResponse(
             [
-                'cities' => CityResource::collection($this->cityRepository->all()),
-                'farmed_types' => FarmedTypeResource::collection($this->farmedTypeRepository->all()),
+                'countries' => CountryResource::collection(Country::all()),
+                'cities' => CityResource::collection(City::all()),
+                'farmed_types' => FarmedTypeResource::collection(FarmedType::all()),
                 'product_types' => ProductTypeResource::collection(ProductType::all()),
                 'acs' => AcXsResource::collection(Ac::get(['id','name'])),
                 'dosage_forms' => [// fertilizer and insecticide

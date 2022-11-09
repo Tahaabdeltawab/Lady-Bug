@@ -114,6 +114,14 @@ class Insecticide extends Model
     }
 
     /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function country()
+    {
+        return $this->belongsTo(\App\Models\Country::class);
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      **/
     public function acs()

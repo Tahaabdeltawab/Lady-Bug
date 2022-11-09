@@ -9,8 +9,10 @@ use App\Repositories\InsecticideRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\AcXsResource;
+use App\Http\Resources\CountryResource;
 use App\Http\Resources\InsecticideResource;
 use App\Models\Ac;
+use App\Models\Country;
 use Response;
 
 /**
@@ -50,6 +52,7 @@ class InsecticideAPIController extends AppBaseController
     {
         return $this->sendResponse([
             'acs' => AcXsResource::collection(Ac::get(['id','name'])),
+            'countries' => CountryResource::collection(Country::all()),
             'dosage_forms' => [
                 ['value' => 'liquid', 'name' => app()->getLocale()=='ar' ?  'سائل' : 'liquid'],
                 ['value' => 'powder', 'name' => app()->getLocale()=='ar' ?  'بودرة' : 'powder'],
