@@ -18,7 +18,9 @@ class FertilizerResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'assets' => $this->assets()->pluck('asset_url'),
-            'nut_elem_value' => $this->nutElemValue,
+            'nut_elem_value' => collect($this->nutElemValue)->except('id')->mapWithKeys(function($elem,$key){
+                return [$key => ['name' => __($key), 'value' => $elem]];
+            })->values(),
             'dosage_form' => $this->dosage_form,
             'producer' => $this->producer,
             'country_id' => $this->country_id,

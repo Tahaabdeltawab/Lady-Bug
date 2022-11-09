@@ -10,11 +10,15 @@ use App\Repositories\FarmedTypeRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Requests\API\RateProductRequest;
+use App\Http\Resources\AcResource;
+use App\Http\Resources\AcXsResource;
 use App\Http\Resources\ProductResource;
 use App\Http\Resources\CityResource;
 use App\Http\Resources\FarmedTypeResource;
+use App\Http\Resources\ProductLgResource;
 use App\Http\Resources\ProductTypeResource;
 use App\Http\Resources\ProductXsResource;
+use App\Models\Ac;
 use App\Models\Business;
 use App\Models\Fertilizer;
 use App\Models\Insecticide;
@@ -130,11 +134,12 @@ class ProductAPIController extends AppBaseController
                 'cities' => CityResource::collection($this->cityRepository->all()),
                 'farmed_types' => FarmedTypeResource::collection($this->farmedTypeRepository->all()),
                 'product_types' => ProductTypeResource::collection(ProductType::all()),
-                'dosage_forms' => [
+                'acs' => AcXsResource::collection(Ac::get(['id','name'])),
+                'dosage_forms' => [// fertilizer and insecticide
                     ['value' => 'liquid', 'name' => app()->getLocale()=='ar' ?  'سائل' : 'liquid'],
                     ['value' => 'powder', 'name' => app()->getLocale()=='ar' ?  'بودرة' : 'powder'],
                 ],
-                'addition_ways' => [
+                'addition_ways' => [ // fertilizer
                     ['value' => 'soil', 'name' => app()->getLocale()=='ar' ?  'في التربة' : 'In Soil'],
                     ['value' => 'leaves', 'name' => app()->getLocale()=='ar' ?  'على الأرواق' : 'On Leaves'],
                 ],
@@ -233,7 +238,7 @@ class ProductAPIController extends AppBaseController
             return $this->sendError('Product not found');
         }
 
-        return $this->sendResponse(new ProductResource($product), 'Product retrieved successfully');
+        return $this->sendResponse(new ProductLgResource($product), 'Product retrieved successfully');
     }
 
     public function update($id, CreateProductAPIRequest $request)

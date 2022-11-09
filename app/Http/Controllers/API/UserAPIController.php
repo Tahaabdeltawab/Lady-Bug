@@ -15,17 +15,14 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\PostResource;
 use App\Http\Resources\NotificationResource;
 use App\Http\Resources\FarmedTypeResource;
-use App\Http\Resources\ProductResource;
 use App\Http\Resources\FarmedTypeGinfoResource;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use App\Repositories\ProductRepository;
 use App\Repositories\FarmedTypeGinfoRepository;
 
 use App\Http\Helpers\WeatherApi;
 use App\Http\Requests\API\CreateNotificationSettingAPIRequest;
-use App\Http\Requests\API\CreateUserAPIRequest;
 use App\Http\Requests\API\RateUserRequest;
 use App\Http\Requests\API\UpdateProfileAPIRequest;
 use App\Http\Resources\BusinessResource;
@@ -35,10 +32,8 @@ use App\Http\Resources\PostXsResource;
 use App\Http\Resources\ProductXsResource;
 use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserProfileSmResource;
-use App\Http\Resources\UserProfileWebResource;
 use App\Http\Resources\UserSmResource;
 use App\Http\Resources\UserWithPostsResource;
-use App\Http\Resources\UserXsResource;
 use App\Models\NotificationSetting;
 
 /**
