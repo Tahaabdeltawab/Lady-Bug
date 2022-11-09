@@ -52,19 +52,19 @@ class NutElemValue extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'n' => 'decimal:2',
-        'p' => 'decimal:2',
-        'k' => 'decimal:2',
-        'fe' => 'decimal:2',
-        'b' => 'decimal:2',
-        'ca' => 'decimal:2',
-        'mg' => 'decimal:2',
-        's' => 'decimal:2',
-        'zn' => 'decimal:2',
-        'mn' => 'decimal:2',
-        'cu' => 'decimal:2',
-        'cl' => 'decimal:2',
-        'mo' => 'decimal:2',
+        'n' => 'double',
+        'p' => 'double',
+        'k' => 'double',
+        'fe' => 'double',
+        'b' => 'double',
+        'ca' => 'double',
+        'mg' => 'double',
+        's' => 'double',
+        'zn' => 'double',
+        'mn' => 'double',
+        'cu' => 'double',
+        'cl' => 'double',
+        'mo' => 'double',
     ];
 
     /**

@@ -14,12 +14,12 @@ class AddElementsToNutElemValuesTable extends Migration
     public function up()
     {
         Schema::table('nut_elem_values', function (Blueprint $table) {
-            $table->decimal('s')->nullable();
-            $table->decimal('zn')->nullable();
-            $table->decimal('mn')->nullable();
-            $table->decimal('cu')->nullable();
-            $table->decimal('cl')->nullable();
-            $table->decimal('mo')->nullable();
+            $table->decimal('s')->nullable()->default(0);
+            $table->decimal('zn')->nullable()->default(0);
+            $table->decimal('mn')->nullable()->default(0);
+            $table->decimal('cu')->nullable()->default(0);
+            $table->decimal('cl')->nullable()->default(0);
+            $table->decimal('mo')->nullable()->default(0);
         });
     }
 

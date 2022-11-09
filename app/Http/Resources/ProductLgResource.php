@@ -16,13 +16,14 @@ class ProductLgResource extends JsonResource
     {
         $return = [
             'id' => $this->id,
+            'product_type' => $this->productType,
             'farmed_types' => FarmedTypeXsResource::collection($this->farmedTypes),
             'ads' => ProductAdResource::collection($this->ads),
             'shipping_cities' => ShippingCityResource::collection($this->shippingCities),
             'price' => $this->price,
             'seller_id' => $this->seller_id,
-            'city' => $this->city->name,
-            'district' => $this->district->name,
+            'city' => CityXsResource::make($this->city),
+            'district' => DistrictXsResource::make($this->district),
             'seller_mobile' => $this->seller_mobile,
             'sold' => $this->sold,
             'rating' => $this->averageRating,

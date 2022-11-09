@@ -16,13 +16,13 @@ class CreateNutElemValuesTable extends Migration
     {
         Schema::create('nut_elem_values', function (Blueprint $table) {
             $table->id();
-            $table->decimal('n')->nullable();
-            $table->decimal('p')->nullable();
-            $table->decimal('k')->nullable();
-            $table->decimal('fe')->nullable();
-            $table->decimal('b')->nullable();
-            $table->decimal('ca')->nullable();
-            $table->decimal('mg')->nullable();
+            $table->decimal('n')->nullable()->default(0);
+            $table->decimal('p')->nullable()->default(0);
+            $table->decimal('k')->nullable()->default(0);
+            $table->decimal('fe')->nullable()->default(0);
+            $table->decimal('b')->nullable()->default(0);
+            $table->decimal('ca')->nullable()->default(0);
+            $table->decimal('mg')->nullable()->default(0);
         });
     }
 
