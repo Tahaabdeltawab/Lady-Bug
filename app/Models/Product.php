@@ -93,7 +93,7 @@ class Product extends Model
     }
     public function productType()
     {
-        return $this->belongsTo(productType::class);
+        return $this->belongsTo(ProductType::class);
     }
     public function insecticide()
     {
