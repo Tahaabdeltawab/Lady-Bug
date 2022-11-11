@@ -18,6 +18,7 @@ class ShippingCityResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'shipping_days' => $this->pivot->shipping_days,
+            'shipping_fees' => $this->pivot->shipping_fees,
         ];
     }
 }
