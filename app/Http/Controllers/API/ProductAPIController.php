@@ -29,6 +29,7 @@ use App\Models\Insecticide;
 use App\Models\NutElemValue;
 use App\Models\ProductType;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 /**
  * Class ProductController
@@ -173,6 +174,11 @@ class ProductAPIController extends AppBaseController
                 // if insecticide
                 if($request->product_type_id == 1 && $insecticideData = $request->insecticide){
                     $insecticideData['name'] = $request->name;
+                    // validation
+                    $rules = Insecticide::$rules; unset($rules['name.ar']); unset($rules['name.en']);
+                    $validator = Validator::make($insecticideData, $rules);
+                    if ($validator->fails()) return $this->sendError($validator->errors()->first());
+
                     $insecticide = Insecticide::create($insecticideData);
                     $insecticide->acs()->attach($request->insecticide_acs);
                     $input['insecticide_id'] = $insecticide->id;
@@ -180,6 +186,11 @@ class ProductAPIController extends AppBaseController
                 // if fertilizer
                 else if($request->product_type_id == 3 && $fertilizerData = $request->fertilizer){
                     $fertilizerData['name'] = $request->name;
+                    // validation
+                    $rules = Fertilizer::$rules; unset($rules['name.ar']); unset($rules['name.en']);
+                    $validator = Validator::make($fertilizerData, $rules);
+                    if ($validator->fails()) return $this->sendError($validator->errors()->first());
+
                     $nev = NutElemValue::create($request->fertilizer_nut_elem_value);
                     $fertilizerData['nut_elem_value_id'] = $nev->id;
                     $fertilizer = Fertilizer::create($fertilizerData);
@@ -267,6 +278,11 @@ class ProductAPIController extends AppBaseController
 
              // if insecticide
              if($request->product_type_id == 1 && $insecticideData = $request->insecticide){
+                // validation
+                $rules = Insecticide::$rules; unset($rules['name.ar']); unset($rules['name.en']);
+                $validator = Validator::make($insecticideData, $rules);
+                if ($validator->fails()) return $this->sendError($validator->errors()->first());
+
                 unset($insecticideData['precautions']);
                 unset($insecticideData['notes']);
                 $product->insecticide()->update($insecticideData);
@@ -280,6 +296,11 @@ class ProductAPIController extends AppBaseController
             }
             // if fertilizer
             else if($request->product_type_id == 3 && $fertilizerData = $request->fertilizer){
+                // validation
+                $rules = Fertilizer::$rules; unset($rules['name.ar']); unset($rules['name.en']);
+                $validator = Validator::make($fertilizerData, $rules);
+                if ($validator->fails()) return $this->sendError($validator->errors()->first());
+
                 unset($fertilizerData['precautions']);
                 unset($fertilizerData['notes']);
                 $product->fertilizer()->update($fertilizerData);
