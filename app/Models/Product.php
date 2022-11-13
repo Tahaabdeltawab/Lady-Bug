@@ -83,39 +83,45 @@ class Product extends Model
         });
     }
 
+    public function seller()
+    {
+        return $this->belongsTo(User::class, 'seller_id');
+    }
+
     public function city()
     {
         return $this->belongsTo(City::class);
     }
+
     public function business()
     {
         return $this->belongsTo(Business::class);
     }
+
     public function productType()
     {
         return $this->belongsTo(ProductType::class);
     }
+
     public function insecticide()
     {
         return $this->belongsTo(Insecticide::class);
     }
+
     public function fertilizer()
     {
         return $this->belongsTo(Fertilizer::class);
     }
-
 
     public function district()
     {
         return $this->belongsTo(District::class);
     }
 
-
     public function farmedTypes()
     {
         return $this->belongsToMany(FarmedType::class);
     }
-
 
     public function assets()
     {

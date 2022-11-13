@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductLgResource extends JsonResource
@@ -21,12 +22,13 @@ class ProductLgResource extends JsonResource
             'ads' => ProductAdResource::collection($this->ads),
             'shipping_cities' => ShippingCityResource::collection($this->shippingCities),
             'price' => $this->price,
-            'seller_id' => $this->seller_id,
+            'seller' => UserXsResource::make($this->seller()->select(User::$selects)->first()),
+            'business' => $this->business ? $this->business->only(['id','com_name', 'description']) : null,
             'city' => CityXsResource::make($this->city),
             'district' => DistrictXsResource::make($this->district),
             'seller_mobile' => $this->seller_mobile,
             'sold' => $this->sold,
-            'rating' => $this->averageRating,
+            'rating' => $this->averageRating ? number_format($this->averageRating, 1, '.' , '') : null,
             'other_links' => $this->other_links,
             'assets' => $this->assets()->pluck('asset_url')->all(),
             'insecticide' => InsecticideResource::make($this->insecticide),
