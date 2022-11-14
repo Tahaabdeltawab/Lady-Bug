@@ -30,7 +30,7 @@ class UserLoginResource extends JsonResource
             'email_verified'    => $this->email_verified,
             'roles'             => $this->get_roles(),
             'type'              => $this->type,
-            'rating'            => $this->averageRating,
+            'rating'            => $this->formattedAverageRating,
             'income'            => $this->income,
             'balance'           => $this->balance,
             'dob'               => $this->dob ? date('Y-m-d', strtotime($this->dob)) : null,

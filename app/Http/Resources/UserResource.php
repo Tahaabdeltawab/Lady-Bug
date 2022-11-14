@@ -47,7 +47,7 @@ class UserResource extends JsonResource
             // 'roles'             => $this->getRoles(),
             'roles'             => $this->get_roles(),
             'type'              => $this->type,
-            'rating'            => $this->averageRating,
+            'rating'            => $this->formattedAverageRating,
 
             'income'            => $this->income,
             'balance'           => $this->balance,

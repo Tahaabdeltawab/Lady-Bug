@@ -28,7 +28,7 @@ class ProductLgResource extends JsonResource
             'district' => DistrictXsResource::make($this->district),
             'seller_mobile' => $this->seller_mobile,
             'sold' => $this->sold,
-            'rating' => $this->averageRating ? number_format($this->averageRating, 1, '.' , '') : null,
+            'rating' => $this->formattedAverageRating,
             'other_links' => $this->other_links,
             'assets' => $this->assets()->pluck('asset_url')->all(),
             'insecticide' => InsecticideResource::make($this->insecticide),

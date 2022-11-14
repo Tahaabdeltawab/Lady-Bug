@@ -17,7 +17,7 @@ class ProductXsResource extends JsonResource
         $return = [
             'id' => $this->id,
             'price' => $this->price,
-            'rating' => $this->averageRating,
+            'rating' => $this->formattedAverageRating,
             'assets' => $this->assets()->pluck('asset_url')->all(),
         ];
 

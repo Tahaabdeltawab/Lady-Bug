@@ -25,7 +25,7 @@ class ProductResource extends JsonResource
             'district' => $this->district->name,
             'seller_mobile' => $this->seller_mobile,
             'sold' => $this->sold,
-            'rating' => $this->averageRating,
+            'rating' => $this->formattedAverageRating,
             'other_links' => $this->other_links,
             'assets' => $this->assets()->pluck('asset_url')->all(),
         ];

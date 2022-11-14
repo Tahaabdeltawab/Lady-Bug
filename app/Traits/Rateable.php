@@ -116,6 +116,12 @@ trait Rateable
         return $this->averageRating();
     }
 
+    public function getFormattedAverageRatingAttribute()
+    {
+        return $this->averageRating() ? number_format($this->averageRating(), 1, '.' , '') : null;
+
+    }
+
     public function getSumRatingAttribute()
     {
         return $this->sumRating();
