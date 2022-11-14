@@ -28,12 +28,14 @@ use App\Http\Requests\API\UpdateProfileAPIRequest;
 use App\Http\Resources\BusinessResource;
 use App\Http\Resources\BusinessXsResource;
 use App\Http\Resources\ConsultancyProfileResource;
+use App\Http\Resources\FarmedTypeXsResource;
 use App\Http\Resources\PostXsResource;
 use App\Http\Resources\ProductXsResource;
 use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserProfileSmResource;
 use App\Http\Resources\UserSmResource;
 use App\Http\Resources\UserWithPostsResource;
+use App\Models\FarmedTypeGinfo;
 use App\Models\NotificationSetting;
 
 /**
@@ -112,27 +114,25 @@ class UserAPIController extends AppBaseController
     //user interests -> farmed_type_ginfos, products, interests
     public function user_interests(Request $request)
     {
-        $weather_resp = WeatherApi::instance()->weather_api($request);
-        $weather_data = $weather_resp['data'];
+        if(!$request->farmed_type_id){
+            $weather_resp = WeatherApi::instance()->weather_api($request);
+            $data['weather_data'] = $weather_resp['data'];
+            $data['favorites'] = FarmedTypeXsResource::collection(auth()->user()->favorites);
+            $data['farmed_type_ginfos'] = null;
+        }else{
+            $ginfo = FarmedTypeGinfo::where('farmed_type_id', $request->farmed_type_id)->limit(10)->get();
+            $data['farmed_type_ginfos'] = FarmedTypeGinfoResource::collection($ginfo);
+            $data['weather_data'] = null;
+            $data['favorites'] = null;
+        }
 
-        $favorites = auth()->user()->favorites;
-        $fav_farmed_types_ids = $favorites->pluck('id');
-
-        $fav_farmed_type_ginfos = $this->farmedTypeGinfoRepository->whereIn(['farmed_type_id' => $fav_farmed_types_ids])->all();
-
-        $fav_products = Product::whereHas('farmedTypes', function($q)use($fav_farmed_types_ids){
-            return $q->whereIn('farmed_types.id', $fav_farmed_types_ids);
+        // $fav_farmed_type_ginfos = $this->farmedTypeGinfoRepository->whereIn(['farmed_type_id' => $favorites->pluck('id')])->all();
+        /* $fav_products = Product::whereHas('farmedTypes', function($q)use($favorites->pluck('id')){
+            return $q->whereIn('farmed_types.id', $favorites->pluck('id'));
         })->limit(10)->get();
-        $latest_products = Product::latest()->limit(10)->get();
+        $latest_products = Product::latest()->limit(10)->get(); */
 
-        return $this->sendResponse(
-            [
-                'weather_data' => $weather_data,
-                'favourites' => FarmedTypeResource::collection($favorites),
-                'farmed_type_ginfos' => FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
-                'favorite_products' => ProductXsResource::collection($fav_products),
-                'latest_products' => ProductXsResource::collection($latest_products)
-            ], 'Farmed Type General Information relations retrieved successfully');
+        return $this->sendResponse($data, 'Farmed Type General Information retrieved successfully');
     }
 
 

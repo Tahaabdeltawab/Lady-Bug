@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Requests\API\CreateFarmedTypeGinfoAPIRequest;
-use App\Http\Requests\API\UpdateFarmedTypeGinfoAPIRequest;
 use App\Models\FarmedTypeGinfo;
 use App\Repositories\FarmedTypeGinfoRepository;
 use App\Repositories\FarmedTypeRepository;
@@ -11,13 +10,8 @@ use App\Repositories\FarmedTypeStageRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmedTypeGinfoResource;
-use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\FarmedTypeStageResource;
 use App\Http\Resources\FarmedTypeXsResource;
-use Response;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon;
 
 /**
  * Class FarmedTypeGinfoController
