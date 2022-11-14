@@ -111,14 +111,14 @@ class UserAPIController extends AppBaseController
     }
 
 
-    //user interests -> farmed_type_ginfos, products, interests
+    //user interests -> farmed_type_ginfos, favs scr 78
     public function user_interests(Request $request)
     {
         if(!$request->farmed_type_id){
+            $data['farmed_type_ginfos'] = null;
             $weather_resp = WeatherApi::instance()->weather_api($request);
             $data['weather_data'] = $weather_resp['data'];
             $data['favorites'] = FarmedTypeXsResource::collection(auth()->user()->favorites);
-            $data['farmed_type_ginfos'] = null;
         }else{
             $ginfo = FarmedTypeGinfo::where('farmed_type_id', $request->farmed_type_id)->limit(10)->get();
             $data['farmed_type_ginfos'] = FarmedTypeGinfoResource::collection($ginfo);
