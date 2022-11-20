@@ -13,6 +13,7 @@ use App\Http\Requests\API\RateBusinessRequest;
 use App\Http\Resources\BusinessResource;
 use App\Http\Resources\BusinessWithPostsResource;
 use App\Http\Resources\BusinessWithTasksResource;
+use App\Http\Resources\BusinessXsResource;
 use App\Http\Resources\FarmXsResource;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\PostXsResource;
@@ -717,10 +718,10 @@ class BusinessAPIController extends AppBaseController
             'business fields retrieved successfully'
             );
         }
-        $similar_dealers = Business::select('id', 'com_name')->where('business_field_id', $business_field_id)->get();
+        $similar_dealers = Business::select('id', 'com_name', 'business_field_id')->where('business_field_id', $business_field_id)->get();
         return $this->sendResponse([
-            'agents' => $similar_dealers,
-            'distributors' => $similar_dealers,
+            'agents' => BusinessXsResource::collection($similar_dealers),
+            'distributors' => BusinessXsResource::collection($similar_dealers),
             'statuses' => $this->statuses()
         ], 'business relations retrieved successfully');
     }

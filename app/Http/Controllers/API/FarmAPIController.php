@@ -53,6 +53,7 @@ use App\Http\Resources\FarmResource;
 use Illuminate\Http\Request;
 
 use App\Http\Helpers\WeatherApi;
+use App\Http\Resources\BusinessXsResource;
 use App\Http\Resources\FarmCollection;
 use App\Http\Resources\FarmWithReportsResource;
 use App\Models\Business;
@@ -202,10 +203,10 @@ class FarmAPIController extends AppBaseController
             $data['animal_fodder_types'] = AnimalFodderTypeResource::collection($this->animalFodderTypeRepository->all());
             $data['soil_types'] = SoilTypeResource::collection($this->soilTypeRepository->all());
 
-            $data['seedling_sources'] = Business::farm()->get(['id', 'com_name']);
-            $data['chemical_fertilizer_sources'] = Business::fertilizer()->get(['id', 'com_name']);
-            $data['animal_fodder_sources'] = Business::fodder()->get(['id', 'com_name']);
-            $data['animal_medicine_sources'] = Business::vetmed()->get(['id', 'com_name']);
+            $data['seedling_sources'] = BusinessXsResource::collection(Business::farm()->get(['id', 'com_name', 'business_field_id']));
+            $data['chemical_fertilizer_sources'] = BusinessXsResource::collection(Business::fertilizer()->get(['id', 'com_name', 'business_field_id']));
+            $data['animal_fodder_sources'] = BusinessXsResource::collection(Business::fodder()->get(['id', 'com_name', 'business_field_id']));
+            $data['animal_medicine_sources'] = BusinessXsResource::collection(Business::vetmed()->get(['id', 'com_name', 'business_field_id']));
 
             return $this->sendResponse(['all' => $data], 'Farms relations retrieved successfully');
 

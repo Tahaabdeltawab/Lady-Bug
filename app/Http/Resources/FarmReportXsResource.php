@@ -17,6 +17,7 @@ class FarmReportXsResource extends JsonResource
         return [
             'id' => $this->id,
             'notes' => $this->notes,
+            'created_at' => date('Y-m-d', strtotime($this->created_at)),
             'user' => new UserXsResource($this->user()->select('id', 'name', 'human_job_id')->first()),
         ];
     }
