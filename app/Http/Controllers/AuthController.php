@@ -30,8 +30,8 @@ class AuthController extends AppBaseController
 
         $this->ttl = 1440000; // 1000 days
         $this->userRepository = $userRepo;
-        // $this->middleware('auth:api', ['except' => ['login', 'register']]);
-        $this->middleware('jwt.verify', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        // $this->middleware('jwt.verify', ['except' => ['login', 'register']]);
     }
 
     public function login(Request $request)

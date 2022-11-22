@@ -21,7 +21,7 @@ class Setting extends Model
 
     public $table = 'settings';
 	public $timestamps = false;
-    
+
 
 
 
@@ -49,10 +49,16 @@ class Setting extends Model
      * @var array
      */
     public static $rules = [
-        'name' => 'required',
-        'value' => 'required',
-        'type' => 'nullable'
+        'name' => 'required|in:report_price,weather_background',
+        'value' => 'requiredIf:asset,null',
+        'type' => 'nullable',
+        'asset' => 'nullable|max:5000|image',
     ];
 
-    
+    public function asset()
+    {
+        return $this->morphOne(Asset::class, 'assetable');
+    }
+
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Helpers;
 
+use App\Models\Setting;
 use Illuminate\Support\Facades\Http;
 
 class WeatherApi{
@@ -78,8 +79,11 @@ class WeatherApi{
                 // $sunrise = $carbon->parse($data['sys']['sunrise'])->locale($request->lang);
                 // $sunrise_new = $sunset->isoFormat('hh:mm a');
 
-                $resp['weather_description']    = $data['weather'][0]['description'];
                 $resp['weather_icon_url']       = "https://openweathermap.org/img/w/$weather_icon.png";
+                $s = Setting::where('name', 'weather_background')->first();
+                $bg = (!$s || ($s && !$s->asset)) ? $resp['weather_icon_url'] : $s->asset->asset_url;
+                $resp['weather_background']     = $bg;
+                $resp['weather_description']    = $data['weather'][0]['description'];
                 $resp['temp']                   = $data['main']['temp']." C";
                 $resp['date']                   = $date_new;
                 $resp['sunrise']                = date("h:i a", $data['sys']['sunrise']);

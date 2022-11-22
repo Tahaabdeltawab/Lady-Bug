@@ -23,7 +23,7 @@ class UserLoginResource extends JsonResource
             'mobile'            => $this->mobile,
             'activity_points'   => $this->activity_points,
             'job_name'          => $this->job->name ?? "",
-            'photo_url'         => $this->avatar ?: (isset($this->asset->asset_url) ? $this->asset->asset_url:''),
+            'photo_url'         => $this->photo_url,
             'status'            => $this->status,
             'is_notifiable'     => $this->is_notifiable,
             'mobile_verified'   => $this->mobile_verified,

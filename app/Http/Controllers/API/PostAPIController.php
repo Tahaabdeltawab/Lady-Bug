@@ -88,6 +88,8 @@ class PostAPIController extends AppBaseController
     }
     public function timeline(Request $request)
     {
+        // * try to apply this to avoid N+1 if applicable (if no pagination)
+        // ->with(['dislikers', 'likers', 'comments', 'assets', 'author', 'business'])->withCount(['dislikers', 'likers', 'comments'])
         $posts = Post::accepted()->post()->orderByDesc('reactions_count')->get();
         //  ترتيب المنشورات
         // الأشخاص الذين يتابعهم المستخدم

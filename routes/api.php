@@ -316,7 +316,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     Route::resource('product_types', App\Http\Controllers\API\ProductTypeAPIController::class);
     Route::resource('product_ads', App\Http\Controllers\API\ProductAdAPIController::class);
-    Route::resource('settings', App\Http\Controllers\API\SettingAPIController::class);
+    Route::resource('settings', App\Http\Controllers\API\SettingAPIController::class)->except(['update']);
 
     Route::resource('business_fields', App\Http\Controllers\API\BusinessFieldAPIController::class);
     Route::resource('business_branches', App\Http\Controllers\API\BusinessBranchAPIController::class);

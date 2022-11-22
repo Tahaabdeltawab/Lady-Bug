@@ -17,7 +17,7 @@ class UserOfBusinessResource extends JsonResource
             'id'                => $this->id,
             'name'              => $this->name,
             'job_name'          => $this->job->name ?? "",
-            'photo_url'         => $this->avatar ? $this->avatar : (isset($this->asset->asset_url) ? $this->asset->asset_url:''),
+            'photo_url'         => $this->photo_url,
             'start_date'        => $this->start_date,
             'end_date'          => $this->end_date,
             'user_permissions'  => $ps,

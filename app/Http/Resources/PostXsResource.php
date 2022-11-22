@@ -39,6 +39,7 @@ class PostXsResource extends JsonResource
             'shared' => $notShared ? null : new UserResource($this->shared->author),
             'share_id' => $post->id, // used to share the post. if this is an original post its value will be $this->id, if it's a shared post , its value will be the original post id
             'shared_content' => $notShared ? null : $this->content, // content added from the sharer
+            'business' => BusinessSmResource::make($this->business),
         ];
 
         return $return;

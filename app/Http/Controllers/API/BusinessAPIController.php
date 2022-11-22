@@ -378,7 +378,7 @@ class BusinessAPIController extends AppBaseController
                 return $this->sendError('Consultancy Period is required');
             $user->attachRole($request->role, $business);
             $user->attachPermissions($request->permissions, $business);
-            $role_user = RoleUser::where(['user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])->first();
+            $role_user = RoleUser::where(['user_type' => 'App\Models\User', 'user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])->first();
             $role_user->start_date = $request->start_date;
             $role_user->end_date = $request->end_date;
             $role_user->save();
@@ -508,7 +508,7 @@ class BusinessAPIController extends AppBaseController
                         return $this->sendError('Consultancy Period is required');
                     $user->syncRoles([$request->role], $business);
                     $user->syncPermissions($request->permissions, $business);
-                    $role_user = RoleUser::where(['user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])->first();
+                    $role_user = RoleUser::where(['user_type' => 'App\Models\User', 'user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])->first();
                     $role_user->start_date = $request->start_date;
                     $role_user->end_date = $request->end_date;
                     $role_user->save();

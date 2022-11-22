@@ -12,7 +12,7 @@ class UserProfileResource extends JsonResource
             'id'                => $this->id,
             'name'              => $this->name,
             'job_name'          => $this->job->name ?? "",
-            'photo_url'         => $this->avatar ?: (isset($this->asset->asset_url) ? $this->asset->asset_url:''),
+            'photo_url'         => $this->photo_url,
             'email'             => $this->email,
             'mobile'            => $this->mobile,
             'marital_status'    => $this->marital_status,

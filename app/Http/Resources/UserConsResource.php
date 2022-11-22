@@ -12,7 +12,7 @@ class UserConsResource extends JsonResource
             'id'                => $this->id,
             'name'              => $this->name,
             'job_name'          => $this->job->name ?? "",
-            'photo_url'         => $this->avatar ? $this->avatar : (isset($this->asset->asset_url) ? $this->asset->asset_url:''),
+            'photo_url'         => $this->photo_url,
             'cons'              => new ConsultancyProfileResource($this->consultancyProfile),
         ];
     }

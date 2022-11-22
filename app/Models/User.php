@@ -17,6 +17,9 @@ use Laratrust\Traits\LaratrustUserTrait;
 class User extends Authenticatable implements JWTSubject
 {
     use LaratrustUserTrait, HasFactory, Notifiable, Follower, Followable, Rateable, Liker;
+
+    public $table = 'users';
+
     protected $fillable = [
         'name',
         'email',
@@ -62,10 +65,10 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function get_roles($farm_id=null)
+    public function get_roles($business_id=null)
     {
-        return $this->roles->filter(function ($role) use($farm_id) {
-            return $role['pivot'][config('laratrust.foreign_keys.team')] == $farm_id;
+        return $this->roles->filter(function ($role) use($business_id) {
+            return $role['pivot'][config('laratrust.foreign_keys.team')] == $business_id;
         })->map->only(['id', 'name'])->toArray();
     }
 
@@ -223,6 +226,23 @@ class User extends Authenticatable implements JWTSubject
     }
 
 
+    protected $appends = ['photo_url'];
+
+    public function getPhotoUrlAttribute($value){
+        return $this->avatar ?: (isset($this->asset->asset_url) ? $this->asset->asset_url : $this->getAvatarPlaceholder());
+    }
+
+    protected function getAvatarPlaceholder()
+    {
+        return "https://ui-avatars.com/api/?name=$this->name&size=100&rounded=true&color=fff&background=".$this->getRandomColor($this->id);
+    }
+    protected function getRandomColor($userId)
+    {
+        $colors = ['329af0', 'fc6369', 'ffaa2e', '42c9af', '7d68f0'];
+        $index = $userId % 5;
+
+        return $colors[$index];
+    }
 
     public static function generate_code($length = 6)
     {

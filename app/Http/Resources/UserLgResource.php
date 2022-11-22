@@ -13,7 +13,7 @@ class UserLgResource extends JsonResource
             'name'              => $this->name,
             'bio'               => $this->bio,
             'job_name'          => $this->job->name ?? "",
-            'photo_url'         => $this->avatar ?: (isset($this->asset->asset_url) ? $this->asset->asset_url:''),
+            'photo_url'         => $this->photo_url,
             'users_rating'      => $this->ratingPercent().'%',
             'ladybug_rating'    => $this->ladybug_rating() .'%',
 

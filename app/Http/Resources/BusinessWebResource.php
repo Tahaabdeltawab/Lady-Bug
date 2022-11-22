@@ -21,7 +21,7 @@ class BusinessWebResource extends JsonResource
                 ->pluck('permissions.name');
         $prts = $this->users;
         foreach ($prts as $prt ) {
-            $imgs[] = $prt->avatar ?: (isset($prt->asset->asset_url) ? $prt->asset->asset_url:'');
+            $imgs[] = $prt->photo_url;
         }
         return [
             'id' => $this->id,
