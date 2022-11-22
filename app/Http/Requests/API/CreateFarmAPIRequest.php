@@ -35,6 +35,7 @@ class CreateFarmAPIRequest extends APIRequest
             'location.city'                         => 'nullable',
             'location.district'                     => 'nullable',
             'location.details'                      => 'nullable',
+            'location.postal'                       => 'nullable',
             'farming_date'                          => 'required|date_format:Y-m-d',//|after_or_equal:' . date('Y-m-d'),
             'farm_activity_type_id'                 => 'required|exists:farm_activity_types,id',
             // 1-crops, 2-trees, 3-homeplants, 4-animals

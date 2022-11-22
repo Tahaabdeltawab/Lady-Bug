@@ -34,6 +34,7 @@ use App\Models\RoleUser;
 use App\Models\Task;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Repositories\LocationRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -50,9 +51,10 @@ class BusinessAPIController extends AppBaseController
 {
     /** @var  BusinessRepository */
     private $businessRepository;
-    public function __construct(BusinessRepository $businessRepo)
+    public function __construct(BusinessRepository $businessRepo, LocationRepository $locationRepo)
     {
         $this->businessRepository = $businessRepo;
+        $this->locationRepository = $locationRepo;
     }
 
     /**
@@ -207,6 +209,9 @@ class BusinessAPIController extends AppBaseController
             DB::beginTransaction();
             $input = $request->validated();
             $input['user_id'] = auth()->id();
+
+            $saved_location = $this->locationRepository->create($input["location"]);
+            $input['location_id'] = $saved_location->id;
 
             $business = $this->businessRepository->create($input);
 
@@ -742,6 +747,8 @@ class BusinessAPIController extends AppBaseController
             if(!auth()->user()->hasPermission("edit-business", $business))
                 return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
+            $saved_location = $this->locationRepository->update($input["location"], $business->location_id);
+            $input['location_id'] = $saved_location->id;
             $business = $this->businessRepository->update($input, $id);
 
             $business->agents()->detach();
@@ -835,12 +842,14 @@ class BusinessAPIController extends AppBaseController
             $farm->animal_drink_water_salt_detail()->delete();
             foreach($farm->farm_reports as $report){
                 $report->tasks()->delete();
+                $report->location()->delete();
                 $report->delete();
             }
             $farm->delete();
         }
         $business->branches()->delete();
         $business->parts()->delete();
+        $business->location()->delete();
         DB::table('business_dealer')->where('business_id', $business->id)->delete();
         DB::table('role_user')->where('business_id', $business->id)->delete();
         DB::table('permission_user')->where('business_id', $business->id)->delete();

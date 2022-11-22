@@ -23,6 +23,7 @@ class LocationResource extends JsonResource
             'country' => $this->country,
             'city' => $this->city,
             'district' => $this->district,
+            'postal' => $this->postal,
             'details' => $this->details
         ];
     }

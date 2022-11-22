@@ -20,8 +20,7 @@ class CreateFarmReportsTable extends Migration
             $table->foreignId('business_id')->nullable()->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('farm_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('farmed_type_stage_id')->nullable()->constrained();
-            $table->string('lat')->nullable();
-            $table->string('lon')->nullable();
+            $table->foreignId('location_id')->nullable()->constrained();
             $table->enum('fertilization_unit', ['tree', 'acre'])->nullable();
             $table->string('notes')->nullable();
             $table->timestamps();

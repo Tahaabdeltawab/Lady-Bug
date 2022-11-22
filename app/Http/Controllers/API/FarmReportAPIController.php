@@ -14,6 +14,7 @@ use App\Models\Farm;
 use App\Models\FarmedTypeStage;
 use App\Models\Setting;
 use App\Models\Transaction;
+use App\Repositories\LocationRepository;
 use Illuminate\Support\Facades\DB;
 use Response;
 
@@ -27,9 +28,10 @@ class FarmReportAPIController extends AppBaseController
     /** @var  FarmReportRepository */
     private $farmReportRepository;
 
-    public function __construct(FarmReportRepository $farmReportRepo)
+    public function __construct(FarmReportRepository $farmReportRepo, LocationRepository $locationRepo)
     {
         $this->farmReportRepository = $farmReportRepo;
+        $this->locationRepository = $locationRepo;
     }
 
     /**
@@ -87,6 +89,10 @@ class FarmReportAPIController extends AppBaseController
             $input['user_id'] = auth()->id();
             Farm::where('id', $input['farm_id'])->update(['fertilization_start_date' => $input['fertilization_start_date']]);
             unset($input['fertilization_start_date']);
+
+            $saved_location = $this->locationRepository->create($input["location"]);
+            $input['location_id'] = $saved_location->id;
+
             $farmReport = $this->farmReportRepository->create($input);
 
             $create_report_price = Setting::where('name', 'report_price')->value('value');
@@ -155,6 +161,9 @@ class FarmReportAPIController extends AppBaseController
 
         Farm::where('id', $input['farm_id'])->update(['fertilization_start_date' => $input['fertilization_start_date']]);
         unset($input['fertilization_start_date']);
+
+        $saved_location = $this->locationRepository->update($input["location"], $farmReport->location_id);
+        $input['location_id'] = $saved_location->id;
         $farmReport = $this->farmReportRepository->update($input, $id);
 
         return $this->sendResponse(new FarmReportResource($farmReport), 'FarmReport updated successfully');
@@ -182,6 +191,7 @@ class FarmReportAPIController extends AppBaseController
         }
 
         $farmReport->tasks()->delete();
+        $farmReport->location()->delete();
         $farmReport->delete();
 
         return $this->sendSuccess('Farm Report deleted successfully');

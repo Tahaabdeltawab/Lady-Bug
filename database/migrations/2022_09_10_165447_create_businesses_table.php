@@ -23,8 +23,7 @@ class CreateBusinessesTable extends Migration
             $table->string('status')->nullable();
             $table->string('mobile')->nullable();
             $table->string('whatsapp')->nullable();
-            $table->decimal('lat')->nullable();
-            $table->decimal('lon')->nullable();
+            $table->foreignId('location_id')->nullable()->constrained();
             $table->foreignId('country_id')->nullable()->constrained();
             $table->boolean('privacy')->nullable();
             $table->timestamps();

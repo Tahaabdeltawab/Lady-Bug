@@ -41,11 +41,7 @@ use App\Http\Resources\HomePlantIlluminatingSourceResource;
 use App\Http\Resources\FarmingWayResource;
 use App\Http\Resources\AnimalBreedingPurposeResource;
 use App\Http\Resources\FarmingMethodResource;
-use App\Http\Resources\SeedlingSourceResource;
-use App\Http\Resources\ChemicalFertilizerSourceResource;
 use App\Http\Resources\AnimalFodderTypeResource;
-use App\Http\Resources\AnimalFodderSourceResource;
-use App\Http\Resources\AnimalMedicineSourceResource;
 use App\Http\Resources\SoilTypeResource;
 
 use App\Http\Controllers\AppBaseController;
@@ -77,11 +73,7 @@ class FarmAPIController extends AppBaseController
     private $farmingWayRepository;
     private $animalBreedingPurposeRepository;
     private $farmingMethodRepository;
-    private $seedlingSourceRepository;
-    private $chemicalFertilizerSourceRepository;
     private $animalFodderTypeRepository;
-    private $animalFodderSourceRepository;
-    private $animalMedicineSourceRepository;
     private $soilTypeRepository;
 
     private $locationRepository;
@@ -105,11 +97,7 @@ class FarmAPIController extends AppBaseController
         FarmingWayRepository $farmingWayRepo,
         AnimalBreedingPurposeRepository $animalBreedingPurposeRepo,
         FarmingMethodRepository $farmingMethodRepo,
-        SeedlingSourceRepository $seedlingSourceRepo,
-        ChemicalFertilizerSourceRepository $chemicalFertilizerSourceRepo,
         AnimalFodderTypeRepository $animalFodderTypeRepo,
-        AnimalFodderSourceRepository $animalFodderSourceRepo,
-        AnimalMedicineSourceRepository $animalMedicineSourceRepo,
         SoilTypeRepository $soilTypeRepo,
         LocationRepository $locationRepo
     )
@@ -132,11 +120,7 @@ class FarmAPIController extends AppBaseController
         $this->farmingWayRepository = $farmingWayRepo;
         $this->animalBreedingPurposeRepository = $animalBreedingPurposeRepo;
         $this->farmingMethodRepository = $farmingMethodRepo;
-        $this->seedlingSourceRepository = $seedlingSourceRepo;
-        $this->chemicalFertilizerSourceRepository = $chemicalFertilizerSourceRepo;
         $this->animalFodderTypeRepository = $animalFodderTypeRepo;
-        $this->animalFodderSourceRepository = $animalFodderSourceRepo;
-        $this->animalMedicineSourceRepository = $animalMedicineSourceRepo;
         $this->soilTypeRepository = $soilTypeRepo;
 
         $this->locationRepository = $locationRepo;
@@ -293,6 +277,7 @@ class FarmAPIController extends AppBaseController
             $location['country'] = $input["location"]["country"];
             $location['city'] = $input["location"]["city"];
             $location['district'] = $input["location"]["district"];
+            $location['postal'] = $input["location"]["postal"];
             $location['details'] = $input["location"]["details"];
             $saved_location = $this->locationRepository->create($location);
             $farm_detail['location_id'] = $saved_location->id;
@@ -494,6 +479,7 @@ class FarmAPIController extends AppBaseController
             $location['country'] = $input["location"]["country"];
             $location['city'] = $input["location"]["city"];
             $location['district'] = $input["location"]["district"];
+            $location['postal'] = $input["location"]["postal"];
             $location['details'] = $input["location"]["details"];
             $saved_location = $this->locationRepository->update($location, $farm->location_id);
             $farm_detail['location_id'] = $saved_location->id;

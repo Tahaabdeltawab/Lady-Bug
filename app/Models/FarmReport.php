@@ -15,8 +15,6 @@ use Eloquent as Model;
  * @property \App\Models\FarmedTypeStage $farmedTypeStage
  * @property integer $farm_id
  * @property integer $farmed_type_stage_id
- * @property string $lat
- * @property string $lon
  * @property string $fertilization_start_date
  * @property string $fertilization_unit
  * @property string $notes
@@ -35,8 +33,7 @@ class FarmReport extends Model
         'user_id',
         'farm_id',
         'farmed_type_stage_id',
-        'lat',
-        'lon',
+        'location_id',
         // 'fertilization_start_date',
         'fertilization_unit',
         'notes'
@@ -50,11 +47,10 @@ class FarmReport extends Model
     protected $casts = [
         'id' => 'integer',
         'business_id' => 'integer',
+        'location_id' => 'integer',
         'user_id' => 'integer',
         'farm_id' => 'integer',
         'farmed_type_stage_id' => 'integer',
-        'lat' => 'string',
-        'lon' => 'string',
         'fertilization_start_date' => 'date',
         'fertilization_unit' => 'string',
         'notes' => 'string'
@@ -69,8 +65,14 @@ class FarmReport extends Model
         'farm_id' => 'required|exists:farms,id',
         'business_id' => 'required|exists:businesses,id',
         'farmed_type_stage_id' => 'nullable|exists:farmed_type_stages,id',
-        'lat' => 'required',
-        'lon' => 'required',
+        'location' => 'array',
+        'location.latitude' => 'required',
+        'location.longitude' => 'required',
+        'location.country' => 'nullable',
+        'location.city' => 'nullable',
+        'location.district' => 'nullable',
+        'location.details' => 'nullable',
+        'location.postal' => 'nullable',
         'fertilization_start_date' => 'nullable|date_format:Y-m-d',
         'fertilization_unit' => 'nullable|in:tree,acre',
         'notes' => 'nullable'
@@ -82,9 +84,11 @@ class FarmReport extends Model
     }
 
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+
     public function farm()
     {
         return $this->belongsTo(\App\Models\Farm::class);

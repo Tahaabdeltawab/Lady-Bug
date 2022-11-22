@@ -18,6 +18,7 @@ class Location extends Model
         'country',
         'city',
         'district',
+        'postal',
         'details'
     ];
 
@@ -33,6 +34,7 @@ class Location extends Model
         'country' => 'string',
         'city' => 'string',
         'district' => 'string',
+        'postal' => 'string',
         'details' => 'string'
     ];
 

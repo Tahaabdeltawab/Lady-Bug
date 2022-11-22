@@ -38,8 +38,8 @@ class BusinessResource extends JsonResource
             'status_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->statuses($this->status)['name'],
             'mobile' => $this->mobile,
             'whatsapp' => $this->whatsapp,
-            'lat' => $this->lat,
-            'lon' => $this->lon,
+            'lat' => @$this->location->latitude,
+            'lon' => @$this->location->longitude,
             // 'country_id' => $this->country_id,
             'privacy' => $this->privacy,
             'is_following' => $this->isFollowedBy(auth()->user()), // Am I following him?

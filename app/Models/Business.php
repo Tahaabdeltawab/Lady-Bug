@@ -23,8 +23,7 @@ class Business extends Team
         'status',
         'mobile',
         'whatsapp',
-        'lat',
-        'lon',
+        'location_id',
         'country_id',
         'privacy'
     ];
@@ -43,8 +42,7 @@ class Business extends Team
         'status' => 'string',
         'mobile' => 'string',
         'whatsapp' => 'string',
-        'lat' => 'decimal:2',
-        'lon' => 'decimal:2',
+        'location_id' => 'integer',
         'country_id' => 'integer',
         'privacy' => 'boolean'
     ];
@@ -63,8 +61,14 @@ class Business extends Team
         'status' => 'required',
         'mobile' => 'nullable',
         'whatsapp' => 'nullable',
-        'lat' => 'nullable',
-        'lon' => 'nullable',
+        'location' => 'array',
+        'location.latitude' => 'required',
+        'location.longitude' => 'required',
+        'location.country' => 'nullable',
+        'location.city' => 'nullable',
+        'location.district' => 'nullable',
+        'location.details' => 'nullable',
+        'location.postal' => 'nullable',
         'country_id' => 'nullable|exists:countries,id',
         'privacy' => 'nullable',
         'branches' => 'nullable|array',
@@ -82,9 +86,11 @@ class Business extends Team
     }
 
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
+    public function location()
+    {
+        return $this->belongsTo(Location::class);
+    }
+
     public function farms()
     {
         return $this->hasMany(\App\Models\Farm::class);

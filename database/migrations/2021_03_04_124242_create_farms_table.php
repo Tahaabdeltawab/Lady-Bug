@@ -25,7 +25,7 @@ class CreateFarmsTable extends Migration
             $table->bigInteger('farmed_number')->nullable();
             $table->foreignId('admin_id')->constrained('users');
             $table->foreignId('area_unit_id')->nullable()->constrained('measuring_units');
-            $table->foreignId('location_id')->constrained()/* ->onDelete('CASCADE')->onUpdate('CASCADE') */;
+            $table->foreignId('location_id')->nullable()->constrained()/* ->onDelete('CASCADE')->onUpdate('CASCADE') */;
             $table->foreignId('farm_activity_type_id')->constrained();
             $table->foreignId('farmed_type_id')->constrained();
             $table->foreignId('farmed_type_class_id')->nullable()->constrained();
