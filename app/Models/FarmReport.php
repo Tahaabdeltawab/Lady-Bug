@@ -35,7 +35,7 @@ class FarmReport extends Model
         'farmed_type_stage_id',
         'location_id',
         // 'fertilization_start_date',
-        'fertilization_unit',
+        // 'fertilization_unit',
         'notes'
     ];
 
@@ -52,7 +52,7 @@ class FarmReport extends Model
         'farm_id' => 'integer',
         'farmed_type_stage_id' => 'integer',
         'fertilization_start_date' => 'date',
-        'fertilization_unit' => 'string',
+        // 'fertilization_unit' => 'string',
         'notes' => 'string'
     ];
 
@@ -74,7 +74,7 @@ class FarmReport extends Model
         'location.details' => 'nullable',
         'location.postal' => 'nullable',
         'fertilization_start_date' => 'nullable|date_format:Y-m-d',
-        'fertilization_unit' => 'nullable|in:tree,acre',
+        // 'fertilization_unit' => 'nullable|in:tree,acre',
         'notes' => 'nullable'
     ];
 
@@ -82,6 +82,15 @@ class FarmReport extends Model
     public function getFertilizationStartDateAttribute($value){
         return @$this->farm->fertilization_start_date;
     }
+    /**
+     * لو الصنف محصول يبقى معدل التسميد لكل فدان
+     *  ولو اشجار يبقى لكل شجرة
+     */
+    public function getFertilizationUnitAttribute()
+    {
+        return $this->farm->farmed_type->farm_activity_type_id == 1 ? 'acre' : 'tree';
+    }
+
 
 
     public function location()

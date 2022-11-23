@@ -53,15 +53,17 @@ class FarmReportAPIController extends AppBaseController
     }
 
 
-    public function getRelations()
+    public function getRelations($farm_id)
     {
         $data['create_report_price'] = Setting::where('name', 'report_price')->value('value');
         $data['user_balance'] = auth()->user()->balance;
         $data['farmed_type_stages'] = FarmedTypeStage::all();
-        $data['fertilization_unit'] = [
-            ['value' => 'tree', 'name' => app()->getLocale()=='ar' ?  'لكل شجرة' : 'Per Tree'],
-            ['value' => 'acre', 'name' => app()->getLocale()=='ar' ?  'لكل فدان' : 'Per Acre'],
-        ];
+        if(!($farm = Farm::find($farm_id))) return $this->sendError('farm not found');
+        $data['fertilization_start_date'] = $farm->fertilization_start_date ? date('Y-m-d', strtotime($farm->fertilization_start_date)) : date('Y-m-d');
+        $data['fertilization_unit'] = $farm->farmed_type->farm_activity_type_id == 1 ?
+        [['value' => 'acre', 'name' => app()->getLocale()=='ar' ?  'لكل فدان' : 'Per Acre']]
+        :
+        [['value' => 'tree', 'name' => app()->getLocale()=='ar' ?  'لكل شجرة' : 'Per Tree']];
 
         return $this->sendResponse($data, 'farm report relations retrieved successfully!');
     }

@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BusinessPartResource extends JsonResource
+class BusinessMdResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,13 +16,9 @@ class BusinessPartResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'business_id' => $this->business_id,
-            'title' => $this->title,
+            'com_name' => $this->com_name,
             'description' => $this->description,
-            'date' => $this->date,
-            'end_date' => $this->end_date,
-            'done' => $this->done,
-            // 'type' => $this->type
+            'main_asset' => @$this->main_asset[0]->asset_url,
         ];
     }
 }

@@ -35,6 +35,7 @@ class BusinessPart extends Model
         'title',
         'description',
         'date',
+        'end_date',
         'done',
         'type'
     ];
@@ -50,6 +51,7 @@ class BusinessPart extends Model
         'title' => 'string',
         'description' => 'string',
         'date' => 'date',
+        'end_date' => 'date',
         'done' => 'boolean',
         'type' => 'string'
     ];
@@ -64,6 +66,7 @@ class BusinessPart extends Model
         'title' => 'required',
         'description' => 'nullable|max:255',
         'date' => 'nullable',
+        'end_date' => 'nullable',
         'done' => 'nullable',
         'type' => 'required'
     ];
@@ -77,6 +80,9 @@ class BusinessPart extends Model
     }
 
     public function getDateAttribute($value){
-        return Carbon::parse($value)->format('Y-m-d');
+        return $value ? Carbon::parse($value)->format('Y-m-d') : $value;
+    }
+    public function getEndDateAttribute($value){
+        return $value ? Carbon::parse($value)->format('Y-m-d') : $value;
     }
 }
