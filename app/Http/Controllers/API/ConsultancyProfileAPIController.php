@@ -40,12 +40,12 @@ class ConsultancyProfileAPIController extends AppBaseController
     public function index(Request $request)
     {
         $consultancyProfiles = $this->consultancyProfileRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(ConsultancyProfileResource::collection($consultancyProfiles), 'Consultancy Profiles retrieved successfully');
+        return $this->sendResponse(['all' => ConsultancyProfileResource::collection($consultancyProfiles['all']), 'meta' => $consultancyProfiles['meta']], 'Consultancy Profiles retrieved successfully');
     }
 
     public function getRelations()

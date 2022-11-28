@@ -36,12 +36,12 @@ class WorkFieldAPIController extends AppBaseController
     public function index(Request $request)
     {
         $workFields = $this->workFieldRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(WorkFieldResource::collection($workFields), 'Work Fields retrieved successfully');
+        return $this->sendResponse(['all' => WorkFieldResource::collection($workFields['all']), 'meta' => $workFields['meta']], 'Work Fields retrieved successfully');
     }
 
     /**

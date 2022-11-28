@@ -36,12 +36,12 @@ class VisitedAPIController extends AppBaseController
     public function index(Request $request)
     {
         $visiteds = $this->visitedRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(VisitedResource::collection($visiteds), 'Visiteds retrieved successfully');
+        return $this->sendResponse(['all' => VisitedResource::collection($visiteds['all']), 'meta' => $visiteds['meta']], 'Visiteds retrieved successfully');
     }
 
     /**

@@ -145,9 +145,14 @@ class FarmAPIController extends AppBaseController
     public function index(Request $request)
     {
         try{
-            $farms = $this->farmRepository->all();
-
-            return $this->sendResponse(['all' => FarmCollection::collection($farms)], 'Farms retrieved successfully');
+            $farms = $this->farmRepository->all(
+                $request->except(['page', 'perPage']),
+                $request->get('page'),
+                $request->get('perPage')
+            );
+    
+            return $this->sendResponse(['all' => FarmCollection::collection($farms['all']), 'meta' => $farms['meta']], 'Farms retrieved successfully');
+    
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
         }

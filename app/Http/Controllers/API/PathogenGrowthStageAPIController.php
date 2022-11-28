@@ -37,12 +37,12 @@ class PathogenGrowthStageAPIController extends AppBaseController
     public function index(Request $request)
     {
         $pathogenGrowthStages = $this->pathogenGrowthStageRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(PathogenGrowthStageResource::collection($pathogenGrowthStages), 'Pathogen Growth Stages retrieved successfully');
+        return $this->sendResponse(['all' => PathogenGrowthStageResource::collection($pathogenGrowthStages['all']), 'meta' => $pathogenGrowthStages['meta']], 'Pathogen Growth Stages retrieved successfully');
     }
 
     public function by_pa_id($pathogen_id)

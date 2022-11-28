@@ -36,12 +36,12 @@ class FarmingWayAPIController extends AppBaseController
         // ! is used to filter farming ways and breeding ways
         // ! /farming_ways?type=breeding
         $farmingWays = $this->farmingWayRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => FarmingWayResource::collection($farmingWays)], 'Farming Ways retrieved successfully');
+        return $this->sendResponse(['all' => FarmingWayResource::collection($farmingWays['all']), 'meta' => $farmingWays['meta']], 'Farming Ways retrieved successfully');
     }
 
     public function store(CreateFarmingWayAPIRequest $request)

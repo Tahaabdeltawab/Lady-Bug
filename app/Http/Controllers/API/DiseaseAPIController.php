@@ -42,12 +42,12 @@ class DiseaseAPIController extends AppBaseController
     public function index(Request $request)
     {
         $diseases = $this->diseaseRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(DiseaseSmResource::collection($diseases), 'Diseases retrieved successfully');
+        return $this->sendResponse(['all' => DiseaseSmResource::collection($diseases['all']), 'meta' => $diseases['meta']], 'Diseases retrieved successfully');
     }
 
     public function getRelations()

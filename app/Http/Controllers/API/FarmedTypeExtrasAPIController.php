@@ -38,12 +38,12 @@ class FarmedTypeExtrasAPIController extends AppBaseController
     public function index(Request $request)
     {
         $farmedTypeExtras = $this->farmedTypeExtrasRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(FarmedTypeExtrasResource::collection($farmedTypeExtras), 'Farmed Type Extras retrieved successfully');
+        return $this->sendResponse(['all' => FarmedTypeExtrasResource::collection($farmedTypeExtras['all']), 'meta' => $farmedTypeExtras['meta']], 'Farmed Type Extras retrieved successfully');
     }
 
     public function seedling_types($value = null)

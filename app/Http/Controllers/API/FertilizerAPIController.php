@@ -40,12 +40,12 @@ class FertilizerAPIController extends AppBaseController
     public function index(Request $request)
     {
         $fertilizers = $this->fertilizerRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(FertilizerResource::collection($fertilizers), 'Fertilizers retrieved successfully');
+        return $this->sendResponse(['all' => FertilizerResource::collection($fertilizers['all']), 'meta' => $fertilizers['meta']], 'Fertilizers retrieved successfully');
     }
 
 

@@ -39,12 +39,12 @@ class DiseaseRegistrationAPIController extends AppBaseController
     public function index(Request $request)
     {
         $diseaseRegistrations = $this->diseaseRegistrationRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(DiseaseRegistrationResource::collection($diseaseRegistrations), 'Disease Registrations retrieved successfully');
+        return $this->sendResponse(['all' => DiseaseRegistrationResource::collection($diseaseRegistrations['all']), 'meta' => $diseaseRegistrations['meta']], 'Disease Registrations retrieved successfully');
     }
 
     /**

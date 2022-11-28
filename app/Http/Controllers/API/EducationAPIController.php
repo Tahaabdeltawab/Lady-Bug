@@ -36,12 +36,12 @@ class EducationAPIController extends AppBaseController
     public function index(Request $request)
     {
         $education = $this->educationRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(EducationResource::collection($education), 'Education retrieved successfully');
+        return $this->sendResponse(['all' => EducationResource::collection($education['all']), 'meta' => $education['meta']], 'Education retrieved successfully');
     }
 
     /**

@@ -73,20 +73,31 @@ class UserAPIController extends AppBaseController
     }
 
 
-    // app users
+    // app generic users
     public function index(Request $request)
     {
-        $users = User::user()->get();
+        $users = $this->userRepository->all(
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage'),
+            ['user']
+        );
 
-        return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
+        return $this->sendResponse(['all' => UserResource::collection($users['all']), 'meta' => $users['meta']], 'Users retrieved successfully');
     }
 
     // app admins
     public function admin_index(Request $request)
     {
-        $users = User::admin()->get();
+        $users = $this->userRepository->all(
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage'),
+            ['admin']
+        );
 
-        return $this->sendResponse(['all' => UserResource::collection($users)], 'Users retrieved successfully');
+        return $this->sendResponse(['all' => UserResource::collection($users['all']), 'meta' => $users['meta']], 'Users retrieved successfully');
+
     }
 
 

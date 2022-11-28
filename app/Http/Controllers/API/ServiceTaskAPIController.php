@@ -31,12 +31,12 @@ class ServiceTaskAPIController extends AppBaseController
     public function index(Request $request)
     {
         $serviceTasks = $this->serviceTaskRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => ServiceTaskResource::collection($serviceTasks)], 'Service Tasks retrieved successfully');
+        return $this->sendResponse(['all' => ServiceTaskResource::collection($serviceTasks['all']), 'meta' => $serviceTasks['meta']], 'Service Tasks retrieved successfully');
     }
 
 

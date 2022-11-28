@@ -29,12 +29,12 @@ class HumanJobAPIController extends AppBaseController
     public function index(Request $request)
     {
         $jobs = $this->humanJobRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' =>HumanJobResource::collection($jobs)], 'Jobs retrieved successfully');
+        return $this->sendResponse(['all' => HumanJobResource::collection($jobs['all']), 'meta' => $jobs['meta']], 'Jobs retrieved successfully');
     }
 
     public function store(CreateJobAPIRequest $request)

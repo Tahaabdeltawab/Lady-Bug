@@ -40,12 +40,12 @@ class ReportTypeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $reportTypes = $this->reportTypeRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(ReportTypeResource::collection($reportTypes), 'Report Types retrieved successfully');
+        return $this->sendResponse(['all' => ReportTypeResource::collection($reportTypes['all']), 'meta' => $reportTypes['meta']], 'Report Types retrieved successfully');
     }
 
     /**

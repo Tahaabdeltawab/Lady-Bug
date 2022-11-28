@@ -36,12 +36,12 @@ class InfectionRateAPIController extends AppBaseController
     public function index(Request $request)
     {
         $infectionRates = $this->infectionRateRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(InfectionRateResource::collection($infectionRates), 'Infection Rates retrieved successfully');
+        return $this->sendResponse(['all' => InfectionRateResource::collection($infectionRates['all']), 'meta' => $infectionRates['meta']], 'Infection Rates retrieved successfully');
     }
 
     /**

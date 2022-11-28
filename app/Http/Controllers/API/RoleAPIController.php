@@ -8,21 +8,30 @@ use App\Http\Requests\API\UpdateRoleAPIRequest;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
+use App\Repositories\RoleRepository;
 
 class RoleAPIController extends AppBaseController
 {
+    protected $roleRepository;
 
-    public function __construct()
+    public function __construct(RoleRepository $roleRepo)
     {
+        $this->roleRepository = $roleRepo;
         $this->middleware('permission:roles.store')->only(['store']);
         $this->middleware('permission:roles.update')->only(['update', 'update_role_permissions']);
         $this->middleware('permission:roles.destroy')->only(['destroy']);
     }
 
-    public function index()
+    public function index(Request $request)
     {   try{
-            $roles = Role::appAllowedRoles()->get();
-            return $this->sendResponse(['all' =>  RoleResource::collection($roles)], 'Roles retrieved successfully');
+            $roles = $this->roleRepository->all(
+                $request->except(['page', 'perPage']),
+                $request->get('page'),
+                $request->get('perPage'),
+                ['appAllowedRoles']
+            );
+
+            return $this->sendResponse(['all' => RoleResource::collection($roles['all']), 'meta' => $roles['meta']], 'Roles retrieved successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
         }

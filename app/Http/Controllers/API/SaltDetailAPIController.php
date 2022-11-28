@@ -29,12 +29,12 @@ class SaltDetailAPIController extends AppBaseController
     public function index(Request $request)
     {
         $saltDetails = $this->saltDetailRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => SaltDetailResource::collection($saltDetails)], 'Salt Details retrieved successfully');
+        return $this->sendResponse(['all' => SaltDetailResource::collection($saltDetails['all']), 'meta' => $saltDetails['meta']], 'Salt Details retrieved successfully');
     }
 
     public function store(CreateSaltDetailAPIRequest $request)

@@ -29,12 +29,12 @@ class ChemicalDetailAPIController extends AppBaseController
     public function index(Request $request)
     {
         $chemicalDetails = $this->chemicalDetailRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => ChemicalDetailResource::collection($chemicalDetails)], 'Chemical Details retrieved successfully');
+        return $this->sendResponse(['all' => ChemicalDetailResource::collection($chemicalDetails['all']), 'meta' => $chemicalDetails['meta']], 'Chemical Details retrieved successfully');
     }
 
     public function store(CreateChemicalDetailAPIRequest $request)

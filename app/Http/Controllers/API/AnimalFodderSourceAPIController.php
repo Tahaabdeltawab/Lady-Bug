@@ -33,12 +33,12 @@ class AnimalFodderSourceAPIController extends AppBaseController
     public function index(Request $request)
     {
         $animalFodderSources = $this->animalFodderSourceRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => AnimalFodderSourceResource::collection($animalFodderSources)], 'Animal Fodder Sources retrieved successfully');
+        return $this->sendResponse(['all' => AnimalFodderSourceResource::collection($animalFodderSources['all']), 'meta' => $animalFodderSources['meta']], 'Animal Fodder Sources retrieved successfully');
     }
 
     public function store(CreateAnimalFodderSourceAPIRequest $request)

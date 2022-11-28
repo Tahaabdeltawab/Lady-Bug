@@ -36,12 +36,12 @@ class CountryAPIController extends AppBaseController
     public function index(Request $request)
     {
         $countries = $this->countryRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(CountryResource::collection($countries), 'Countries retrieved successfully');
+        return $this->sendResponse(['all' => CountryResource::collection($countries['all']), 'meta' => $countries['meta']], 'Countries retrieved successfully');
     }
 
     /**

@@ -33,12 +33,12 @@ class InformationAPIController extends AppBaseController
     public function index(Request $request)
     {
         $information = $this->informationRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => InformationResource::collection($information)], 'Information retrieved successfully');
+        return $this->sendResponse(['all' => InformationResource::collection($information['all']), 'meta' => $information['meta']], 'Information retrieved successfully');
     }
 
     public function store(CreateInformationAPIRequest $request)

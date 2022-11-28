@@ -33,12 +33,12 @@ class IrrigationWayAPIController extends AppBaseController
     public function index(Request $request)
     {
         $irrigationWays = $this->irrigationWayRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => IrrigationWayResource::collection($irrigationWays)], 'Irrigation Ways retrieved successfully');
+        return $this->sendResponse(['all' => IrrigationWayResource::collection($irrigationWays['all']), 'meta' => $irrigationWays['meta']], 'Irrigation Ways retrieved successfully');
     }
 
     public function store(CreateIrrigationWayAPIRequest $request)

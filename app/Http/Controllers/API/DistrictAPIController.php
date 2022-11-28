@@ -33,12 +33,12 @@ class DistrictAPIController extends AppBaseController
     public function index(Request $request)
     {
         $districts = $this->districtRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => DistrictResource::collection($districts)], 'Districts retrieved successfully');
+        return $this->sendResponse(['all' => DistrictResource::collection($districts['all']), 'meta' => $districts['meta']], 'Districts retrieved successfully');
     }
 
     public function store(CreateDistrictAPIRequest $request)

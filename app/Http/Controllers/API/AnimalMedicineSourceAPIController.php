@@ -33,12 +33,12 @@ class AnimalMedicineSourceAPIController extends AppBaseController
     public function index(Request $request)
     {
         $animalMedicineSources = $this->animalMedicineSourceRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => AnimalMedicineSourceResource::collection($animalMedicineSources)], 'Animal Medicine Sources retrieved successfully');
+        return $this->sendResponse(['all' => AnimalMedicineSourceResource::collection($animalMedicineSources['all']), 'meta' => $animalMedicineSources['meta']], 'Animal Medicine Sources retrieved successfully');
     }
 
     public function store(CreateAnimalMedicineSourceAPIRequest $request)

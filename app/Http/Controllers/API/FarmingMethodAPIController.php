@@ -33,12 +33,12 @@ class FarmingMethodAPIController extends AppBaseController
     public function index(Request $request)
     {
         $farmingMethods = $this->farmingMethodRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => FarmingMethodResource::collection($farmingMethods)], 'Farming Methods retrieved successfully');
+        return $this->sendResponse(['all' => FarmingMethodResource::collection($farmingMethods['all']), 'meta' => $farmingMethods['meta']], 'Farming Methods retrieved successfully');
     }
 
     public function store(CreateFarmingMethodAPIRequest $request)

@@ -33,12 +33,12 @@ class SoilTypeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $soilTypes = $this->soilTypeRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => SoilTypeResource::collection($soilTypes)], 'Soil Types retrieved successfully');
+        return $this->sendResponse(['all' => SoilTypeResource::collection($soilTypes['all']), 'meta' => $soilTypes['meta']], 'Soil Types retrieved successfully');
     }
 
     public function store(CreateSoilTypeAPIRequest $request)

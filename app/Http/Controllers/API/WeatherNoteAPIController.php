@@ -33,12 +33,12 @@ class WeatherNoteAPIController extends AppBaseController
     public function index(Request $request)
     {
         $weatherNotes = $this->weatherNoteRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => WeatherNoteResource::collection($weatherNotes)], 'Weather Notes retrieved successfully');
+        return $this->sendResponse(['all' => WeatherNoteResource::collection($weatherNotes['all']), 'meta' => $weatherNotes['meta']], 'Weather Notes retrieved successfully');
     }
 
     public function store(CreateWeatherNoteAPIRequest $request)

@@ -36,12 +36,12 @@ class MarketingDataAPIController extends AppBaseController
     public function index(Request $request)
     {
         $marketingDatas = $this->marketingDataRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(MarketingDataResource::collection($marketingDatas), 'Marketing Datas retrieved successfully');
+        return $this->sendResponse(['all' => MarketingDataResource::collection($marketingDatas['all']), 'meta' => $marketingDatas['meta']], 'Marketing Datas retrieved successfully');
     }
 
     /**

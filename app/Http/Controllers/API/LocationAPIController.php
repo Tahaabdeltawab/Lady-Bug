@@ -29,12 +29,12 @@ class LocationAPIController extends AppBaseController
     public function index(Request $request)
     {
         $locations = $this->locationRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(LocationResource::collection($locations), 'Locations retrieved successfully');
+        return $this->sendResponse(['all' => LocationResource::collection($locations['all']), 'meta' => $locations['meta']], 'Locations retrieved successfully');
     }
 
     public function store(CreateLocationAPIRequest $request)

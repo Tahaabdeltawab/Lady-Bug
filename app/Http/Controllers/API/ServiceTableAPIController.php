@@ -31,9 +31,9 @@ class ServiceTableAPIController extends AppBaseController
     public function index(Request $request)
     {
         $serviceTables = $this->serviceTableRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit'),
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage'),
             ['tasks']
         );
 

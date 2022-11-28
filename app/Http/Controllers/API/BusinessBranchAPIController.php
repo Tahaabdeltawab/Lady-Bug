@@ -36,12 +36,12 @@ class BusinessBranchAPIController extends AppBaseController
     public function index(Request $request)
     {
         $businessBranches = $this->businessBranchRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(BusinessBranchResource::collection($businessBranches), 'Business Branches retrieved successfully');
+        return $this->sendResponse(['all' => BusinessBranchResource::collection($businessBranches['all']), 'meta' => $businessBranches['meta']], 'Business Branches retrieved successfully');
     }
 
     /**

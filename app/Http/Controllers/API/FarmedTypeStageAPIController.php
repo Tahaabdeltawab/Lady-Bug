@@ -33,12 +33,12 @@ class FarmedTypeStageAPIController extends AppBaseController
     public function index(Request $request)
     {
         $farmedTypeStages = $this->farmedTypeStageRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => FarmedTypeStageResource::collection($farmedTypeStages)], 'Farmed Type Stages retrieved successfully');
+        return $this->sendResponse(['all' => FarmedTypeStageResource::collection($farmedTypeStages['all']), 'meta' => $farmedTypeStages['meta']], 'Farmed Type Stages retrieved successfully');
     }
 
     public function store(CreateFarmedTypeStageAPIRequest $request)

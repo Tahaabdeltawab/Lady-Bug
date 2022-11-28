@@ -33,12 +33,12 @@ class HomePlantIlluminatingSourceAPIController extends AppBaseController
     public function index(Request $request)
     {
         $homePlantIlluminatingSources = $this->homePlantIlluminatingSourceRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => HomePlantIlluminatingSourceResource::collection($homePlantIlluminatingSources)], 'Home Plant Illuminating Sources retrieved successfully');
+        return $this->sendResponse(['all' => HomePlantIlluminatingSourceResource::collection($homePlantIlluminatingSources['all']), 'meta' => $homePlantIlluminatingSources['meta']], 'Home Plant Illuminating Sources retrieved successfully');
     }
 
     public function store(CreateHomePlantIlluminatingSourceAPIRequest $request)

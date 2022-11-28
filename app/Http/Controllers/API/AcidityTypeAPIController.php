@@ -33,12 +33,12 @@ class AcidityTypeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $acidityTypes = $this->acidityTypeRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(AcidityTypeResource::collection($acidityTypes), 'Acidity Types retrieved successfully');
+        return $this->sendResponse(['all' => AcidityTypeResource::collection($acidityTypes['all']), 'meta' => $acidityTypes['meta']], 'Acidity Types retrieved successfully');
     }
 
     public function store(CreateAcidityTypeAPIRequest $request)

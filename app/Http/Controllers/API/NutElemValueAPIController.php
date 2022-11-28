@@ -36,12 +36,12 @@ class NutElemValueAPIController extends AppBaseController
     public function index(Request $request)
     {
         $nutElemValues = $this->nutElemValueRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(NutElemValueResource::collection($nutElemValues), 'Nut Elem Values retrieved successfully');
+        return $this->sendResponse(['all' => NutElemValueResource::collection($nutElemValues['all']), 'meta' => $nutElemValues['meta']], 'Nut Elem Values retrieved successfully');
     }
 
     /**

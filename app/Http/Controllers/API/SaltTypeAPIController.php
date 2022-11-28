@@ -33,12 +33,12 @@ class SaltTypeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $saltTypes = $this->saltTypeRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(SaltTypeResource::collection($saltTypes), 'Salt Types retrieved successfully');
+        return $this->sendResponse(['all' => SaltTypeResource::collection($saltTypes['all']), 'meta' => $saltTypes['meta']], 'Salt Types retrieved successfully');
     }
 
     public function store(CreateSaltTypeAPIRequest $request)

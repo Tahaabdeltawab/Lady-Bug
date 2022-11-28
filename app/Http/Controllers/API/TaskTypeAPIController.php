@@ -33,12 +33,12 @@ class TaskTypeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $taskTypes = $this->taskTypeRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => TaskTypeResource::collection($taskTypes)], 'Task Types retrieved successfully');
+        return $this->sendResponse(['all' => TaskTypeResource::collection($taskTypes['all']), 'meta' => $taskTypes['meta']], 'Task Types retrieved successfully');
     }
 
     public function store(CreateTaskTypeAPIRequest $request)

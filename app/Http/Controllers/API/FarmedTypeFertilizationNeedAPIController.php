@@ -38,12 +38,12 @@ class FarmedTypeFertilizationNeedAPIController extends AppBaseController
     public function index(Request $request)
     {
         $farmedTypeFertilizationNeeds = $this->farmedTypeFertilizationNeedRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(FarmedTypeFertilizationNeedResource::collection($farmedTypeFertilizationNeeds), 'Farmed Type Fertilization Needs retrieved successfully');
+        return $this->sendResponse(['all' => FarmedTypeFertilizationNeedResource::collection($farmedTypeFertilizationNeeds['all']), 'meta' => $farmedTypeFertilizationNeeds['meta']], 'Farmed Type Fertilization Needs retrieved successfully');
     }
 
     // public function pers($value = null)

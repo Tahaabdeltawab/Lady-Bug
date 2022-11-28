@@ -33,12 +33,12 @@ class SeedlingSourceAPIController extends AppBaseController
     public function index(Request $request)
     {
         $seedlingSources = $this->seedlingSourceRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => SeedlingSourceResource::collection($seedlingSources)], 'Seedling Sources retrieved successfully');
+        return $this->sendResponse(['all' => SeedlingSourceResource::collection($seedlingSources['all']), 'meta' => $seedlingSources['meta']], 'Seedling Sources retrieved successfully');
     }
 
     public function store(CreateSeedlingSourceAPIRequest $request)

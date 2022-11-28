@@ -36,12 +36,12 @@ class CareerAPIController extends AppBaseController
     public function index(Request $request)
     {
         $careers = $this->careerRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(CareerResource::collection($careers), 'Careers retrieved successfully');
+        return $this->sendResponse(['all' => CareerResource::collection($careers['all']), 'meta' => $careers['meta']], 'Careers retrieved successfully');
     }
 
     /**

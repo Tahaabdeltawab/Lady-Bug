@@ -33,12 +33,12 @@ class BuyingNoteAPIController extends AppBaseController
     public function index(Request $request)
     {
         $buyingNotes = $this->buyingNoteRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => BuyingNoteResource::collection($buyingNotes)], 'Buying Notes retrieved successfully');
+        return $this->sendResponse(['all' => BuyingNoteResource::collection($buyingNotes['all']), 'meta' => $buyingNotes['meta']], 'Buying Notes retrieved successfully');
     }
 
     public function store(CreateBuyingNoteAPIRequest $request)

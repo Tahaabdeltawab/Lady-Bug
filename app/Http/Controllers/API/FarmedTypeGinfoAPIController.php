@@ -39,12 +39,12 @@ class FarmedTypeGinfoAPIController extends AppBaseController
     public function index(Request $request)
     {
         $farmedTypeGinfos = $this->farmedTypeGinfoRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => FarmedTypeGinfoResource::collection($farmedTypeGinfos)], 'Farmed Type Ginfos retrieved successfully');
+        return $this->sendResponse(['all' => FarmedTypeGinfoResource::collection($farmedTypeGinfos['all']), 'meta' => $farmedTypeGinfos['meta']], 'Farmed Type Ginfos retrieved successfully');
     }
 
 

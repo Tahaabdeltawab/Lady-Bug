@@ -33,12 +33,12 @@ class CityAPIController extends AppBaseController
     public function index(Request $request)
     {
         $cities = $this->cityRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => CityResource::collection($cities)], 'Cities retrieved successfully');
+        return $this->sendResponse(['all' => CityResource::collection($cities['all']), 'meta' => $cities['meta']], 'Cities retrieved successfully');
     }
 
     public function store(CreateCityAPIRequest $request)

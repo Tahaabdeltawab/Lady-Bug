@@ -43,12 +43,12 @@ class TaskAPIController extends AppBaseController
     public function index(Request $request)
     {
         $tasks = $this->taskRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(TaskResource::collection($tasks), 'Tasks retrieved successfully');
+        return $this->sendResponse(['all' => TaskResource::collection($tasks['all']), 'meta' => $tasks['meta']], 'Tasks retrieved successfully');
     }
 
 

@@ -69,64 +69,62 @@ abstract class BaseRepository
      * @param array $columns
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginate($perPage, $columns = ['*'])
-    {
-        $query = $this->allQuery();
+    // public function paginate($perPage, $columns = ['*'])
+    // {
+    //     $query = $this->allQuery();
 
-        return $query->paginate($perPage, $columns);
-    }
+    //     return $query->paginate($perPage, $columns);
+    // }
 
     /**
      * Build a query for retrieving all records.
      *
      * @param array $search
-     * @param int|null $skip
-     * @param int|null $limit
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param int|null $page
+     * @param int|null $perPage
      */
-    public function allQuery($search = [], $skip = null, $limit = null)
+    public function allQuery($search = [], $page = null, $perPage = null, $scopes)
     {
         $query = $this->model->newQuery();
+        $pag = null;
 
+        if (count($scopes))
+            foreach($scopes as $scope)
+                $query->$scope();
         if (count($search)) {
             foreach($search as $key => $value) {
                 if (in_array($key, $this->getFieldsSearchable())) {
-                    $query->where($key, $value);
+                    $query->where($key, 'like', "%$value%");
                 }
             }
         }
-
-        if (!is_null($skip)) {
-            $query->skip($skip);
+        // pagination will happen if only page is sent with the request
+        if(!is_null($page)){
+            $pag = \Helper::pag($query->count(), $perPage, $page);
+            $query->skip($pag['skip'])->limit($pag['perPage']);
         }
-
-        if (!is_null($limit)) {
-            $query->limit($limit);
-        }
-
-        return $query;
+        return [$query, $pag];
     }
 
     /**
      * Retrieve all records with given filter criteria
      *
      * @param array $search
-     * @param int|null $skip
-     * @param int|null $limit
+     * @param int|null $page
+     * @param int|null $perPage
      * @param array $columns
      *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Builder[]|\Illuminate\Database\Eloquent\Collection
      */
-    public function all($search = [], $skip = null, $limit = null, $relations = [], $columns = ['*'])
+    public function all($search = [], $page = null, $perPage = null, $scopes = [], $relations = [], $columns = ['*'])
     {
-        $query = $this->allQuery($search, $skip, $limit);
-
+        [$query, $meta] = $this->allQuery($search, $page, $perPage, $scopes);
         if (count($relations))
-        {
             $query->with($relations);
-        }
-
-        return $query->get($columns);
+        
+        $data['all'] = $query->get($columns);
+        $data['meta'] = $meta;
+        return $data;
     }
 
     //latest

@@ -36,12 +36,12 @@ class BusinessFieldAPIController extends AppBaseController
     public function index(Request $request)
     {
         $businessFields = $this->businessFieldRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(BusinessFieldResource::collection($businessFields), 'Business Fields retrieved successfully');
+        return $this->sendResponse(['all' => BusinessFieldResource::collection($businessFields['all']), 'meta' => $businessFields['meta']], 'Business Fields retrieved successfully');
     }
 
     /**

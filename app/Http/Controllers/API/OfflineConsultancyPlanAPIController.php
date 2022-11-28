@@ -36,12 +36,12 @@ class OfflineConsultancyPlanAPIController extends AppBaseController
     public function index(Request $request)
     {
         $offlineConsultancyPlans = $this->offlineConsultancyPlanRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(OfflineConsultancyPlanResource::collection($offlineConsultancyPlans), 'Offline Consultancy Plans retrieved successfully');
+        return $this->sendResponse(['all' => OfflineConsultancyPlanResource::collection($offlineConsultancyPlans['all']), 'meta' => $offlineConsultancyPlans['meta']], 'Offline Consultancy Plans retrieved successfully');
     }
 
     /**

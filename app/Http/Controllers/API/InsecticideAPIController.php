@@ -40,12 +40,12 @@ class InsecticideAPIController extends AppBaseController
     public function index(Request $request)
     {
         $insecticides = $this->insecticideRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(InsecticideResource::collection($insecticides), 'Insecticides retrieved successfully');
+        return $this->sendResponse(['all' => InsecticideResource::collection($insecticides['all']), 'meta' => $insecticides['meta']], 'Insecticides retrieved successfully');
     }
 
     public function getRelations()

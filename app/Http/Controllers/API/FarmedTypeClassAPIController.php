@@ -33,12 +33,12 @@ class FarmedTypeClassAPIController extends AppBaseController
     public function index(Request $request)
     {
         $farmedTypeClasses = $this->farmedTypeClassRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => FarmedTypeClassResource::collection($farmedTypeClasses)], 'Farmed Type Classes retrieved successfully');
+        return $this->sendResponse(['all' => FarmedTypeClassResource::collection($farmedTypeClasses['all']), 'meta' => $farmedTypeClasses['meta']], 'Farmed Type Classes retrieved successfully');
     }
 
     public function store(CreateFarmedTypeClassAPIRequest $request)

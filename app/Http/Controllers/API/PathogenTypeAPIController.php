@@ -36,12 +36,12 @@ class PathogenTypeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $pathogenTypes = $this->pathogenTypeRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(PathogenTypeResource::collection($pathogenTypes), 'Pathogen Types retrieved successfully');
+        return $this->sendResponse(['all' => PathogenTypeResource::collection($pathogenTypes['all']), 'meta' => $pathogenTypes['meta']], 'Pathogen Types retrieved successfully');
     }
 
     /**

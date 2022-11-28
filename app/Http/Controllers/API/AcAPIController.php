@@ -36,12 +36,12 @@ class AcAPIController extends AppBaseController
     public function index(Request $request)
     {
         $acs = $this->acRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(AcResource::collection($acs), 'Acs retrieved successfully');
+        return $this->sendResponse(['all' => AcResource::collection($acs['all']), 'meta' => $acs['meta']], 'Acs retrieved successfully');
     }
 
     public function who_classes($value = null)

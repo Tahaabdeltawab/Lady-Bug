@@ -36,12 +36,12 @@ class IrrigationRateAPIController extends AppBaseController
     public function index(Request $request)
     {
         $irrigationRates = $this->irrigationRateRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(IrrigationRateResource::collection($irrigationRates), 'Irrigation Rates retrieved successfully');
+        return $this->sendResponse(['all' => IrrigationRateResource::collection($irrigationRates['all']), 'meta' => $irrigationRates['meta']], 'Irrigation Rates retrieved successfully');
     }
 
     /**

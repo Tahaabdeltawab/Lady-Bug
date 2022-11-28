@@ -29,12 +29,12 @@ class FarmActivityTypeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $farmActivityTypes = $this->farmActivityTypeRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => FarmActivityTypeResource::collection($farmActivityTypes)], 'Farm Activity Types retrieved successfully');
+        return $this->sendResponse(['all' => FarmActivityTypeResource::collection($farmActivityTypes['all']), 'meta' => $farmActivityTypes['meta']], 'Farm Activity Types retrieved successfully');
     }
 
     public function store(CreateFarmActivityTypeAPIRequest $request)

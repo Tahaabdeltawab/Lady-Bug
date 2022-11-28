@@ -36,12 +36,12 @@ class DiseaseCausativeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $diseaseCausatives = $this->diseaseCausativeRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(DiseaseCausativeResource::collection($diseaseCausatives), 'Disease Causatives retrieved successfully');
+        return $this->sendResponse(['all' => DiseaseCausativeResource::collection($diseaseCausatives['all']), 'meta' => $diseaseCausatives['meta']], 'Disease Causatives retrieved successfully');
     }
 
     /**

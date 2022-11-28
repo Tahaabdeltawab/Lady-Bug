@@ -44,12 +44,12 @@ class ReportAPIController extends AppBaseController
     public function index(Request $request)
     {
         $reports = $this->reportRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(ReportResource::collection($reports), 'Reports retrieved successfully');
+        return $this->sendResponse(['all' => ReportResource::collection($reports['all']), 'meta' => $reports['meta']], 'Reports retrieved successfully');
     }
 
     /**

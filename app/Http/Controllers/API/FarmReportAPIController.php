@@ -44,12 +44,12 @@ class FarmReportAPIController extends AppBaseController
     public function index(Request $request)
     {
         $farmReports = $this->farmReportRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(FarmReportResource::collection($farmReports), 'Farm Reports retrieved successfully');
+        return $this->sendResponse(['all' => FarmReportResource::collection($farmReports['all']), 'meta' => $farmReports['meta']], 'Farm Reports retrieved successfully');
     }
 
 

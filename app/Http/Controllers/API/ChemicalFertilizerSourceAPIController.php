@@ -33,12 +33,12 @@ class ChemicalFertilizerSourceAPIController extends AppBaseController
     public function index(Request $request)
     {
         $chemicalFertilizerSources = $this->chemicalFertilizerSourceRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => ChemicalFertilizerSourceResource::collection($chemicalFertilizerSources)], 'Chemical Fertilizer Sources retrieved successfully');
+        return $this->sendResponse(['all' => ChemicalFertilizerSourceResource::collection($chemicalFertilizerSources['all']), 'meta' => $chemicalFertilizerSources['meta']], 'Chemical Fertilizer Sources retrieved successfully');
     }
 
     public function store(CreateChemicalFertilizerSourceAPIRequest $request)

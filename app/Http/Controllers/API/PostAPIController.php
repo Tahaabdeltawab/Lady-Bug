@@ -49,15 +49,13 @@ class PostAPIController extends AppBaseController
     // admin
     public function index(Request $request)
     {
-        // $posts = Post::get();
-        $posts = Post::paginate($this->perPage);
+        $posts = $this->postRepository->all(
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
+        );
 
-        return $this->sendResponse([
-            'data' => PostXsResource::collection($posts->items()),
-            'meta' => $posts->toArrayWithoutData(),
-        ], 'Posts retrieved successfully');
-
-        // return $this->sendResponse(['all' => PostResource::collection($posts)], 'Posts retrieved successfully');
+        return $this->sendResponse(['all' => PostXsResource::collection($posts['all']), 'meta' => $posts['meta']], 'Posts retrieved successfully');
     }
 
     private function paginate($data)

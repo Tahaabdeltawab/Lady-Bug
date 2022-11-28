@@ -36,12 +36,12 @@ class ProductAdAPIController extends AppBaseController
     public function index(Request $request)
     {
         $productAds = $this->productAdRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(ProductAdResource::collection($productAds), 'Product Ads retrieved successfully');
+        return $this->sendResponse(['all' => ProductAdResource::collection($productAds['all']), 'meta' => $productAds['meta']], 'Product Ads retrieved successfully');
     }
 
     /**

@@ -36,12 +36,12 @@ class CommentAPIController extends AppBaseController
     public function index(Request $request)
     {
         $comments = $this->commentRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => CommentResource::collection($comments)], 'Comments retrieved successfully');
+        return $this->sendResponse(['all' => CommentResource::collection($comments['all']), 'meta' => $comments['meta']], 'Comments retrieved successfully');
     }
 
     public function store(CreateCommentAPIRequest $request)

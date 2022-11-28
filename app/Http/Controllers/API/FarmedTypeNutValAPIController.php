@@ -36,12 +36,12 @@ class FarmedTypeNutValAPIController extends AppBaseController
     public function index(Request $request)
     {
         $farmedTypeNutVals = $this->farmedTypeNutValRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(FarmedTypeNutValResource::collection($farmedTypeNutVals), 'Farmed Type Nut Vals retrieved successfully');
+        return $this->sendResponse(['all' => FarmedTypeNutValResource::collection($farmedTypeNutVals['all']), 'meta' => $farmedTypeNutVals['meta']], 'Farmed Type Nut Vals retrieved successfully');
     }
 
     /**

@@ -33,12 +33,12 @@ class PostTypeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $postTypes = $this->postTypeRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => PostTypeResource::collection($postTypes)], 'Post Types retrieved successfully');
+        return $this->sendResponse(['all' => PostTypeResource::collection($postTypes['all']), 'meta' => $postTypes['meta']], 'Post Types retrieved successfully');
     }
 
     public function store(CreatePostTypeAPIRequest $request)

@@ -36,12 +36,12 @@ class ResidenceAPIController extends AppBaseController
     public function index(Request $request)
     {
         $residences = $this->residenceRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(ResidenceResource::collection($residences), 'Residences retrieved successfully');
+        return $this->sendResponse(['all' => ResidenceResource::collection($residences['all']), 'meta' => $residences['meta']], 'Residences retrieved successfully');
     }
 
     /**

@@ -33,12 +33,12 @@ class HomePlantPotSizeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $homePlantPotSizes = $this->homePlantPotSizeRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(HomePlantPotSizeResource::collection($homePlantPotSizes), 'Home Plant Pot Sizes retrieved successfully');
+        return $this->sendResponse(['all' => HomePlantPotSizeResource::collection($homePlantPotSizes['all']), 'meta' => $homePlantPotSizes['meta']], 'Home Plant Pot Sizes retrieved successfully');
     }
 
     public function store(CreateHomePlantPotSizeAPIRequest $request)

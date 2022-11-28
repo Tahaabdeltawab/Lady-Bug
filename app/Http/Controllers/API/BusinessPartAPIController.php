@@ -37,12 +37,12 @@ class BusinessPartAPIController extends AppBaseController
     public function index(Request $request)
     {
         $businessParts = $this->businessPartRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(BusinessPartResource::collection($businessParts), 'Business Parts retrieved successfully');
+        return $this->sendResponse(['all' => BusinessPartResource::collection($businessParts['all']), 'meta' => $businessParts['meta']], 'Business Parts retrieved successfully');
     }
 
 

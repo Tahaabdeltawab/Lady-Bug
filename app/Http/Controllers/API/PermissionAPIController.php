@@ -8,13 +8,15 @@ use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\PermissionResource;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Repositories\PermissionRepository;
 
 class PermissionAPIController extends AppBaseController
 {
     protected $permissionRepository;
 
-    public function __construct()
+    public function __construct(PermissionRepository $permissionRepo)
     {
+        $this->permissionRepository = $permissionRepo;
         $this->middleware('permission:permissions.store')->only(['store']);
         $this->middleware('permission:permissions.update')->only(['update']);
         $this->middleware('permission:permissions.destroy')->only(['destroy']);
@@ -23,8 +25,13 @@ class PermissionAPIController extends AppBaseController
     public function index(Request $request)
     {
         try{
-            $permissions = Permission::paginate(10);
-            return $this->sendResponse(PermissionResource::collection($permissions), 'Permissions retrieved successfully');
+            $permissions = $this->permissionRepository->all(
+                $request->except(['page', 'perPage']),
+                $request->get('page'),
+                $request->get('perPage')
+            );
+    
+            return $this->sendResponse(['all' => PermissionResource::collection($permissions['all']), 'meta' => $permissions['meta']], 'Permissions retrieved successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
         }

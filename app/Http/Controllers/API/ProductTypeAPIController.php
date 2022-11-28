@@ -36,12 +36,12 @@ class ProductTypeAPIController extends AppBaseController
     public function index(Request $request)
     {
         $productTypes = $this->productTypeRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(ProductTypeResource::collection($productTypes), 'Product Types retrieved successfully');
+        return $this->sendResponse(['all' => ProductTypeResource::collection($productTypes['all']), 'meta' => $productTypes['meta']], 'Product Types retrieved successfully');
     }
 
     /**

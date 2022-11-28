@@ -33,12 +33,12 @@ class MeasuringUnitAPIController extends AppBaseController
     public function index(Request $request)
     {
         $measuringUnits = $this->measuringUnitRepository->all(
-            $request->except(['skip', 'limit']),
-            $request->get('skip'),
-            $request->get('limit')
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => MeasuringUnitResource::collection($measuringUnits)], 'Measuring Units retrieved successfully');
+        return $this->sendResponse(['all' => MeasuringUnitResource::collection($measuringUnits['all']), 'meta' => $measuringUnits['meta']], 'Measuring Units retrieved successfully');
     }
 
     public function store(CreateMeasuringUnitAPIRequest $request)
