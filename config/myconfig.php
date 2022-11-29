@@ -37,6 +37,18 @@ return [
         'business-company',
     ],
 
+    // not to [show or delete or edit]
+    'not_editable_roles' => [
+        'app-admin',
+        'app-user',
+        'business-admin',
+        'business-editor',
+        'business-supervisor',
+        'business-consultant',
+        'business-worker',
+        'business-company',
+    ],
+
     'business_permissions' => [
         'create-activity',
         'edit-activity',

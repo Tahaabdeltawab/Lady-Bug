@@ -34,6 +34,7 @@ class ServiceTableAPIController extends AppBaseController
             $request->except(['page', 'perPage']),
             $request->get('page'),
             $request->get('perPage'),
+            [],
             ['tasks']
         );
 

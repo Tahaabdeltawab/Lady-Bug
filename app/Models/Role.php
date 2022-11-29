@@ -13,8 +13,11 @@ class Role extends LaratrustRole
         return $query->whereIn('name', config('myconfig.business_roles'));
     }
 
-    public function scopeAppAllowedRoles($query) // roles called for the dashboard
+    /**
+     * roles called for the dashboard
+     */
+    public function scopeAppAllowedRoles($query)
     {
-        return $query->whereNotIn('name', config('myconfig.business_roles'))->where('name', '!=', config('myconfig.user_default_role'));
+        return $query->whereNotIn('name', config('myconfig.not_editable_roles'));
     }
 }

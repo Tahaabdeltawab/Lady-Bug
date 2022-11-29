@@ -74,10 +74,9 @@ class RoleAPIController extends AppBaseController
                 return $this->sendError($validator->errors()->first());
             }
 
-            $role = Role::find($request->role);
-
+            $role = Role::appAllowedRoles()->find($request->role);
+            if(!$role) return $this->sendError('This role is not found or not editable!');
             $role->syncPermissions($request->permissions);
-            // $role->attachPermissions([$request->permissions]);
 
             return $this->sendResponse(new roleResource($role), __('role permissions saved successfully'));
         }
@@ -91,25 +90,21 @@ class RoleAPIController extends AppBaseController
     public function update(int $id, UpdateRoleAPIRequest $request)
     {
         try{
-            if($role = Role::find($id))
-            {
-                $role->update([
-                    'name'          => $request->name,
-                    'display_name'  => $request->display_name,
-                    'description'   => $request->description,
-                ]);
+            $role = Role::appAllowedRoles()->find($id);
+            if(!$role) return $this->sendError('This role is not found or not editable!');
+
+            $role->update([
+                'name'          => $request->name,
+                'display_name'  => $request->display_name,
+                'description'   => $request->description,
+            ]);
 
             if (isset($request->permissions))
-            {
                 $role->syncPermissions($request->permissions);
-            }
 
-                return $this->sendResponse(new RoleResource(Role::find($id)), 'Role updated successfully');
-            }
+            return $this->sendResponse(new RoleResource(Role::find($id)), 'Role updated successfully');
 
-            return $this->sendError('This role does not exist');
         }catch(\Throwable $th){
-            throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -117,12 +112,10 @@ class RoleAPIController extends AppBaseController
     public function show(int $id)
     {
         try{
-            if($role = Role::find($id))
-            {
-                return $this->sendResponse(new RoleResource($role), 'Role retrived successfully');
-            }
+            $role = Role::appAllowedRoles()->find($id);
+            if(!$role) return $this->sendError('This role is not found or not editable!');
 
-            return $this->sendError('This role does not exist');
+            return $this->sendResponse(new RoleResource($role), 'Role retrived successfully');
 
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
@@ -133,14 +126,11 @@ class RoleAPIController extends AppBaseController
     public function destroy(int $id)
     {
         try{
-            if($role = Role::find($id))
-            {
-                $role->delete();
+            $role = Role::appAllowedRoles()->find($id);
+            if(!$role) return $this->sendError('This role is not found or not editable!');
 
-                return $this->sendResponse(new RoleResource($role), 'Role deleted successfully');
-            }
-
-            return $this->sendError('This role does not exist');
+            $role->delete();
+            return $this->sendResponse(new RoleResource($role), 'Role deleted successfully');
 
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
