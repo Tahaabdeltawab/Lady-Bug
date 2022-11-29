@@ -17,7 +17,7 @@ class AcidityTypeRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        
+        'name'
     ];
 
     /**

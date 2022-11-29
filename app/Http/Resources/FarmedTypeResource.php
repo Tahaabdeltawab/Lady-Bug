@@ -24,19 +24,8 @@ class FarmedTypeResource extends JsonResource
             'photo_url' => $this->asset->asset_url ?? 'https://via.placeholder.com/150',
             'selected' => $selected,
             // 'farmed_type_classes' => FarmedTypeClassResource::collection($this->farmed_type_classes),
+            'name' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('name') : $this->name
         ];
-
-        if($request->header('Accept-Language') == 'all')
-        {
-            foreach(config('translatable.locales') as $locale)
-            {
-                $return["name_" . $locale . "_localized"] = $this->translate('name',$locale);
-            }
-        }
-        else
-        {
-            $return['name'] = $this->name;
-        }
 
         if(auth()->user()->type == 'app_admin')
         $return = array_merge($return, [

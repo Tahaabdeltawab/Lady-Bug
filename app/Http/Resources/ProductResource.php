@@ -28,21 +28,9 @@ class ProductResource extends JsonResource
             'rating' => $this->formattedAverageRating,
             'other_links' => $this->other_links,
             'assets' => $this->assets()->pluck('asset_url')->all(),
+            'name' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('name') : $this->name,
+            'description' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('description') : $this->description,
         ];
-
-        if($request->header('Accept-Language') == 'all')
-        {
-            foreach(config('translatable.locales') as $locale)
-            {
-                $return["name_" . $locale . "_localized"] = $this->translate('name',$locale);
-                $return["description_" . $locale . "_localized"] = $this->translate('description',$locale);
-            }
-        }
-        else
-        {
-            $return['name'] = $this->name;
-            $return['description'] = $this->description;
-        }
 
         return $return;
     }

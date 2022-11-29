@@ -20,22 +20,10 @@ class FarmedTypeGinfoResource extends JsonResource
             'farmed_type' => $this->farmed_type->name,
             'farmed_type_stage_id' => $this->farmed_type_stage_id,
             'farmed_type_stage' => $this->farmed_type_stage->name,
-            'assets' => $this->assets()->pluck('asset_url')
+            'assets' => $this->assets()->pluck('asset_url'),
+            'title' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('title') : $this->title,
+            'content' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('content') : $this->content,
         ];
-
-        if($request->header('Accept-Language') == 'all')
-        {
-            foreach(config('translatable.locales') as $locale)
-            {
-                $return["title_" . $locale . "_localized"] = $this->translate('title',$locale);
-                $return["content_" . $locale . "_localized"] = $this->translate('content',$locale);
-            }
-        }
-        else
-        {
-            $return['title'] = $this->title;
-            $return['content'] = $this->content;
-        }
 
         return $return;
     }

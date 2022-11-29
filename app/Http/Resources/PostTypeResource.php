@@ -16,19 +16,20 @@ class PostTypeResource extends JsonResource
     {
         $return = [
             'id' => $this->id,
+            'name' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('name') : $this->name
         ];
 
-        if($request->header('Accept-Language') == 'all')
-        {
-            foreach(config('translatable.locales') as $locale)
-            {
-                $return["name_" . $locale . "_localized"] = $this->translate('name',$locale);
-            }
-        }
-        else
-        {
-            $return['name'] = $this->name;
-        }
+        // if($request->header('Accept-Language') == 'all')
+        // {
+        //     foreach(config('translatable.locales') as $locale)
+        //     {
+        //         $return["name_" . $locale . "_localized"] = $this->translate('name',$locale);
+        //     }
+        // }
+        // else
+        // {
+        //     $return['name'] = $this->name;
+        // }
 
         return $return;
 

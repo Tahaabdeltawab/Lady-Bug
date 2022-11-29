@@ -16,21 +16,9 @@ class InformationResource extends JsonResource
     {
         $return = [
             'id' => $this->id,
+            'title' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('title') : $this->title,
+            'content' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('content') : $this->content,
         ];
-
-        if($request->header('Accept-Language') == 'all')
-        {
-            foreach(config('translatable.locales') as $locale)
-            {
-                $return["title_" . $locale . "_localized"] = $this->translate('title',$locale);
-                $return["content_" . $locale . "_localized"] = $this->translate('content',$locale);
-            }
-        }
-        else
-        {
-            $return['title'] = $this->title;
-            $return['content'] = $this->content;
-        }
 
         return $return;
     }

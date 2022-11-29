@@ -17,6 +17,7 @@ class DistrictRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
+        'name',
         'city_id'
     ];
 

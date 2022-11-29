@@ -19,6 +19,7 @@ class PostRepository extends BaseRepository
     protected $fieldSearchable = [
         'title',
         'content',
+        'status',
         'author_id',
         'farm_id',
         'farmed_type_id',

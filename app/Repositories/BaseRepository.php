@@ -88,13 +88,26 @@ abstract class BaseRepository
         $query = $this->model->newQuery();
         $pag = null;
 
-        if (count($scopes))
-            foreach($scopes as $scope)
+        if (count($scopes)){
+            foreach($scopes as $scope){
                 $query->$scope();
+            }
+        }
+
+        // ?strict=1, will make the query strict
         if (count($search)) {
-            foreach($search as $key => $value) {
-                if (in_array($key, $this->getFieldsSearchable())) {
-                    $query->where($key, 'like', "%$value%");
+            if(isset($search['strict']) && $search['strict']){
+                foreach($search as $key => $value){
+                    if (in_array($key, $this->getFieldsSearchable())) {
+                        $query->where($key, $value);
+                    }
+                }
+            }else{
+                foreach($search as $key => $value){
+                    if (in_array($key, $this->getFieldsSearchable())) {
+                        $value = \Str::lower(trim($value));
+                        $query->whereRaw("LOWER($key) like ? ", '%'.$value.'%');
+                    }
                 }
             }
         }
@@ -121,7 +134,7 @@ abstract class BaseRepository
         [$query, $meta] = $this->allQuery($search, $page, $perPage, $scopes);
         if (count($relations))
             $query->with($relations);
-        
+
         $data['all'] = $query->get($columns);
         $data['meta'] = $meta;
         return $data;

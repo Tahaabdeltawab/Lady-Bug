@@ -18,19 +18,8 @@ class FarmedTypeClassResource extends JsonResource
             'id' => $this->id,
             'farmed_type_id' => $this->farmed_type_id,
             'farmed_type_name' => $this->farmed_type->name,
+            'name' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('name') : $this->name
         ];
-
-        if($request->header('Accept-Language') == 'all')
-        {
-            foreach(config('translatable.locales') as $locale)
-            {
-                $return["name_" . $locale . "_localized"] = $this->translate('name',$locale);
-            }
-        }
-        else
-        {
-            $return['name'] = $this->name;
-        }
 
         return $return;
     }

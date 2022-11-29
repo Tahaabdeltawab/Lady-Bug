@@ -17,6 +17,7 @@ class SaltTypeRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
+        'name',
         'type'
     ];
 
