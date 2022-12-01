@@ -130,8 +130,8 @@ class CommentAPIController extends AppBaseController
             if($dislike instanceOf  $like_model)
             {
                 $msg = 'Comment disliked successfully';
-                if($dislike->user_id != $comment->commenter_id)
-                $comment->commenter->notify(new \App\Notifications\TimelineInteraction($dislike));
+                // if($dislike->user_id != $comment->commenter_id)
+                // $comment->commenter->notify(new \App\Notifications\TimelineInteraction($dislike));
             }
             else
             {
