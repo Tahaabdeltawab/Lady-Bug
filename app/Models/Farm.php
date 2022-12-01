@@ -77,6 +77,7 @@ class Farm extends Model
      * @var array
      */
     public static $rules = [];
+    public static $used_farm_activity_types = [1,2,3,4];
 
     protected static function booted(){
         static::addGlobalScope('latest', function($q){

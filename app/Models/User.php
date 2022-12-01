@@ -53,6 +53,7 @@ class User extends Authenticatable implements JWTSubject
         'is_notifiable' => 'boolean',
     ];
 
+    public static $used_rating_questions = [1,2,3,4,5];
 
     public function getJWTIdentifier()
     {

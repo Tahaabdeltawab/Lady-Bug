@@ -8,15 +8,15 @@ return [
      *
      */
 
-    'farmed_type_stages' => [
-        'pre_farming',
-        'germination',
-        'seedling_farming',
-        'growth',
-        'pre_flowering',
-        'flowering',
-        'maturity'
-    ],
+    // 'farmed_type_stages' => [
+    //     'pre_farming',
+    //     'germination',
+    //     'seedling_farming',
+    //     'growth',
+    //     'pre_flowering',
+    //     'flowering',
+    //     'maturity'
+    // ],
 
     /**
      *

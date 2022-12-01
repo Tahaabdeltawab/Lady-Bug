@@ -9,6 +9,7 @@ use App\Repositories\RatingQuestionRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\RatingQuestionResource;
+use App\Models\User;
 use Response;
 
 /**
@@ -87,6 +88,9 @@ class RatingQuestionAPIController extends AppBaseController
      */
     public function update($id, UpdateRatingQuestionAPIRequest $request)
     {
+        if(in_array($id, User::$used_rating_questions))
+            return $this->sendError('Used Rating Questions are not editable');
+
         $input = $request->validated();
 
         /** @var RatingQuestion $ratingQuestion */
@@ -113,6 +117,9 @@ class RatingQuestionAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        if(in_array($id, User::$used_rating_questions))
+            return $this->sendError('Used Rating Questions are not deletable');
+
         try
         {
         /** @var RatingQuestion $ratingQuestion */

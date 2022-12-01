@@ -9,6 +9,7 @@ use App\Repositories\BusinessFieldRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\BusinessFieldResource;
+use App\Models\Business;
 use Response;
 
 /**
@@ -92,6 +93,9 @@ class BusinessFieldAPIController extends AppBaseController
      */
     public function update($id, UpdateBusinessFieldAPIRequest $request)
     {
+        if(in_array($id, Business::$used_business_fields))
+            return $this->sendError('Used Business Fields are not editable');
+
         $input = $request->validated();
 
         /** @var BusinessField $businessField */
@@ -118,6 +122,9 @@ class BusinessFieldAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        if(in_array($id, Business::$used_business_fields))
+            return $this->sendError('Used Business Fields are not deletable');
+
         try
         {
         /** @var BusinessField $businessField */

@@ -13,29 +13,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // $this->call(RoleSeeder::class);
-        // $this->call(FarmActivityTypeSeeder::class);
-        // $this->call(HumanJobSeeder::class);
-        // $this->call(UserSeeder::class);
-        // $this->call(PostTypeSeeder::class);
-        // $this->call(BusinessFieldSeeder::class);
-        // $this->call(WorkFieldSeeder::class);
-        // $this->call(SettingSeeder::class);
-        // $this->call(FarmedTypeStageSeeder::class);
-        // $this->call(FarmRelationsSeeder::class);
-        // $this->call(TaskTypeSeeder::class);
-        // $this->call(InfectionRateSeeder::class);
-        // $this->call(DiseaseSeeder::class);
-        // $this->call(ProductTypeSeeder::class);
-        // $this->call(CityDistrictSeeder::class);
-        // $this->call(AdditionalRolesSeeder::class);
-        // $this->call(PermissionSeeder::class);
-        // $this->call(RatingQuestionSeeder::class);
-        // $this->call(CountrySeeder::class);
-        // $this->call(IrrigationRateSeeder::class);
-        // $this->call(PathogenTypeSeeder::class);
-        // $this->call(ReportTypeSeeder::class);
-        // $this->call(InformationSeeder::class);
+        $this->call(RoleSeeder::class);
+        $this->call(FarmActivityTypeSeeder::class);
+        $this->call(HumanJobSeeder::class);
+        $this->call(UserSeeder::class);
+        $this->call(PostTypeSeeder::class);
+        $this->call(BusinessFieldSeeder::class);
+        $this->call(WorkFieldSeeder::class);
+        $this->call(SettingSeeder::class);
+        $this->call(FarmedTypeStageSeeder::class);
+        $this->call(FarmRelationsSeeder::class);
+        $this->call(TaskTypeSeeder::class);
+        $this->call(InfectionRateSeeder::class);
+        $this->call(DiseaseSeeder::class);
+        $this->call(ProductTypeSeeder::class);
+        $this->call(CityDistrictSeeder::class);
+        $this->call(AdditionalRolesSeeder::class);
+        $this->call(PermissionSeeder::class);
+        $this->call(RatingQuestionSeeder::class);
+        $this->call(CountrySeeder::class);
+        $this->call(IrrigationRateSeeder::class);
+        $this->call(PathogenTypeSeeder::class);
+        $this->call(ReportTypeSeeder::class);
+        $this->call(InformationSeeder::class);
 
         /**
          * ? ... ? means don't allow editing or deleting them

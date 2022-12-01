@@ -9,6 +9,7 @@ use App\Repositories\ProductTypeRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\ProductTypeResource;
+use App\Models\Product;
 use Response;
 
 /**
@@ -92,6 +93,9 @@ class ProductTypeAPIController extends AppBaseController
      */
     public function update($id, UpdateProductTypeAPIRequest $request)
     {
+        if(in_array($id, Product::$used_product_types))
+            return $this->sendError('Used Product Types are not editable');
+
         $input = $request->validated();
 
         /** @var ProductType $productType */
@@ -118,6 +122,9 @@ class ProductTypeAPIController extends AppBaseController
      */
     public function destroy($id)
     {
+        if(in_array($id, Product::$used_product_types))
+            return $this->sendError('Used Product Types are not deletable');
+
         try
         {
         /** @var ProductType $productType */

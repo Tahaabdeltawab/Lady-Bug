@@ -183,6 +183,7 @@ class Business extends Team
         return $this->assets()->where('asset_name', 'like', 'business-cover%');
     }
 
+    public static $used_business_fields = [1,2,3,4,5];
     public function scopeFarm($q)
     {
         return $q->where('business_field_id', 1);

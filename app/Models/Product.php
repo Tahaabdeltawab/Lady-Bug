@@ -76,6 +76,12 @@ class Product extends Model
         'assets.*'                      => 'nullable|max:5000|image'
     ];
 
+    /**
+     * used in productController->store()
+     * الأسمدة والمبيدات
+     */
+    public static $used_product_types = [1,3];
+
     protected static function booted()
     {
         static::addGlobalScope('latest', function ($q) {

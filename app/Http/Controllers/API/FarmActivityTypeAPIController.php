@@ -9,6 +9,7 @@ use App\Repositories\FarmActivityTypeRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\FarmActivityTypeResource;
+use App\Models\Farm;
 use Response;
 
 /**
@@ -60,6 +61,9 @@ class FarmActivityTypeAPIController extends AppBaseController
 
     public function update($id, CreateFarmActivityTypeAPIRequest $request)
     {
+        if(in_array($id, Farm::$used_farm_activity_types))
+            return $this->sendError('Used Farm Activity Types are not editable');
+
         $input = $request->validated();
 
         /** @var FarmActivityType $farmActivityType */
@@ -76,6 +80,9 @@ class FarmActivityTypeAPIController extends AppBaseController
 
     public function destroy($id)
     {
+        if(in_array($id, Farm::$used_farm_activity_types))
+            return $this->sendError('Used Farm Activity Types are not deletable');
+
         try
         {
         /** @var FarmActivityType $farmActivityType */
