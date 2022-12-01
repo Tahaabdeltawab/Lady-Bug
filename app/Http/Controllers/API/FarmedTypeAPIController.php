@@ -147,11 +147,11 @@ class FarmedTypeAPIController extends AppBaseController
 
         $farmedType = $this->farmedTypeRepository->create($to_save);
 
-        if($photo = $request->file('photo'))
-        {
+        if($photo = $request->file('photo')){
             $oneasset = app('\App\Http\Controllers\API\BusinessAPIController')->store_file($photo, 'farmed-type');
             $farmedType->asset()->create($oneasset);
-
+        }else{
+            return $this->sendError('Farmed Type should have a photo!');
         }
 
 
