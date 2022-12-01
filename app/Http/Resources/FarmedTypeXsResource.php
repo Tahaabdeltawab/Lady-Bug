@@ -17,7 +17,7 @@ class FarmedTypeXsResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'photo_url' => $this->asset->asset_url ?? 'https://via.placeholder.com/150',
+            'photo_url' => @$this->asset->asset_url,
         ];
     }
 }

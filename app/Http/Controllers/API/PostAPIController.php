@@ -350,8 +350,8 @@ class PostAPIController extends AppBaseController
             if($dislike instanceOf  $like_model)
             {
                 $msg = 'Post disliked successfully';
-                if($dislike->user_id != $post->author_id)
-                $post->author->notify(new \App\Notifications\TimelineInteraction($dislike));
+                // if($dislike->user_id != $post->author_id)
+                // $post->author->notify(new \App\Notifications\TimelineInteraction($dislike));
             }
             else
             {
