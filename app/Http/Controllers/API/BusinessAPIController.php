@@ -216,7 +216,7 @@ class BusinessAPIController extends AppBaseController
             $business = $this->businessRepository->create($input);
 
             auth()->user()->attachRole('business-admin', $business);
-            auth()->user()->attachPermissions(Permission::businessAllowed()->pluck('id'), $business);
+            auth()->user()->attachPermissions(Permission::businessAllowedPermissions()->pluck('id'), $business);
             $business->agents()->attach($request->agents, ['type' => 'agent']);
             $business->distributors()->attach($request->distributors, ['type' => 'distributor']);
             foreach ($request->branches ?? [] as $branch) {
@@ -275,7 +275,7 @@ class BusinessAPIController extends AppBaseController
 
     public function business_permissions()
     {
-        $permissions = Permission::businessAllowed()->get();
+        $permissions = Permission::businessAllowedPermissions()->get();
         return $this->sendResponse(['all' =>  PermissionResource::collection($permissions)], 'Permissions retrieved successfully');
     }
 

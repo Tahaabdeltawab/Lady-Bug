@@ -28,9 +28,10 @@ class PermissionAPIController extends AppBaseController
             $permissions = $this->permissionRepository->all(
                 $request->except(['page', 'perPage']),
                 $request->get('page'),
-                $request->get('perPage')
+                $request->get('perPage'),
+                ['appAllowedPermissions']
             );
-    
+
             return $this->sendResponse(['all' => PermissionResource::collection($permissions['all']), 'meta' => $permissions['meta']], 'Permissions retrieved successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
@@ -40,6 +41,7 @@ class PermissionAPIController extends AppBaseController
 
     public function store(UpdatePermissionAPIRequest $request)
     {
+        return $this->sendError('Permissions are not creatable');
         try{
             $permission = Permission::create([
                 'name'          => $request->name,
@@ -61,7 +63,7 @@ class PermissionAPIController extends AppBaseController
             if($permission = Permission::find($ID))
             {
                 $permission->update([
-                    'name'          => $request->name,
+                    // 'name'          => $request->name,
                     'display_name'  => $request->display_name,
                     'description'   => $request->description,
                 ]);
@@ -95,6 +97,8 @@ class PermissionAPIController extends AppBaseController
 
     public function destroy(int $ID)
     {
+        return $this->sendError('Permissions are not deletable');
+
         try{
             if($permission = Permission::find($ID))
             {

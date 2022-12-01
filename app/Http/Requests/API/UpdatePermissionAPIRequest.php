@@ -25,7 +25,7 @@ class UpdatePermissionAPIRequest extends APIRequest
     {
         $id = $this->permission ?? null;
         return [
-            'name' => 'required|max:30|unique:permissions,name,'.$id,
+            // 'name' => 'required|max:30|unique:permissions,name,'.$id,
             'display_name' => 'required|max:30',
             'description' => 'required|max:200',
         ];
