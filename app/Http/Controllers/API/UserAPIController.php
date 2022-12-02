@@ -93,7 +93,7 @@ class UserAPIController extends AppBaseController
             $request->except(['page', 'perPage']),
             $request->get('page'),
             $request->get('perPage'),
-            ['admin']
+            ['admin', 'notMe']
         );
 
         return $this->sendResponse(['all' => UserResource::collection($users['all']), 'meta' => $users['meta']], 'Users retrieved successfully');
@@ -549,8 +549,11 @@ class UserAPIController extends AppBaseController
                 'password' => Hash::make($request->get('password')),
             ]);
 
-            if (isset($request->roles) && ! empty($request->roles))
+            if ($request->roles)
             {
+                $admin_allowed_roles = Role::appAllowedRoles()->pluck('id')->toArray();
+                if (array_diff($request->roles,$admin_allowed_roles))
+                    return $this->sendError('Not allowed roles');
                 $user->attachRoles($request->roles);
             }
 
@@ -593,12 +596,8 @@ class UserAPIController extends AppBaseController
             $user = $this->userRepository->find($request->user);
 
             $admin_allowed_roles = Role::appAllowedRoles()->pluck('id')->toArray();
-
             if (array_diff($request->roles,$admin_allowed_roles))
-            {
                 return $this->sendError('Not allowed roles');
-            }
-
             $user->syncRoles($request->roles);
 
             return $this->sendResponse(new UserResource($user), __('User roles saved successfully'));
@@ -776,11 +775,8 @@ class UserAPIController extends AppBaseController
                 if(auth()->user()->hasRole(config('myconfig.admin_role'))) // because the current method (update) is for both admins and users
                 {
                     $admin_allowed_roles = Role::appAllowedRoles()->pluck('id')->toArray();
-
                     if (array_diff($request->roles,$admin_allowed_roles))
-                    {
                         return $this->sendError('Not allowed roles');
-                    }
                     $user->syncRoles($request->roles);
                 }
             }
@@ -888,33 +884,40 @@ class UserAPIController extends AppBaseController
     {
         try
         {
-        /** @var User $user */
-        $user = $this->userRepository->find($id);
+            DB::beginTransaction();
 
-        if (empty($user)) {
-            return $this->sendError('User not found');
-        }
-        $return = [
-            'posts' => $user->posts,
-            'products' => $user->products,
-            'reports' => $user->reports,
-            'farms' => $user->farms,
-        ];
-        // return $return;
+            /** @var User $user */
+            $user = $this->userRepository->find($id);
 
-        $user->posts()->delete();// comments/likes/ chemical/location/saltdetails
-        $user->products()->delete();
-        $user->reports()->delete();
-        $user->favorites()->delete();
-        $user->farms()->update(['admin_id' => auth()->id()]);
+            if (empty($user)) {
+                return $this->sendError('User not found');
+            }
+            $return = [
+                'posts' => $user->posts,
+                'products' => $user->products,
+                'reports' => $user->reports,
+                'farms' => $user->farms,
+            ];
+            // return $return;
 
-        $user->delete();
-        $user->asset->delete();
+            $user->posts()->delete();// comments/likes/ chemical/location/saltdetails
+            $user->products()->delete();
+            $user->reports()->delete();
+            $user->favorites()->delete();
+            $user->farms()->update(['admin_id' => auth()->id()]);
+            $user->ownBusinesses()->update(['user_id' => auth()->id()]);
+            if($user->asset)
+                $user->asset->delete();
+            $user->delete();
 
-          return $this->sendSuccess('Model deleted successfully');
+            DB::commit();
+
+            return $this->sendSuccess('Model deleted successfully');
         }
         catch(\Throwable $th)
         {
+            DB::rollBack();
+
             if ($th instanceof \Illuminate\Database\QueryException)
             return $this->sendError('Model cannot be deleted as it is associated with other models');
             else

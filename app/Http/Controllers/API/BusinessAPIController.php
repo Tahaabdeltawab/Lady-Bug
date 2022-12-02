@@ -379,8 +379,6 @@ class BusinessAPIController extends AppBaseController
             $user = User::find($request->user);
             $business = Business::find($request->business);
 
-            if($request->role == 6 && !$request->period)
-                return $this->sendError('Consultancy Period is required');
             $user->attachRole($request->role, $business);
             $user->attachPermissions($request->permissions, $business);
             $role_user = RoleUser::where(['user_type' => 'App\Models\User', 'user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])->first();
@@ -415,13 +413,13 @@ class BusinessAPIController extends AppBaseController
 
 
             DB::table('notifications')
-            ->where('type', 'App\Notifications\BusinessInvitation')
-            ->where('notifiable_type', 'App\Models\User')
-            ->where('notifiable_id', $request->user)
-            ->where('data->invitee', $request->user)
-            ->where('data->business', $request->business)
-            ->where('data->role', $request->role)
-            ->update(['data->accepted' => true]);
+                ->where('type', 'App\Notifications\BusinessInvitation')
+                ->where('notifiable_type', 'App\Models\User')
+                ->where('notifiable_id', $request->user)
+                ->where('data->invitee', $request->user)
+                ->where('data->business', $request->business)
+                ->where('data->role', $request->role)
+                ->update(['data->accepted' => true]);
 
 
 
@@ -490,9 +488,8 @@ class BusinessAPIController extends AppBaseController
                 'end_date' => 'nullable|date_format:Y-m-d',
             ]);
 
-            if ($validator->fails()) {
+            if ($validator->fails())
                 return $this->sendError($validator->errors()->first());
-            }
 
             $user = User::find($request->user);
             $business = Business::find($request->business);
@@ -504,15 +501,24 @@ class BusinessAPIController extends AppBaseController
             if($request->role)   //first attach or edit roles
             {
                 $role = Role::find($request->role);
+
                 if(!in_array($role->name, config('myconfig.business_roles')))
                     return $this->sendError('Invalid Role');
 
+                if($request->role == 6 && !$request->period)
+                    return $this->sendError('Consultancy Period is required');
+
+                if($request->permissions){
+                    $business_allowed_permissions = Permission::businessAllowedPermissions()->pluck('id')->toArray();
+                    if (array_diff($request->permissions,$business_allowed_permissions))
+                        return $this->sendError('Not allowed permissions');
+                }
+
                 if($user->get_roles($request->business)) //edit roles
                 {
-                    if($request->role == 6 && !$request->period)
-                        return $this->sendError('Consultancy Period is required');
                     $user->syncRoles([$request->role], $business);
                     $user->syncPermissions($request->permissions, $business);
+
                     $role_user = RoleUser::where(['user_type' => 'App\Models\User', 'user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])->first();
                     $role_user->start_date = $request->start_date;
                     $role_user->end_date = $request->end_date;

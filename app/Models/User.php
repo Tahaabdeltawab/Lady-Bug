@@ -25,6 +25,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'mobile',
         'status',
+        'type',
         'block_duration',
         'is_notifiable',
         'activity_points',
@@ -85,6 +86,10 @@ class User extends Authenticatable implements JWTSubject
         return $this->morphedByMany(FarmedType::class, 'favoriteable', 'favorites', 'user_id', 'favoriteable_id');//->withTimestamps();
     }
 
+    public function scopeNotMe($q)
+    {
+        return $q->where('id', '!=', auth()->id());
+    }
 
     public function scopeAdmin($q)
     {
