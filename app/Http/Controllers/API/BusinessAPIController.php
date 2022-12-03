@@ -841,10 +841,14 @@ class BusinessAPIController extends AppBaseController
         }
         foreach($business->farms as $farm){
             $farm->location()->delete();
-            $farm->soil_detail->delete();
-            $farm->soil_detail->salt_detail()->delete();
-            $farm->irrigation_water_detail->delete();
-            $farm->irrigation_water_detail->salt_detail()->delete();
+            if($farm->soil_detail){
+                $farm->soil_detail->salt_detail()->delete();
+                $farm->soil_detail->delete();
+            }
+            if($farm->irrigation_water_detail){
+                $farm->irrigation_water_detail->salt_detail()->delete();
+                $farm->irrigation_water_detail->delete();
+            }
             $farm->animal_drink_water_salt_detail()->delete();
             foreach($farm->farm_reports as $report){
                 $report->tasks()->delete();

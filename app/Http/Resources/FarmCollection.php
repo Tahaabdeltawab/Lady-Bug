@@ -14,7 +14,6 @@ class FarmCollection extends JsonResource
         $farm_detail['code'] = $this->code;
         $farm_detail['farm_activity_type'] = $this->farm_activity_type->name;
         $farm_detail['farmed_type'] = $this->farmed_type->name;
-        $farm_detail['farmed_type_class'] = @$this->farmed_type_class->name;
         return $farm_detail;
     }
 }

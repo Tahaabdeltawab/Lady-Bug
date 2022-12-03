@@ -48,7 +48,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         Route::get('farms/relations/index', [App\Http\Controllers\API\FarmAPIController::class, 'relations_index'])->name('farms.relations.index');
         Route::post('farms/', [App\Http\Controllers\API\FarmAPIController::class, 'store'])->name('farms.store');
 
-        // Route::delete('{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy')->middleware('check_business_role');
+        // Route::delete('farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'destroy'])->name('destroy');
 
 
         Route::match(['put', 'patch', 'post'], 'farms/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'update'])->name('farms.update');

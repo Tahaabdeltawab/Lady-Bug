@@ -150,9 +150,9 @@ class FarmAPIController extends AppBaseController
                 $request->get('page'),
                 $request->get('perPage')
             );
-    
+
             return $this->sendResponse(['all' => FarmCollection::collection($farms['all']), 'meta' => $farms['meta']], 'Farms retrieved successfully');
-    
+
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
         }
@@ -630,10 +630,14 @@ class FarmAPIController extends AppBaseController
         }
         DB::beginTransaction();
         $farm->location()->delete();
-        $farm->soil_detail->delete();
-        $farm->soil_detail->salt_detail()->delete();
-        $farm->irrigation_water_detail->delete();
-        $farm->irrigation_water_detail->salt_detail()->delete();
+        if($farm->soil_detail){
+            $farm->soil_detail->salt_detail()->delete();
+            $farm->soil_detail->delete();
+        }
+        if($farm->irrigation_water_detail){
+            $farm->irrigation_water_detail->salt_detail()->delete();
+            $farm->irrigation_water_detail->delete();
+        }
         $farm->animal_drink_water_salt_detail()->delete();
         foreach($farm->farm_reports as $report){
             $report->tasks()->delete();

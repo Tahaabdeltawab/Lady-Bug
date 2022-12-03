@@ -37,7 +37,8 @@ class CreateFarmAPIRequest extends APIRequest
             'location.details'                      => 'nullable',
             'location.postal'                       => 'nullable',
             'farming_date'                          => 'required|date_format:Y-m-d',//|after_or_equal:' . date('Y-m-d'),
-            'farm_activity_type_id'                 => 'required|exists:farm_activity_types,id',
+            // the (in) rule added because animal farms are disabled temporarily
+            'farm_activity_type_id'                 => 'required|exists:farm_activity_types,id|in:1,2,3',
             // 1-crops, 2-trees, 3-homeplants, 4-animals
             'farmed_type_id'                        => 'required|exists:farmed_types,id',
             // 'farmed_type_class_id'                  => 'nullable|exists:farmed_type_classes,id',  //|exists:farmed_type_classes,id => deleted this validation because if the farmed_type has no classes, the farm saving request will send it as 0
