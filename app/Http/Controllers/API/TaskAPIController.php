@@ -137,10 +137,11 @@ class TaskAPIController extends AppBaseController
                 return $this->sendError($validator->errors()->first());
 
             $input = $validator->validated();
+            $tasks = [];
             foreach ($input['tasks'] as $t) {
-                $this->taskRepository->create($t);
+                $tasks[] = $this->taskRepository->create($t);
             }
-            return $this->sendSuccess('tasks created successfully');
+            return $this->sendResponse(TaskResource::collection($tasks), 'Tasks saved successfully');
         }
 
         $validator = Validator::make($request->all(), Task::$rules);
