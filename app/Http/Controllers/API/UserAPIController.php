@@ -113,7 +113,7 @@ class UserAPIController extends AppBaseController
     public function user_products(Request $request)
     {
         try{
-            $products = $this->productRepository->where(['seller_id' => auth()->id()])->all();
+            $products = $this->productRepository->where(['seller_id' => auth()->id()]);
 
             return $this->sendResponse(['all' => ProductXsResource::collection($products)], 'User products retrieved successfully');
         }catch(\Throwable $th){
@@ -137,7 +137,7 @@ class UserAPIController extends AppBaseController
             $data['favorites'] = null;
         }
 
-        // $fav_farmed_type_ginfos = $this->farmedTypeGinfoRepository->whereIn(['farmed_type_id' => $favorites->pluck('id')])->all();
+        // $fav_farmed_type_ginfos = $this->farmedTypeGinfoRepository->whereIn(['farmed_type_id' => $favorites->pluck('id')]);
         /* $fav_products = Product::whereHas('farmedTypes', function($q)use($favorites->pluck('id')){
             return $q->whereIn('farmed_types.id', $favorites->pluck('id'));
         })->limit(10)->get();

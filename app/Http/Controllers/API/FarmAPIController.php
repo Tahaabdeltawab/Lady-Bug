@@ -166,27 +166,18 @@ class FarmAPIController extends AppBaseController
             $data['farm_activity_types'] = FarmActivityTypeResource::collection($this->farmActivityTypeRepository->all());
             $data['home_plant_pot_sizes'] = HomePlantPotSizeResource::collection($this->homePlantPotSizeRepository->all());
 
+            $data['crops_types'] = FarmedTypeResource::collection($this->farmedTypeRepository->where(['farm_activity_type_id' => 1]));
+            $data['trees_types'] = FarmedTypeResource::collection($this->farmedTypeRepository->where(['farm_activity_type_id' => 2]));
+            $data['homeplants_types'] = FarmedTypeResource::collection($this->farmedTypeRepository->where(['farm_activity_type_id' => 3]));
+            $data['animals_types'] = FarmedTypeResource::collection($this->farmedTypeRepository->where(['farm_activity_type_id' => 4]));
 
-            $data['crops_types'] = FarmedTypeResource::collection($this->farmedTypeRepository
-            ->where(['farm_activity_type_id' => 1])->all());
-
-            $data['trees_types'] = FarmedTypeResource::collection($this->farmedTypeRepository
-            ->where(['farm_activity_type_id' => 2])->all());
-
-            $data['homeplants_types'] = FarmedTypeResource::collection($this->farmedTypeRepository
-            ->where(['farm_activity_type_id' => 3])->all());
-
-            $data['animals_types'] = FarmedTypeResource::collection($this->farmedTypeRepository
-            ->where(['farm_activity_type_id' => 4])->all());
-
-
-            $data['area_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'area'])->all());
-            $data['acidity_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'acidity'])->all());
-            $data['salt_concentration_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'salt_concentration'])->all());
+            $data['area_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'area']));
+            $data['acidity_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'acidity']));
+            $data['salt_concentration_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'salt_concentration']));
             $data['irrigation_ways'] = IrrigationWayResource::collection($this->irrigationWayRepository->all());
             $data['home_plant_illuminating_sources'] = HomePlantIlluminatingSourceResource::collection($this->homePlantIlluminatingSourceRepository->all());
-            $data['farming_ways'] = FarmingWayResource::collection($this->farmingWayRepository->where(['type' => 'farming'])->all());
-            $data['breeding_ways'] = FarmingWayResource::collection($this->farmingWayRepository->where(['type' => 'breeding'])->all());
+            $data['farming_ways'] = FarmingWayResource::collection($this->farmingWayRepository->where(['type' => 'farming']));
+            $data['breeding_ways'] = FarmingWayResource::collection($this->farmingWayRepository->where(['type' => 'breeding']));
             $data['animal_breeding_purposes'] = AnimalBreedingPurposeResource::collection($this->animalBreedingPurposeRepository->all());
             $data['farming_methods'] = FarmingMethodResource::collection($this->farmingMethodRepository->all());
             $data['animal_fodder_types'] = AnimalFodderTypeResource::collection($this->animalFodderTypeRepository->all());
