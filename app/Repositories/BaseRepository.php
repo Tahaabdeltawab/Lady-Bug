@@ -131,6 +131,10 @@ abstract class BaseRepository
      */
     public function all($search = [], $page = null, $perPage = null, $scopes = [], $relations = [], $columns = ['*'])
     {
+        // if the function all() didn't accept any params so return only the records not [all, meta]
+        if(!func_num_args())
+            return $this->model::get();
+
         [$query, $meta] = $this->allQuery($search, $page, $perPage, $scopes);
         if (count($relations))
             $query->with($relations);

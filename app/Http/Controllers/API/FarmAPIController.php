@@ -200,6 +200,7 @@ class FarmAPIController extends AppBaseController
             return $this->sendResponse(['all' => $data], 'Farms relations retrieved successfully');
 
         }catch(\Throwable $th){
+            throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }
