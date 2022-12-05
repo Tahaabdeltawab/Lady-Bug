@@ -18,6 +18,7 @@ class CreateConsultancyProfilesTable extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->integer('experience');
+            $table->boolean('status')->default(0);
             $table->boolean('ar');
             $table->boolean('en');
             $table->boolean('free_consultancy');

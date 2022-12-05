@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Helpers\WeatherApi;
 use App\Http\Requests\API\RateBusinessRequest;
+use App\Http\Resources\BusinessAdminResource;
+use App\Http\Resources\BusinessAdminSmResource;
 use App\Http\Resources\BusinessResource;
 use App\Http\Resources\BusinessWithPostsResource;
 use App\Http\Resources\BusinessWithTasksResource;
@@ -57,13 +59,6 @@ class BusinessAPIController extends AppBaseController
         $this->locationRepository = $locationRepo;
     }
 
-    /**
-     * Display a listing of the Business.
-     * GET|HEAD /businesses
-     *
-     * @param Request $request
-     * @return Response
-     */
     public function index(Request $request)
     {
         $businesses = $this->businessRepository->all(
@@ -75,7 +70,47 @@ class BusinessAPIController extends AppBaseController
         return $this->sendResponse(['all' => BusinessResource::collection($businesses['all']), 'meta' => $businesses['meta']], 'Businesses retrieved successfully');
     }
 
+    // admin
+    public function admin_index(Request $request)
+    {
+        $businesses = $this->businessRepository->all(
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage')
+        );
 
+        return $this->sendResponse(['all' => BusinessAdminSmResource::collection($businesses['all']), 'meta' => $businesses['meta']], 'Businesses retrieved successfully');
+    }
+
+    // admin
+    public function admin_show($id)
+    {
+        /** @var Business $business */
+        $business = $this->businessRepository->find($id);
+
+        if (empty($business)) {
+            return $this->sendError('Business not found');
+        }
+
+        return $this->sendResponse(new BusinessAdminResource($business), 'Business retrieved successfully');
+    }
+
+    // admin
+    public function ladybug_rate_business(RateBusinessRequest $request)
+    {
+        try
+        {
+            $business = $this->businessRepository->find($request->business);
+            $business->ladybug_rating = $request->rating;
+            $business->save();
+            return $this->sendSuccess("You have rated $business->com_name with $request->rating stars successfully");
+        }
+        catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    // user
     public function rate_business(RateBusinessRequest $request)
     {
         try

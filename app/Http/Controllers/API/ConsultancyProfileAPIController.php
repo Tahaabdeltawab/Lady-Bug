@@ -9,9 +9,11 @@ use App\Repositories\ConsultancyProfileRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\ConsultancyProfileResource;
+use App\Http\Resources\UserConsAdminXsResource;
 use App\Http\Resources\UserConsResource;
 use App\Models\User;
 use App\Models\WorkField;
+use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\DB;
 use Response;
 
@@ -24,25 +26,50 @@ class ConsultancyProfileAPIController extends AppBaseController
 {
     /** @var  ConsultancyProfileRepository */
     private $consultancyProfileRepository;
+    private $userRepository;
 
-    public function __construct(ConsultancyProfileRepository $consultancyProfileRepo)
+    public function __construct(ConsultancyProfileRepository $consultancyProfileRepo, UserRepository $userRepo)
     {
         $this->consultancyProfileRepository = $consultancyProfileRepo;
+        $this->userRepository = $userRepo;
     }
 
-    /**
-     * Display a listing of the ConsultancyProfile.
-     * GET|HEAD /consultancyProfiles
-     *
-     * @param Request $request
-     * @return Response
-     */
+
+
+    //admin
+    public function admin_index(Request $request)
+    {
+        $consultants = $this->userRepository->all(
+            $request->except(['page', 'perPage']),
+            $request->get('page'),
+            $request->get('perPage'),
+            ['cons'],
+            ['consultancyProfile'],
+            ['is_consultant', ...User::$selects]
+        );
+
+        return $this->sendResponse(['all' => UserConsAdminXsResource::collection($consultants['all']), 'meta' => $consultants['meta']], 'Consultants retrieved successfully');
+    }
+
+    public function toggle_activate($id)
+    {
+        $cons = $this->consultancyProfileRepository->findBy(['user_id' => $id]);
+        if (empty($cons))
+            return $this->sendError('Consultant not found');
+
+        $msg = $cons->status ? 'Consultant has been in-active' : 'Consultant has been active';
+        $cons->status = !$cons->status;
+        $cons->save();
+
+        return $this->sendSuccess($msg);
+    }
     public function index(Request $request)
     {
         $consultancyProfiles = $this->consultancyProfileRepository->all(
             $request->except(['page', 'perPage']),
             $request->get('page'),
-            $request->get('perPage')
+            $request->get('perPage'),
+            ['active']
         );
 
         return $this->sendResponse(['all' => ConsultancyProfileResource::collection($consultancyProfiles['all']), 'meta' => $consultancyProfiles['meta']], 'Consultancy Profiles retrieved successfully');

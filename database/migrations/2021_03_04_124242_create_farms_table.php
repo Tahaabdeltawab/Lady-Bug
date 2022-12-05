@@ -16,6 +16,7 @@ class CreateFarmsTable extends Migration
     {
         Schema::create('farms', function (Blueprint $table) {
             $table->id();
+            $table->double('ladybug_rating')->nullable();
             $table->boolean('real');
             $table->boolean('archived');
             $table->date('farming_date');

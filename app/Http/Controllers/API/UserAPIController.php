@@ -31,6 +31,7 @@ use App\Http\Resources\ConsultancyProfileResource;
 use App\Http\Resources\FarmedTypeXsResource;
 use App\Http\Resources\PostXsResource;
 use App\Http\Resources\ProductXsResource;
+use App\Http\Resources\UserAdminResource;
 use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserProfileSmResource;
 use App\Http\Resources\UserSmResource;
@@ -76,14 +77,20 @@ class UserAPIController extends AppBaseController
     // app generic users
     public function index(Request $request)
     {
-        $users = $this->userRepository->all(
-            $request->except(['page', 'perPage']),
-            $request->get('page'),
-            $request->get('perPage'),
-            ['user']
-        );
+        $query = User::user()->withCount('posts');
+        $pag = null;
 
-        return $this->sendResponse(['all' => UserResource::collection($users['all']), 'meta' => $users['meta']], 'Users retrieved successfully');
+        if(in_array($request->order_by, ['posts_count', 'name', 'email', 'status', 'created_at', 'id']))
+            $query->orderBy($request->order_by, in_array(\Str::lower($request->order_type), ['asc', 'desc']) ? $request->order_type : 'desC');
+
+        if($request->page){
+            $pag = \Helper::pag($query->count(), $request->perPage, $request->page);
+            $query->skip($pag['skip'])->limit($pag['perPage']);
+        }
+
+
+        $users = $query->get();
+        return $this->sendResponse(['all' => UserAdminResource::collection($users), 'meta' => $pag], 'Users retrieved successfully');
     }
 
     // app admins

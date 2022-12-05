@@ -174,6 +174,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
 
     // ADMIN AREA
     Route::get('farms', [App\Http\Controllers\API\FarmAPIController::class, 'index'])->name('farms.index');
+    Route::get('farms/admin_show/{farm}', [App\Http\Controllers\API\FarmAPIController::class, 'admin_show'])->name('farms.admin_show');
     Route::get('reports', [App\Http\Controllers\API\ReportAPIController::class, 'index'])->name('reports.index');
     Route::get('reports/{report}', [App\Http\Controllers\API\ReportAPIController::class, 'show'])->name('reports.show');
     Route::match(['put', 'patch','post'], 'reports/{report}', [App\Http\Controllers\API\ReportAPIController::class, 'update'])->name('reports.update');
@@ -194,6 +195,13 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::post('roles/permissions/save', [App\Http\Controllers\API\RoleAPIController::class, 'update_role_permissions']);
     Route::get('posts', [App\Http\Controllers\API\PostAPIController::class, 'index']);
     Route::get('posts/toggle_activate/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_activate']);
+    Route::get('consultants', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'admin_index']);
+    Route::get('consultants/toggle_activate/{user}', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'toggle_activate']);
+    Route::post('ladybug_rate_business', [App\Http\Controllers\API\BusinessAPIController::class, 'ladybug_rate_business']);
+    Route::post('ladybug_rate_farm', [App\Http\Controllers\API\FarmAPIController::class, 'ladybug_rate_farm']);
+    Route::get('admin_businesses', [App\Http\Controllers\API\BusinessAPIController::class, 'admin_index']);
+    Route::get('admin_businesses/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'admin_show']);
+
     // end admin area
 
     // start routes for users and admins

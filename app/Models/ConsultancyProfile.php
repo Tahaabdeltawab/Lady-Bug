@@ -16,6 +16,7 @@ class ConsultancyProfile extends Model
     public $fillable = [
         'user_id',
         'experience',
+        'status',
         'ar',
         'en',
         'consultancy_price',
@@ -33,6 +34,7 @@ class ConsultancyProfile extends Model
         'id' => 'integer',
         'user_id' => 'integer',
         'experience' => 'integer',
+        'status' => 'boolean',
         'ar' => 'boolean',
         'en' => 'boolean',
         'consultancy_price' => 'decimal:2',
@@ -81,4 +83,15 @@ class ConsultancyProfile extends Model
     {
         return $this->hasMany(\App\Models\OfflineConsultancyPlan::class);
     }
+
+    /**
+     * Scopes
+     */
+
+     public function scopeActive($q){
+        return $q->where('status', 1);
+     }
+     public function scopeInactive($q){
+        return $q->where('status', 0);
+     }
 }

@@ -26,6 +26,7 @@ class CreateBusinessesTable extends Migration
             $table->foreignId('location_id')->nullable()->constrained();
             $table->foreignId('country_id')->nullable()->constrained();
             $table->boolean('privacy')->nullable();
+            $table->double('ladybug_rating')->nullable();
             $table->timestamps();
         });
     }

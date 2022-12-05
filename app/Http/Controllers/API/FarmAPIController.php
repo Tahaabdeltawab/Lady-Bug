@@ -49,8 +49,11 @@ use App\Http\Resources\FarmResource;
 use Illuminate\Http\Request;
 
 use App\Http\Helpers\WeatherApi;
+use App\Http\Requests\API\RateFarmRequest;
 use App\Http\Resources\BusinessXsResource;
+use App\Http\Resources\FarmAdminResource;
 use App\Http\Resources\FarmCollection;
+use App\Http\Resources\FarmSmResource;
 use App\Http\Resources\FarmWithReportsResource;
 use App\Models\Business;
 use Illuminate\Support\Facades\DB;
@@ -142,6 +145,7 @@ class FarmAPIController extends AppBaseController
     }
 
 
+    // admin
     public function index(Request $request)
     {
         try{
@@ -154,6 +158,38 @@ class FarmAPIController extends AppBaseController
             return $this->sendResponse(['all' => FarmCollection::collection($farms['all']), 'meta' => $farms['meta']], 'Farms retrieved successfully');
 
         }catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    // admin
+    public function admin_show($id)
+    {
+        try{
+            /** @var Farm $farm */
+            $farm = $this->farmRepository->find($id);
+
+            if (empty($farm)) {
+                return $this->sendError('Farm not found');
+            }
+
+            return $this->sendResponse(new FarmAdminResource($farm), 'Farm retrieved successfully');
+        }catch(\Throwable $th){
+            return $this->sendError($th->getMessage(), 500);
+        }
+    }
+
+    // admin
+    public function ladybug_rate_farm(RateFarmRequest $request)
+    {
+        try
+        {
+            $farm = $this->farmRepository->find($request->farm);
+            $farm->ladybug_rating = $request->rating;
+            $farm->save();
+            return $this->sendSuccess("You have rated farm with $request->rating stars successfully");
+        }
+        catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -191,7 +227,6 @@ class FarmAPIController extends AppBaseController
             return $this->sendResponse(['all' => $data], 'Farms relations retrieved successfully');
 
         }catch(\Throwable $th){
-            throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -426,7 +461,6 @@ class FarmAPIController extends AppBaseController
 
             return $this->sendResponse(new FarmResource($farm), 'Farm retrieved successfully');
         }catch(\Throwable $th){
-            throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -439,7 +473,6 @@ class FarmAPIController extends AppBaseController
                 return $this->sendError('Farm not found');
             return $this->sendResponse(new FarmWithReportsResource($farm), 'Farm with reports retrieved successfully');
         }catch(\Throwable $th){
-            throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
     }
