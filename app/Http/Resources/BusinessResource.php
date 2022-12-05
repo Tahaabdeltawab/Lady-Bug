@@ -40,12 +40,14 @@ class BusinessResource extends JsonResource
             'whatsapp' => $this->whatsapp,
             'lat' => @$this->location->latitude,
             'lon' => @$this->location->longitude,
+            'address' => @$this->location->details,
             // 'country_id' => $this->country_id,
             'privacy' => $this->privacy,
             'is_following' => $this->isFollowedBy(auth()->user()), // Am I following him?
             'user_permissions' => $ps,
             'participants_count' => count($prts),
             'participants_images' => $imgs,
+            'user_role' => collect(auth()->user()->getRoles($this->id))->first(),
 
         ];
     }
