@@ -48,12 +48,7 @@ class Setting extends Model
      *
      * @var array
      */
-    public static $rules = [
-        'name' => 'required|in:report_price,weather_background',
-        'value' => 'requiredIf:asset,null',
-        'type' => 'nullable',
-        'asset' => 'nullable|max:5000|image',
-    ];
+    public static $rules = [];
 
     public function asset()
     {
