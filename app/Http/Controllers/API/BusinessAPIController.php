@@ -788,7 +788,11 @@ class BusinessAPIController extends AppBaseController
             if(!auth()->user()->hasPermission("edit-business", $business))
                 return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
-            $saved_location = $this->locationRepository->update($input["location"], $business->location_id);
+            if($business->location_id)
+                $saved_location = $this->locationRepository->update($input["location"], $business->location_id);
+            else
+                $saved_location = $this->locationRepository->create($input["location"]);
+
             $input['location_id'] = $saved_location->id;
             $business = $this->businessRepository->update($input, $id);
 

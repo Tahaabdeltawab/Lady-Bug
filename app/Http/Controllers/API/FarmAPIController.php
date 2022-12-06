@@ -511,7 +511,11 @@ class FarmAPIController extends AppBaseController
             $location['district'] = $input["location"]["district"];
             $location['postal'] = $input["location"]["postal"];
             $location['details'] = $input["location"]["details"];
-            $saved_location = $this->locationRepository->update($location, $farm->location_id);
+            if($farm->location_id)
+                $saved_location = $this->locationRepository->update($location, $farm->location_id);
+            else
+                $saved_location = $this->locationRepository->create($location);
+
             $farm_detail['location_id'] = $saved_location->id;
 
             //crops 1

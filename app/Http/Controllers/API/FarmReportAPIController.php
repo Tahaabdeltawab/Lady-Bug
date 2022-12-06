@@ -164,7 +164,11 @@ class FarmReportAPIController extends AppBaseController
         Farm::where('id', $input['farm_id'])->update(['fertilization_start_date' => $input['fertilization_start_date']]);
         unset($input['fertilization_start_date']);
 
-        $saved_location = $this->locationRepository->update($input["location"], $farmReport->location_id);
+        if($farmReport->location_id)
+            $saved_location = $this->locationRepository->update($input["location"], $farmReport->location_id);
+        else
+            $saved_location = $this->locationRepository->create($input["location"]);
+
         $input['location_id'] = $saved_location->id;
         $farmReport = $this->farmReportRepository->update($input, $id);
 
