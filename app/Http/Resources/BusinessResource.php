@@ -47,7 +47,7 @@ class BusinessResource extends JsonResource
             'user_permissions' => $ps,
             'participants_count' => count($prts),
             'participants_images' => $imgs,
-            'user_role' => collect(auth()->user()->getRoles($this->id))->first(),
+            'user_role' => __(collect(auth()->user()->getRoles($this->id))->first()),
 
         ];
     }

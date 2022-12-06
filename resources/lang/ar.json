@@ -113,5 +113,14 @@
     "mn": "منجنيز",
     "cu": "نحاس",
     "cl": "كلور",
-    "mo": "مولبيدنم"
+    "mo": "مولبيدنم",
+
+    "app-admin": "مشرف",
+    "app-user": "مستخدم",
+    "business-admin": "مدير عمل",
+    "business-editor": "محرر عمل",
+    "business-supervisor": "مشرف عمل",
+    "business-consultant": "استشاري",
+    "business-worker": "عامل",
+    "business-company": "شركة"
 }

@@ -36,6 +36,7 @@ class PostXsResource extends JsonResource
             'disliked_by_me' => $post->dislikers->where('id', auth()->id())->count() ? true : false,
             'comments' => $request->routeIs('api.posts.show') ? CommentResource::collection($post->comments->whereNull('parent_id')) : [],
             'created_at' => $post->created_at->diffForHumans(),
+            'created_date' => $post->created_at,
             'shared' => $notShared ? null : new UserResource($this->shared->author),
             'share_id' => $post->id, // used to share the post. if this is an original post its value will be $this->id, if it's a shared post , its value will be the original post id
             'shared_content' => $notShared ? null : $this->content, // content added from the sharer

@@ -66,6 +66,15 @@
     "mn": "Manganese",
     "cu": "Copper",
     "cl": "Chlorine",
-    "mo": "Molybdenum"
+    "mo": "Molybdenum",
+
+    "app-admin": "App Admin",
+    "app-user": "App User",
+    "business-admin": "Business Admin",
+    "business-editor": "Business Editor",
+    "business-supervisor": "Business Supervisor",
+    "business-consultant": "Business Consultant",
+    "business-worker": "Business Worker",
+    "business-company": "Business Company"
 
 }
