@@ -16,8 +16,8 @@ class InformationResource extends JsonResource
     {
         $return = [
             'id' => $this->id,
-            'title' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('title') : $this->title,
-            'content' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('content') : $this->content,
+            'title' => $this->title,
+            'content' => $this->content,
         ];
 
         return $return;

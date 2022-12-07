@@ -19,8 +19,8 @@ class ProductXsResource extends JsonResource
             'price' => $this->price,
             'rating' => $this->formattedAverageRating,
             'assets' => $this->assets()->pluck('asset_url')->all(),
-            'name' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('name') : $this->name,
-            'description' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('description') : $this->description,
+            'name' => $this->name,
+            'description' => $this->description,
         ];
 
         return $return;

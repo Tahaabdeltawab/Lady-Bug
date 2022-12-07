@@ -17,7 +17,7 @@ class FarmingWayResource extends JsonResource
         $return = [
             'id' => $this->id,
             'type' => $this->type,
-            'name' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('name') : $this->name
+            'name' => $this->name
         ];
 
         return $return;

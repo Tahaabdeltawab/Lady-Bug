@@ -16,7 +16,7 @@ class BuyingNoteResource extends JsonResource
     {
         $return = [
             'id' => $this->id,
-            'content' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('content') : $this->content
+            'content' => $this->content
         ];
 
         return $return;

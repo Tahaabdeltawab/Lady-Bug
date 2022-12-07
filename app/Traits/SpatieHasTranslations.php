@@ -16,11 +16,13 @@ use Spatie\Translatable\Events\TranslationHasBeenSet;
  * to save Arabic translations on db as is without encoding
  * 2-
  * overriding the default Model toArray() method to by default get the models translated
+ * 3-
+ * handle header('Accept-Language') == 'all'
  */
 trait SpatieHasTranslations
 {
     use HasTranslations;
-    
+
     public function setTranslation(string $key, string $locale, $value): self
     {
         $this->guardAgainstNonTranslatableAttribute($key);
@@ -61,6 +63,19 @@ trait SpatieHasTranslations
         }
         return $attributes;
     }
-   
+
+    /**
+     * get translatable attributes translatable
+     * handle header('Accept-Language') == 'all'
+     */
+    public function getAttributeValue($key)
+    {
+        if (! $this->isTranslatableAttribute($key)) {
+            return parent::getAttributeValue($key);
+        }
+
+        return request()->header('Accept-Language') == 'all' ? $this->getTranslations($key) : $this->getTranslation($key, $this->getLocale());
+        // return $this->getTranslation($key, $this->getLocale());
+    }
 
 }

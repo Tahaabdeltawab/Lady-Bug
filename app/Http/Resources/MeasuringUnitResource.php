@@ -18,7 +18,7 @@ class MeasuringUnitResource extends JsonResource
             'id' => $this->id,
             'code' => $this->code,
             'measurable' => $this->measurable,
-            'name' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('name') : $this->name
+            'name' => $this->name
         ];
 
         return $return;

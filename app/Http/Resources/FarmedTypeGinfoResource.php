@@ -21,8 +21,8 @@ class FarmedTypeGinfoResource extends JsonResource
             'farmed_type_stage_id' => $this->farmed_type_stage_id,
             'farmed_type_stage' => $this->farmed_type_stage->name,
             'assets' => $this->assets()->pluck('asset_url'),
-            'title' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('title') : $this->title,
-            'content' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('content') : $this->content,
+            'title' => $this->title,
+            'content' => $this->content,
         ];
 
         return $return;

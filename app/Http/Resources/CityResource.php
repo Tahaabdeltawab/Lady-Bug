@@ -17,7 +17,7 @@ class CityResource extends JsonResource
         $return = [
             'id' => $this->id,
             'districts' => DistrictResource::collection($this->districts),
-            'name' => $request->header('Accept-Language') == 'all' ? $this->getTranslations('name') : $this->name
+            'name' => $this->name
         ];
 
         return $return;
