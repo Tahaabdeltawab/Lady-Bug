@@ -82,7 +82,7 @@ class Insecticide extends Model
         'name.ar' => 'required|max:30',
         'name.en' => 'required|max:30',
         'dosage_form' => 'nullable|in:powder,liquid',
-        'acs' => 'nullable|array',
+        'acs' => 'present|array',
         'acs.*' => 'exists:acs,id',
         'producer' => 'nullable|string|max:30',
         'country_id' => 'nullable|exists:countries,id',
