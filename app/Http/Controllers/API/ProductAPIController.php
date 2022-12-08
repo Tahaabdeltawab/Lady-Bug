@@ -174,6 +174,7 @@ class ProductAPIController extends AppBaseController
                 // if insecticide
                 if($request->product_type_id == 1 && $insecticideData = $request->insecticide){
                     $insecticideData['name'] = $request->name;
+                    $insecticideData['acs'] = $request->insecticide_acs; // to pass through validation
                     // validation
                     $rules = Insecticide::$rules; unset($rules['name.ar']); unset($rules['name.en']);
                     $validator = Validator::make($insecticideData, $rules);
@@ -278,6 +279,7 @@ class ProductAPIController extends AppBaseController
 
              // if insecticide
              if($request->product_type_id == 1 && $insecticideData = $request->insecticide){
+                $insecticideData['acs'] = $request->insecticide_acs; // to pass through validation
                 // validation
                 $rules = Insecticide::$rules; unset($rules['name.ar']); unset($rules['name.en']);
                 $validator = Validator::make($insecticideData, $rules);
