@@ -19,6 +19,7 @@ use App\Http\Resources\SensitiveDiseaseResource;
 use App\Models\Country;
 use App\Models\FarmActivityType;
 use App\Models\SensitiveDiseaseFarmedType;
+use App\Models\SoilType;
 use Illuminate\Support\Facades\DB;
 use Response;
 use Illuminate\Support\Facades\Validator;
@@ -60,6 +61,7 @@ class FarmedTypeAPIController extends AppBaseController
         $data['farm_activity_types'] = FarmActivityType::all();
         $data['parents'] = FarmedType::global()->get(['id', 'name']);
         $data['countries'] = Country::all();
+        $data['soil_types'] = SoilType::all();
 
         return $this->sendResponse($data, 'relations retrieved');
     }
