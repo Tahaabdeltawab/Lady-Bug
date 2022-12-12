@@ -18,6 +18,7 @@ class BusinessMdResource extends JsonResource
             'id' => $this->id,
             'com_name' => $this->com_name,
             'description' => $this->description,
+            'location' => @$this->location->details,
             'main_asset' => @$this->main_asset[0]->asset_url,
         ];
     }
