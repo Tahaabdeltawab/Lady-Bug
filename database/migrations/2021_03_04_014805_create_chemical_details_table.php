@@ -16,14 +16,14 @@ class CreateChemicalDetailsTable extends Migration
     {
         Schema::create('chemical_details', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
-            $table->double('acidity_value');
-            $table->foreignId('acidity_unit_id')->constrained('measuring_units');
-            $table->foreignId('acidity_type_id')->constrained();
-            $table->foreignId('salt_type_id')->constrained('salt_types');
-            $table->double('salt_concentration_value');
+            $table->string('type')->nullable();
+            $table->double('acidity_value')->nullable();
+            $table->foreignId('acidity_unit_id')->nullable()->constrained('measuring_units');
+            $table->foreignId('acidity_type_id')->nullable()->constrained();
+            $table->foreignId('salt_type_id')->nullable()->constrained('salt_types');
+            $table->double('salt_concentration_value')->nullable();
             $table->foreignId('salt_concentration_unit_id')->nullable()->constrained('measuring_units');
-            $table->foreignId('salt_detail_id')->constrained();
+            $table->foreignId('salt_detail_id')->nullable()->constrained();
             $table->timestamps();
             // $table->foreign('salt_detail_id')->references('id')->on('salt_details')->onDelete('CASCADE');
         });

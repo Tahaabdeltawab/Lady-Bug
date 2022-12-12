@@ -16,17 +16,17 @@ class CreateSaltDetailsTable extends Migration
     {
         Schema::create('salt_details', function (Blueprint $table) {
             $table->id();
-            $table->string('saltable_type');
-            $table->double('PH');
-            $table->double('CO3');
-            $table->double('HCO3');
-            $table->double('Cl');
-            $table->double('SO4');
-            $table->double('Ca');
-            $table->double('Mg');
-            $table->double('K');
-            $table->double('Na');
-            $table->double('Na2CO3');
+            $table->string('saltable_type')->nullable();
+            $table->double('PH')->nullable();
+            $table->double('CO3')->nullable();
+            $table->double('HCO3')->nullable();
+            $table->double('Cl')->nullable();
+            $table->double('SO4')->nullable();
+            $table->double('Ca')->nullable();
+            $table->double('Mg')->nullable();
+            $table->double('K')->nullable();
+            $table->double('Na')->nullable();
+            $table->double('Na2CO3')->nullable();
             $table->timestamps();
         });
     }

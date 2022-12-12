@@ -289,6 +289,8 @@ class FarmAPIController extends AppBaseController
             if(!auth()->user()->hasPermission("create-activity", $business))
                 return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
 
+            DB::beginTransaction();
+
             $input = $request->validated();
 
             $fat_id = $input["farm_activity_type_id"];
@@ -303,16 +305,11 @@ class FarmAPIController extends AppBaseController
             $farm_detail['farmed_type_class_id'] = $input["farmed_type_class_id"] ?? null;
             $farm_detail['farming_date'] = $input["farming_date"];
             $farm_detail['code'] = $this->generateRandomString();
-
-            $location['latitude'] = $input["location"]["latitude"];
-            $location['longitude'] = $input["location"]["longitude"];
-            $location['country'] = $input["location"]["country"];
-            $location['city'] = $input["location"]["city"];
-            $location['district'] = $input["location"]["district"];
-            $location['postal'] = $input["location"]["postal"];
-            $location['details'] = $input["location"]["details"];
-            $saved_location = $this->locationRepository->create($location);
-            $farm_detail['location_id'] = $saved_location->id;
+            if(isset($input['location']) && !empty($input['location'])){
+                $location = $input['location'];
+                $saved_location = $this->locationRepository->create($location);
+                $farm_detail['location_id'] = $saved_location->id;
+            }
 
             //crops 1
             if($fat_id == 1)
@@ -335,55 +332,39 @@ class FarmAPIController extends AppBaseController
 
                 $farm_detail['irrigation_way_id'] = $input["irrigation_way_id"];
                 $farm_detail['soil_type_id'] = $input["soil_type_id"];
-                //soil.salt
-                $soil_salt_detail["saltable_type"] = "soil";
-                $soil_salt_detail["PH"] = $input["soil"]["salt"]["PH"];
-                $soil_salt_detail["CO3"] = $input["soil"]["salt"]["CO3"];
-                $soil_salt_detail["HCO3"] = $input["soil"]["salt"]["HCO3"];
-                $soil_salt_detail["Cl"] = $input["soil"]["salt"]["Cl"];
-                $soil_salt_detail["SO4"] = $input["soil"]["salt"]["SO4"];
-                $soil_salt_detail["Ca"] = $input["soil"]["salt"]["Ca"];
-                $soil_salt_detail["Mg"] = $input["soil"]["salt"]["Mg"];
-                $soil_salt_detail["K"] = $input["soil"]["salt"]["K"];
-                $soil_salt_detail["Na"] = $input["soil"]["salt"]["Na"];
-                $soil_salt_detail["Na2CO3"] = $input["soil"]["salt"]["Na2CO3"];
-                $saved_soil_salt_detail = $this->saltDetailRepository->create($soil_salt_detail);
-                //soil
-                $soil_detail['salt_detail_id'] = $saved_soil_salt_detail->id;
-                $soil_detail['type'] = "soil";
-                $soil_detail['acidity_type_id'] = $input["soil"]["acidity_type_id"];
-                $soil_detail['acidity_value'] = $input["soil"]["acidity_value"];
-                $soil_detail['acidity_unit_id'] = $input["soil"]["acidity_unit_id"];
-                $soil_detail['salt_type_id'] = $input["soil"]["salt_type_id"];
-                $soil_detail['salt_concentration_value'] = $input["soil"]["salt_concentration_value"];
-                $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"] ?? null;
-                $saved_soil_detail = $this->chemicalDetailRepository->create($soil_detail);
-                $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
 
-                //irrigation.salt
-                $irrigation_salt_detail["saltable_type"] = "irrigation";
-                $irrigation_salt_detail["PH"] = $input["irrigation"]["salt"]["PH"];
-                $irrigation_salt_detail["CO3"] = $input["irrigation"]["salt"]["CO3"];
-                $irrigation_salt_detail["HCO3"] = $input["irrigation"]["salt"]["HCO3"];
-                $irrigation_salt_detail["Cl"] = $input["irrigation"]["salt"]["Cl"];
-                $irrigation_salt_detail["SO4"] = $input["irrigation"]["salt"]["SO4"];
-                $irrigation_salt_detail["Ca"] = $input["irrigation"]["salt"]["Ca"];
-                $irrigation_salt_detail["Mg"] = $input["irrigation"]["salt"]["Mg"];
-                $irrigation_salt_detail["K"] = $input["irrigation"]["salt"]["K"];
-                $irrigation_salt_detail["Na"] = $input["irrigation"]["salt"]["Na"];
-                $irrigation_salt_detail["Na2CO3"] = $input["irrigation"]["salt"]["Na2CO3"];
-                $saved_irrigation_salt_detail = $this->saltDetailRepository->create($irrigation_salt_detail);
-                //irrigation
-                $irrigation_detail['salt_detail_id'] = $saved_irrigation_salt_detail->id;
-                $irrigation_detail['type'] = "irrigation";
-                $irrigation_detail['acidity_type_id'] = $input["irrigation"]["acidity_type_id"];
-                $irrigation_detail['acidity_value'] = $input["irrigation"]["acidity_value"];
-                $irrigation_detail['acidity_unit_id'] = $input["irrigation"]["acidity_unit_id"];
-                $irrigation_detail['salt_type_id'] = $input["irrigation"]["salt_type_id"];
-                $irrigation_detail['salt_concentration_value'] = $input["irrigation"]["salt_concentration_value"];
-                $irrigation_detail['salt_concentration_unit_id'] = $input["irrigation"]["salt_concentration_unit_id"] ?? null;
-                $saved_irrigation_detail = $this->chemicalDetailRepository->create($irrigation_detail);
-                $farm_detail['irrigation_water_detail_id'] = $saved_irrigation_detail->id;
+                if(isset($input['soil']) && !empty($input['soil'])){
+                    if(isset($input['soil']['salt']) && !empty($input['soil']['salt'])){
+                        //soil.salt
+                        $soil_salt_detail = $input["soil"]["salt"];
+                        $soil_salt_detail["saltable_type"] = "soil";
+                        $saved_soil_salt_detail = $this->saltDetailRepository->create($soil_salt_detail);
+                        //soil
+                        $soil_detail['salt_detail_id'] = $saved_soil_salt_detail->id;
+                        unset($input["soil"]["salt"]);
+                    }
+                    $soil_detail = $input["soil"];
+                    $soil_detail['type'] = "soil";
+
+                    $saved_soil_detail = $this->chemicalDetailRepository->create($soil_detail);
+                    $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
+                }
+
+                if(isset($input['irrigation']) && !empty($input['irrigation'])){
+                    if(isset($input['irrigation']['salt']) && !empty($input['irrigation']['salt'])){
+                        //irrigation.salt
+                        $irrigation_salt_detail = $input["irrigation"]["salt"];
+                        $irrigation_salt_detail["saltable_type"] = "irrigation";
+                        $saved_irrigation_salt_detail = $this->saltDetailRepository->create($irrigation_salt_detail);
+                        //irrigation
+                        $irrigation_detail['salt_detail_id'] = $saved_irrigation_salt_detail->id;
+                        unset($input["irrigation"]["salt"]);
+                    }
+                    $irrigation_detail = $input["irrigation"];
+                    $irrigation_detail['type'] = "irrigation";
+                    $saved_irrigation_detail = $this->chemicalDetailRepository->create($irrigation_detail);
+                    $farm_detail['irrigation_water_detail_id'] = $saved_irrigation_detail->id;
+                }
             }
 
             //homeplant, trees, animals 2,3,4
@@ -403,20 +384,15 @@ class FarmAPIController extends AppBaseController
             if($fat_id == 4)
             {
                 $farm_detail['animal_breeding_purpose_id'] = $input["animal_breeding_purpose_id"];
-                //drink.salt
-                $drink_salt_detail["saltable_type"] = "drink";
-                $drink_salt_detail["PH"] = $input["drink"]["salt"]["PH"];
-                $drink_salt_detail["CO3"] = $input["drink"]["salt"]["CO3"];
-                $drink_salt_detail["HCO3"] = $input["drink"]["salt"]["HCO3"];
-                $drink_salt_detail["Cl"] = $input["drink"]["salt"]["Cl"];
-                $drink_salt_detail["SO4"] = $input["drink"]["salt"]["SO4"];
-                $drink_salt_detail["Ca"] = $input["drink"]["salt"]["Ca"];
-                $drink_salt_detail["Mg"] = $input["drink"]["salt"]["Mg"];
-                $drink_salt_detail["K"] = $input["drink"]["salt"]["K"];
-                $drink_salt_detail["Na"] = $input["drink"]["salt"]["Na"];
-                $drink_salt_detail["Na2CO3"] = $input["drink"]["salt"]["Na2CO3"];
-                $saved_drink_salt_detail = $this->saltDetailRepository->create($drink_salt_detail);
-                $farm_detail['animal_drink_water_salt_detail_id'] = $saved_drink_salt_detail->id;
+                if(isset($input['drink']) && !empty($input['drink'])){
+                    if(isset($input['drink']['salt']) && !empty($input['drink']['salt'])){
+                        //drink.salt
+                        $drink_salt_detail = $input["drink"]["salt"];
+                        $drink_salt_detail["saltable_type"] = "drink";
+                        $saved_drink_salt_detail = $this->saltDetailRepository->create($drink_salt_detail);
+                        $farm_detail['animal_drink_water_salt_detail_id'] = $saved_drink_salt_detail->id;
+                    }
+                }
             }
 
             $farm = $this->farmRepository->create($farm_detail);
@@ -434,10 +410,11 @@ class FarmAPIController extends AppBaseController
                 $farm->animal_fodder_sources()->sync($input["animal_fodder_sources"]);
                 $farm->animal_fodder_types()->sync($input["animal_fodder_types"]);
             }
-
+            DB::commit();
             return $this->sendResponse(new FarmResource($farm), 'Farm saved successfully');
 
         }catch(\Throwable $th){
+            DB::rollBack();
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -481,6 +458,7 @@ class FarmAPIController extends AppBaseController
     public function update($id, CreateFarmAPIRequest $request)
     {
         try{
+            DB::beginTransaction();
             //update the farm
             $input = $request->validated();
 
@@ -504,19 +482,14 @@ class FarmAPIController extends AppBaseController
             $farm_detail['farmed_type_class_id'] = $input["farmed_type_class_id"] ?? null;
             $farm_detail['farming_date'] = $input["farming_date"];
 
-            $location['latitude'] = $input["location"]["latitude"];
-            $location['longitude'] = $input["location"]["longitude"];
-            $location['country'] = $input["location"]["country"];
-            $location['city'] = $input["location"]["city"];
-            $location['district'] = $input["location"]["district"];
-            $location['postal'] = $input["location"]["postal"];
-            $location['details'] = $input["location"]["details"];
-            if($farm->location_id)
-                $saved_location = $this->locationRepository->update($location, $farm->location_id);
-            else
-                $saved_location = $this->locationRepository->create($location);
-
-            $farm_detail['location_id'] = $saved_location->id;
+            if(isset($input['location']) && !empty($input['location'])){
+                $location = $input['location'];
+                if($farm->location_id)
+                    $saved_location = $this->locationRepository->update($location, $farm->location_id);
+                else
+                    $saved_location = $this->locationRepository->create($location);
+                $farm_detail['location_id'] = $saved_location->id;
+            }
 
             //crops 1
             if($fat_id == 1)
@@ -539,55 +512,54 @@ class FarmAPIController extends AppBaseController
 
                 $farm_detail['irrigation_way_id'] = $input["irrigation_way_id"];
                 $farm_detail['soil_type_id'] = $input["soil_type_id"];
-                //soil.salt
-                $soil_salt_detail["saltable_type"] = "soil";
-                $soil_salt_detail["PH"] = $input["soil"]["salt"]["PH"];
-                $soil_salt_detail["CO3"] = $input["soil"]["salt"]["CO3"];
-                $soil_salt_detail["HCO3"] = $input["soil"]["salt"]["HCO3"];
-                $soil_salt_detail["Cl"] = $input["soil"]["salt"]["Cl"];
-                $soil_salt_detail["SO4"] = $input["soil"]["salt"]["SO4"];
-                $soil_salt_detail["Ca"] = $input["soil"]["salt"]["Ca"];
-                $soil_salt_detail["Mg"] = $input["soil"]["salt"]["Mg"];
-                $soil_salt_detail["K"] = $input["soil"]["salt"]["K"];
-                $soil_salt_detail["Na"] = $input["soil"]["salt"]["Na"];
-                $soil_salt_detail["Na2CO3"] = $input["soil"]["salt"]["Na2CO3"];
-                $saved_soil_salt_detail = $this->saltDetailRepository->update($soil_salt_detail, $farm->soil_detail->salt_detail_id);
-                //soil
-                $soil_detail['salt_detail_id'] = $saved_soil_salt_detail->id;
-                $soil_detail['type'] = "soil";
-                $soil_detail['acidity_type_id'] = $input["soil"]["acidity_type_id"];
-                $soil_detail['acidity_value'] = $input["soil"]["acidity_value"];
-                $soil_detail['acidity_unit_id'] = $input["soil"]["acidity_unit_id"];
-                $soil_detail['salt_type_id'] = $input["soil"]["salt_type_id"];
-                $soil_detail['salt_concentration_value'] = $input["soil"]["salt_concentration_value"];
-                $soil_detail['salt_concentration_unit_id'] = $input["soil"]["salt_concentration_unit_id"] ?? null;
-                $saved_soil_detail = $this->chemicalDetailRepository->update($soil_detail, $farm->soil_detail_id);
-                $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
 
-                //irrigation.salt
-                $irrigation_salt_detail["saltable_type"] = "irrigation";
-                $irrigation_salt_detail["PH"] = $input["irrigation"]["salt"]["PH"];
-                $irrigation_salt_detail["CO3"] = $input["irrigation"]["salt"]["CO3"];
-                $irrigation_salt_detail["HCO3"] = $input["irrigation"]["salt"]["HCO3"];
-                $irrigation_salt_detail["Cl"] = $input["irrigation"]["salt"]["Cl"];
-                $irrigation_salt_detail["SO4"] = $input["irrigation"]["salt"]["SO4"];
-                $irrigation_salt_detail["Ca"] = $input["irrigation"]["salt"]["Ca"];
-                $irrigation_salt_detail["Mg"] = $input["irrigation"]["salt"]["Mg"];
-                $irrigation_salt_detail["K"] = $input["irrigation"]["salt"]["K"];
-                $irrigation_salt_detail["Na"] = $input["irrigation"]["salt"]["Na"];
-                $irrigation_salt_detail["Na2CO3"] = $input["irrigation"]["salt"]["Na2CO3"];
-                $saved_irrigation_salt_detail = $this->saltDetailRepository->update($irrigation_salt_detail, $farm->irrigation_water_detail->salt_detail_id);
-                //irrigation
-                $irrigation_detail['salt_detail_id'] = $saved_irrigation_salt_detail->id;
-                $irrigation_detail['type'] = "irrigation";
-                $irrigation_detail['acidity_type_id'] = $input["irrigation"]["acidity_type_id"];
-                $irrigation_detail['acidity_value'] = $input["irrigation"]["acidity_value"];
-                $irrigation_detail['acidity_unit_id'] = $input["irrigation"]["acidity_unit_id"];
-                $irrigation_detail['salt_type_id'] = $input["irrigation"]["salt_type_id"];
-                $irrigation_detail['salt_concentration_value'] = $input["irrigation"]["salt_concentration_value"];
-                $irrigation_detail['salt_concentration_unit_id'] = $input["irrigation"]["salt_concentration_unit_id"] ?? null;
-                $saved_irrigation_detail = $this->chemicalDetailRepository->update($irrigation_detail, $farm->irrigation_water_detail_id);
-                $farm_detail['irrigation_water_detail_id'] = $saved_irrigation_detail->id;
+                if(isset($input['soil']) && !empty($input['soil'])){
+                    if(isset($input['soil']['salt']) && !empty($input['soil']['salt'])){
+                        //soil.salt
+                        $soil_salt_detail = $input["soil"]["salt"];
+                        $soil_salt_detail["saltable_type"] = "soil";
+                        if($farm->soil_detail->salt_detail_id)
+                            $saved_soil_salt_detail = $this->saltDetailRepository->update($soil_salt_detail, $farm->soil_detail->salt_detail_id);
+                        else
+                            $saved_soil_salt_detail = $this->saltDetailRepository->create($soil_salt_detail);
+
+                        //soil
+                        $soil_detail['salt_detail_id'] = $saved_soil_salt_detail->id;
+                        unset($input["soil"]["salt"]);
+                    }
+                    $soil_detail = $input["soil"];
+                    $soil_detail['type'] = "soil";
+                    if($farm->soil_detail_id)
+                        $saved_soil_detail = $this->chemicalDetailRepository->update($soil_detail, $farm->soil_detail_id);
+                    else
+                        $saved_soil_detail = $this->chemicalDetailRepository->create($soil_detail);
+                    $farm_detail['soil_detail_id'] = $saved_soil_detail->id;
+                }
+
+
+                if(isset($input['irrigation']) && !empty($input['irrigation'])){
+                    if(isset($input['irrigation']['salt']) && !empty($input['irrigation']['salt'])){
+                        //irrigation.salt
+                        $irrigation_salt_detail = $input["irrigation"]["salt"];
+                        $irrigation_salt_detail["saltable_type"] = "irrigation";
+                        if($farm->irrigation_water_detail->salt_detail_id)
+                            $saved_irrigation_salt_detail = $this->saltDetailRepository->update($irrigation_salt_detail, $farm->irrigation_water_detail->salt_detail_id);
+                        else
+                            $saved_irrigation_salt_detail = $this->saltDetailRepository->create($irrigation_salt_detail);
+
+                        //irrigation
+                        $irrigation_detail['salt_detail_id'] = $saved_irrigation_salt_detail->id;
+                        unset($input["irrigation"]["salt"]);
+                    }
+                    $irrigation_detail = $input["irrigation"];
+                    $irrigation_detail['type'] = "irrigation";
+                    if($farm->irrigation_water_detail_id)
+                        $saved_irrigation_detail = $this->chemicalDetailRepository->update($irrigation_detail, $farm->irrigation_water_detail_id);
+                    else
+                        $saved_irrigation_detail = $this->chemicalDetailRepository->create($irrigation_detail);
+                    $farm_detail['irrigation_water_detail_id'] = $saved_irrigation_detail->id;
+                }
+
             }
 
             //homeplant, trees, animals 2,3,4
@@ -607,20 +579,20 @@ class FarmAPIController extends AppBaseController
             if($fat_id == 4)
             {
                 $farm_detail['animal_breeding_purpose_id'] = $input["animal_breeding_purpose_id"];
-                //drink.salt
-                $drink_salt_detail["saltable_type"] = "drink";
-                $drink_salt_detail["PH"] = $input["drink"]["salt"]["PH"];
-                $drink_salt_detail["CO3"] = $input["drink"]["salt"]["CO3"];
-                $drink_salt_detail["HCO3"] = $input["drink"]["salt"]["HCO3"];
-                $drink_salt_detail["Cl"] = $input["drink"]["salt"]["Cl"];
-                $drink_salt_detail["SO4"] = $input["drink"]["salt"]["SO4"];
-                $drink_salt_detail["Ca"] = $input["drink"]["salt"]["Ca"];
-                $drink_salt_detail["Mg"] = $input["drink"]["salt"]["Mg"];
-                $drink_salt_detail["K"] = $input["drink"]["salt"]["K"];
-                $drink_salt_detail["Na"] = $input["drink"]["salt"]["Na"];
-                $drink_salt_detail["Na2CO3"] = $input["drink"]["salt"]["Na2CO3"];
-                $saved_drink_salt_detail = $this->saltDetailRepository->update($drink_salt_detail, $farm->animal_drink_water_salt_detail_id);
-                $farm_detail['animal_drink_water_salt_detail_id'] = $saved_drink_salt_detail->id;
+
+                if(isset($input['drink']) && !empty($input['drink'])){
+                    if(isset($input['drink']['salt']) && !empty($input['drink']['salt'])){
+                        //drink.salt
+                        $drink_salt_detail = $input["drink"]["salt"];
+                        $drink_salt_detail["saltable_type"] = "drink";
+                        if($farm->animal_drink_water_salt_detail_id)
+                            $saved_drink_salt_detail = $this->saltDetailRepository->update($drink_salt_detail, $farm->animal_drink_water_salt_detail_id);
+                        else
+                            $saved_drink_salt_detail = $this->saltDetailRepository->create($drink_salt_detail);
+                        $farm_detail['animal_drink_water_salt_detail_id'] = $saved_drink_salt_detail->id;
+                    }
+                }
+
             }
 
             $farm = $this->farmRepository->update($farm_detail, $id);
@@ -638,9 +610,10 @@ class FarmAPIController extends AppBaseController
                 $farm->animal_fodder_sources()->sync($input["animal_fodder_sources"]);
                 $farm->animal_fodder_types()->sync($input["animal_fodder_types"]);
             }
-
+            DB::commit();
             return $this->sendResponse(new FarmResource($farm), 'Farm updated successfully');
         }catch(\Throwable $th){
+            DB::rollBack();
             return $this->sendError($th->getMessage(), 500);
         }
 

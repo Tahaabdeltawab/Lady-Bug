@@ -49,7 +49,6 @@ class CreateFarmAPIRequest extends APIRequest
             'area_unit_id'                          => 'requiredIf:farm_activity_type_id,1,2',
 
             'soil'                                  => 'nullable',
-            'soil.salt'                             => 'nullable',
             'soil.acidity_type_id'                  => 'nullable',
             'soil.acidity_value'                    => 'nullable|numeric|max:14|min:0',
             'soil.acidity_unit_id'                  => 'nullable',
@@ -72,7 +71,6 @@ class CreateFarmAPIRequest extends APIRequest
 
 
             'irrigation'                            => 'nullable',
-            'irrigation.salt'                       => 'nullable',
             'irrigation.acidity_type_id'            => 'nullable',
             'irrigation.acidity_value'                    => 'nullable|numeric|max:14|min:0',
             'irrigation.acidity_unit_id'                  => 'nullable',
