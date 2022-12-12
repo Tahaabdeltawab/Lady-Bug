@@ -615,6 +615,8 @@ class BusinessAPIController extends AppBaseController
                 if($user->get_roles($request->business)){
                     $user->syncRoles([], $business);
                     $user->syncPermissions([], $business);
+                    DB::commit();
+                    return $this->sendSuccess(__('Role detached successfully'));
                 }else{
                     return $this->sendError(__('This user is not a member in this business'), 7000);
                 }
@@ -622,9 +624,9 @@ class BusinessAPIController extends AppBaseController
 
             $slcts = User::$selects;
             $us = User::join('role_user', 'users.id', 'role_user.user_id')
-                ->where('business_id', $request->business)
-                ->where('role_id', $request->role)
-                ->where('user_id', $request->user)
+                ->where('role_user.business_id', $request->business)
+                ->where('role_user.role_id', $request->role)
+                ->where('role_user.user_id', $request->user)
                 ->select(['role_user.start_date', 'role_user.end_date', ...$slcts])
                 ->first();
 
