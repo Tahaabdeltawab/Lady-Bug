@@ -30,11 +30,9 @@ return [
     // used not to get with app Roles of the dashboard
     'business_roles' => [
         'business-admin',
-        'business-editor',
         'business-supervisor',
         'business-consultant',
         'business-worker',
-        'business-company',
     ],
 
     // not to [show or delete or edit]
@@ -42,11 +40,9 @@ return [
         'app-admin',
         'app-user',
         'business-admin',
-        'business-editor',
         'business-supervisor',
         'business-consultant',
         'business-worker',
-        'business-company',
     ],
 
     'business_permissions' => [

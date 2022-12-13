@@ -27,12 +27,12 @@ class AdditionalRolesSeeder extends Seeder
                 'display_name' => 'Business Worker',
                 'description' =>'عامل',
             ],
-            [
+            /* [
                 'id' => 8,
                 'name' => 'business-company',
                 'display_name' => 'Company',
                 'description' =>'شركة',
-            ],
+            ], */
         ]);
     }
 }

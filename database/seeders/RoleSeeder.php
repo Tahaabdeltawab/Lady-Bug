@@ -21,12 +21,12 @@ class RoleSeeder extends Seeder
                 'display_name' => 'Business Admin',
                 'description' =>'مدير مزرعة',
             ],
-            [
+            /* [
                 'id' => 2,
                 'name' => 'business-editor',
                 'display_name' => 'Business Editor',
                 'description' =>'محرر مزرعة',
-            ],
+            ], */
             [
                 'id' => 3,
                 'name' => 'business-supervisor',
