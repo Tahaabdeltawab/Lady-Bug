@@ -15,6 +15,7 @@ class UserOfBusinessResource extends JsonResource
                 ->pluck('permissions.name');
         return [
             'id'                => $this->id,
+            'business_id'       => (int) $request->business,
             'name'              => $this->name,
             'job_name'          => $this->job->name ?? "",
             'photo_url'         => $this->photo_url,
