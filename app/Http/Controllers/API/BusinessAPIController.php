@@ -411,6 +411,8 @@ class BusinessAPIController extends AppBaseController
             if( auth()->id() != $request->user )
             return $this->sendError('You are not the invited person', 403);
 
+            DB::beginTransaction();
+
             $user = User::find($request->user);
             $business = Business::find($request->business);
 
@@ -465,10 +467,12 @@ class BusinessAPIController extends AppBaseController
                 ->where('user_id', $request->user)
                 ->select(['role_user.start_date', 'role_user.end_date', ...$slcts])
                 ->first();
+            DB::commit();
             return $this->sendResponse(new UserOfBusinessResource($us), __('Member added to business successfully'));
         }
         catch(\Throwable $th)
         {
+            DB::rollBack();
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -488,6 +492,7 @@ class BusinessAPIController extends AppBaseController
             if( auth()->id() != $request->user )
             return $this->sendError('You are not the invited person', 403);
 
+            DB::beginTransaction();
             DB::table('notifications')
             ->where('type', 'App\Notifications\BusinessInvitation')
             ->where('notifiable_type', 'App\Models\User')
@@ -496,11 +501,12 @@ class BusinessAPIController extends AppBaseController
             ->where('data->business', $request->business)
             ->where('data->role', $request->role)
             ->update(['data->accepted' => false]);
-
+            DB::commit();
             return $this->sendSuccess(__('Invitation declined'));
         }
         catch(\Throwable $th)
         {
+            DB::rollBack();
             return $this->sendError($th->getMessage(), 500);
         }
     }
@@ -567,9 +573,9 @@ class BusinessAPIController extends AppBaseController
                         ]);
 
                         $cp = ConsultancyProfile::where('user_id', $request->user)->first();
-                        if($request->plan_id)
+                        if($request->plan_id) // offline plan
                             $price = OfflineConsultancyPlan::where('id', $request->plan_id)->value($request->period);
-                        else
+                        else // online plan
                             $price = $cp->{$request->period};
 
                         Transaction::create([

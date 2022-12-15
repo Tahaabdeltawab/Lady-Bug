@@ -90,6 +90,11 @@ class Farm extends Model
         return $this->belongsTo(User::class, 'admin_id');
     }
 
+    public function business()
+    {
+        return $this->belongsTo(Business::class);
+    }
+
     public function farm_activity_type()
     {
         return $this->belongsTo(FarmActivityType::class);
