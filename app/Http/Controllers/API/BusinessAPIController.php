@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Helpers\WeatherApi;
 use App\Http\Requests\API\RateBusinessRequest;
+use App\Http\Requests\API\UpdateBusinessRoleRequest;
 use App\Http\Resources\BusinessAdminResource;
 use App\Http\Resources\BusinessAdminSmResource;
 use App\Http\Resources\BusinessResource;
@@ -398,7 +399,7 @@ class BusinessAPIController extends AppBaseController
 
 
         // attach a business role to a user who has an invitation link
-    public function first_attach_business_role(Request $request)
+    public function first_attach_business_role(UpdateBusinessRoleRequest $request)
     {
         try
         {
@@ -430,12 +431,12 @@ class BusinessAPIController extends AppBaseController
                     'period' => $request->period,
                 ]);
 
-                if($request->plan_id)
-                    $price = OfflineConsultancyPlan::where('id', $request->plan_id)->value($request->period);
-                else{
-                    $cp = ConsultancyProfile::where('user_id', $request->user)->first();
+                $cp = $user->consultancyProfile;
+                if($request->plan_id) // offline plan
+                    $price = OfflineConsultancyPlan::where(['id' => $request->plan_id, 'consultancy_profile_id' => $cp->id])->value($request->period);
+                else // online plan
                     $price = $cp->{$request->period};
-                }
+
                 Transaction::create([
                     'type' => 'out',
                     'user_id' => auth()->id(),
@@ -512,25 +513,11 @@ class BusinessAPIController extends AppBaseController
     }
 
     //attach, edit or delete business roles (send empty or no role_id when deleting a role)
-    public function update_business_role(Request $request)
+    public function update_business_role(UpdateBusinessRoleRequest $request)
     {
         try
         {
             DB::beginTransaction();
-            $validator = Validator::make($request->all(), [
-                'business' => 'required|exists:businesses,id',
-                'user' => 'required|exists:users,id',
-                'role' => 'nullable|exists:roles,id',
-                'permissions' => 'nullable|array',
-                'permissions.*' => 'exists:permissions,id',
-                'period' => 'nullable',
-                'plan_id' => 'nullable|exists:offline_consultancy_plans,id',
-                'start_date' => 'nullable|date_format:Y-m-d',
-                'end_date' => 'nullable|date_format:Y-m-d',
-            ]);
-
-            if ($validator->fails())
-                return $this->sendError($validator->errors()->first());
 
             $user = User::find($request->user);
             $business = Business::find($request->business);
@@ -546,8 +533,17 @@ class BusinessAPIController extends AppBaseController
                 if(!in_array($role->name, config('myconfig.business_roles')))
                     return $this->sendError('Invalid Role');
 
-                if($request->role == 6 && !$request->period)
-                    return $this->sendError('Consultancy Period is required');
+                if($request->role == 6){
+                    if(!$request->period)
+                        return $this->sendError('Consultancy Period is required');
+
+                    if($request->plan_id) // offline plan
+                    {
+                        if(!($cp = $user->consultancyProfile)) return $this->sendError('Selected user is not a consultant');
+                        $plan = OfflineConsultancyPlan::where(['id' => $request->plan_id, 'consultancy_profile_id' => $cp->id])->first();
+                        if(!$plan) return $this->sendError('This consultant does not have such a plan');
+                    }
+                }
 
                 if($request->permissions){
                     $business_allowed_permissions = Permission::businessAllowedPermissions()->pluck('id')->toArray();
@@ -572,9 +568,9 @@ class BusinessAPIController extends AppBaseController
                             'period' => $request->period,
                         ]);
 
-                        $cp = ConsultancyProfile::where('user_id', $request->user)->first();
+                        $cp = $user->consultancyProfile;
                         if($request->plan_id) // offline plan
-                            $price = OfflineConsultancyPlan::where('id', $request->plan_id)->value($request->period);
+                            $price = OfflineConsultancyPlan::where(['id' => $request->plan_id, 'consultancy_profile_id' => $cp->id])->value($request->period);
                         else // online plan
                             $price = $cp->{$request->period};
 
