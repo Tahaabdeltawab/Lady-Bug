@@ -9,6 +9,7 @@ use App\Repositories\BusinessRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Helpers\WeatherApi;
+use App\Http\Requests\API\CreateBusinessRoleRequest;
 use App\Http\Requests\API\RateBusinessRequest;
 use App\Http\Requests\API\UpdateBusinessRoleRequest;
 use App\Http\Resources\BusinessAdminResource;
@@ -399,7 +400,7 @@ class BusinessAPIController extends AppBaseController
 
 
         // attach a business role to a user who has an invitation link
-    public function first_attach_business_role(UpdateBusinessRoleRequest $request)
+    public function first_attach_business_role(CreateBusinessRoleRequest $request)
     {
         try
         {
