@@ -304,7 +304,7 @@ class FarmAPIController extends AppBaseController
             $farm_detail['farmed_type_id'] = $input["farmed_type_id"];
             $farm_detail['farmed_type_class_id'] = $input["farmed_type_class_id"] ?? null;
             $farm_detail['farming_date'] = $input["farming_date"];
-            $farm_detail['code'] = $this->generateRandomString();
+            $farm_detail['code'] = $input['code'];
             if(isset($input['location']) && !empty($input['location'])){
                 $location = $input['location'];
                 $saved_location = $this->locationRepository->create($location);
@@ -481,6 +481,7 @@ class FarmAPIController extends AppBaseController
             $farm_detail['farmed_type_id'] = $input["farmed_type_id"];
             $farm_detail['farmed_type_class_id'] = $input["farmed_type_class_id"] ?? null;
             $farm_detail['farming_date'] = $input["farming_date"];
+            $farm_detail['code'] = $input['code'];
 
             if(isset($input['location']) && !empty($input['location'])){
                 $location = $input['location'];

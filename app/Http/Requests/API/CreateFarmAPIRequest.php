@@ -24,10 +24,12 @@ class CreateFarmAPIRequest extends APIRequest
      */
     public function rules()
     {
+        $id = $this->farm ?? null;
         return [
             'business_id'                           => 'required|exists:businesses,id',
             'real'                                  => 'required',
             'archived'                              => 'required',
+            'code'                                  => 'required|unique:farms,code,'.$id,
             'location'                              => 'array|required',
             'location.latitude'                     => 'required',
             'location.longitude'                    => 'required',
