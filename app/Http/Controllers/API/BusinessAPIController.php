@@ -31,6 +31,7 @@ use App\Http\Resources\UserXsResource;
 use App\Models\BusinessConsultant;
 use App\Models\BusinessField;
 use App\Models\ConsultancyProfile;
+use App\Models\FarmReport;
 use App\Models\OfflineConsultancyPlan;
 use App\Models\Permission;
 use App\Models\Role;
@@ -677,14 +678,15 @@ class BusinessAPIController extends AppBaseController
     {
         try{
             $date = $request->date ?? date('Y-m-d');
-
+            // tasks of the report
             if($request->tasks_only){
-                $tasks = auth()->user()->tasks()->where('farm_report_id', $request->report_id)->where('date', $date)->get();
+                if(!($report = FarmReport::find($request->report_id))) return $this->sendError('report not found');
+                $tasks = $report->tasks()->where('tasks.date', $date)->get();
                 return $this->sendResponse(TaskResource::collection($tasks), 'tasks retrived successfully');
             }
             $weather_resp = WeatherApi::instance()->weather_api($request);
             $weather_data = $weather_resp['data'];
-
+            // tasks of the businesses in which the user participate
             $businesses = auth()->user()->allBusinesses()->with('tasks', function($query) use($date){
                 $query->where('date', $date);
             })->whereHas('tasks', function($q) use($date){
