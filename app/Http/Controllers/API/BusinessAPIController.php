@@ -756,7 +756,7 @@ class BusinessAPIController extends AppBaseController
             ['id' => 1, 'name' => app()->getLocale() == 'ar' ?  'تحت الإنشاء' : 'Under Construction'],
             ['id' => 2, 'name' => app()->getLocale() == 'ar' ?  'يمارس نشاطه' : 'Working']
         ];
-        if($id){
+        if($id !== null){
             return collect($statuses)->firstWhere('id', $id);
         }else
             return $statuses;
@@ -769,7 +769,7 @@ class BusinessAPIController extends AppBaseController
             ['id' => 2, 'name' => app()->getLocale() == 'ar' ?  'خاص' : 'Private'],
             ['id' => 3, 'name' => app()->getLocale() == 'ar' ?  'سري' : 'Secret'],
         ];
-        if($id){
+        if($id !== null){
             return collect($privacies)->firstWhere('id', $id);
         }else
             return $privacies;

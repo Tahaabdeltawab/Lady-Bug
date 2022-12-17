@@ -53,8 +53,8 @@ class FarmedTypeFertilizationNeedAPIController extends AppBaseController
     //         ['value' => 'tree', 'name' => app()->getLocale() == 'ar' ?  'شجرة' : 'Tree'],
     //     ];
 
-    //     if($value){
-    //         return collect($pers)->firstWhere('value', $value);
+    // if($value !== null){
+    // return collect($pers)->firstWhere('value', $value);
     //     }else
     //         return $pers;
     // }

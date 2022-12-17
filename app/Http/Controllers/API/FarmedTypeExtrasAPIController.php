@@ -53,7 +53,7 @@ class FarmedTypeExtrasAPIController extends AppBaseController
             ['value' => 'seedlings', 'name' => app()->getLocale() == 'ar' ?  'شتلات' : 'Seedlings'],
         ];
 
-        if($value){
+        if($value !== null){
             return collect($types)->firstWhere('value', $value);
         }else
             return $types;

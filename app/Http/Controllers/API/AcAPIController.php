@@ -51,7 +51,7 @@ class AcAPIController extends AppBaseController
             ['value' => 'inorganic', 'name' => app()->getLocale() == 'ar' ?  'غير عضوي' : 'Inorganic'],
             ['value' => 'rejected', 'name' => app()->getLocale() == 'ar' ?  'مرفوض' : 'Rejected']
         ];
-        if($value)
+        if($value !== null)
             return collect($who_classes)->firstWhere('value', $value);
         else
             return $who_classes;
