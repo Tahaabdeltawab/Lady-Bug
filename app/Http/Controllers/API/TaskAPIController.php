@@ -55,12 +55,6 @@ class TaskAPIController extends AppBaseController
 
     public function toggle_finish($id)
     {
-        foreach(Business::get() as $b){
-            foreach($b->users as $u){
-                $u->attachPermission('finish-task', $b->id);
-            }
-        }
-
         $task = Task::find($id);
         if (empty($task))
             return $this->sendError('Task not found');
