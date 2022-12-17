@@ -76,6 +76,11 @@ class PermissionSeeder extends Seeder
                 'description' => 'تعديل تقرير',
             ],
             [
+                'name' => 'finish-task',
+                'display_name' => 'finish task',
+                'description' => 'إنهاء مهمة',
+            ],
+            [
                 'name' => 'edit-role',
                 'display_name' => 'edit role',
                 'description' => 'تعديل الأدوار',

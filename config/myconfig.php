@@ -60,6 +60,7 @@ return [
         'edit-report',
         'edit-role',
         'edit-business',
+        'finish-task',
     ],
 
     /**

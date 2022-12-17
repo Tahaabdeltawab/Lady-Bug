@@ -12,6 +12,7 @@ use App\Http\Resources\AcWithInsecticideResource;
 use App\Http\Resources\FertilizerSmResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Ac;
+use App\Models\Business;
 use App\Models\Fertilizer;
 use App\Models\NutElemValue;
 use App\Models\TaskType;
@@ -54,14 +55,20 @@ class TaskAPIController extends AppBaseController
 
     public function toggle_finish($id)
     {
-        $task = $this->taskRepository->find($id);
-
-        if (empty($task)) {
-            return $this->sendError('Service Task not found');
+        foreach(Business::get() as $b){
+            foreach($b->users as $u){
+                $u->attachPermission('finish-task', $b->id);
+            }
         }
 
+        $task = Task::find($id);
+        if (empty($task))
+            return $this->sendError('Task not found');
+        if(!auth()->user()->hasPermission("finish-task", $task->business_id))
+            return $this->sendError(__('Unauthorized, you don\'t have the required permissions!'));
         $msg = $task->done ? 'Task unfinished successfully' : 'Task finished successfully' ;
-        $this->taskRepository->save_localized(['done' => !$task->done], $id);
+        $task->done = !$task->done;
+        $task->save();
 
         return $this->sendSuccess($msg);
     }
