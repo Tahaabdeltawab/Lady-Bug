@@ -85,12 +85,12 @@ class Task extends Model
         'farm_id' => 'required|exists:farms,id',
         'business_id' => 'required|exists:businesses,id',
         'task_type_id' => 'required|exists:task_types,id',
-        'insecticide_id' => 'nullable',
-        'fertilizer_id' => 'nullable',
+        'insecticide_id' => 'excludeIf:task_type_id,2,3,4|exists:insecticides,id',
+        'fertilizer_id' => 'excludeIf:task_type_id,1,2,4|exists:fertilizers,id',
         'date' => 'nullable|date_format:Y-m-d',
         'week' => 'nullable|in:1,2,3,4',
-        'quantity' => 'nullable',
-        'quantity_unit' => 'nullable|in:kilo,gram',
+        'quantity' => 'excludeIf:task_type_id,2,4',
+        'quantity_unit' => 'excludeIf:task_type_id,2,4|in:kilo,gram',
         'notes' => 'nullable',
     ];
 
@@ -168,6 +168,23 @@ class Task extends Model
 
     public function scopeOpen($q){
         return $q->where('done', false);
+    }
+
+    // مكافحة
+    public function scopeInsect($q){
+        return $q->where('task_type_id', 1);
+    }
+    // ري
+    public function scopeIrrig($q){
+        return $q->where('task_type_id', 2);
+    }
+    // تسميد
+    public function scopeFert($q){
+        return $q->where('task_type_id', 3);
+    }
+    // عمليات حقلية
+    public function scopeField($q){
+        return $q->where('task_type_id', 4);
     }
 
 }

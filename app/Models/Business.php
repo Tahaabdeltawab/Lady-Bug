@@ -44,7 +44,7 @@ class Business extends Team
         'whatsapp' => 'string',
         'location_id' => 'integer',
         'country_id' => 'integer',
-        'privacy' => 'boolean'
+        'privacy' => 'string'
     ];
 
     /**
@@ -70,7 +70,7 @@ class Business extends Team
         'location.details' => 'nullable',
         'location.postal' => 'nullable',
         'country_id' => 'nullable|exists:countries,id',
-        'privacy' => 'nullable',
+        'privacy' => 'nullable|in,guide,public,private,secret',
         'branches' => 'nullable|array',
         'agents' => 'nullable|array',
         'agents.*' => 'exists:businesses,id',
@@ -205,12 +205,20 @@ class Business extends Team
         return $q->where('business_field_id', 5);
     }
 
+    public function scopeGuide($q)
+    {
+        return $q->where('privacy', 'guide');
+    }
     public function scopePublic($q)
     {
-        return $q->where('privacy', 1);
+        return $q->where('privacy', 'public');
     }
     public function scopePrivate($q)
     {
-        return $q->where('privacy', 0);
+        return $q->where('privacy', 'private');
+    }
+    public function scopeSecret($q)
+    {
+        return $q->where('privacy', 'secret');
     }
 }
