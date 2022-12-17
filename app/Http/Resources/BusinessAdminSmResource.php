@@ -24,6 +24,7 @@ class BusinessAdminSmResource extends JsonResource
             'com_name' => $this->com_name,
             'ladybug_rating' => !is_null($this->ladybug_rating) ? ceil($this->ladybug_rating * 100 / 5).'%' : null,
             'status_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->statuses($this->status)['name'],
+            'privacy_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->privacies($this->privacy)['name'],
         ];
     }
 }

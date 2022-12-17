@@ -44,7 +44,7 @@ class Business extends Team
         'whatsapp' => 'string',
         'location_id' => 'integer',
         'country_id' => 'integer',
-        'privacy' => 'string'
+        'privacy' => 'integer'
     ];
 
     /**

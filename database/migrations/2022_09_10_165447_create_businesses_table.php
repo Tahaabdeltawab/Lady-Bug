@@ -25,7 +25,7 @@ class CreateBusinessesTable extends Migration
             $table->string('whatsapp')->nullable();
             $table->foreignId('location_id')->nullable()->constrained();
             $table->foreignId('country_id')->nullable()->constrained();
-            $table->string('privacy')->nullable();
+            $table->tinyInteger('privacy')->nullable()->default(0);
             $table->double('ladybug_rating')->nullable();
             $table->timestamps();
         });

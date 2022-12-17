@@ -761,6 +761,19 @@ class BusinessAPIController extends AppBaseController
         }else
             return $statuses;
     }
+    public function privacies($id = null)
+    {
+        $privacies =  [
+            ['id' => 0, 'name' => app()->getLocale() == 'ar' ?  'إرشادي' : 'Guide'],
+            ['id' => 1, 'name' => app()->getLocale() == 'ar' ?  'عام' : 'Public'],
+            ['id' => 2, 'name' => app()->getLocale() == 'ar' ?  'خاص' : 'Private'],
+            ['id' => 3, 'name' => app()->getLocale() == 'ar' ?  'سري' : 'Secret'],
+        ];
+        if($id){
+            return collect($privacies)->firstWhere('id', $id);
+        }else
+            return $privacies;
+    }
 
     public function getRelations($business_field_id = null)
     {
@@ -775,7 +788,8 @@ class BusinessAPIController extends AppBaseController
         return $this->sendResponse([
             'agents' => BusinessXsResource::collection($similar_dealers),
             'distributors' => BusinessXsResource::collection($similar_dealers),
-            'statuses' => $this->statuses()
+            'statuses' => $this->statuses(),
+            'privacies' => $this->privacies(),
         ], 'business relations retrieved successfully');
     }
 

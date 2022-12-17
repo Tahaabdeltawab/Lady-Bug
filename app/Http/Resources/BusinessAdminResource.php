@@ -31,6 +31,7 @@ class BusinessAdminResource extends JsonResource
             'cover_asset' => @$this->cover_asset[0]->asset_url,
             'com_name' => $this->com_name,
             'status_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->statuses($this->status)['name'],
+            'privacy_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->privacies($this->privacy)['name'],
             'mobile' => $this->mobile,
             'whatsapp' => $this->whatsapp,
             'ladybug_rating' => !is_null($this->ladybug_rating) ? ceil($this->ladybug_rating * 100 / 5).'%' : null,
