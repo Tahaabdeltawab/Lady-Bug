@@ -24,6 +24,7 @@ class FarmWithReportsResource extends JsonResource
             'farm' => new FarmResource($this),
             'reports' => FarmReportXsResource::collection($this->farm_reports),
             'user_permissions' => $ps,
+            'privacy_permissions' => $this->business->privacyPermissions(),
         ];
     }
 }

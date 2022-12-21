@@ -207,18 +207,60 @@ class Business extends Team
 
     public function scopeGuide($q)
     {
-        return $q->where('privacy', 'guide');
+        return $q->where('privacy', 0);
     }
     public function scopePublic($q)
     {
-        return $q->where('privacy', 'public');
+        return $q->where('privacy', 1);
     }
     public function scopePrivate($q)
     {
-        return $q->where('privacy', 'private');
+        return $q->where('privacy', 2);
     }
     public function scopeSecret($q)
     {
-        return $q->where('privacy', 'secret');
+        return $q->where('privacy', 3);
     }
+
+
+    public function privacyPermissions(){
+        if(auth()->user()->get_roles($this->id)){
+            return $this->privacy_permissions['all'];
+        }
+        return $this->privacy_permissions[$this->privacy];
+    }
+    public function canSee(){
+        return !empty($this->privacyPermissions());
+    }
+
+    /**
+     * 'show-posts', // + videos, articles, stories
+     * 'show-participants', // + goals, steps
+     */
+    public $privacy_permissions = [
+        'all' => [
+            'show-posts',
+            'show-products',
+            'show-farms',
+            'show-participants',
+            'show-reports',
+        ],
+        0 => [
+            'show-posts',
+            'show-products',
+            'show-farms',
+            'show-participants',
+            'show-reports',
+        ],
+        1 => [
+            'show-posts',
+            'show-products',
+            'show-farms',
+        ],
+        2 => [
+            'show-posts',
+            'show-products',
+        ],
+        3 => [],
+    ];
 }
