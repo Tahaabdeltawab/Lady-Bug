@@ -190,9 +190,11 @@ class User extends Authenticatable implements JWTSubject
 
     public function allBusinesses()
     {
-        return $this->rolesTeams()->where(function($q){
-            $q->where([['role_user.start_date', '<=', today()],['role_user.end_date', '>', today()]])
-            ->orWhere([['role_user.start_date','=', null], ['role_user.end_date','=', null]]);
+        return $this->rolesTeams();
+        // commented temporarily
+        // ->where(function($q){
+        //     $q->where([['role_user.start_date', '<=', today()],['role_user.end_date', '>', today()]])
+        //     ->orWhere([['role_user.start_date','=', null], ['role_user.end_date','=', null]]);
             /**
              * * DB Note
              * ->orWhere(['role_user.start_date' => null, 'role_user.end_date' => null]);
@@ -202,7 +204,7 @@ class User extends Authenticatable implements JWTSubject
              * or (`role_user`.`start_dates` is null and `role_user`.`end_dates` is null)"
             **/
 
-        });
+        // });
     }
 
     public function ownBusinesses()
