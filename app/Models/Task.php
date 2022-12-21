@@ -114,6 +114,12 @@ class Task extends Model
         });
     }
 
+    public function getNameAttribute(){
+        $name = $this->task_type->name;
+        if(($mat = $this->insecticide) || ($mat = $this->fertilizer))
+            $name .= ' ' . $this->quantity . ' ' . __($this->quantity_unit) . ' ' . $mat->name;
+        return $name;
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/

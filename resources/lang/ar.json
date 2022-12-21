@@ -122,5 +122,8 @@
     "business-supervisor": "مشرف عمل",
     "business-consultant": "استشاري",
     "business-worker": "عامل",
-    "business-company": "شركة"
+    "business-company": "شركة",
+
+    "kilo": "كيلو",
+    "gram": "جرام"
 }

@@ -25,7 +25,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('alarm:task')->dailyAt('10:00');
-        // $schedule->command('alarm:task')->everyMinute(); // for testing
+        // $schedule->command('alarm:task')->everyMinute()->runInBackground(); // for testing
 
         $schedule->command('checkBlocked')->dailyAt('10:00');
     }

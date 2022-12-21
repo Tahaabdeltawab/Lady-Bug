@@ -38,7 +38,9 @@ class NotifyTaskCommand extends Command
      */
     public function handle()
     {
-        $alarmed_tasks = Task::with('business.users')->open()->where('date', today())->get();
+        $alarmed_tasks = Task::with('business.users')->open()->where(function($q){
+            $q->where('date', today()->addDay())->orWhere('date', today());
+        })->get();
         foreach($alarmed_tasks as $task){
             foreach($task->business->users as $user){
                 $user->notify(new \App\Notifications\TaskAlarm($task));
