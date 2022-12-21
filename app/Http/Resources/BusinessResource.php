@@ -45,10 +45,12 @@ class BusinessResource extends JsonResource
             'address' => @$this->location->details,
             // 'country_id' => $this->country_id,
             'is_following' => $this->isFollowedBy(auth()->user()), // Am I following him?
-            'user_permissions' => $ps,
             'participants_count' => count($prts),
             'participants_images' => $imgs,
-            'user_role' => __(collect(auth()->user()->getRoles($this->id))->first()),
+            'user_permissions' => $ps,
+            'user_role' => @__(collect(auth()->user()->get_roles($this->id))->first()['name']),
+            'privacy_permissions' => $this->privacyPermissions(),
+            'can_see' => $this->canSee(),
 
         ];
     }

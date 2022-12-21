@@ -98,9 +98,9 @@ class UserWebAPIController extends AppBaseController
 
             return $this->sendResponse([
                 'tasks' => BusinessWithTasksResource::collection($businesses),
-                'own_businesses' => ['count' => $own_businesses->count(), 'data' => BusinessSmWebResource::collection($own_businesses)],
-                'shared_businesses' => ['count' => $shared_businesses->count(), 'data' => BusinessSmWebResource::collection($shared_businesses)],
-                'followed_businesses' => ['count' => $followed_businesses->count(), 'data' => BusinessSmWebResource::collection($followed_businesses)],
+                'own_businesses' => ['count' => $own_businesses->count(), 'data' => collect(BusinessSmWebResource::collection($own_businesses))->where('can_see', true)->values()],
+                'shared_businesses' => ['count' => $shared_businesses->count(), 'data' => collect(BusinessSmWebResource::collection($shared_businesses))->where('can_see', true)->values()],
+                'followed_businesses' => ['count' => $followed_businesses->count(), 'data' => collect(BusinessSmWebResource::collection($followed_businesses))->where('can_see', true)->values()],
             ], 'businesses retrieved successfully');
         }catch(\Throwable $th){
             throw $th;
@@ -241,9 +241,9 @@ class UserWebAPIController extends AppBaseController
             $shared_businesses = $user->sharedBusinesses($own_businesses->pluck('id'))->get();
             $followed_businesses = $user->followedBusinesses;
             return $this->sendResponse([
-                'own_businesses'        => BusinessSmWebResource::collection($own_businesses),
-                'shared_businesses'     => BusinessSmWebResource::collection($shared_businesses),
-                'followed_businesses'   => BusinessSmWebResource::collection($followed_businesses)
+                'own_businesses'        => collect(BusinessSmWebResource::collection($own_businesses))->where('can_see', true)->values(),
+                'shared_businesses'     => collect(BusinessSmWebResource::collection($shared_businesses))->where('can_see', true)->values(),
+                'followed_businesses'   => collect(BusinessSmWebResource::collection($followed_businesses))->where('can_see', true)->values()
             ], 'businesses retrieved successfully');
         }catch(\Throwable $th){
             throw $th;

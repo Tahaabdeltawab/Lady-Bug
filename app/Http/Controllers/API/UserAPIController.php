@@ -342,9 +342,9 @@ class UserAPIController extends AppBaseController
             $followed_businesses = $user->followedBusinesses;
             return $this->sendResponse([
                 'cons'                  => $user->consultancyProfile ? new ConsultancyProfileResource($user->consultancyProfile) : null,
-                'own_businesses'        => BusinessResource::collection($own_businesses),
-                'shared_businesses'     => BusinessResource::collection($shared_businesses),
-                'followed_businesses'   => BusinessResource::collection($followed_businesses)
+                'own_businesses'        => collect(BusinessResource::collection($own_businesses))->where('can_see', true)->values(),
+                'shared_businesses'     => BusinessResource::collection($shared_businesses)->where('can_see', true)->values(),
+                'followed_businesses'   => BusinessResource::collection($followed_businesses)->where('can_see', true)->values(),
             ], 'businesses retrieved successfully');
         }catch(\Throwable $th){
             throw $th;

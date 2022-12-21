@@ -658,9 +658,9 @@ class BusinessAPIController extends AppBaseController
             return $this->sendResponse([
                 'unread_notifications_count' => $user->unreadNotifications->count(),
                 'weather_data' => $weather_data,
-                'own_businesses' => BusinessResource::collection($own_businesses),
-                'shared_businesses' => BusinessResource::collection($shared_businesses),
-                'followed_businesses' => BusinessResource::collection($followed_businesses)
+                'own_businesses' => collect(BusinessResource::collection($own_businesses))->where('can_see', true)->values(),
+                'shared_businesses' => collect(BusinessResource::collection($shared_businesses))->where('can_see', true)->values(),
+                'followed_businesses' => collect(BusinessResource::collection($followed_businesses))->where('can_see', true)->values(),
             ], 'businesses retrieved successfully');
         }catch(\Throwable $th){
             throw $th;
