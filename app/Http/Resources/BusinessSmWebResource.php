@@ -26,7 +26,7 @@ class BusinessSmWebResource extends JsonResource
             'user_permissions' => $ps,
             'user_role' => @__(collect(auth()->user()->get_roles($this->id))->first()['name']),
             'privacy_permissions' => $this->privacyPermissions(),
-            'can_see' => $this->canSee(),
+            'canBeSeen' => $this->canBeSeen(),
         ];
     }
 }

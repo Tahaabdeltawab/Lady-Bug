@@ -3,8 +3,6 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Repositories\FarmRepository;
-use App\Repositories\PostTypeRepository;
 
 class PostXsResource extends JsonResource
 {
@@ -45,6 +43,7 @@ class PostXsResource extends JsonResource
             'shared_content' => $original ? null : $this->content, // content added from the sharer
             'share_id' => $post->id, // used to share the post. if this is an original post its value will be $this->id, if it's a shared post , its value will be the original post id
             'business' => BusinessMdResource::make($this->business),
+            'canBeSeen' => $this->business ? $this->business->userCan('show-posts') : true,
         ];
 
         return $return;

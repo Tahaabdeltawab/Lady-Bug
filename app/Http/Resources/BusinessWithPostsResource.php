@@ -29,8 +29,11 @@ class BusinessWithPostsResource extends JsonResource
             'users_rating' => $this->ratingPercent().'%',
             'followers_count' => $this->followers()->count(),
             'participants_count' => $this->users()->count(),
-            'posts' => PostXsResource::collection($this->posts()->accepted()->post()->get()),
+            'posts' => collect(PostXsResource::collection($this->posts()->accepted()->post()->get()))->where('canBeSeen', true)->values(),
+            'user_role' => @__(collect(auth()->user()->get_roles($this->id))->first()['name']),
             'user_permissions' => $ps,
+            'privacy_permissions' => $this->privacyPermissions(),
+            'canBeSeen' => $this->canBeSeen(),
         ];
     }
 }

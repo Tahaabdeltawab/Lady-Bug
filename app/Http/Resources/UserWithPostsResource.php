@@ -16,7 +16,7 @@ class UserWithPostsResource extends JsonResource
     {
         return [
             'user' => new UserLgResource($this),
-            'posts' => PostXsResource::collection($this->posts()->accepted()->post()->get()),
+            'posts' => collect(PostXsResource::collection($this->posts()->accepted()->post()->get()))->where('canBeSeen', true)->values(),
         ];
 
     }

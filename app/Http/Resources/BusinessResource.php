@@ -47,10 +47,10 @@ class BusinessResource extends JsonResource
             'is_following' => $this->isFollowedBy(auth()->user()), // Am I following him?
             'participants_count' => count($prts),
             'participants_images' => $imgs,
-            'user_permissions' => $ps,
             'user_role' => @__(collect(auth()->user()->get_roles($this->id))->first()['name']),
+            'user_permissions' => $ps,
             'privacy_permissions' => $this->privacyPermissions(),
-            'can_see' => $this->canSee(),
+            'canBeSeen' => $this->canBeSeen(),
 
         ];
     }

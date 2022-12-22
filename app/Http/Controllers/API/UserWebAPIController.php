@@ -40,7 +40,7 @@ class UserWebAPIController extends AppBaseController
 
         $data =  [
             'posts' => [
-                'data' => PostXsResource::collection($posts),
+                'data' => collect(PostXsResource::collection($posts))->where('canBeSeen', true)->values(),
                 'meta' => $pag,
             ],
             'favorites' => $pag['currentPage'] == 1 ? FarmedTypeXsResource::collection(auth()->user()->favorites) : null,
@@ -98,9 +98,9 @@ class UserWebAPIController extends AppBaseController
 
             return $this->sendResponse([
                 'tasks' => BusinessWithTasksResource::collection($businesses),
-                'own_businesses' => ['count' => $own_businesses->count(), 'data' => collect(BusinessSmWebResource::collection($own_businesses))->where('can_see', true)->values()],
-                'shared_businesses' => ['count' => $shared_businesses->count(), 'data' => collect(BusinessSmWebResource::collection($shared_businesses))->where('can_see', true)->values()],
-                'followed_businesses' => ['count' => $followed_businesses->count(), 'data' => collect(BusinessSmWebResource::collection($followed_businesses))->where('can_see', true)->values()],
+                'own_businesses' => ['count' => $own_businesses->count(), 'data' => collect(BusinessSmWebResource::collection($own_businesses))->where('canBeSeen', true)->values()],
+                'shared_businesses' => ['count' => $shared_businesses->count(), 'data' => collect(BusinessSmWebResource::collection($shared_businesses))->where('canBeSeen', true)->values()],
+                'followed_businesses' => ['count' => $followed_businesses->count(), 'data' => collect(BusinessSmWebResource::collection($followed_businesses))->where('canBeSeen', true)->values()],
             ], 'businesses retrieved successfully');
         }catch(\Throwable $th){
             throw $th;
@@ -154,7 +154,7 @@ class UserWebAPIController extends AppBaseController
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $posts = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
 
-            return $this->sendResponse(['data' => PostXsResource::collection($posts), 'meta' => $pag], 'user posts retrieved successfully');
+            return $this->sendResponse(['data' => collect(PostXsResource::collection($posts))->where('canBeSeen', true)->values(), 'meta' => $pag], 'user posts retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -171,7 +171,7 @@ class UserWebAPIController extends AppBaseController
             $query = $user->posts()->accepted()->video();
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $videos = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
-            return $this->sendResponse(['data' => PostXsResource::collection($videos), 'meta' => $pag], 'user videos retrieved successfully');
+            return $this->sendResponse(['data' => collect(PostXsResource::collection($videos))->where('canBeSeen', true)->values(), 'meta' => $pag], 'user videos retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -189,7 +189,7 @@ class UserWebAPIController extends AppBaseController
             $query = $user->posts()->accepted()->story();
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $videos = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
-            return $this->sendResponse(['data' => PostXsResource::collection($videos), 'meta' => $pag], 'user stories retrieved successfully');
+            return $this->sendResponse(['data' => collect(PostXsResource::collection($videos))->where('canBeSeen', true)->values(), 'meta' => $pag], 'user stories retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -207,7 +207,7 @@ class UserWebAPIController extends AppBaseController
             $query = $user->posts()->accepted()->article();
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $videos = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
-            return $this->sendResponse(['data' => PostXsResource::collection($videos), 'meta' => $pag], 'user articles retrieved successfully');
+            return $this->sendResponse(['data' => collect(PostXsResource::collection($videos))->where('canBeSeen', true)->values(), 'meta' => $pag], 'user articles retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -224,7 +224,7 @@ class UserWebAPIController extends AppBaseController
             $query = $user->products();
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $products = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
-            return $this->sendResponse(['data' => ProductXsResource::collection($products), 'meta' => $pag], 'user products retrieved successfully');
+            return $this->sendResponse(['data' => collect(ProductXsResource::collection($products))->where('canBeSeen', true)->values(), 'meta' => $pag], 'user products retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -241,9 +241,9 @@ class UserWebAPIController extends AppBaseController
             $shared_businesses = $user->sharedBusinesses($own_businesses->pluck('id'))->get();
             $followed_businesses = $user->followedBusinesses;
             return $this->sendResponse([
-                'own_businesses'        => collect(BusinessSmWebResource::collection($own_businesses))->where('can_see', true)->values(),
-                'shared_businesses'     => collect(BusinessSmWebResource::collection($shared_businesses))->where('can_see', true)->values(),
-                'followed_businesses'   => collect(BusinessSmWebResource::collection($followed_businesses))->where('can_see', true)->values()
+                'own_businesses'        => collect(BusinessSmWebResource::collection($own_businesses))->where('canBeSeen', true)->values(),
+                'shared_businesses'     => collect(BusinessSmWebResource::collection($shared_businesses))->where('canBeSeen', true)->values(),
+                'followed_businesses'   => collect(BusinessSmWebResource::collection($followed_businesses))->where('canBeSeen', true)->values()
             ], 'businesses retrieved successfully');
         }catch(\Throwable $th){
             throw $th;
@@ -293,7 +293,7 @@ class UserWebAPIController extends AppBaseController
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $posts = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
 
-            return $this->sendResponse(['data' => PostXsResource::collection($posts), 'meta' => $pag], 'business posts retrieved successfully');
+            return $this->sendResponse(['data' => collect(PostXsResource::collection($posts))->where('canBeSeen', true)->values(), 'meta' => $pag], 'business posts retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -311,7 +311,7 @@ class UserWebAPIController extends AppBaseController
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $videos = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
 
-            return $this->sendResponse(['data' => PostXsResource::collection($videos), 'meta' => $pag], 'business videos retrieved successfully');
+            return $this->sendResponse(['data' => collect(PostXsResource::collection($videos))->where('canBeSeen', true)->values(), 'meta' => $pag], 'business videos retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -330,7 +330,7 @@ class UserWebAPIController extends AppBaseController
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $videos = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
 
-            return $this->sendResponse(['data' => PostXsResource::collection($videos), 'meta' => $pag], 'business videos retrieved successfully');
+            return $this->sendResponse(['data' => collect(PostXsResource::collection($videos))->where('canBeSeen', true)->values(), 'meta' => $pag], 'business videos retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -347,7 +347,7 @@ class UserWebAPIController extends AppBaseController
             $query = $business->products();
             $pag = \Helper::pag($query->count(), request()->perPage, request()->page);
             $products = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
-            return $this->sendResponse(['data' => ProductXsResource::collection($products), 'meta' => $pag], 'business products retrieved successfully');
+            return $this->sendResponse(['data' => collect(ProductXsResource::collection($products))->where('canBeSeen', true)->values(), 'meta' => $pag], 'business products retrieved successfully');
         }
         catch(\Throwable $th)
         {

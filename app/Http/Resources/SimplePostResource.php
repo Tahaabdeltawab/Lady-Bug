@@ -3,8 +3,6 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Repositories\FarmRepository;
-use App\Repositories\PostTypeRepository;
 
 class SimplePostResource extends JsonResource
 {

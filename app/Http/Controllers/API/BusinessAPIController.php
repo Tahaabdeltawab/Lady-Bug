@@ -151,7 +151,7 @@ class BusinessAPIController extends AppBaseController
             if (empty($business))
                 return $this->sendError('business not found');
             $posts = $business->posts()->accepted()->post()->get();
-            return $this->sendResponse(PostXsResource::collection($posts), 'business posts retrieved successfully');
+            return $this->sendResponse(collect(PostXsResource::collection($posts))->where('canBeSeen', true)->values(), 'business posts retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -166,7 +166,7 @@ class BusinessAPIController extends AppBaseController
             if (empty($business))
                 return $this->sendError('business not found');
             $videos = $business->posts()->accepted()->video()->get();
-            return $this->sendResponse(PostXsResource::collection($videos), 'business videos retrieved successfully');
+            return $this->sendResponse(collect(PostXsResource::collection($videos))->where('canBeSeen', true)->values(), 'business videos retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -182,7 +182,7 @@ class BusinessAPIController extends AppBaseController
             if (empty($business))
                 return $this->sendError('business not found');
             $videos = $business->posts()->accepted()->story()->get();
-            return $this->sendResponse(PostXsResource::collection($videos), 'business stories retrieved successfully');
+            return $this->sendResponse(collect(PostXsResource::collection($videos))->where('canBeSeen', true)->values(), 'business stories retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -198,7 +198,7 @@ class BusinessAPIController extends AppBaseController
             if (empty($business))
                 return $this->sendError('business not found');
             $videos = $business->posts()->accepted()->article()->get();
-            return $this->sendResponse(PostXsResource::collection($videos), 'business articles retrieved successfully');
+            return $this->sendResponse(collect(PostXsResource::collection($videos))->where('canBeSeen', true)->values(), 'business articles retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -213,7 +213,7 @@ class BusinessAPIController extends AppBaseController
             if (empty($business))
                 return $this->sendError('business not found');
             $products = $business->products;
-            return $this->sendResponse(ProductXsResource::collection($products), 'business products retrieved successfully');
+            return $this->sendResponse(collect(ProductXsResource::collection($products))->where('canBeSeen', true)->values(), 'business products retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -658,9 +658,9 @@ class BusinessAPIController extends AppBaseController
             return $this->sendResponse([
                 'unread_notifications_count' => $user->unreadNotifications->count(),
                 'weather_data' => $weather_data,
-                'own_businesses' => collect(BusinessResource::collection($own_businesses))->where('can_see', true)->values(),
-                'shared_businesses' => collect(BusinessResource::collection($shared_businesses))->where('can_see', true)->values(),
-                'followed_businesses' => collect(BusinessResource::collection($followed_businesses))->where('can_see', true)->values(),
+                'own_businesses' => collect(BusinessResource::collection($own_businesses))->where('canBeSeen', true)->values(),
+                'shared_businesses' => collect(BusinessResource::collection($shared_businesses))->where('canBeSeen', true)->values(),
+                'followed_businesses' => collect(BusinessResource::collection($followed_businesses))->where('canBeSeen', true)->values(),
             ], 'businesses retrieved successfully');
         }catch(\Throwable $th){
             throw $th;

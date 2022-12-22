@@ -15,6 +15,7 @@ use App\Http\Resources\PostTypeResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\FarmedTypeGinfoResource;
 use App\Http\Resources\FarmedTypeXsResource;
+use App\Http\Resources\PostAdminResource;
 use App\Http\Resources\PostXsResource;
 use App\Http\Resources\UserSmResource;
 use App\Models\Business;
@@ -47,7 +48,7 @@ class PostAPIController extends AppBaseController
 
 
     // admin
-    public function index(Request $request)
+    public function admin_index(Request $request)
     {
         $posts = $this->postRepository->all(
             $request->except(['page', 'perPage']),
@@ -55,7 +56,7 @@ class PostAPIController extends AppBaseController
             $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => PostXsResource::collection($posts['all']), 'meta' => $posts['meta']], 'Posts retrieved successfully');
+        return $this->sendResponse(['all' => PostAdminResource::collection($posts['all']), 'meta' => $posts['meta']], 'Posts retrieved successfully');
     }
 
     private function paginate($data)
@@ -79,7 +80,7 @@ class PostAPIController extends AppBaseController
         );
 
         return $this->sendResponse([
-            'data' => PostXsResource::collection($posts->items()),
+            'data' => collect(PostXsResource::collection($posts->items()))->where('canBeSeen', true)->values(),
             'meta' => $posts->toArrayWithoutData(),
         ], '');
 
@@ -109,7 +110,9 @@ class PostAPIController extends AppBaseController
         $posts = $favfollowings_posts->merge($followings_posts)->merge($favourites_posts)->merge($remnant_posts);
 
         $posts1 = $posts->take($this->skip);
+        $posts1_c = collect(PostXsResource::collection($posts1))->where('canBeSeen', true)->values();
         $posts2 = $this->paginate($posts->skip($this->skip));
+        $posts2_c = collect(PostXsResource::collection($posts2->items()))->where('canBeSeen', true)->values();
         if($posts2->currentPage() > 1)
         {
             $data =  [
@@ -117,16 +120,12 @@ class PostAPIController extends AppBaseController
                 'news_count' => null,
                 'posts1' => null,
                 'posts2' => [
-                    'data' => PostXsResource::collection($posts2->items()),
+                    'data' => $posts2_c,
                     'meta' => $posts2->toArrayWithoutData(),
                 ],
                 'news' => null,
                 'unread_notifications_count' => null,
                 'favorites' => null,
-            ];
-            $data['posts2'] = [
-                'data' => PostXsResource::collection($posts2->items()),
-                'meta' => $posts2->toArrayWithoutData(),
             ];
         }
         else
@@ -136,11 +135,11 @@ class PostAPIController extends AppBaseController
             $fav_farmed_type_ginfos = FarmedTypeGinfo::whereIn('farmed_type_id', $fav_farmed_types_ids)->OrderByDesc('created_at')->limit(10)->get();
 
             $data =  [
-                'posts1_count' => $posts1->count(),
+                'posts1_count' => $posts1_c->count(),
                 'news_count' => $fav_farmed_type_ginfos->count(),
-                'posts1' => PostXsResource::collection($posts1),
+                'posts1' => $posts1_c,
                 'posts2' => [
-                    'data' => PostXsResource::collection($posts2->items()),
+                    'data' => $posts2_c,
                     'meta' => $posts2->toArrayWithoutData(),
                 ],
                 'news' => FarmedTypeGinfoResource::collection($fav_farmed_type_ginfos),
@@ -161,7 +160,7 @@ class PostAPIController extends AppBaseController
 
          return $this->sendResponse(
              [
-                 'posts' => PostXsResource::collection($posts),
+                 'posts' => collect(PostXsResource::collection($posts))->where('canBeSeen', true)->values(),
                  'unread_notifications_count' => auth()->user()->unreadNotifications()->count(),
              ],
              'Timeline retrieved successfully');
@@ -175,19 +174,19 @@ class PostAPIController extends AppBaseController
             return $q->video();
         })
         ->get();
-        return $this->sendResponse(['all' => PostXsResource::collection($posts)], 'Posts retrieved successfully');
+        return $this->sendResponse(['all' => collect(PostXsResource::collection($posts))->where('canBeSeen', true)->values()], 'Posts retrieved successfully');
     }
 
     public function get_posts_by_farmed_type_id($farmed_type_id)
     {
         $posts = Post::accepted()->where('farmed_type_id', $farmed_type_id)->get();
-        return $this->sendResponse(['all' => PostXsResource::collection($posts)], 'Posts retrieved successfully');
+        return $this->sendResponse(['all' => collect(PostXsResource::collection($posts))->where('canBeSeen', true)->values()], 'Posts retrieved successfully');
     }
 
     public function get_posts_by_post_type_id($post_type_id)
     {
         $posts = Post::accepted()->where('post_type_id', $post_type_id)->get();
-        return $this->sendResponse(['all' => PostXsResource::collection($posts)], 'Posts retrieved successfully');
+        return $this->sendResponse(['all' => collect(PostXsResource::collection($posts))->where('canBeSeen', true)->values()], 'Posts retrieved successfully');
     }
 
     //  solve post

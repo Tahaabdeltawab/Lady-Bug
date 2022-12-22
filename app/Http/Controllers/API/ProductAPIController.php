@@ -16,6 +16,7 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\CityResource;
 use App\Http\Resources\CountryResource;
 use App\Http\Resources\FarmedTypeResource;
+use App\Http\Resources\ProductAdminResource;
 use App\Http\Resources\ProductLgResource;
 use App\Http\Resources\ProductTypeResource;
 use App\Http\Resources\ProductXsResource;
@@ -50,6 +51,19 @@ class ProductAPIController extends AppBaseController
         $this->cityRepository = $cityRepo;
     }
 
+    // admin
+    public function admin_index(Request $request)
+    {
+        $query = Product::query();
+        $pag = \Helper::pag($query->count(), $request->perPage, $request->page);
+        $products = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
+
+        $data = [
+            'data' => ProductAdminResource::collection($products),
+            'meta' => $pag
+        ];
+        return $this->sendResponse($data, 'Products retrieved successfully');
+    }
     public function index(Request $request)
     {
         $query = Product::when(request()->product_type, fn ($q) => $q->where('product_type_id', request()->product_type));
@@ -58,7 +72,7 @@ class ProductAPIController extends AppBaseController
 
         $data = [
             'unread_notifications_count' => auth()->user()->unreadNotifications->count(),
-            'data' => ProductXsResource::collection($products),
+            'data' => collect(ProductXsResource::collection($products))->where('canBeSeen', true)->values(),
             'meta' => $pag
         ];
         if(!request()->product_type){
@@ -74,7 +88,7 @@ class ProductAPIController extends AppBaseController
         $products = Product::whereRaw('LOWER(`name`) regexp ? ', '"(ar|en)":"\w*' . $query . '.*"')
         ->orWhereRaw('LOWER(`description`) regexp ? ', '"(ar|en)":"\w*' . $query . '.*"')
         ->get();
-        return $this->sendResponse(['all' => ProductXsResource::collection($products)], 'Products retrieved successfully');
+        return $this->sendResponse(['all' => collect(ProductXsResource::collection($products))->where('canBeSeen', true)->values()], 'Products retrieved successfully');
     }
 
 

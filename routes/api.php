@@ -136,8 +136,8 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
         // end web
 
         Route::get('users/posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_posts']);
-        Route::get('users/liked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_liked_posts']);
-        Route::get('users/disliked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_disliked_posts']);
+        // Route::get('users/liked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_liked_posts']);
+        // Route::get('users/disliked_posts/index', [App\Http\Controllers\API\UserAPIController::class, 'user_disliked_posts']);
         Route::post('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'store_favorites'])->name('users.favorites.store');
         Route::get('users/favorites', [App\Http\Controllers\API\UserAPIController::class, 'my_favorites'])->name('users.favorites.index');
         Route::resource('users', App\Http\Controllers\API\UserAPIController::class)->except(['store', 'destroy', 'index']);
@@ -193,7 +193,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::Resource('permissions', App\Http\Controllers\API\PermissionAPIController::class);
     Route::post('users/roles/save', [App\Http\Controllers\API\UserAPIController::class, 'update_user_roles']);
     Route::post('roles/permissions/save', [App\Http\Controllers\API\RoleAPIController::class, 'update_role_permissions']);
-    Route::get('posts', [App\Http\Controllers\API\PostAPIController::class, 'index']);
+    Route::get('admin_posts', [App\Http\Controllers\API\PostAPIController::class, 'admin_index']);
     Route::get('posts/toggle_activate/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_activate']);
     Route::get('consultants', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'admin_index']);
     Route::get('consultants/toggle_activate/{user}', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'toggle_activate']);
@@ -201,6 +201,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::post('ladybug_rate_farm', [App\Http\Controllers\API\FarmAPIController::class, 'ladybug_rate_farm']);
     Route::get('admin_businesses', [App\Http\Controllers\API\BusinessAPIController::class, 'admin_index']);
     Route::get('admin_businesses/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'admin_show']);
+    Route::get('admin_products', [App\Http\Controllers\API\ProductAPIController::class, 'admin_index']);
 
     // end admin area
 

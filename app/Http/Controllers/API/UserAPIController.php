@@ -122,7 +122,7 @@ class UserAPIController extends AppBaseController
         try{
             $products = $this->productRepository->where(['seller_id' => auth()->id()]);
 
-            return $this->sendResponse(['all' => ProductXsResource::collection($products)], 'User products retrieved successfully');
+            return $this->sendResponse(['all' => collect(ProductXsResource::collection($products))->where('canBeSeen', true)->values()], 'User products retrieved successfully');
         }catch(\Throwable $th){
             return $this->sendError($th->getMessage(), 500);
         }
@@ -263,7 +263,7 @@ class UserAPIController extends AppBaseController
             if (empty($user))
                 return $this->sendError('user not found');
             $posts = $user->posts()->accepted()->post()->get();
-            return $this->sendResponse(PostXsResource::collection($posts), 'user posts retrieved successfully');
+            return $this->sendResponse(collect(PostXsResource::collection($posts))->where('canBeSeen', true)->values(), 'user posts retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -278,7 +278,7 @@ class UserAPIController extends AppBaseController
             if (empty($user))
                 return $this->sendError('user not found');
             $videos = $user->posts()->accepted()->video()->get();
-            return $this->sendResponse(PostXsResource::collection($videos), 'user videos retrieved successfully');
+            return $this->sendResponse(collect(PostXsResource::collection($videos))->where('canBeSeen', true)->values(), 'user videos retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -294,7 +294,7 @@ class UserAPIController extends AppBaseController
             if (empty($user))
                 return $this->sendError('user not found');
             $videos = $user->posts()->accepted()->story()->get();
-            return $this->sendResponse(PostXsResource::collection($videos), 'user stories retrieved successfully');
+            return $this->sendResponse(collect(PostXsResource::collection($videos))->where('canBeSeen', true)->values(), 'user stories retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -309,7 +309,7 @@ class UserAPIController extends AppBaseController
             if (empty($user))
                 return $this->sendError('user not found');
             $videos = $user->posts()->accepted()->article()->get();
-            return $this->sendResponse(PostXsResource::collection($videos), 'user articles retrieved successfully');
+            return $this->sendResponse(collect(PostXsResource::collection($videos))->where('canBeSeen', true)->values(), 'user articles retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -324,7 +324,7 @@ class UserAPIController extends AppBaseController
             if (empty($user))
                 return $this->sendError('user not found');
             $products = $user->products;
-            return $this->sendResponse(ProductXsResource::collection($products), 'user products retrieved successfully');
+            return $this->sendResponse(collect(ProductXsResource::collection($products))->where('canBeSeen', true)->values(), 'user products retrieved successfully');
         }
         catch(\Throwable $th)
         {
@@ -342,9 +342,9 @@ class UserAPIController extends AppBaseController
             $followed_businesses = $user->followedBusinesses;
             return $this->sendResponse([
                 'cons'                  => $user->consultancyProfile ? new ConsultancyProfileResource($user->consultancyProfile) : null,
-                'own_businesses'        => collect(BusinessResource::collection($own_businesses))->where('can_see', true)->values(),
-                'shared_businesses'     => BusinessResource::collection($shared_businesses)->where('can_see', true)->values(),
-                'followed_businesses'   => BusinessResource::collection($followed_businesses)->where('can_see', true)->values(),
+                'own_businesses'        => collect(BusinessResource::collection($own_businesses))->where('canBeSeen', true)->values(),
+                'shared_businesses'     => collect(BusinessResource::collection($shared_businesses))->where('canBeSeen', true)->values(),
+                'followed_businesses'   => collect(BusinessResource::collection($followed_businesses))->where('canBeSeen', true)->values(),
             ], 'businesses retrieved successfully');
         }catch(\Throwable $th){
             throw $th;
@@ -353,45 +353,45 @@ class UserAPIController extends AppBaseController
     }
 
 
-    public function user_liked_posts()
-    {
-        try
-        {
-            $likeables = [];
-            if($likes = auth()->user()->likes()->withType(Post::class)->with('likeable')->get())
-            {
-                foreach ($likes as $like)
-                {
-                    $likeables[] = $like->likeable;
-                }
-            }
-            return $this->sendResponse(['all' => PostResource::collection(collect($likeables)->where('status', 'accepted'))], 'User liked posts retrieved successfully');
-        }
-        catch(\Throwable $th)
-        {
-            return $this->sendError($th->getMessage(), 500);
-        }
-    }
+    // public function user_liked_posts()
+    // {
+    //     try
+    //     {
+    //         $likeables = [];
+    //         if($likes = auth()->user()->likes()->withType(Post::class)->with('likeable')->get())
+    //         {
+    //             foreach ($likes as $like)
+    //             {
+    //                 $likeables[] = $like->likeable;
+    //             }
+    //         }
+    //         return $this->sendResponse(['all' => PostResource::collection(collect($likeables)->where('status', 'accepted'))], 'User liked posts retrieved successfully');
+    //     }
+    //     catch(\Throwable $th)
+    //     {
+    //         return $this->sendError($th->getMessage(), 500);
+    //     }
+    // }
 
 
-    public function user_disliked_posts()
-    {
-        try
-        {
-            $dislikeables = [];
-            if($dislikes = auth()->user()->dislikes()->withType(Post::class)->with('likeable')->get())
-            {
-                foreach ($dislikes as $dislike){
-                    $dislikeables[] = $dislike->likeable;
-                }
-            }
-            return $this->sendResponse(['all' => PostResource::collection(collect($dislikeables)->where('status', 'accepted'))], 'User disliked posts retrieved successfully');
-        }
-        catch(\Throwable $th)
-        {
-            return $this->sendError($th->getMessage(), 500);
-        }
-    }
+    // public function user_disliked_posts()
+    // {
+    //     try
+    //     {
+    //         $dislikeables = [];
+    //         if($dislikes = auth()->user()->dislikes()->withType(Post::class)->with('likeable')->get())
+    //         {
+    //             foreach ($dislikes as $dislike){
+    //                 $dislikeables[] = $dislike->likeable;
+    //             }
+    //         }
+    //         return $this->sendResponse(['all' => PostResource::collection(collect($dislikeables)->where('status', 'accepted'))], 'User disliked posts retrieved successfully');
+    //     }
+    //     catch(\Throwable $th)
+    //     {
+    //         return $this->sendError($th->getMessage(), 500);
+    //     }
+    // }
 
 
 

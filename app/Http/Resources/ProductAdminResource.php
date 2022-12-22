@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductXsResource extends JsonResource
+class ProductAdminResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,7 +21,6 @@ class ProductXsResource extends JsonResource
             'assets' => $this->assets()->pluck('asset_url')->all(),
             'name' => $this->name,
             'description' => $this->description,
-            'canBeSeen' => $this->business ? $this->business->userCan('show-products') : true,
         ];
 
         return $return;

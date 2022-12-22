@@ -229,7 +229,12 @@ class Business extends Team
         }
         return $this->privacy_permissions[$this->privacy];
     }
-    public function canSee(){
+
+    public function userCan(string $permission){
+        return in_array($permission, $this->privacyPermissions());
+    }
+
+    public function canBeSeen(){
         return !empty($this->privacyPermissions());
     }
 
