@@ -15,10 +15,6 @@ class BusinessWebResource extends JsonResource
      */
     public function toArray($request)
     {
-        $ps = DB::table('permissions')->join('permission_user', 'permissions.id', 'permission_user.permission_id')
-                ->where('business_id', $this->id)
-                ->where('user_id', auth()->id())
-                ->pluck('permissions.name');
         $prts = $this->users;
         foreach ($prts as $prt ) {
             $imgs[] = $prt->photo_url;
@@ -44,7 +40,7 @@ class BusinessWebResource extends JsonResource
 
             'participants_count' => count($prts),
             'participants_images' => $imgs,
-            'user_permissions' => $ps,
+            'user_permissions' => $this->userPermissions(),
 
         ];
     }

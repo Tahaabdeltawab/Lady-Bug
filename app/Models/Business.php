@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\Followable;
 use App\Traits\Follower;
 use App\Traits\Rateable;
+use Illuminate\Support\Facades\DB;
 
 class Business extends Team
 {
@@ -231,7 +232,8 @@ class Business extends Team
     }
 
     public function userCan(string $permission){
-        return in_array($permission, $this->privacyPermissions());
+        return in_array($permission, $this->privacyPermissions())
+            || in_array($permission, $this->userPermissions());
     }
 
     public function canBeSeen(){
@@ -268,4 +270,12 @@ class Business extends Team
         ],
         3 => [],
     ];
+
+    public function userPermissions($user_id = null){
+        $user_id = $user_id ?? auth()->id();
+        return DB::table('permissions')->join('permission_user', 'permissions.id', 'permission_user.permission_id')
+                ->where('business_id', $this->id)
+                ->where('user_id', $user_id)
+                ->pluck('permissions.name')->toArray();
+    }
 }

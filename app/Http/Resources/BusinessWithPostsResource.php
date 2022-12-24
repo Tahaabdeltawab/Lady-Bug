@@ -15,10 +15,6 @@ class BusinessWithPostsResource extends JsonResource
      */
     public function toArray($request)
     {
-        $ps = DB::table('permissions')->join('permission_user', 'permissions.id', 'permission_user.permission_id')
-                ->where('business_id', $this->id)
-                ->where('user_id', auth()->id())
-                ->pluck('permissions.name');
         return [
             'id' => $this->id,
             'com_name' => $this->com_name,
@@ -31,7 +27,7 @@ class BusinessWithPostsResource extends JsonResource
             'participants_count' => $this->users()->count(),
             'posts' => collect(PostXsResource::collection($this->posts()->accepted()->post()->get()))->where('canBeSeen', true)->values(),
             'user_role' => @__(collect(auth()->user()->get_roles($this->id))->first()['name']),
-            'user_permissions' => $ps,
+            'user_permissions' => $this->userPermissions(),
             'privacy_permissions' => $this->privacyPermissions(),
             'canBeSeen' => $this->canBeSeen(),
         ];
