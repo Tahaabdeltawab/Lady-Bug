@@ -29,6 +29,7 @@ class TaskResource extends JsonResource
             'notes' => $this->notes,
             'done' => $this->done,
             'can_finish' => $this->business->userCan('finish-task'),
+            'farm_code' => $this->farm->code,
         ];
     }
 }
