@@ -289,17 +289,17 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('consultancy_profiles/relations/index', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'getRelations']);
 
 
-    Route::resource('animal_fodder_sources', App\Http\Controllers\API\AnimalFodderSourceAPIController::class);
+    // Route::resource('animal_fodder_sources', App\Http\Controllers\API\AnimalFodderSourceAPIController::class);
+    // Route::resource('chemical_fertilizer_sources', App\Http\Controllers\API\ChemicalFertilizerSourceAPIController::class);
+    // Route::resource('animal_medicine_sources', App\Http\Controllers\API\AnimalMedicineSourceAPIController::class);
+    // Route::resource('seedling_sources', App\Http\Controllers\API\SeedlingSourceAPIController::class);
     Route::resource('farmed_type_stages', App\Http\Controllers\API\FarmedTypeStageAPIController::class);
-    Route::resource('chemical_fertilizer_sources', App\Http\Controllers\API\ChemicalFertilizerSourceAPIController::class);
     Route::resource('animal_breeding_purposes', App\Http\Controllers\API\AnimalBreedingPurposeAPIController::class);
     Route::resource('home_plant_illuminating_sources', App\Http\Controllers\API\HomePlantIlluminatingSourceAPIController::class);
     Route::resource('farming_methods', App\Http\Controllers\API\FarmingMethodAPIController::class);
     Route::resource('animal_fodder_types', App\Http\Controllers\API\AnimalFodderTypeAPIController::class);
-    Route::resource('animal_medicine_sources', App\Http\Controllers\API\AnimalMedicineSourceAPIController::class);
     Route::resource('human_jobs', App\Http\Controllers\API\HumanJobAPIController::class)->except('index');//
     Route::resource('post_types', App\Http\Controllers\API\PostTypeAPIController::class);
-    Route::resource('seedling_sources', App\Http\Controllers\API\SeedlingSourceAPIController::class);
     Route::resource('measuring_units', App\Http\Controllers\API\MeasuringUnitAPIController::class);
     Route::resource('buying_notes', App\Http\Controllers\API\BuyingNoteAPIController::class);
     Route::resource('information', App\Http\Controllers\API\InformationAPIController::class)->except('show');
