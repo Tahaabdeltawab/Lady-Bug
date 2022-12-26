@@ -310,7 +310,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::resource('farmed_types', App\Http\Controllers\API\FarmedTypeAPIController::class)->except('update');
     Route::get('farmed_types/relations/index', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'getRelations'])->name('farmed_types.getRelations');
     Route::match(['put', 'patch','post'], 'farmed_types/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'update'])->name('farmed_types.update');
-    Route::resource('farmed_type_classes', App\Http\Controllers\API\FarmedTypeClassAPIController::class);
+    // Route::resource('farmed_type_classes', App\Http\Controllers\API\FarmedTypeClassAPIController::class);
     Route::resource('farmed_type_ginfos', App\Http\Controllers\API\FarmedTypeGinfoAPIController::class)->except('update');
     Route::match(['put', 'patch','post'], 'farmed_type_ginfos/{farmed_type_ginfo}', [App\Http\Controllers\API\FarmedTypeGinfoAPIController::class, 'update'])->name('farmed_type_ginfos.update');
     Route::get('farmed_type_ginfos/relations/index', [App\Http\Controllers\API\FarmedTypeGinfoAPIController::class, 'farmed_type_ginfos_relations']);

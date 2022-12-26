@@ -71,7 +71,7 @@ class Business extends Team
         'location.details' => 'nullable',
         'location.postal' => 'nullable',
         'country_id' => 'nullable|exists:countries,id',
-        'privacy' => 'nullable|in:0,1,2,3',
+        'privacy' => 'required|in:0,1,2,3',
         'branches' => 'nullable|array',
         'agents' => 'nullable|array',
         'agents.*' => 'exists:businesses,id',
