@@ -23,7 +23,6 @@ class FarmedTypeResource extends JsonResource
             'country_id' => $this->country_id,
             'photo_url' => @$this->asset->asset_url,
             'selected' => $selected,
-            // 'farmed_type_classes' => FarmedTypeClassResource::collection($this->farmed_type_classes),
             'name' => $this->name
         ];
 

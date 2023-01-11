@@ -53,9 +53,11 @@ use App\Http\Requests\API\RateFarmRequest;
 use App\Http\Resources\BusinessXsResource;
 use App\Http\Resources\FarmAdminResource;
 use App\Http\Resources\FarmCollection;
+use App\Http\Resources\FarmedTypeXsWithChildrenResource;
 use App\Http\Resources\FarmSmResource;
 use App\Http\Resources\FarmWithReportsResource;
 use App\Models\Business;
+use App\Models\FarmedType;
 use Illuminate\Support\Facades\DB;
 
 class FarmAPIController extends AppBaseController
@@ -202,10 +204,11 @@ class FarmAPIController extends AppBaseController
             $data['farm_activity_types'] = FarmActivityTypeResource::collection($this->farmActivityTypeRepository->all());
             $data['home_plant_pot_sizes'] = HomePlantPotSizeResource::collection($this->homePlantPotSizeRepository->all());
 
-            $data['crops_types'] = FarmedTypeResource::collection($this->farmedTypeRepository->where(['farm_activity_type_id' => 1]));
-            $data['trees_types'] = FarmedTypeResource::collection($this->farmedTypeRepository->where(['farm_activity_type_id' => 2]));
-            $data['homeplants_types'] = FarmedTypeResource::collection($this->farmedTypeRepository->where(['farm_activity_type_id' => 3]));
-            $data['animals_types'] = FarmedTypeResource::collection($this->farmedTypeRepository->where(['farm_activity_type_id' => 4]));
+            $farmedTypes = FarmedType::global()->with('children')->get();
+            $data['crops_types'] = FarmedTypeXsWithChildrenResource::collection($farmedTypes->where('farm_activity_type_id', 1));
+            $data['trees_types'] = FarmedTypeXsWithChildrenResource::collection($farmedTypes->where('farm_activity_type_id', 2));
+            $data['homeplants_types'] = FarmedTypeXsWithChildrenResource::collection($farmedTypes->where('farm_activity_type_id', 3));
+            $data['animals_types'] = FarmedTypeXsWithChildrenResource::collection($farmedTypes->where('farm_activity_type_id', 4));
 
             $data['area_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'area']));
             $data['acidity_units'] = MeasuringUnitResource::collection($this->measuringUnitRepository->where(['measurable' => 'acidity']));
