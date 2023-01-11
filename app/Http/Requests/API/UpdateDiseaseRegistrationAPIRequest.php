@@ -24,8 +24,8 @@ class UpdateDiseaseRegistrationAPIRequest extends APIRequest
      */
     public function rules()
     {
-        $rules = DiseaseRegistration::$rules;
-        
+        $rules = DiseaseRegistration::$update_rules;
+
         return $rules;
     }
 }

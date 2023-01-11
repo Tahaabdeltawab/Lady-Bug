@@ -8,6 +8,7 @@ use App\Models\DiseaseRegistration;
 use App\Repositories\DiseaseRegistrationRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use App\Http\Resources\DiseaseRegistrationLgResource;
 use App\Http\Resources\DiseaseRegistrationResource;
 use App\Http\Resources\DiseaseXsResource;
 use App\Models\Disease;
@@ -29,6 +30,7 @@ class DiseaseRegistrationAPIController extends AppBaseController
         $this->diseaseRegistrationRepository = $diseaseRegistrationRepo;
     }
 
+    // admin
     /**
      * Display a listing of the DiseaseRegistration.
      * GET|HEAD /diseaseRegistrations
@@ -44,9 +46,10 @@ class DiseaseRegistrationAPIController extends AppBaseController
             $request->get('perPage')
         );
 
-        return $this->sendResponse(['all' => DiseaseRegistrationResource::collection($diseaseRegistrations['all']), 'meta' => $diseaseRegistrations['meta']], 'Disease Registrations retrieved successfully');
+        return $this->sendResponse(['all' => DiseaseRegistrationLgResource::collection($diseaseRegistrations['all']), 'meta' => $diseaseRegistrations['meta']], 'Disease Registrations retrieved successfully');
     }
 
+    // user
     /**
      * Store a newly created DiseaseRegistration in storage.
      * POST /diseaseRegistrations
@@ -71,6 +74,17 @@ class DiseaseRegistrationAPIController extends AppBaseController
         return $this->sendResponse(new DiseaseRegistrationResource($diseaseRegistration), 'Disease Registration saved successfully');
     }
 
+    public function getNearInfections(Request $request)
+    {
+        if($request->lat && $request->lon){
+            // TODO if sent farm id, exclude it from dis regs :where dis_reg.farm_id != current farm id
+            $near_infections = \Helper::getNearInfections($request->lat, $request->lon);
+            return $this->sendResponse(['infections' => $near_infections], 'near infections retrieved successfully');
+        }
+        else
+            return $this->sendError('Invalid lat or lon');
+    }
+
     public function getRelations()
     {
         $data['diseases'] = DiseaseXsResource::collection(Disease::get(['id', 'name']));
@@ -79,6 +93,7 @@ class DiseaseRegistrationAPIController extends AppBaseController
 
     }
 
+    // admin
     public function toggle_confirm($id)
     {
         $diseaseRegistration = DiseaseRegistration::find($id);
@@ -92,6 +107,7 @@ class DiseaseRegistrationAPIController extends AppBaseController
         return $this->sendSuccess($msg);
     }
 
+    // admin
     /**
      * Display the specified DiseaseRegistration.
      * GET|HEAD /diseaseRegistrations/{id}
@@ -109,9 +125,10 @@ class DiseaseRegistrationAPIController extends AppBaseController
             return $this->sendError('Disease Registration not found');
         }
 
-        return $this->sendResponse(new DiseaseRegistrationResource($diseaseRegistration), 'Disease Registration retrieved successfully');
+        return $this->sendResponse(new DiseaseRegistrationLgResource($diseaseRegistration), 'Disease Registration retrieved successfully');
     }
 
+    // admin
     /**
      * Update the specified DiseaseRegistration in storage.
      * PUT/PATCH /diseaseRegistrations/{id}
@@ -144,7 +161,7 @@ class DiseaseRegistrationAPIController extends AppBaseController
                 $diseaseRegistration->assets()->create($oneasset);
             }
         }
-        return $this->sendResponse(new DiseaseRegistrationResource($diseaseRegistration), 'DiseaseRegistration updated successfully');
+        return $this->sendResponse(new DiseaseRegistrationLgResource($diseaseRegistration), 'DiseaseRegistration updated successfully');
     }
 
     /**

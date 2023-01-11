@@ -76,12 +76,20 @@ class DiseaseRegistration extends Model
     public static $rules = [
         'disease_id' => 'nullable|exists:diseases,id',
         'expected_name' => 'nullable',
-        'status' => 'nullable',
+        'status' => 'exclude',
         'discovery_date' => 'nullable',
         'farm_id' => 'nullable|exists:farms,id',
         'farm_report_id' => 'nullable|exists:farm_reports,id',
         'infection_rate_id' => 'nullable|exists:infection_rates,id',
         'country_id' => 'nullable|exists:countries,id'
+    ];
+
+    public static $update_rules = [
+        'status' => 'required|boolean',
+        'disease_id' => 'nullable|exists:diseases,id',
+        'expected_name' => 'nullable',
+        'discovery_date' => 'nullable',
+        'infection_rate_id' => 'nullable|exists:infection_rates,id',
     ];
 
     /**
@@ -136,4 +144,28 @@ class DiseaseRegistration extends Model
     {
         return $this->morphMany(Asset::class, 'assetable');
     }
+
+    /**
+     * SCOPES
+     */
+
+    public function scopeLocated($q){
+        return $q->whereHas('farmReport', function($qq){
+            return $qq->whereNotNull('farm_reports.location_id');
+        });
+    }
+
+    public function scopeConfirmed($q){
+        return $q->where('status', 1);
+    }
+
+    public function scopeNotconfirmed($q){
+        return $q->where('status', 0);
+    }
+
+    public function scopeActive($q){
+        return $q->confirmed()->located();
+    }
+
+
 }

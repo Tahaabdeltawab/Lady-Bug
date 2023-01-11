@@ -262,10 +262,12 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('tasks/relations/index/{task_type?}/{nut_elem?}', [App\Http\Controllers\API\TaskAPIController::class, 'getRelations']);
 
     // Disease Registration
-    Route::resource('disease_registrations', App\Http\Controllers\API\DiseaseRegistrationAPIController::class);
+    Route::resource('disease_registrations', App\Http\Controllers\API\DiseaseRegistrationAPIController::class)->except(['update']);
     Route::get('disease_registrations/relations/index', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'getRelations']);
+    Route::get('near_infections', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'getNearInfections']);
         // admin
         Route::get('disease_registrations/toggle_confirm/{disease_registration}', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'toggle_confirm']);
+        Route::match(['put', 'patch','post'], 'disease_registrations/{disease_registration}', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'update'])->name('disease_registrations.update');
 
 
     // Fertilizers & Insecticides (admin)
