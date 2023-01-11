@@ -208,6 +208,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     // start routes for users and admins
     Route::post('rate_product', [App\Http\Controllers\API\ProductAPIController::class, 'rate_product']);
     Route::get('farmed_types/search/{query}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'search']);
+    Route::get('farms/search/{query}', [App\Http\Controllers\API\FarmAPIController::class, 'search']);
     Route::get('farmed_types/farmed_type_ginfos/{farmed_type}/{stage?}', [App\Http\Controllers\API\FarmedTypeGinfoAPIController::class, 'farmed_type_ginfos_by_farmed_type_id']);
     Route::get('farms/calculate_compatibility/{id}', [App\Http\Controllers\API\FarmAPIController::class, 'calculate_compatibility']);
     Route::get('products', [App\Http\Controllers\API\ProductAPIController::class, 'index']);

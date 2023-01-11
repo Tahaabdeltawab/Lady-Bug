@@ -56,7 +56,9 @@ use App\Http\Resources\FarmCollection;
 use App\Http\Resources\FarmedTypeXsWithChildrenResource;
 use App\Http\Resources\FarmSmResource;
 use App\Http\Resources\FarmWithReportsResource;
+use App\Http\Resources\FarmXsResource;
 use App\Models\Business;
+use App\Models\Farm;
 use App\Models\FarmedType;
 use Illuminate\Support\Facades\DB;
 
@@ -144,6 +146,20 @@ class FarmAPIController extends AppBaseController
         $this->sendResponse($resp['data'] , 'Weather data retrieved successfully')
         :
         $this->sendError('Error fetching the weather data');
+    }
+
+    public function search($query)
+    {
+        $query = \Str::lower(trim($query));
+        // with('business') -> for canBeSeen inside the resource
+        $farms = Farm::with('business')->where(function($q) use($query){
+            $q->whereRaw('LOWER(`code`) regexp ? ', ".*$query.*")
+              ->orWhereHas('farmed_type', function($qq) use($query){
+                $qq->whereRaw('LOWER(`name`) regexp ? ', '"(ar|en)":"\w*' . $query . '.*"');
+            });
+        })->get();
+        $farms = collect(FarmXsResource::collection($farms))->where('canBeSeen', true)->values();
+        return $this->sendResponse(['count' => $farms->count(), 'all' => $farms], 'Farms retrieved successfully');
     }
 
 
