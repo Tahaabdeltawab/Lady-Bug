@@ -222,6 +222,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     // Business
     Route::resource('businesses', App\Http\Controllers\API\BusinessAPIController::class)->except('update');
     Route::match(['put', 'patch','post'], 'businesses/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'update'])->name('businesses.update');
+    Route::get('business_for_update/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'showForUpdate']);
 
     Route::get('businesses/relations/index/{business_field?}', [App\Http\Controllers\API\BusinessAPIController::class, 'getRelations']);
     //get weather and auth farms

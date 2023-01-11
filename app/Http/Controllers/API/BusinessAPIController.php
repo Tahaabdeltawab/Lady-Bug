@@ -14,6 +14,7 @@ use App\Http\Requests\API\RateBusinessRequest;
 use App\Http\Requests\API\UpdateBusinessRoleRequest;
 use App\Http\Resources\BusinessAdminResource;
 use App\Http\Resources\BusinessAdminSmResource;
+use App\Http\Resources\BusinessForUpdateResource;
 use App\Http\Resources\BusinessResource;
 use App\Http\Resources\BusinessWithPostsResource;
 use App\Http\Resources\BusinessWithTasksResource;
@@ -747,6 +748,18 @@ class BusinessAPIController extends AppBaseController
         }
 
         return $this->sendResponse(new BusinessResource($business), 'Business retrieved successfully');
+    }
+
+    public function showForUpdate($id)
+    {
+        /** @var Business $business */
+        $business = $this->businessRepository->find($id);
+
+        if (empty($business)) {
+            return $this->sendError('Business not found');
+        }
+
+        return $this->sendResponse(new BusinessForUpdateResource($business), 'Business retrieved successfully');
     }
 
     public function statuses($id = null)
