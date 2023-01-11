@@ -89,6 +89,10 @@ class WeatherApi{
                 $resp['sunrise']                = date("h:i a", $data['sys']['sunrise']);
                 $resp['sunset']                 = date("h:i a", $data['sys']['sunset']);
                 $resp['location']               = $data['name'];
+                $resp['humidity']               = $data['main']['humidity']. "%";
+                $resp['wind_speed']             = $data['wind']['speed']. " m/s";
+                $resp['suitable_for_spray']     = $data['wind']['speed'] < 6;
+                $resp['suitable_for_spray_string'] = $resp['suitable_for_spray'] ? __('suitable_for_spray') : __('non_suitable_for_spray');
 
                 return ['status' => true, 'data' => $resp];
             }

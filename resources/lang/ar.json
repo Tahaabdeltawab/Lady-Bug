@@ -125,5 +125,8 @@
     "business-company": "شركة",
 
     "kilo": "كيلو",
-    "gram": "جرام"
+    "gram": "جرام",
+
+    "suitable_for_spray": "اليوم مناسب لرش المبيدات الحشرية",
+    "non_suitable_for_spray": "اليوم غير مناسب لرش المبيدات الحشرية"
 }

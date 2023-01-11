@@ -75,6 +75,9 @@
     "business-supervisor": "Business Supervisor",
     "business-consultant": "Business Consultant",
     "business-worker": "Business Worker",
-    "business-company": "Business Company"
+    "business-company": "Business Company",
+
+    "suitable_for_spray": "Today is suitable for spraying pesticides",
+    "non_suitable_for_spray": "Today is not suitable for spraying pesticides"
 
 }
