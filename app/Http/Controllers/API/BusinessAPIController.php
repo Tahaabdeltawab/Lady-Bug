@@ -420,6 +420,7 @@ class BusinessAPIController extends AppBaseController
             $user = User::find($request->user);
             $business = Business::find($request->business);
 
+            $user->follow($business);
             $user->attachRole($request->role, $business);
             $user->attachPermissions($request->permissions, $business);
             $role_user = RoleUser::where(['user_type' => 'App\Models\User', 'user_id' => $request->user, 'role_id' => $request->role, 'business_id' => $request->business])->first();
@@ -618,6 +619,7 @@ class BusinessAPIController extends AppBaseController
             else                    //delete roles
             {
                 if($user->get_roles($request->business)){
+                    $user->unfollow($business);
                     $user->syncRoles([], $business);
                     $user->syncPermissions([], $business);
                     DB::commit();

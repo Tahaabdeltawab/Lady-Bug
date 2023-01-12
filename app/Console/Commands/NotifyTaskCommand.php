@@ -38,11 +38,13 @@ class NotifyTaskCommand extends Command
      */
     public function handle()
     {
+        // every business user by default is following it unless he unfollowed it
         $alarmed_tasks = Task::with('business.users')->open()->where(function($q){
             $q->where('date', today()->addDay())->orWhere('date', today());
         })->get();
         foreach($alarmed_tasks as $task){
-            foreach($task->business->users as $user){
+            // foreach($task->business->users as $user){
+            foreach($task->business->following_participants() as $user){
                 $user->notify(new \App\Notifications\TaskAlarm($task));
             }
         }

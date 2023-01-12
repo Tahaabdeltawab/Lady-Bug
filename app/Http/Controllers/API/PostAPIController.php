@@ -242,6 +242,7 @@ class PostAPIController extends AppBaseController
     {
         try
         {
+            \DB::beginTransaction();
             $post_type_id = $request->post_type_id;
             if($request->business_id){
                 $business = Business::find($request->business_id);
@@ -275,16 +276,25 @@ class PostAPIController extends AppBaseController
             if($request->shared_id && $post->author_id != $post->shared->author_id)
                 $post->shared->author->notify(new \App\Notifications\TimelineInteraction($post, 'post_share'));
 
-            // notify the post author followers
-            $post->loadMissing('author.followers');
-            foreach($post->author->followers as $follower){
-                $follower->notify(new \App\Notifications\TimelineInteraction($post));
+            // notify the owner followers
+            if($business = $post->business){
+                // send notif to business participants who are following the business
+                $followers = $business->isSecret() ? $business->following_participants() : $business->followers;
+                foreach($followers as $follower){
+                    $follower->notify(new \App\Notifications\TimelineInteraction($post, '', $business->com_name));
+                }
+            }else{
+                $post->loadMissing('author.followers');
+                foreach($post->author->followers as $follower){
+                    $follower->notify(new \App\Notifications\TimelineInteraction($post));
+                }
             }
-
+            \DB::commit();
             return $this->sendResponse(new PostXsResource($post), __('Post saved successfully'));
         }
         catch(\Throwable $th)
         {
+            \DB::rollback();
             return $this->sendError($th->getMessage(), 500);
         }
     }

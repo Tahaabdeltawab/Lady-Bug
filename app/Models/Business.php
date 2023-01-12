@@ -79,6 +79,11 @@ class Business extends Team
         'distributors.*' => 'exists:businesses,id',
     ];
 
+    // PRIVACIES
+    const GUIDE_P = 0;
+    const PUBLIC_P = 1;
+    const PRIVATE_P = 2;
+    const SECRET_P = 3;
 
     // GETTERS
 
@@ -208,32 +213,66 @@ class Business extends Team
 
     public function scopeGuide($q)
     {
-        return $q->where('privacy', 0);
+        return $q->where('privacy', self::GUIDE_P);
     }
     public function scopePublic($q)
     {
-        return $q->where('privacy', 1);
+        return $q->where('privacy', self::PUBLIC_P);
     }
     public function scopePrivate($q)
     {
-        return $q->where('privacy', 2);
+        return $q->where('privacy', self::PRIVATE_P);
     }
     public function scopeSecret($q)
     {
-        return $q->where('privacy', 3);
+        return $q->where('privacy', self::SECRET_P);
     }
 
+    public function isGuide()
+    {
+        return $this->privacy == self::GUIDE_P;
+    }
+    public function isPublic()
+    {
+        return $this->privacy == self::PUBLIC_P;
+    }
+    public function isPrivate()
+    {
+        return $this->privacy == self::PRIVATE_P;
+    }
+    public function isSecret()
+    {
+        return $this->privacy == self::SECRET_P;
+    }
 
-    public function privacyPermissions(){
-        if(auth()->user()->get_roles($this->id)){
+    /**
+     * business participants who are following this business
+     * business participants are by default followers to the business unless they unfollowed it
+     */
+    public function following_participants(){
+        return $this->users->intersect($this->followers);
+        // $users_ids = \DB::table('users')
+        // ->join('role_user', 'role_user.user_id', 'users.id')
+        // ->join('followables', 'followables.followable_id', 'role_user.business_id')
+        // ->where('role_user.business_id', $this->id) // 3,2
+        // ->where('followables.followable_type', self::class)
+        // ->where('followables.followable_id', $this->id) // 2
+        // ->pluck('users.id');
+        // return User::where('id', $users_ids)->get();
+
+    }
+    public function privacyPermissions(User $user = null){
+        $user = $user ?? auth()->user();
+        if($user->get_roles($this->id)){
             return $this->privacy_permissions['all'];
         }
         return $this->privacy_permissions[$this->privacy];
     }
 
-    public function userCan(string $permission){
-        return in_array($permission, $this->privacyPermissions())
-            || in_array($permission, $this->userPermissions());
+    public function userCan(string $permission, User $user = null){
+        $user = $user ?? auth()->user();
+        return in_array($permission, $this->privacyPermissions($user))
+            || in_array($permission, $this->userPermissions($user->id));
     }
 
     public function canBeSeen(){
@@ -252,23 +291,23 @@ class Business extends Team
             'show-participants',
             'show-reports',
         ],
-        0 => [
+        self::GUIDE_P => [
             'show-posts',
             'show-products',
             'show-farms',
             'show-participants',
             'show-reports',
         ],
-        1 => [
+        self::PUBLIC_P => [
             'show-posts',
             'show-products',
             'show-farms',
         ],
-        2 => [
+        self::PRIVATE_P => [
             'show-posts',
             'show-products',
         ],
-        3 => [],
+        self::SECRET_P => [],
     ];
 
     public function userPermissions($user_id = null){

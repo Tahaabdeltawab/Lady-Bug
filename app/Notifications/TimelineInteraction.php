@@ -33,7 +33,7 @@ class TimelineInteraction extends Notification
      * like comment
      * do not notify if you commented or liked your post or comment
      */
-    public function __construct($obj, $type = '')
+    public function __construct($obj, $type = '', $creator_name = null)
     {
         $like_model = config('like.like_model');
 
@@ -52,7 +52,7 @@ class TimelineInteraction extends Notification
                 $this->reactor      = $this->post->author;
                 $this->title        = __('Following Post');
                 $post_substr        = \Str::words($this->post->content, 3, '...');
-                $this->msg = $this->reactor->name . ' ' . __('has posted a new post') . ' ' . $post_substr;
+                $this->msg = ($creator_name ?? $this->reactor->name) . ' ' . __('has posted a new post') . ' ' . $post_substr;
             }
         }
         elseif($obj instanceOf \App\Models\Comment){

@@ -246,8 +246,16 @@ class ProductAPIController extends AppBaseController
 
 
                 // notify the owner followers
-                foreach(auth()->user()->followers as $follower){
-                    $follower->notify(new \App\Notifications\Product($product));
+                if($business = $product->business){
+                    // send notif to business participants who are following the business
+                    $followers = $business->isSecret() ? $business->following_participants() : $business->followers;
+                    foreach($followers as $follower){
+                        $follower->notify(new \App\Notifications\Product($product, $business->com_name));
+                    }
+                }else{
+                    foreach(auth()->user()->followers as $follower){
+                        $follower->notify(new \App\Notifications\Product($product));
+                    }
                 }
 
                 DB::commit();

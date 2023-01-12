@@ -17,12 +17,12 @@ class Product extends Notification
      *
      * @return void
      */
-    public function __construct($product)
+    public function __construct($product, $owner_name = null)
     {
         $this->product = $product;
         $this->type = 'new_product';
-        $this->title = __('new_product', ['user' => auth()->user()->name]);
-        $this->msg = __('new_product_details', ['user' => auth()->user()->name, 'product' => $product->name]);
+        $this->title = __('new_product', ['user' => $owner_name ?? auth()->user()->name]);
+        $this->msg = __('new_product_details', ['user' => $owner_name ?? auth()->user()->name, 'product' => $product->name]);
 
     }
 
