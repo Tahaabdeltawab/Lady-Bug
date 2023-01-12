@@ -31,8 +31,7 @@ class BusinessWebResource extends JsonResource
             'status_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->statuses($this->status)['name'],
             'privacy' => $this->privacy,
             'privacy_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->privacies($this->privacy)['name'],
-            'lat' => @$this->location->latitude,
-            'lon' => @$this->location->longitude,
+            'location' => LocationResource::make($this->location),
             'is_following' => $this->isFollowedBy(auth()->user()), // Am I following him?
             'is_rated'          => $this->isRatedBy(auth()->id()), // Did I rate him?
             'followers_count'   => $this->followers->count(),

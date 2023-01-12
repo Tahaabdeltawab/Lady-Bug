@@ -51,6 +51,7 @@ class AuthController extends AppBaseController
                     $user->name = $request->name;
                     $user->fcm = $request->fcm;
                     $user->avatar = $request->avatar;
+                    $user->email_verified = 1;
                     $user->save();
                 }
 
@@ -178,77 +179,54 @@ class AuthController extends AppBaseController
                 $user->asset()->create($oneasset);
             }
 
-            $credentials = $request->only('email', 'password');
+            return $this->sendVerificationCode($user);
 
-            // $token = JWTAuth::attempt($credentials); //the same
-            $token = auth('api')->attempt($credentials);
-            $user = $this->userRepository->find($user->id);
-            $data = [
-                'user' => new UserLoginResource($user),
-                'access_token' => $token,
-                'token_type' => 'bearer',
-                'expires_in_minutes' => auth('api')->factory()->getTTL(),
-            ];
-            return $this->sendResponse($data, __('Success'));
+            // return $this->respondWithUser($user);
         } catch (\Throwable $th) {
             return $this->sendError($th->getMessage(), 500);
         }
     }
 
-
-    public function forgetPassword(Request $request)
+    /**
+     * Get verification code for forgot-password mobile verification
+     */
+    public function getCode(Request $request)
     {
+        $validator = Validator::make($request->all(), ['mobile' => 'required']);
+        if ($validator->fails()) return $this->sendError($validator->errors()->first());
+        if (!$user = User::where('mobile', $request->mobile)->first()) return $this->sendError(__('No user found'));
 
-        //make validation
-        $validator = Validator::make($request->all(), [
-            'mobile' => 'required',
-        ]);
+        return $this->sendVerificationCode($user);
+    }
 
-        if ($validator->fails())
-        return $this->sendError($validator->errors()->first());
-
-        $user = User::where('mobile', $request->mobile)->first();
-
-        if (!$user = User::where('mobile', $request->mobile)->first())
-            return $this->sendError(__('No user found'));
-
+    private function sendVerificationCode(User $user){
         $user->code = User::generate_code();
         $user->save();
 
-        //send sms to user
+        // send sms to user
         $msg = __('Your verification code is ') . $user->code;
-        $mobile = $user->mobile;
-        $res_msg = __('success');
+        $mobile = '+2'.$user->mobile;
+        $res_msg = __("verification code sent to $mobile");
         try{
-            Twilio::message('+2'.$mobile, $msg);
+            Twilio::message($mobile, $msg);
         } catch (\Throwable $th) {
             $res_msg = $th->getMessage();
         }
-
-        $data = [
-            'code' => $user->code,
-        ];
-        return $this->sendResponse($data, $res_msg);
+        return $this->sendSuccess($res_msg);
     }
 
 
     public function resetPassword(Request $request)
     {
-        //make validation
         $validator = Validator::make($request->all(), [
             'code' => 'required',
             'mobile' => 'required',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        if ($validator->fails())
-            return $this->sendError($validator->errors()->first());
-
-        if (!$user = User::where('mobile', $request->mobile)->first())
-            return $this->sendError(__('No user found'));
-
-        if ($user->code != $request->code)
-            return $this->sendError(__('Wrong code'));
+        if ($validator->fails()) return $this->sendError($validator->errors()->first());
+        if (!$user = User::where('mobile', $request->mobile)->first()) return $this->sendError(__('No user found'));
+        if ($user->code != $request->code) return $this->sendError(__('Wrong code'));
 
         $user->password = bcrypt($request->password);
         $user->code = null;
@@ -258,26 +236,20 @@ class AuthController extends AppBaseController
     }
 
 
-    // before calling this you should add in register method [save code in db, send it to user in sms]
-    public function codeCheck(Request $request)
+    public function verifyMobile(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'code' => 'required',
             'mobile' => 'required',
         ]);
 
-        if ($validator->fails())
-            return $this->sendError($validator->errors()->first());
-
-        if (!$user = User::where('mobile', $request->mobile)->first())
-            return $this->sendError(__('No user found'));
-
-        if ($user->code != $request->code)
-            return $this->sendError(__('Wrong code'));
+        if ($validator->fails()) return $this->sendError($validator->errors()->first());
+        if (!$user = User::where('mobile', $request->mobile)->first()) return $this->sendError(__('No user found'));
+        if ($user->code != $request->code) return $this->sendError(__('Wrong code'));
 
         $user->update(['mobile_verified' => true, 'code' => null]);
 
-        return $this->sendResponse([], __('success'));
+        return $this->respondWithUser($user);
     }
 
     public function me()
@@ -305,20 +277,31 @@ class AuthController extends AppBaseController
         return $this->respondWithToken(auth('api')->refresh());
     }
 
-    protected function respondWithToken($token)
+    private function respondWithToken($token)
     {
         $data = [
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in_minutes' => auth('api')->factory()->getTTL(), // in minutes
-            // 'expires_in_minutes' => JWTAuth::factory()->getTTL()
         ];
         return $this->sendResponse($data, __('Success'));
     }
 
+    private function respondWithUser(User $user){
+        $user = $this->userRepository->find($user->id);
+        $token = auth('api')->fromUser($user);
+        $data = [
+            'user' => new UserLoginResource($user),
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in_minutes' => auth('api')->factory()->getTTL(),
+        ];
+        return $this->sendResponse($data, __('Success'));
+    }
 }
 
 /**
+ * all methods of JWTAuth:: are available for auth('api')->
  **  add functionalities in jwt[
  **      remember me ,
  **      forget password,

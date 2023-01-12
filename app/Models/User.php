@@ -29,6 +29,10 @@ class User extends Authenticatable implements JWTSubject
         'block_duration',
         'is_notifiable',
         'activity_points',
+        'avatar',
+        'provider',
+        'fcm',
+        'code',
         'email_verified',
         'mobile_verified',
         'human_job_id',
@@ -252,7 +256,7 @@ class User extends Authenticatable implements JWTSubject
         return $colors[$index];
     }
 
-    public static function generate_code($length = 6)
+    public static function generate_code($length = 4)
     {
         $characters       = '0123456789';
         $charactersLength = strlen( $characters );

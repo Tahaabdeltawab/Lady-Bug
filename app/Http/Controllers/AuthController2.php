@@ -3,11 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\AppBaseController;
-
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Twilio;
 
 class AuthController2 extends AppBaseController
 {
@@ -16,9 +12,9 @@ class AuthController2 extends AppBaseController
     }
 
 
-    public function forgetPassword(Request $request)
+    public function getCode(Request $request)
     {
-        return app('App\Http\Controllers\AuthController')->forgetPassword($request);
+        return app('App\Http\Controllers\AuthController')->getCode($request);
     }
 
     public function resetPassword(Request $request)

@@ -36,9 +36,10 @@ class BusinessForUpdateResource extends JsonResource
             'privacy_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->privacies($this->privacy)['name'],
             'mobile' => $this->mobile,
             'whatsapp' => $this->whatsapp,
-            'lat' => @$this->location->latitude,
-            'lon' => @$this->location->longitude,
-            'address' => @$this->location->details,
+            // 'lat' => @$this->location->latitude,
+            // 'lon' => @$this->location->longitude,
+            // 'address' => @$this->location->details,
+            'location' => LocationResource::make($this->location),
             // 'country_id' => $this->country_id,
             'is_following' => $this->isFollowedBy(auth()->user()), // Am I following him?
             'participants_count' => count($prts),

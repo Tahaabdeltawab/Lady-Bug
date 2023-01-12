@@ -25,6 +25,7 @@ class FarmXsResource extends JsonResource
         $farm_detail['farmed_number'] = $this->farmed_number;
         $farm_detail['chemical_fertilizer_sources'] = $this->chemical_fertilizer_sources()->pluck('com_name');
         $farm_detail['seedling_sources'] =  $this->seedling_sources()->pluck('com_name');
+        $farm_detail['location'] = new LocationResource($this->location);
         // for search farms as here farms may be accessed from outside their businesses so should be protected
         $farm_detail['canBeSeen'] =  $this->business->userCan('show-farms');
 
