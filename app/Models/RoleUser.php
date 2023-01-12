@@ -25,4 +25,11 @@ class RoleUser extends Model
     {
         return $this->hasOne(BusinessConsultant::class, 'role_user_id', 'id');
     }
+
+    public function scopeEnded($q)
+    {
+        return $q->where('user_type', 'App\Models\User')
+        ->whereNotNull('business_id')->whereNotNull('end_date')
+        ->where('end_date', '<', today());
+    }
 }

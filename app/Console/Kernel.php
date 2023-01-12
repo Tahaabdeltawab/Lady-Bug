@@ -28,6 +28,9 @@ class Kernel extends ConsoleKernel
         // $schedule->command('alarm:task')->everyMinute()->runInBackground(); // for testing
 
         $schedule->command('checkBlocked')->dailyAt('10:00');
+
+        // $schedule->command('checkBusinessRole')->everyMinute();
+        $schedule->command('checkBusinessRole')->dailyAt('10:00');
     }
 
     /**

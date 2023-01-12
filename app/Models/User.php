@@ -195,17 +195,24 @@ class User extends Authenticatable implements JWTSubject
     public function allBusinesses()
     {
         return $this->rolesTeams();
-        // commented temporarily
+        // commented temporarily because now checkbusinessrole command deletes them automatically
         // ->where(function($q){
-        //     $q->where([['role_user.start_date', '<=', today()],['role_user.end_date', '>', today()]])
+        //     $q->where([
+                // ['role_user.start_date', '!=', null], ['role_user.end_date', '!=', null]
+                // ['role_user.start_date', '<=', today()],['role_user.end_date', '>', today()]
+            // ])
         //     ->orWhere([['role_user.start_date','=', null], ['role_user.end_date','=', null]]);
             /**
              * * DB Note
-             * ->orWhere(['role_user.start_date' => null, 'role_user.end_date' => null]);
+             * *(start_date, !=, null) because if null, ['role_user.start_date', '<=', today()] may evaluate to true
+             * --------
+             * *->orWhere(['role_user.start_date' => null, 'role_user.end_date' => null]);
              * will produce
-             * or (`role_user`.`start_dates` is null or `role_user`.`end_dates` is null)"
-             * while the first will produce
-             * or (`role_user`.`start_dates` is null and `role_user`.`end_dates` is null)"
+             * *or (`role_user`.`start_dates` is null or `role_user`.`end_dates` is null)"
+             *
+             * *->orWhere([['role_user.start_date', '=', null], ['role_user.end_date', '=', null]]);
+             * while this 👆 will produce
+             * *or (`role_user`.`start_dates` is null and `role_user`.`end_dates` is null)"
             **/
 
         // });

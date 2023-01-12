@@ -2,24 +2,25 @@
 
 namespace App\Console\Commands;
 
+use App\Models\RoleUser;
 use App\Models\User;
 use Illuminate\Console\Command;
 
-class CheckBlocked extends Command
+class CheckBusinessRole extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'checkBlocked';
+    protected $signature = 'checkBusinessRole';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'unblock users if their block duration ended';
+    protected $description = 'revoke user role from a business if their duration ended';
 
     /**
      * Create a new command instance.
@@ -38,8 +39,6 @@ class CheckBlocked extends Command
      */
     public function handle()
     {
-        // if blocked_until is before today activate him and make until = null
-        $users = User::blocked()->where('blocked_until', '<', today())
-        ->update(['status' => 'accepted', 'blocked_until' => null]);
+        RoleUser::ended()->delete();
     }
 }

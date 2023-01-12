@@ -31,8 +31,9 @@ class UpdateBusinessRoleRequest extends APIRequest
             'permissions.*' => 'exists:permissions,id',
             'period' => 'nullable',
             'plan_id' => 'nullable|exists:offline_consultancy_plans,id',
-            'start_date' => 'nullable|date_format:Y-m-d',
-            'end_date' => 'nullable|date_format:Y-m-d',
+            // nullable here for skipping date_format rule in date is null
+            'start_date' => 'required_with:end_date|nullable|date_format:Y-m-d',
+            'end_date' => 'required_with:start_date|nullable|date_format:Y-m-d',
         ];
     }
 }
