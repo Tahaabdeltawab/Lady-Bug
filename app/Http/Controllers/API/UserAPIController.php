@@ -179,16 +179,19 @@ class UserAPIController extends AppBaseController
         return $this->sendSuccess($msg);
     }
 
-    public function get_notifications()
+    public function get_notifications(Request $request)
     {
         try{
             if(auth()->user()->is_notifiable)
             {
                 $user = auth()->user();
-                $notifications = $user->notifications ;
+                $query = $user->notifications() ;
                 $user->unreadNotifications->markAsRead();
 
-                return $this->sendResponse(['all' => NotificationResource::collection($notifications)], 'Notifications retrieved successfully');
+                $pag = \Helper::pag($query->count(), $request->perPage, $request->page);
+                $notifications = $query->skip($pag['skip'])->limit($pag['perPage'])->get();
+
+                return $this->sendResponse(['all' => NotificationResource::collection($notifications), 'meta' => $pag], 'Notifications retrieved successfully');
             }else
                 return $this->sendError(__('Your Notifications are off, turn them on to see your notifications.'));
         }
