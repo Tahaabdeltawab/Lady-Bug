@@ -176,6 +176,12 @@ class Task extends Model
         return $q->where('done', false);
     }
 
+    /**
+     * used in TaskAPIController()->getRelations()
+     * مكافحة ري تسميد عمليات حقلية
+     */
+    public static $used_task_types = [1,2,3,4];
+
     // مكافحة
     public function scopeInsect($q){
         return $q->where('task_type_id', 1);

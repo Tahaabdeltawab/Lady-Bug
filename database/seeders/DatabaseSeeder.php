@@ -43,6 +43,7 @@ class DatabaseSeeder extends Seeder
          * ? BusinessField ? because depended on by Business::class scopes
          * ? ProductType ? because depended on by ProductAPIController()->store() method
          * ? RatingQuestionSeeder ? because depended on by UserAPIController()->user_rating_details() method
+         * ? TaskType ? because depended on by TaskAPIController()->getRelations() method
          *
          * WorkField
          * PathogenType

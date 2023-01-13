@@ -9,6 +9,7 @@ use App\Repositories\TaskTypeRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
 use App\Http\Resources\TaskTypeResource;
+use App\Models\Task;
 use Response;
 
 /**
@@ -80,6 +81,9 @@ class TaskTypeAPIController extends AppBaseController
 
     public function destroy($id)
     {
+        if(in_array($id, Task::$used_task_types))
+            return $this->sendError('Used Task Types are not deletable');
+
         try
         {
         /** @var TaskType $taskType */
