@@ -30,7 +30,7 @@ class ChemicalDetailAPIController extends AppBaseController
     {
         $chemicalDetails = $this->chemicalDetailRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 

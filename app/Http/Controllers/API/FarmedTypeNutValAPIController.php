@@ -37,7 +37,7 @@ class FarmedTypeNutValAPIController extends AppBaseController
     {
         $farmedTypeNutVals = $this->farmedTypeNutValRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 

@@ -34,7 +34,7 @@ class CityAPIController extends AppBaseController
     {
         $cities = $this->cityRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 

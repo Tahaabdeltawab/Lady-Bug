@@ -41,7 +41,7 @@ class ConsultancyProfileAPIController extends AppBaseController
     {
         $consultants = $this->userRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage'),
             ['cons'],
             ['consultancyProfile'],
@@ -67,7 +67,7 @@ class ConsultancyProfileAPIController extends AppBaseController
     {
         $consultancyProfiles = $this->consultancyProfileRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage'),
             ['active']
         );

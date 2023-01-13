@@ -30,7 +30,7 @@ class HumanJobAPIController extends AppBaseController
     {
         $jobs = $this->humanJobRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 

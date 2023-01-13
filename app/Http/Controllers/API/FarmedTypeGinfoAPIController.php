@@ -40,7 +40,7 @@ class FarmedTypeGinfoAPIController extends AppBaseController
     {
         $farmedTypeGinfos = $this->farmedTypeGinfoRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 

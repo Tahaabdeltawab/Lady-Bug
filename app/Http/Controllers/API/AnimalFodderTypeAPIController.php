@@ -34,7 +34,7 @@ class AnimalFodderTypeAPIController extends AppBaseController
     {
         $animalFodderTypes = $this->animalFodderTypeRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 

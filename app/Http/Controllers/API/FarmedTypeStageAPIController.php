@@ -34,7 +34,7 @@ class FarmedTypeStageAPIController extends AppBaseController
     {
         $farmedTypeStages = $this->farmedTypeStageRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 

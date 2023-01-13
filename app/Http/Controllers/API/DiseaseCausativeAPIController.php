@@ -37,7 +37,7 @@ class DiseaseCausativeAPIController extends AppBaseController
     {
         $diseaseCausatives = $this->diseaseCausativeRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 

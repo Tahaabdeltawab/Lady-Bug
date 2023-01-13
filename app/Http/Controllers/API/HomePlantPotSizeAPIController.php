@@ -34,7 +34,7 @@ class HomePlantPotSizeAPIController extends AppBaseController
     {
         $homePlantPotSizes = $this->homePlantPotSizeRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 

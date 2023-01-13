@@ -67,7 +67,7 @@ class BusinessAPIController extends AppBaseController
     {
         $businesses = $this->businessRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 
@@ -79,7 +79,7 @@ class BusinessAPIController extends AppBaseController
     {
         $businesses = $this->businessRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 

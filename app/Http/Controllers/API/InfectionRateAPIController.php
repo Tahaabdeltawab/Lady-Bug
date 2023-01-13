@@ -37,7 +37,7 @@ class InfectionRateAPIController extends AppBaseController
     {
         $infectionRates = $this->infectionRateRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 

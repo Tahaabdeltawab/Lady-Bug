@@ -37,7 +37,7 @@ class CommentAPIController extends AppBaseController
     {
         $comments = $this->commentRepository->all(
             $request->except(['page', 'perPage']),
-            $request->get('page'),
+            $request->get('page') ?? 1,
             $request->get('perPage')
         );
 
