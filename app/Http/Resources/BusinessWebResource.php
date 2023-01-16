@@ -16,9 +16,7 @@ class BusinessWebResource extends JsonResource
     public function toArray($request)
     {
         $prts = $this->users;
-        foreach ($prts as $prt ) {
-            $imgs[] = $prt->photo_url;
-        }
+        $imgs = $prts->pluck('photo_url');
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,

@@ -16,9 +16,7 @@ class BusinessForUpdateResource extends JsonResource
     {
 
         $prts = $this->users;
-        foreach ($prts as $prt ) {
-            $imgs[] = $prt->photo_url;
-        }
+        $imgs = $prts->pluck('photo_url');
         return [
             'id' => $this->id,
             'agents' => $this->agents()->pluck('businesses.id'),
@@ -36,9 +34,6 @@ class BusinessForUpdateResource extends JsonResource
             'privacy_name' => @app('\App\Http\Controllers\API\BusinessAPIController')->privacies($this->privacy)['name'],
             'mobile' => $this->mobile,
             'whatsapp' => $this->whatsapp,
-            // 'lat' => @$this->location->latitude,
-            // 'lon' => @$this->location->longitude,
-            // 'address' => @$this->location->details,
             'location' => LocationResource::make($this->location),
             // 'country_id' => $this->country_id,
             'is_following' => $this->isFollowedBy(auth()->user()), // Am I following him?

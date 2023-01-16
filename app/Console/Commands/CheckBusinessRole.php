@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\RoleUser;
-use App\Models\User;
 use Illuminate\Console\Command;
 
 class CheckBusinessRole extends Command
@@ -39,6 +38,9 @@ class CheckBusinessRole extends Command
      */
     public function handle()
     {
-        RoleUser::ended()->delete();
+        foreach(RoleUser::ended()->get() as $role){
+            $role->permissions()->delete();
+            $role->delete();
+        }
     }
 }

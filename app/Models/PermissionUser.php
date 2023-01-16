@@ -4,41 +4,37 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RoleUser extends Model
+class PermissionUser extends Model
 {
 
-    public $table = 'role_user';
+    public $table = 'permission_user';
     public $timestamps = false;
 
     public $fillable = [
-        'role_id',
+        'permission_id',
         'user_id',
         'user_type',
         'business_id',
-        'start_date',
-        'end_date',
-        'active',
     ];
 
 
-    public function plan()
+    public function roleUser()
     {
-        return $this->hasOne(BusinessConsultant::class, 'role_user_id', 'id');
+        return $this->hasOne(RoleUser::class, 'role_user_id', 'id');
     }
-
     /**
-     * permissions related to this user business role
+     * role related to this user business permissions
      */
-    public function permissions()
+    public function role()
     {
-        return $this->hasMany(PermissionUser::class, 'user_id', 'user_id')
+        return $this->belongsTo(RoleUser::class, 'user_id', 'user_id')
         ->where('user_type', User::class)
         ->where('business_id', $this->business_id);
     }
 
     public function scopeEnded($q)
     {
-        return $q->where('user_type', User::class)
+        return $q->where('user_type', 'App\Models\User')
         ->whereNotNull('business_id')->whereNotNull('end_date')
         ->where('end_date', '<', today());
     }

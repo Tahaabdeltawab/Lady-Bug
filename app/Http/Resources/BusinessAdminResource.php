@@ -16,9 +16,7 @@ class BusinessAdminResource extends JsonResource
     public function toArray($request)
     {
         $prts = $this->users;
-        foreach ($prts as $prt ) {
-            $imgs[] = $prt->photo_url;
-        }
+        $imgs = $prts->pluck('photo_url');
         return [
             'id' => $this->id,
             'agents' => $this->agents()->pluck('businesses.com_name'),
@@ -36,7 +34,6 @@ class BusinessAdminResource extends JsonResource
             'whatsapp' => $this->whatsapp,
             'ladybug_rating' => !is_null($this->ladybug_rating) ? ceil($this->ladybug_rating * 100 / 5).'%' : null,
             'location' => LocationResource::make($this->location),
-            'address' => @$this->location->details,
             'participants_count' => count($prts),
             'participants_images' => $imgs,
         ];
