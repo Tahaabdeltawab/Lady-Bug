@@ -30,7 +30,8 @@ class AuthController extends AppBaseController
 
         $this->ttl = 1440000; // 1000 days
         $this->userRepository = $userRepo;
-        $this->middleware('auth:api', ['except' => ['login', 'register']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'verifyMobile']]);
+        // codeCheck, resetPassword, getCode--- were not put in except because called from authcont2 which is not auth protected
         // $this->middleware('jwt.verify', ['except' => ['login', 'register']]);
     }
 
