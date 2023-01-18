@@ -204,8 +204,9 @@ class AuthController extends AppBaseController
         $user->save();
 
         // send sms to user
-        $msg = __('Your verification code is ') . $user->code;
-        $mobile = '+2'.$user->mobile;
+        $msg = $user->code . ' ' . __('is your verification code for Ladybug');
+        // $mobile = '+2'.$user->mobile;
+        $mobile = '+201273225431';
         $res_msg = __("verification code sent to $mobile");
         try{
             Twilio::message($mobile, $msg);
