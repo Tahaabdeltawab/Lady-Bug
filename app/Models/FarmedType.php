@@ -117,9 +117,18 @@ class FarmedType extends Model
 
 
     // SCOPES
-    public function scopeGlobal($q)
+    public function scopeParentScope($q)
     {
         return $q->whereNull('parent_id');
+    }
+
+    public function is_parent()
+    {
+        return $this->parent_id == null;
+    }
+    public function is_child()
+    {
+        return $this->parent_id != null;
     }
 
     public function extra(){

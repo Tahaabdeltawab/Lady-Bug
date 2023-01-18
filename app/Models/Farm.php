@@ -100,14 +100,22 @@ class Farm extends Model
         return $this->belongsTo(FarmActivityType::class);
     }
 
+    public function parent_farmed_type()
+    {
+        return $this->farmed_type->is_child() ? $this->farmed_type()->parent() : $this->farmed_type();
+    }
+
     public function farmed_type()
     {
         return $this->belongsTo(FarmedType::class);
     }
 
+    /**
+     * alias to farmed_type() which means the child farmed type
+     */
     public function farmed_type_class()
     {
-        return $this->belongsTo(FarmedTypeClass::class);
+        return $this->farmed_type();
     }
 
     public function animal_breeding_purpose()

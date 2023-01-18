@@ -59,7 +59,7 @@ class FarmedTypeAPIController extends AppBaseController
     public function getRelations()
     {
         $data['farm_activity_types'] = FarmActivityType::all();
-        $data['parents'] = FarmedType::global()->get(['id', 'name']);
+        $data['parents'] = FarmedType::parentScope()->get(['id', 'name']);
         $data['countries'] = Country::all();
         $data['soil_types'] = SoilType::all();
 

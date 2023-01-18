@@ -24,8 +24,8 @@ class FarmResource extends JsonResource
         $farm_detail['real'] = $this->real;
         $farm_detail['archived'] = $this->archived;
         $farm_detail['farm_activity_type'] = new FarmActivityTypeResource($this->farm_activity_type);
-        $farm_detail['farmed_type'] = new FarmedTypeResource($this->farmed_type);
-        $farm_detail['farmed_type_class'] = new FarmedTypeClassResource($this->farmed_type_class);
+        $farm_detail['farmed_type'] = new FarmedTypeResource($this->parent_farmed_type);
+        $farm_detail['farmed_type_class'] = new FarmedTypeResource($this->farmed_type);
         $farm_detail['location'] = new LocationResource($this->location);
         $farm_detail['farming_date'] = date('Y-m-d', strtotime($this->farming_date));
         $compat = (new Compatibility())->calculate_compatibility($this->id)['data'];
@@ -90,6 +90,12 @@ class FarmResource extends JsonResource
         // $farm_detail['users'] = (new UserResource($this->users))->collection($this->users)->farm($this);
          $farm_detail['posts'] = []; //relation deleted, became for business instead
         // $farm_detail['coming_task'] = $this->service_tasks()->orderBy('start_at', 'asc')->first() ?? (object) [] ;
+
+
+        // for archived farms
+        $farm_detail['farmed_type_photo'] = @$this->farmed_type->asset->asset_url;
+        $farm_detail['farmed_type_name'] = $this->farmed_type->name;
+        $farm_detail['business_id'] = $this->business_id;
 
         return $farm_detail;
     }
