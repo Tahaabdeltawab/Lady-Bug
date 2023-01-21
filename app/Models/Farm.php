@@ -102,7 +102,7 @@ class Farm extends Model
 
     public function parent_farmed_type()
     {
-        return $this->farmed_type->is_child() ? $this->farmed_type()->parent() : $this->farmed_type();
+        return $this->farmed_type->is_child() ? $this->farmed_type->parent() : $this->farmed_type();
     }
 
     public function farmed_type()
