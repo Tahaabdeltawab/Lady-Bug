@@ -94,4 +94,6 @@ return [
         'reported',
         'blocked',
     ],
+
+    'verification_method' => env('VERIFICATION_METHOD', 'email'),
 ];

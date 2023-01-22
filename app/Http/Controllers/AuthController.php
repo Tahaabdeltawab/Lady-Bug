@@ -10,6 +10,7 @@ use App\Models\Role;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use JWTAuth;
@@ -30,7 +31,7 @@ class AuthController extends AppBaseController
 
         $this->ttl = 1440000; // 1000 days
         $this->userRepository = $userRepo;
-        $this->middleware('auth:api', ['except' => ['login', 'register', 'verifyMobile']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register', 'verify']]);
         // codeCheck, resetPassword, getCode--- were not put in except because called from authcont2 which is not auth protected
         // $this->middleware('jwt.verify', ['except' => ['login', 'register']]);
     }
@@ -193,9 +194,10 @@ class AuthController extends AppBaseController
      */
     public function getCode(Request $request)
     {
-        $validator = Validator::make($request->all(), ['mobile' => 'required']);
+        $method = (config('myconfig.verification_method') == 'email') ? 'email' : 'mobile';
+        $validator = Validator::make($request->all(), [$method => 'required']);
         if ($validator->fails()) return $this->sendError($validator->errors()->first());
-        if (!$user = User::where('mobile', $request->mobile)->first()) return $this->sendError(__('No user found'));
+        if (!$user = User::where($method, $request->$method)->first()) return $this->sendError(__('No user found'));
 
         return $this->sendVerificationCode($user);
     }
@@ -206,14 +208,21 @@ class AuthController extends AppBaseController
 
         // send sms to user
         $msg = $user->code . ' ' . __('is your verification code for Ladybug');
-        // $mobile = '+2'.$user->mobile;
-        $mobile = '+201273225431';
-        $res_msg = __("verification code sent to $mobile");
         try{
-            Twilio::message($mobile, $msg);
+            if(config('myconfig.verification_method') == 'email'){
+                $res_msg = __("verification code sent to $user->email");
+                $contact_data['subject'] = __('Verify Email Address');
+                $contact_data['message'] = $msg;
+                \Mail::to($user->email)->send(new \App\Mail\VerificationEmail($contact_data));
+            }else{
+                $mobile = '+2'.$user->mobile;
+                $res_msg = __("verification code sent to $mobile");
+                Twilio::message($mobile, $msg);
+            }
         } catch (\Throwable $th) {
-            $res_msg = $th->getMessage();
+            return $this->sendError($th->getMessage());
         }
+
         return $this->sendSuccess($res_msg);
     }
 
@@ -238,18 +247,19 @@ class AuthController extends AppBaseController
     }
 
 
-    public function verifyMobile(Request $request)
+    public function verify(Request $request)
     {
+        $method = (config('myconfig.verification_method') == 'email') ? 'email' : 'mobile';
         $validator = Validator::make($request->all(), [
             'code' => 'required',
-            'mobile' => 'required',
+            $method => 'required',
         ]);
 
         if ($validator->fails()) return $this->sendError($validator->errors()->first());
-        if (!$user = User::where('mobile', $request->mobile)->first()) return $this->sendError(__('No user found'));
+        if (!$user = User::where($method, $request->$method)->first()) return $this->sendError(__('No user found'));
         if ($user->code != $request->code) return $this->sendError(__('Wrong code'));
 
-        $user->update(['mobile_verified' => true, 'code' => null]);
+        $user->update([$method."_verified" => true, 'code' => null]);
 
         return $this->respondWithUser($user);
     }

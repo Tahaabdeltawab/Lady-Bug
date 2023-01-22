@@ -29,7 +29,7 @@ Route::group([
 
     Route::post('login', 'AuthController@login');
     Route::post('register', 'AuthController@register');
-    Route::post('verify_mobile', 'AuthController@verifyMobile');
+    Route::post('verify', 'AuthController@verify');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::get('me', 'AuthController@me');
