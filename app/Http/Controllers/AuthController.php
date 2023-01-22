@@ -43,7 +43,7 @@ class AuthController extends AppBaseController
             if ($user) {
 
                 if ($user->status != 'accepted') {
-                    return $this->sendError(__('trans.your_account_is_not_accepted'), 5010);
+                    return $this->sendError(__('Your account is not accepted'), 5010);
                 }
 
                 $code = 1111;
@@ -78,7 +78,7 @@ class AuthController extends AppBaseController
         $field = filter_var($value, FILTER_VALIDATE_EMAIL) ? 'email' : 'mobile';
         $request->merge([$field => $value]);
 
-        $credentials = array_merge($request->only($field, 'password'), ['status' => 'accepted']); //['email_or_phone'=>$email_or_phone, 'password'=>$password, 'status'=>'accepted']
+        $credentials = array_merge($request->only($field, 'password'), ['status' => 'accepted', 'email_verified' => 1]); //['email_or_phone'=>$email_or_phone, 'password'=>$password, 'status'=>'accepted']
 
         // return response()->json($credentials);
         try {
@@ -89,19 +89,19 @@ class AuthController extends AppBaseController
             if (!$token = auth('api')->setTTL($this->ttl)->attempt($credentials)) { // if setTTL(null) not expiring token //used for mobile application as the token should not expire except with logout
                 // $user = $this->userRepository->findBy(["$field" => request()->{$field}]);
 
-                if ($user && $user->status != 'accepted') {
-                    return $this->sendError(__('trans.your_account_is_not_accepted'), 5010);
-                }
-
-                if ($user) //wrong password
-                {
-                    $code = 5021;
-                } else //wrong username
-                {
+                if ($user) {
+                    if ($user->status != 'accepted') {
+                        return $this->sendError(__('Your account is not accepted'), 5010);
+                    }else if ($user->email_verified == 0) {
+                        return $this->sendError(__('Please verify your email address first'), 5011);
+                    }else{ // wrong password
+                        $code = 5021;
+                    }
+                }else{ // wrong username
                     $code = 5020;
                 }
 
-                return $this->sendError(__('invalid credentials'), $code);
+                return $this->sendError(__('Invalid credentials'), $code);
             }
         } catch (\Throwable $th) {
             // return response()->json(['error' => 'could_not_create_token'], 500);
@@ -229,14 +229,15 @@ class AuthController extends AppBaseController
 
     public function resetPassword(Request $request)
     {
+        $method = (config('myconfig.verification_method') == 'email') ? 'email' : 'mobile';
         $validator = Validator::make($request->all(), [
             'code' => 'required',
-            'mobile' => 'required',
+            $method => 'required',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
         if ($validator->fails()) return $this->sendError($validator->errors()->first());
-        if (!$user = User::where('mobile', $request->mobile)->first()) return $this->sendError(__('No user found'));
+        if (!$user = User::where($method, $request->$method)->first()) return $this->sendError(__('No user found'));
         if ($user->code != $request->code) return $this->sendError(__('Wrong code'));
 
         $user->password = bcrypt($request->password);

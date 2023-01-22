@@ -61,7 +61,7 @@ class LoginController extends Controller
         $user = User::where($this->username(), request()->{$this->username()})->first();
         if($user && $user->status != 'accepted')
         {
-            return redirect()->back()->with('fail_message',trans('trans.your_account_is_not_accepted'));
+            return redirect()->back()->with('fail_message',trans('Your account is not accepted'));
         }
 
         throw ValidationException::withMessages([

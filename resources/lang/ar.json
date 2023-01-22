@@ -63,6 +63,9 @@
     "Your verification code is ": "كود التحقيق الخاص بك ",
     "is your verification code for Ladybug": "هو كود التحقق الخاص بك في ليدي بج ",
     "Wrong verification code": "كود التحقيق غير صحيح ",
+    "Please verify your email address first": "برجاء التحقق من البريد الإلكتروني أولا",
+    "Invalid credentials": "معلومات دخول غير صحيحة",
+    "Your account is not accepted": "حسابك غير منشط",
 
 
     "group3": "notifications",

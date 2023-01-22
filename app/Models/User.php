@@ -263,7 +263,7 @@ class User extends Authenticatable implements JWTSubject
         return $colors[$index];
     }
 
-    public static function generate_code($length = 4)
+    public static function generate_code($length = 6)
     {
         $characters       = '0123456789';
         $charactersLength = strlen( $characters );
