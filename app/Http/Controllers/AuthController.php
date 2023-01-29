@@ -223,7 +223,8 @@ class AuthController extends AppBaseController
             return $this->sendError($th->getMessage());
         }
 
-        return $this->sendSuccess($res_msg);
+        // return $this->sendSuccess($res_msg);
+        return $this->sendResponse(['code' => $user->code], $res_msg); // for testing
     }
 
 
