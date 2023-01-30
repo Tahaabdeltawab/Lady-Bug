@@ -42,8 +42,9 @@ class PostAPIController extends AppBaseController
         $this->farmedTypeRepository = $farmedTypeRepo;
         $this->postTypeRepository = $postTypeRepo;
 
-        $this->middleware('permission:posts.index')->only(['index']);
+        $this->middleware('permission:posts.index')->only(['admin_index']);
         $this->middleware('permission:posts.update')->only(['toggle_activate']);
+        $this->middleware('permission:posts.destroy')->only(['admin_destroy']);
     }
 
 
@@ -467,6 +468,11 @@ class PostAPIController extends AppBaseController
         {
             return $this->sendError($th->getMessage(), 500);
         }
+    }
+
+    public function admin_destroy($id)
+    {
+        return $this->destroy($id);
     }
 
     public function destroy($id)

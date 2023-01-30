@@ -21,7 +21,9 @@ use App\Models\SensitiveDiseaseFarmedType;
 class DiseaseFarmedTypeAPIController extends AppBaseController
 {
 
-    public function __construct(){}
+    public function __construct(){
+        $this->middleware('permission:farmed_types.update')->only(['create_sensitive_disease', 'update_sensitive_disease', 'delete_sensitive_disease', 'resistant_diseases']);
+    }
 
     public function getRelations($type = null)
     {

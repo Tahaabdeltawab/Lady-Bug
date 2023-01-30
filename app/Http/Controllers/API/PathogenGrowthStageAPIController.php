@@ -25,6 +25,8 @@ class PathogenGrowthStageAPIController extends AppBaseController
     public function __construct(PathogenGrowthStageRepository $pathogenGrowthStageRepo)
     {
         $this->pathogenGrowthStageRepository = $pathogenGrowthStageRepo;
+
+        $this->middleware('permission:pathogens.update')->only(['store', 'update', 'destroy']);
     }
 
     /**

@@ -24,6 +24,8 @@ class MarketingDataAPIController extends AppBaseController
     public function __construct(MarketingDataRepository $marketingDataRepo)
     {
         $this->marketingDataRepository = $marketingDataRepo;
+
+        $this->middleware('permission:farmed_types.update')->only(['store']);
     }
 
     /**

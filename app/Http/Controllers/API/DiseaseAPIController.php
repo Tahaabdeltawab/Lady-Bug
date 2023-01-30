@@ -30,6 +30,12 @@ class DiseaseAPIController extends AppBaseController
     public function __construct(DiseaseRepository $diseaseRepo)
     {
         $this->diseaseRepository = $diseaseRepo;
+
+        $this->middleware('permission:diseases.index')->only(['admin_index']);
+        $this->middleware('permission:diseases.show')->only(['admin_show']);
+        $this->middleware('permission:diseases.store')->only(['store']);
+        $this->middleware('permission:diseases.update')->only(['update']);
+        $this->middleware('permission:diseases.destroy')->only(['destroy']);
     }
 
     /**
@@ -39,6 +45,16 @@ class DiseaseAPIController extends AppBaseController
      * @param Request $request
      * @return Response
      */
+    public function admin_index(Request $request)
+    {
+        return $this->index($request);
+    }
+
+    public function admin_show($id)
+    {
+        return $this->show($id);
+    }
+
     public function index(Request $request)
     {
         $diseases = $this->diseaseRepository->all(

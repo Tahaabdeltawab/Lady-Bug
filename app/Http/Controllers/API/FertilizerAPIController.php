@@ -28,6 +28,12 @@ class FertilizerAPIController extends AppBaseController
     public function __construct(FertilizerRepository $fertilizerRepo)
     {
         $this->fertilizerRepository = $fertilizerRepo;
+
+        $this->middleware('permission:fertilizers.index')->only(['admin_index']);
+        $this->middleware('permission:fertilizers.show')->only(['admin_show']);
+        $this->middleware('permission:fertilizers.store')->only(['store']);
+        $this->middleware('permission:fertilizers.update')->only(['update']);
+        $this->middleware('permission:fertilizers.destroy')->only(['destroy']);
     }
 
     /**
@@ -37,6 +43,16 @@ class FertilizerAPIController extends AppBaseController
      * @param Request $request
      * @return Response
      */
+    public function admin_index(Request $request)
+    {
+        return $this->index($request);
+    }
+
+    public function admin_show($id)
+    {
+        return $this->show($id);
+    }
+
     public function index(Request $request)
     {
         $fertilizers = $this->fertilizerRepository->all(

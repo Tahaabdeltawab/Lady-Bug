@@ -24,6 +24,8 @@ class DiseaseCausativeAPIController extends AppBaseController
     public function __construct(DiseaseCausativeRepository $diseaseCausativeRepo)
     {
         $this->diseaseCausativeRepository = $diseaseCausativeRepo;
+
+        $this->middleware('permission:diseases.update')->only(['store', 'destroy']);
     }
 
     /**

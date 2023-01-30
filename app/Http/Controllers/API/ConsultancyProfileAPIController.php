@@ -32,6 +32,10 @@ class ConsultancyProfileAPIController extends AppBaseController
     {
         $this->consultancyProfileRepository = $consultancyProfileRepo;
         $this->userRepository = $userRepo;
+
+        $this->middleware('permission:consultants.index')->only(['admin_index']);
+        $this->middleware('permission:consultants.show')->only(['admin_show']);
+        $this->middleware('permission:consultants.update')->only(['toggle_activate']);
     }
 
 
@@ -51,6 +55,16 @@ class ConsultancyProfileAPIController extends AppBaseController
         return $this->sendResponse(['all' => UserConsAdminXsResource::collection($consultants['all']), 'meta' => $consultants['meta']], 'Consultants retrieved successfully');
     }
 
+    // admin
+    public function admin_show($user_id)
+    {
+        $user = User::select('id', 'name', 'human_job_id')->find($user_id);
+        if(empty($user))
+            return $this->sendError('User not found');
+        return $this->sendResponse(new UserConsResource($user), 'Consultancy Profile retrieved successfully');
+    }
+
+    // admin
     public function toggle_activate($id)
     {
         $cons = $this->consultancyProfileRepository->findBy(['user_id' => $id]);
@@ -63,6 +77,8 @@ class ConsultancyProfileAPIController extends AppBaseController
 
         return $this->sendSuccess($msg);
     }
+
+
     public function index(Request $request)
     {
         $consultancyProfiles = $this->consultancyProfileRepository->all(

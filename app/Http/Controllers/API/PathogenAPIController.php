@@ -26,6 +26,12 @@ class PathogenAPIController extends AppBaseController
     public function __construct(PathogenRepository $pathogenRepo)
     {
         $this->pathogenRepository = $pathogenRepo;
+
+        $this->middleware('permission:pathogens.index')->only(['admin_index']);
+        $this->middleware('permission:pathogens.show')->only(['admin_show']);
+        $this->middleware('permission:pathogens.store')->only(['store']);
+        $this->middleware('permission:pathogens.update')->only(['update']);
+        $this->middleware('permission:pathogens.destroy')->only(['destroy']);
     }
 
     /**
@@ -35,6 +41,16 @@ class PathogenAPIController extends AppBaseController
      * @param Request $request
      * @return Response
      */
+    public function admin_index(Request $request)
+    {
+        return $this->index($request);
+    }
+
+    public function admin_show($id)
+    {
+        return $this->show($id);
+    }
+
     public function index(Request $request)
     {
         $pathogens = $this->pathogenRepository->all(

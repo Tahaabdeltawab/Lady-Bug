@@ -14,7 +14,9 @@ use App\Models\AcPaGrowthStage;
 class AcPaGrowthStageAPIController extends AppBaseController
 {
 
-    public function __construct(){}
+    public function __construct(){
+        $this->middleware('permission:pathogens.update')->only(['create_affecting_ac', 'update_affecting_ac', 'delete_affecting_ac']);
+    }
 
     public function one_affecting_ac($ac_pa_growth_stage_id)
     {

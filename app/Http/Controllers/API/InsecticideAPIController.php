@@ -28,6 +28,12 @@ class InsecticideAPIController extends AppBaseController
     public function __construct(InsecticideRepository $insecticideRepo)
     {
         $this->insecticideRepository = $insecticideRepo;
+
+        $this->middleware('permission:insecticides.index')->only(['admin_index']);
+        $this->middleware('permission:insecticides.show')->only(['admin_show']);
+        $this->middleware('permission:insecticides.store')->only(['store']);
+        $this->middleware('permission:insecticides.update')->only(['update']);
+        $this->middleware('permission:insecticides.destroy')->only(['destroy']);
     }
 
     /**
@@ -37,6 +43,16 @@ class InsecticideAPIController extends AppBaseController
      * @param Request $request
      * @return Response
      */
+    public function admin_index(Request $request)
+    {
+        return $this->index($request);
+    }
+
+    public function admin_show($id)
+    {
+        return $this->show($id);
+    }
+
     public function index(Request $request)
     {
         $insecticides = $this->insecticideRepository->all(

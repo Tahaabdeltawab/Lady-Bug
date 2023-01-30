@@ -24,6 +24,8 @@ class FarmedTypeNutValAPIController extends AppBaseController
     public function __construct(FarmedTypeNutValRepository $farmedTypeNutValRepo)
     {
         $this->farmedTypeNutValRepository = $farmedTypeNutValRepo;
+
+        $this->middleware('permission:farmed_types.update')->only(['store']);
     }
 
     /**

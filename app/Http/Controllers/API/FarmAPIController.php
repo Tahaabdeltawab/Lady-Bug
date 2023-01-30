@@ -133,6 +133,7 @@ class FarmAPIController extends AppBaseController
         $this->locationRepository = $locationRepo;
 
         $this->middleware('permission:farms.index')->only(['index']);
+        $this->middleware('permission:farms.update')->only(['ladybug_rate_farm']);
         $this->middleware('permission:farms.destroy')->only(['destroy']);
     }
 

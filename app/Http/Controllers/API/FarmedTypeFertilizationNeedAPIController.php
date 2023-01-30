@@ -26,6 +26,8 @@ class FarmedTypeFertilizationNeedAPIController extends AppBaseController
     public function __construct(FarmedTypeFertilizationNeedRepository $farmedTypeFertilizationNeedRepo)
     {
         $this->farmedTypeFertilizationNeedRepository = $farmedTypeFertilizationNeedRepo;
+
+        $this->middleware('permission:farmed_types.update')->only(['store']);
     }
 
     /**

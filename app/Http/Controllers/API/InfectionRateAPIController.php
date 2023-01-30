@@ -24,6 +24,10 @@ class InfectionRateAPIController extends AppBaseController
     public function __construct(InfectionRateRepository $infectionRateRepo)
     {
         $this->infectionRateRepository = $infectionRateRepo;
+
+        $this->middleware('permission:infection_rates.store')->only(['store']);
+        $this->middleware('permission:infection_rates.update')->only(['update']);
+        $this->middleware('permission:infection_rates.destroy')->only(['destroy']);
     }
 
     /**

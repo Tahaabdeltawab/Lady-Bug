@@ -24,6 +24,10 @@ class WorkFieldAPIController extends AppBaseController
     public function __construct(WorkFieldRepository $workFieldRepo)
     {
         $this->workFieldRepository = $workFieldRepo;
+
+        $this->middleware('permission:work_fields.store')->only(['store']);
+        $this->middleware('permission:work_fields.update')->only(['update']);
+        $this->middleware('permission:work_fields.destroy')->only(['destroy']);
     }
 
     /**

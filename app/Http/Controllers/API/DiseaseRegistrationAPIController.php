@@ -29,6 +29,10 @@ class DiseaseRegistrationAPIController extends AppBaseController
     public function __construct(DiseaseRegistrationRepository $diseaseRegistrationRepo)
     {
         $this->diseaseRegistrationRepository = $diseaseRegistrationRepo;
+
+        $this->middleware('permission:disease_registrations.index')->only(['admin_index']);
+        $this->middleware('permission:disease_registrations.show')->only(['admin_show']);
+        $this->middleware('permission:disease_registrations.update')->only(['admin_update', 'toggle_confirm']);
     }
 
     // admin
@@ -39,6 +43,10 @@ class DiseaseRegistrationAPIController extends AppBaseController
      * @param Request $request
      * @return Response
      */
+    public function admin_index(Request $request)
+    {
+        return $this->index($request);
+    }
     public function index(Request $request)
     {
         $diseaseRegistrations = $this->diseaseRegistrationRepository->all(
@@ -151,6 +159,11 @@ class DiseaseRegistrationAPIController extends AppBaseController
      *
      * @return Response
      */
+    public function admin_update($id, UpdateDiseaseRegistrationAPIRequest $request)
+    {
+        return $this->update($id, $request);
+    }
+
     public function update($id, UpdateDiseaseRegistrationAPIRequest $request)
     {
         $input = $request->validated();

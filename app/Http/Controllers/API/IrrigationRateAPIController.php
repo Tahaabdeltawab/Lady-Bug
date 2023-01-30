@@ -24,6 +24,10 @@ class IrrigationRateAPIController extends AppBaseController
     public function __construct(IrrigationRateRepository $irrigationRateRepo)
     {
         $this->irrigationRateRepository = $irrigationRateRepo;
+
+        $this->middleware('permission:irrigation_rates.store')->only(['store']);
+        $this->middleware('permission:irrigation_rates.update')->only(['update']);
+        $this->middleware('permission:irrigation_rates.destroy')->only(['destroy']);
     }
 
     /**

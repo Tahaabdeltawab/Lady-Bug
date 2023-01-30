@@ -26,6 +26,8 @@ class FarmedTypeExtrasAPIController extends AppBaseController
     public function __construct(FarmedTypeExtrasRepository $farmedTypeExtrasRepo)
     {
         $this->farmedTypeExtrasRepository = $farmedTypeExtrasRepo;
+
+        $this->middleware('permission:farmed_types.update')->only(['store']);
     }
 
     /**

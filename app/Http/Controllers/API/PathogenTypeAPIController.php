@@ -24,6 +24,10 @@ class PathogenTypeAPIController extends AppBaseController
     public function __construct(PathogenTypeRepository $pathogenTypeRepo)
     {
         $this->pathogenTypeRepository = $pathogenTypeRepo;
+
+        $this->middleware('permission:pathogen_types.store')->only(['store']);
+        $this->middleware('permission:pathogen_types.update')->only(['update']);
+        $this->middleware('permission:pathogen_types.destroy')->only(['destroy']);
     }
 
     /**

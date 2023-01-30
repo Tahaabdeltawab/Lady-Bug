@@ -50,6 +50,11 @@ class ProductAPIController extends AppBaseController
         $this->productRepository = $productRepo;
         $this->farmedTypeRepository = $farmedTypeRepo;
         $this->cityRepository = $cityRepo;
+
+        $this->middleware('permission:products.index')->only(['admin_index']);
+        $this->middleware('permission:products.show')->only(['admin_show']);
+        $this->middleware('permission:products.update')->only(['rate_product']);
+        $this->middleware('permission:products.destroy')->only(['admin_destroy']);
     }
 
     // admin
@@ -412,6 +417,11 @@ class ProductAPIController extends AppBaseController
             throw $th;
             return $this->sendError($th->getMessage(), 500);
         }
+    }
+
+    public function admin_destroy($id)
+    {
+        return $this->destroy($id);
     }
 
     public function destroy($id)

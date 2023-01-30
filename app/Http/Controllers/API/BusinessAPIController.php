@@ -61,6 +61,10 @@ class BusinessAPIController extends AppBaseController
     {
         $this->businessRepository = $businessRepo;
         $this->locationRepository = $locationRepo;
+
+        $this->middleware('permission:businesses.index')->only(['admin_index']);
+        $this->middleware('permission:businesses.show')->only(['admin_show']);
+        $this->middleware('permission:businesses.update')->only(['ladybug_rate_business']);
     }
 
     public function index(Request $request)

@@ -24,6 +24,8 @@ class TaxonomyAPIController extends AppBaseController
     public function __construct(TaxonomyRepository $taxonomyRepo)
     {
         $this->taxonomyRepository = $taxonomyRepo;
+
+        $this->middleware('permission:farmed_types.update')->only(['store']);
     }
 
     /**

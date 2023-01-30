@@ -196,16 +196,19 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::Resource('permissions', App\Http\Controllers\API\PermissionAPIController::class);
     Route::post('users/roles/save', [App\Http\Controllers\API\UserAPIController::class, 'update_user_roles']);
     Route::post('roles/permissions/save', [App\Http\Controllers\API\RoleAPIController::class, 'update_role_permissions']);
-    Route::get('admin_posts', [App\Http\Controllers\API\PostAPIController::class, 'admin_index']);
+    Route::get('admin/posts', [App\Http\Controllers\API\PostAPIController::class, 'admin_index']);
+    Route::delete('admin/posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'admin_destroy'])->name('posts.admin_destroy');
     Route::get('posts/toggle_activate/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_activate']);
-    Route::get('consultants', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'admin_index']);
-    Route::get('consultants/toggle_activate/{user}', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'toggle_activate']);
+    Route::get('admin/consultants', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'admin_index']);
+    Route::get('admin/consultants/{user}', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'admin_show']);
+    Route::get('admin/consultants/toggle_activate/{user}', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'toggle_activate']);
     Route::post('ladybug_rate_business', [App\Http\Controllers\API\BusinessAPIController::class, 'ladybug_rate_business']);
     Route::post('ladybug_rate_farm', [App\Http\Controllers\API\FarmAPIController::class, 'ladybug_rate_farm']);
-    Route::get('admin_businesses', [App\Http\Controllers\API\BusinessAPIController::class, 'admin_index']);
-    Route::get('admin_businesses/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'admin_show']);
-    Route::get('admin_products', [App\Http\Controllers\API\ProductAPIController::class, 'admin_index']);
-    Route::get('admin_products/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'admin_index']);
+    Route::get('admin/businesses', [App\Http\Controllers\API\BusinessAPIController::class, 'admin_index']);
+    Route::get('admin/businesses/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'admin_show']);
+    Route::get('admin/products', [App\Http\Controllers\API\ProductAPIController::class, 'admin_index']);
+    Route::get('admin/products/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'admin_show']);
+    Route::delete('admin/products/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'admin_destroy']);
 
     // end admin area
 
@@ -271,15 +274,20 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('disease_registrations/relations/index', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'getRelations']);
     Route::get('near_infections', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'getNearInfections']);
         // admin
+        Route::get('admin/disease_registrations', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'admin_index']);
         Route::get('admin/disease_registrations/{disease_registration}', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'admin_show']);
         Route::get('disease_registrations/toggle_confirm/{disease_registration}', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'toggle_confirm']);
-        Route::match(['put', 'patch','post'], 'disease_registrations/{disease_registration}', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'update'])->name('disease_registrations.update');
+        Route::match(['put', 'patch','post'], 'admin/disease_registrations/{disease_registration}', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'admin_update'])->name('disease_registrations.admin_update');
 
 
     // Fertilizers & Insecticides (admin)
     Route::resource('insecticides', App\Http\Controllers\API\InsecticideAPIController::class)->except('update');
+    Route::get('admin/insecticides', [App\Http\Controllers\API\InsecticideAPIController::class, 'admin_index'])->name('insecticides.admin_index');
+    Route::get('admin/insecticides/{insecticide}', [App\Http\Controllers\API\InsecticideAPIController::class, 'admin_show'])->name('insecticides.admin_show');
     Route::match(['put', 'patch','post'], 'insecticides/{insecticide}', [App\Http\Controllers\API\InsecticideAPIController::class, 'update'])->name('insecticides.update');
     Route::resource('fertilizers', App\Http\Controllers\API\FertilizerAPIController::class)->except('update');
+    Route::get('admin/fertilizers', [App\Http\Controllers\API\FertilizerAPIController::class, 'admin_index'])->name('fertilizers.admin_index');
+    Route::get('admin/fertilizers/{fertilizer}', [App\Http\Controllers\API\FertilizerAPIController::class, 'admin_show'])->name('fertilizers.admin_show');
     Route::match(['put', 'patch','post'], 'fertilizers/{fertilizer}', [App\Http\Controllers\API\FertilizerAPIController::class, 'update'])->name('fertilizers.update');
     Route::get('insecticides/relations/index', [App\Http\Controllers\API\InsecticideAPIController::class, 'getRelations']);
     Route::get('fertilizers/relations/index', [App\Http\Controllers\API\FertilizerAPIController::class, 'getRelations']);
@@ -353,18 +361,18 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::resource('irrigation_rates', App\Http\Controllers\API\IrrigationRateAPIController::class);
 
     Route::resource('nut_elem_values', App\Http\Controllers\API\NutElemValueAPIController::class);
-    Route::resource('farmed_type_fertilization_needs', App\Http\Controllers\API\FarmedTypeFertilizationNeedAPIController::class);
+    Route::resource('farmed_type_fertilization_needs', App\Http\Controllers\API\FarmedTypeFertilizationNeedAPIController::class)->except(['update']);
     Route::get('farmed_type_fertilization_needs/relations/index', [App\Http\Controllers\API\FarmedTypeFertilizationNeedAPIController::class, 'getRelations'])->name('farmed_type_fertilization_needs.getRelations');
     Route::get('farmed_type_fertilization_needs/by_ft_id/{farmed_type}/{farmed_type_stage_id?}', [App\Http\Controllers\API\FarmedTypeFertilizationNeedAPIController::class, 'by_ft_id'])->name('farmed_type_fertilization_needs.by_ft_id');
 
-    Route::resource('farmed_type_extras', App\Http\Controllers\API\FarmedTypeExtrasAPIController::class);
+    Route::resource('farmed_type_extras', App\Http\Controllers\API\FarmedTypeExtrasAPIController::class)->except(['update']);
     Route::get('farmed_type_extras/relations/index', [App\Http\Controllers\API\FarmedTypeExtrasAPIController::class, 'getRelations'])->name('farmed_type_extras.getRelations');
     Route::get('farmed_type_extras/by_ft_id/{farmed_type}', [App\Http\Controllers\API\FarmedTypeExtrasAPIController::class, 'by_ft_id'])->name('farmed_type_extras.by_ft_id');
-    Route::resource('taxonomies', App\Http\Controllers\API\TaxonomyAPIController::class);
+    Route::resource('taxonomies', App\Http\Controllers\API\TaxonomyAPIController::class)->except(['update']);
     Route::get('taxonomies/by_ft_id/{farmed_type}', [App\Http\Controllers\API\TaxonomyAPIController::class, 'by_ft_id'])->name('taxonomies.by_ft_id');
-    Route::resource('farmed_type_nut_vals', App\Http\Controllers\API\FarmedTypeNutValAPIController::class);
+    Route::resource('farmed_type_nut_vals', App\Http\Controllers\API\FarmedTypeNutValAPIController::class)->except(['update']);
     Route::get('farmed_type_nut_vals/by_ft_id/{farmed_type}', [App\Http\Controllers\API\FarmedTypeNutValAPIController::class, 'by_ft_id'])->name('farmed_type_nut_vals.by_ft_id');
-    Route::resource('marketing_datas', App\Http\Controllers\API\MarketingDataAPIController::class);
+    Route::resource('marketing_datas', App\Http\Controllers\API\MarketingDataAPIController::class)->except(['update']);
     Route::get('marketing_datas/by_ft_id/{farmed_type}', [App\Http\Controllers\API\MarketingDataAPIController::class, 'by_ft_id'])->name('marketing_datas.by_ft_id');
 
     Route::get('popular_countries/{farmed_type}', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'get_popular_countries'])->name('farmed_types.get_popular_countries');
@@ -395,13 +403,21 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::match(['put', 'patch','post'], 'pathogen_growth_stages/{pathogen_growth_stage}', [App\Http\Controllers\API\PathogenGrowthStageAPIController::class, 'update'])->name('pathogen_growth_stages.update');
     Route::get('pathogen_growth_stages/by_pa_id/{pathogen}', [App\Http\Controllers\API\PathogenGrowthStageAPIController::class, 'by_pa_id'])->name('pathogen_growth_stages.by_pa_id');
 
+    // admin
     Route::resource('acs', App\Http\Controllers\API\AcAPIController::class);
     Route::get('acs/relations/index', [App\Http\Controllers\API\AcAPIController::class, 'getRelations'])->name('acs.getRelations');
+    Route::get('admin/acs', [App\Http\Controllers\API\AcAPIController::class, 'admin_index'])->name('acs.admin_index');
+    Route::get('admin/acs/{ac}', [App\Http\Controllers\API\AcAPIController::class, 'admin_show'])->name('acs.admin_show');
 
     Route::resource('diseases', App\Http\Controllers\API\DiseaseAPIController::class);
     Route::get('diseases/relations/index', [App\Http\Controllers\API\DiseaseAPIController::class, 'getRelations'])->name('diseases.getRelations');
+    Route::get('admin/diseases', [App\Http\Controllers\API\DiseaseAPIController::class, 'admin_index'])->name('diseases.admin_index');
+    Route::get('admin/diseases/{disease}', [App\Http\Controllers\API\DiseaseAPIController::class, 'admin_show'])->name('diseases.admin_show');
     Route::resource('disease_causatives', App\Http\Controllers\API\DiseaseCausativeAPIController::class)->only(['store', 'destroy']);
     Route::resource('pathogens', App\Http\Controllers\API\PathogenAPIController::class);
+    Route::get('admin/pathogens', [App\Http\Controllers\API\PathogenAPIController::class, 'admin_index'])->name('pathogens.admin_index');
+    Route::get('admin/pathogens/{pathogen}', [App\Http\Controllers\API\PathogenAPIController::class, 'admin_show'])->name('pathogens.admin_show');
+
 });
 
 // ROUTES DON'T NEED LOGIN AS THEY ARE USED IN REGISTRATION

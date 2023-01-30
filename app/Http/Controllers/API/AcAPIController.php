@@ -24,6 +24,12 @@ class AcAPIController extends AppBaseController
     public function __construct(AcRepository $acRepo)
     {
         $this->acRepository = $acRepo;
+
+        $this->middleware('permission:acs.index')->only(['admin_index']);
+        $this->middleware('permission:acs.show')->only(['admin_show']);
+        $this->middleware('permission:acs.store')->only(['store']);
+        $this->middleware('permission:acs.update')->only(['update']);
+        $this->middleware('permission:acs.destroy')->only(['destroy']);
     }
 
     /**
@@ -33,6 +39,17 @@ class AcAPIController extends AppBaseController
      * @param Request $request
      * @return Response
      */
+    public function admin_index(Request $request)
+    {
+        return $this->index($request);
+    }
+
+    public function admin_show($id)
+    {
+        return $this->show($id);
+    }
+
+
     public function index(Request $request)
     {
         $acs = $this->acRepository->all(

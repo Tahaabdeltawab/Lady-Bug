@@ -21,6 +21,11 @@ use Illuminate\Validation\Rule;
 class SettingAPIController extends AppBaseController
 {
 
+    public function __construct()
+    {
+        $this->middleware('permission:settings.update')->only(['store']);
+    }
+
     private $settings_keys = ['report_price', 'weather_background', 'info_pdf'];
 
     public function store(Request $request)
