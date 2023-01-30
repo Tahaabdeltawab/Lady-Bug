@@ -27,6 +27,7 @@ class FarmAdminResource extends JsonResource
         $farm_detail['farmed_number'] = $this->farmed_number;
         $farm_detail['chemical_fertilizer_sources'] = $this->chemical_fertilizer_sources()->pluck('com_name');
         $farm_detail['seedling_sources'] =  $this->seedling_sources()->pluck('com_name');
+        $farm_detail['location'] = LocationResource::make($this->location);
         $compat = (new Compatibility())->calculate_compatibility($this->id)['data'];
         $farm_detail['farming_compatibility'] = (array)$compat ?: null;
 
