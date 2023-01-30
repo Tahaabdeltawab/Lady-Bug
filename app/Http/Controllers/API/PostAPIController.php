@@ -59,6 +59,17 @@ class PostAPIController extends AppBaseController
 
         return $this->sendResponse(['all' => PostAdminResource::collection($posts['all']), 'meta' => $posts['meta']], 'Posts retrieved successfully');
     }
+    public function admin_show($id)
+    {
+        /** @var Post $post */
+        $post = Post::accepted()->find($id);
+
+        if (empty($post)) {
+            return $this->sendError('Post not found');
+        }
+
+        return $this->sendResponse(new PostAdminResource($post), 'Post retrieved successfully');
+    }
 
     private function paginate($data)
     {

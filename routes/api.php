@@ -197,6 +197,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::post('users/roles/save', [App\Http\Controllers\API\UserAPIController::class, 'update_user_roles']);
     Route::post('roles/permissions/save', [App\Http\Controllers\API\RoleAPIController::class, 'update_role_permissions']);
     Route::get('admin/posts', [App\Http\Controllers\API\PostAPIController::class, 'admin_index']);
+    Route::get('admin/posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'admin_show']);
     Route::delete('admin/posts/{post}', [App\Http\Controllers\API\PostAPIController::class, 'admin_destroy'])->name('posts.admin_destroy');
     Route::get('posts/toggle_activate/{post}', [App\Http\Controllers\API\PostAPIController::class, 'toggle_activate']);
     Route::get('admin/consultants', [App\Http\Controllers\API\ConsultancyProfileAPIController::class, 'admin_index']);

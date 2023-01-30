@@ -26,7 +26,7 @@ class PostAdminResource extends JsonResource
             'comments_count' => $this->comments->count(),
             'likers_count' => $this->likers->count(),
             'dislikers_count' => $this->dislikers->count(),
-            'created_date' => $this->created_at,
+            'created_date' => date('Y-m-d H:i', strtotime($this->created_at)),
         ];
 
         return $return;
