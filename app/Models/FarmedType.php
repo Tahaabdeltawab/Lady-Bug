@@ -115,6 +115,11 @@ class FarmedType extends Model
     }
     // END MUTATORS
 
+    public function suitableSoilTypes()
+    {
+        $ids = (array) $this->suitable_soil_types;
+        return SoilType::whereIn('id', $ids)->pluck('name');
+    }
 
     // SCOPES
     public function scopeParentScope($q)

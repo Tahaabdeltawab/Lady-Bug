@@ -13,6 +13,8 @@ use App\Http\Requests\API\ResistantDiseaseRequest;
 use App\Http\Requests\API\SensitiveDiseaseRequest;
 use App\Http\Resources\CountryResource;
 use App\Http\Resources\DiseaseResource;
+use App\Http\Resources\FarmedTypeAdminResource;
+use App\Http\Resources\FarmedTypeAdminSmResource;
 use App\Http\Resources\FarmedTypeResource;
 use App\Http\Resources\NamesCountriesResource;
 use App\Http\Resources\SensitiveDiseaseResource;
@@ -44,6 +46,31 @@ class FarmedTypeAPIController extends AppBaseController
         $this->middleware('permission:farmed_types.update')->only(['update']);
         $this->middleware('permission:farmed_types.destroy')->only(['destroy']);
     }
+
+    // admin
+    public function admin_show($id)
+    {
+        /** @var FarmedType $farmedType */
+        $farmedType = $this->farmedTypeRepository->find($id);
+
+        if (empty($farmedType)) {
+            return $this->sendError('Farmed Type not found');
+        }
+
+        return $this->sendResponse(new FarmedTypeAdminResource($farmedType), 'Farmed Type retrieved successfully');
+    }
+
+    public function admin_index(Request $request)
+    {
+        $farmedTypes = $this->farmedTypeRepository->all(
+            $request->except(['page', 'perPage']),
+            $request->get('page') ?? 1,
+            $request->get('perPage')
+        );
+
+        return $this->sendResponse(['all' => FarmedTypeAdminSmResource::collection($farmedTypes['all']), 'meta' => $farmedTypes['meta']], 'Farmed Types retrieved successfully');
+    }
+
 
     public function index(Request $request)
     {
