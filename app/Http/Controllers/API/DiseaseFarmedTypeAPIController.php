@@ -9,8 +9,12 @@ use App\Http\Requests\API\ResistantDiseaseRequest;
 use App\Http\Requests\API\SensitiveDiseaseRequest;
 use App\Http\Resources\DiseaseResource;
 use App\Http\Resources\DiseaseSmResource;
+use App\Http\Resources\DiseaseXsResource;
 use App\Http\Resources\FarmedTypeResource;
+use App\Http\Resources\FarmedTypeStageResource;
 use App\Http\Resources\SensitiveDiseaseResource;
+use App\Models\Disease;
+use App\Models\FarmedTypeStage;
 use App\Models\SensitiveDiseaseFarmedType;
 
 
@@ -18,6 +22,14 @@ class DiseaseFarmedTypeAPIController extends AppBaseController
 {
 
     public function __construct(){}
+
+    public function getRelations($type = null)
+    {
+        $data['diseases'] = DiseaseXsResource::collection(Disease::get(['id', 'name']));
+        if($type == 'sensitive')
+        $data['farmed_type_stages'] = FarmedTypeStageResource::collection(FarmedTypeStage::all());
+        return $this->sendResponse($data, 'disease relations retrieved successfully');
+    }
 
     public function one_sensitive_disease($disease_farmed_type_id)
     {

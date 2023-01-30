@@ -16,7 +16,7 @@ class InsecticideResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'acs' => $this->acs,
+            'acs' => AcResource::collection($this->acs),
             'name' => $this->name,
             'assets' => $this->assets()->pluck('asset_url'),
             'dosage_form' => $this->dosage_form,

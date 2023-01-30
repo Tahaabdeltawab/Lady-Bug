@@ -205,6 +205,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('admin_businesses', [App\Http\Controllers\API\BusinessAPIController::class, 'admin_index']);
     Route::get('admin_businesses/{business}', [App\Http\Controllers\API\BusinessAPIController::class, 'admin_show']);
     Route::get('admin_products', [App\Http\Controllers\API\ProductAPIController::class, 'admin_index']);
+    Route::get('admin_products/{product}', [App\Http\Controllers\API\ProductAPIController::class, 'admin_index']);
 
     // end admin area
 
@@ -270,6 +271,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('disease_registrations/relations/index', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'getRelations']);
     Route::get('near_infections', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'getNearInfections']);
         // admin
+        Route::get('admin/disease_registrations/{disease_registration}', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'admin_show']);
         Route::get('disease_registrations/toggle_confirm/{disease_registration}', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'toggle_confirm']);
         Route::match(['put', 'patch','post'], 'disease_registrations/{disease_registration}', [App\Http\Controllers\API\DiseaseRegistrationAPIController::class, 'update'])->name('disease_registrations.update');
 
@@ -366,6 +368,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::post('popular_countries', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'popular_countries'])->name('farmed_types.popular_countries');
     Route::post('names_countries', [App\Http\Controllers\API\FarmedTypeAPIController::class, 'names_countries'])->name('farmed_types.names_countries');
 
+    Route::get('sens_resis_relations/{type?}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'getRelations'])->name('farmed_types.sens_resis_relations');
     Route::get('sensitive_diseases/{farmed_type}/{farmed_type_stage?}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'get_sensitive_diseases'])->name('farmed_types.get_sensitive_diseases');
     Route::get('one_sensitive_disease/{disease_farmed_type}', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'one_sensitive_disease'])->name('farmed_types.one_sensitive_disease');
     Route::post('create_sensitive_disease', [App\Http\Controllers\API\DiseaseFarmedTypeAPIController::class, 'create_sensitive_disease'])->name('farmed_types.create_sensitive_disease');

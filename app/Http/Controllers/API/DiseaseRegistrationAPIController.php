@@ -8,6 +8,7 @@ use App\Models\DiseaseRegistration;
 use App\Repositories\DiseaseRegistrationRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
+use App\Http\Resources\DiseaseRegistrationAdminResource;
 use App\Http\Resources\DiseaseRegistrationLgResource;
 use App\Http\Resources\DiseaseRegistrationResource;
 use App\Http\Resources\DiseaseXsResource;
@@ -47,6 +48,18 @@ class DiseaseRegistrationAPIController extends AppBaseController
         );
 
         return $this->sendResponse(['all' => DiseaseRegistrationLgResource::collection($diseaseRegistrations['all']), 'meta' => $diseaseRegistrations['meta']], 'Disease Registrations retrieved successfully');
+    }
+
+    public function admin_show($id)
+    {
+        /** @var DiseaseRegistration $diseaseRegistration */
+        $diseaseRegistration = $this->diseaseRegistrationRepository->find($id);
+
+        if (empty($diseaseRegistration)) {
+            return $this->sendError('Disease Registration not found');
+        }
+
+        return $this->sendResponse(new DiseaseRegistrationAdminResource($diseaseRegistration), 'Disease Registration retrieved successfully');
     }
 
     // user

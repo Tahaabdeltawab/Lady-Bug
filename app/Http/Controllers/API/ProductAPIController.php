@@ -16,6 +16,7 @@ use App\Http\Resources\ProductResource;
 use App\Http\Resources\CityResource;
 use App\Http\Resources\CountryResource;
 use App\Http\Resources\FarmedTypeResource;
+use App\Http\Resources\ProductAdminLgResource;
 use App\Http\Resources\ProductAdminResource;
 use App\Http\Resources\ProductLgResource;
 use App\Http\Resources\ProductTypeResource;
@@ -64,6 +65,20 @@ class ProductAPIController extends AppBaseController
         ];
         return $this->sendResponse($data, 'Products retrieved successfully');
     }
+
+    public function admin_show($id)
+    {
+        /** @var Product $product */
+        $product = $this->productRepository->find($id);
+
+        if (empty($product)) {
+            return $this->sendError('Product not found');
+        }
+
+        return $this->sendResponse(new ProductAdminLgResource($product), 'Product retrieved successfully');
+    }
+
+
     public function index(Request $request)
     {
         $query = Product::when(request()->product_type, fn ($q) => $q->where('product_type_id', request()->product_type));
