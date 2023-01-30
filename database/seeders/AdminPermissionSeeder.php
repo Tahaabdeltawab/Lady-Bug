@@ -15,7 +15,7 @@ class AdminPermissionSeeder extends Seeder
     public function run()
     {
         DB::table('permissions')->insert([
-            /* [
+            [
                 'name' => 'farms.index',
                 'display_name' => 'Show farms',
                 'description' => 'إظهار المزارع'
@@ -539,7 +539,7 @@ class AdminPermissionSeeder extends Seeder
                 'name' => 'farming_ways.destroy',
                 'display_name' => NULL,
                 'description' => NULL
-            ], */
+            ],
 
             // NEW
 
