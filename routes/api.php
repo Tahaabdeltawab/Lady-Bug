@@ -414,7 +414,7 @@ Route::group(['middleware'=>['auth:api', 'checkBlocked']], function()
     Route::get('diseases/relations/index', [App\Http\Controllers\API\DiseaseAPIController::class, 'getRelations'])->name('diseases.getRelations');
     Route::get('admin/diseases', [App\Http\Controllers\API\DiseaseAPIController::class, 'admin_index'])->name('diseases.admin_index');
     Route::get('admin/diseases/{disease}', [App\Http\Controllers\API\DiseaseAPIController::class, 'admin_show'])->name('diseases.admin_show');
-    Route::resource('disease_causatives', App\Http\Controllers\API\DiseaseCausativeAPIController::class)->only(['store', 'destroy']);
+    Route::resource('disease_causatives', App\Http\Controllers\API\DiseaseCausativeAPIController::class)->only(['store', 'destroy', 'show']);
     Route::resource('pathogens', App\Http\Controllers\API\PathogenAPIController::class);
     Route::get('admin/pathogens', [App\Http\Controllers\API\PathogenAPIController::class, 'admin_index'])->name('pathogens.admin_index');
     Route::get('admin/pathogens/{pathogen}', [App\Http\Controllers\API\PathogenAPIController::class, 'admin_show'])->name('pathogens.admin_show');
