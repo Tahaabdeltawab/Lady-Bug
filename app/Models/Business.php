@@ -88,7 +88,9 @@ class Business extends Team
     // GETTERS
 
     public function getComNameAttribute($value){
-        return @$this->businessField->name . ' ' . $value;
+        return is_array($this->businessField->name) ?
+        @$this->businessField->name[app()->getLocale()] . ' ' . $value :
+        $this->businessField->name . ' ' . $value;
     }
 
 
