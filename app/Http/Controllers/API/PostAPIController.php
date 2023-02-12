@@ -62,7 +62,7 @@ class PostAPIController extends AppBaseController
     public function admin_show($id)
     {
         /** @var Post $post */
-        $post = Post::accepted()->find($id);
+        $post = Post::find($id);
 
         if (empty($post)) {
             return $this->sendError('Post not found');
