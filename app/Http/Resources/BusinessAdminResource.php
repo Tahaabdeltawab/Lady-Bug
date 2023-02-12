@@ -23,7 +23,7 @@ class BusinessAdminResource extends JsonResource
             'distributors' => $this->distributors()->pluck('businesses.com_name'),
             'branches' => $this->branches()->pluck('name'),
             'user' => new UserXsResource($this->user),
-            'business_field' => $this->businessField->name,
+            'business_field' => @$this->businessField->name,
             'description' => $this->description,
             'main_asset' => @$this->main_asset[0]->asset_url,
             'cover_asset' => @$this->cover_asset[0]->asset_url,

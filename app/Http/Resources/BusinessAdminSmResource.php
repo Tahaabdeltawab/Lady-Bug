@@ -18,7 +18,7 @@ class BusinessAdminSmResource extends JsonResource
         return [
             'id' => $this->id,
             'branches' => $this->branches()->pluck('name'),
-            'business_field' => $this->businessField->name,
+            'business_field' => @$this->businessField->name,
             'description' => $this->description,
             'main_asset' => @$this->main_asset[0]->asset_url,
             'com_name' => $this->com_name,
