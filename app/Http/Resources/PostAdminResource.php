@@ -16,6 +16,7 @@ class PostAdminResource extends JsonResource
     {
         $return = [
             'id' => $this->id,
+            'status' => $this->status,
             'content' => $this->content,
             'author' => new UserXsResource($this->author),
             'solved' => $this->solved == true,
