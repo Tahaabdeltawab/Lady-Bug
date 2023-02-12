@@ -82,6 +82,18 @@ class DiseaseCausativeAPIController extends AppBaseController
         return $this->sendResponse(new DiseaseCausativeResource($diseaseCausative), 'Disease Causative retrieved successfully');
     }
 
+    public function by_disease_id($id)
+    {
+        /** @var DiseaseCausative $diseaseCausative */
+        $diseaseCausative = DiseaseCausative::where('disease_id', $id)->first();
+
+        if (empty($diseaseCausative)) {
+            return $this->sendError('Disease Causative not found');
+        }
+
+        return $this->sendResponse(new DiseaseCausativeResource($diseaseCausative), 'Disease Causative retrieved successfully');
+    }
+
     /**
      * Update the specified DiseaseCausative in storage.
      * PUT/PATCH /diseaseCausatives/{id}
