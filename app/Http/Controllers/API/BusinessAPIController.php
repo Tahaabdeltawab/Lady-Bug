@@ -962,8 +962,8 @@ class BusinessAPIController extends AppBaseController
         $imagename = $type.'-'.$currentDate.'-'.uniqid().'.'.$file->getClientOriginalExtension();
         $imagesize = $file->getSize(); //size in bytes 1k = 1000bytes
         $imagemime = $file->getClientMimeType();
-        $path = $file->storeAs('assets/'.$type, $imagename, 's3');
-        $url  = Storage::disk('s3')->url($path);
+        $path = $file->storeAs('assets/'.$type, $imagename, 'public');
+        $url  = Storage::disk('public')->url($path);
         return [
             'asset_name'        => $imagename,
             'asset_url'         => $url,
