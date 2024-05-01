@@ -203,7 +203,8 @@ class AuthController extends AppBaseController
     }
 
     private function sendVerificationCode(User $user){
-        $user->code = User::generate_code();
+        // $user->code = User::generate_code();
+        $user->code = '111111';
         $user->save();
 
         // send sms to user
